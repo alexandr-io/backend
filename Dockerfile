@@ -1,5 +1,5 @@
-FROM golang
+FROM golang:1.14.2-alpine
 
-COPY . ./
+COPY . .
 RUN go build main.go
-CMD ["main"]
+CMD ["./main"]
