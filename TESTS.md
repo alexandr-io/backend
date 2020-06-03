@@ -2,6 +2,8 @@
 
 This document will guide you to write your test.
 
+We are using the official `testing` go package to write our tests. You can take a look at the documentation [here](https://golang.org/pkg/testing/)
+
 ### What should be tested?  
 Every single route of the API must have his own battery of tests.  
 Every independent features must also be tested.  
