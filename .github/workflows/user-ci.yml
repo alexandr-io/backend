@@ -1,0 +1,25 @@
+name: User Service CI
+# This workflow is triggered on pushes to the /User/ directory.
+# The workflow does not trigger on main and develop branch
+on:
+  push:
+    paths:
+      - 'User/**'
+    branches-ignore:
+    - 'main'
+    - 'develop'
+
+jobs:
+  build:
+    name: Docker Build
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build User Docker image
+        uses: docker/build-push-action@v1.1.0
+        with:
+          repository: Alexandr-io/Backend
+          path: User
+          push: false
