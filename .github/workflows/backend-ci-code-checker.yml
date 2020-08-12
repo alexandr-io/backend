@@ -1,6 +1,9 @@
 name: Backend code checker CI
-# This workflow is triggered on pull requests.
-on: pull_request
+# This workflow is triggered on pull requests when a go file is modified.
+on:
+  pull_request:
+    paths:
+      - '**.go'
 
 jobs:
   fmt:
