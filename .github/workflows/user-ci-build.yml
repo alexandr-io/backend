@@ -1,6 +1,6 @@
 name: User service build CI
 # This workflow is triggered on pushes to the /User/ directory.
-# The workflow does not trigger on main and develop branch
+# The workflow does not trigger on main and pre-prod branch
 on:
   push:
     paths:

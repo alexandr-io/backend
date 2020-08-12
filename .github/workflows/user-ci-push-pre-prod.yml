@@ -8,7 +8,7 @@ on:
       - pre-prod
 
 jobs:
-  build:
+  build-and-push:
     name: Docker Build User and push image
     runs-on: ubuntu-18.04
     steps:
