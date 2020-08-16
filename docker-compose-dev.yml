@@ -1,0 +1,14 @@
+version: "3.7"
+
+services:
+
+  # User Service
+  user:
+    container_name: user
+    build:
+      context: User
+      dockerfile: Dockerfile-dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - "./User:/app"
