@@ -1,0 +1,9 @@
+all:
+  children:
+    production:
+      hosts:
+    pre_production:
+      hosts:
+    development:
+      hosts:
+        192.168.200.200

@@ -1,0 +1,12 @@
+---
+- hosts: all
+
+  tasks:
+
+  - name: Install latest MicroK8s
+    snap:
+      name: microk8s
+      classic: yes
+  
+  - name: Alias microk8s.kubectl to kubectl
+    shell: "snap alias microk8s.kubectl kubectl"
