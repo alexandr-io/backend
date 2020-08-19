@@ -1,4 +1,9 @@
+# IDE
 .idea
+
+# Development temporary files
 **/tmp
 .env*
+
+# macOS
 .DS_Store
