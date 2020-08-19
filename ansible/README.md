@@ -4,7 +4,7 @@ This document detail the steps to follow to initialise a server.
 
 ## Pre-Requisites
 
-### on host:
+### on local machine:
 - ssh
 - sshpass
 - ansible
