@@ -1,10 +1,10 @@
 name: User service build CI
-# This workflow is triggered on pushes to the /User/ directory.
+# This workflow is triggered on pushes to the /microservices/user/app/ directory.
 # The workflow does not trigger on main and pre-prod branch
 on:
   push:
     paths:
-      - 'User/**'
+      - 'microservices/user/app/**'
     branches-ignore:
     - main
     - pre-prod
@@ -23,5 +23,5 @@ jobs:
         with:
           # github.repository -> alexandr-io/backend
           repository: ${{github.repository}}
-          path: User
+          path: microservices/user/app
           push: false

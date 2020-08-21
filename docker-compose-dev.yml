@@ -14,7 +14,7 @@ services:
   user:
     container_name: user
     build:
-      context: User
+      context: microservices/user/app
       dockerfile: Dockerfile-dev
     env_file: ./.env-dev
     environment:
@@ -22,7 +22,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - "./User:/app"
+      - "./microservices/user/app:/app"
 
 volumes:
   mongodb_data_container:
