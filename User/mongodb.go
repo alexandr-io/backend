@@ -14,15 +14,15 @@ import (
 	"go.mongodb.org/mongo-driver/x/bsonx"
 )
 
-// InstanceMongo contains the Mongo client and database objects.
-type InstanceMongo struct {
+// instanceMongoData contains the Mongo client and database objects.
+type instanceMongoData struct {
 	Client *mongo.Client
 	Db     *mongo.Database
 }
 
-// instanceMongo is the InstanceMongo connected to the database.
+// instanceMongo is the instanceMongoData connected to the database.
 // It should be used to interact with the database.
-var instanceMongo InstanceMongo
+var instanceMongo instanceMongoData
 
 // Database settings
 const dbName = "user"
@@ -50,7 +50,7 @@ func connectToMongo() {
 
 	db := client.Database(dbName)
 
-	instanceMongo = InstanceMongo{
+	instanceMongo = instanceMongoData{
 		Client: client,
 		Db:     db,
 	}

@@ -6,7 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-type User struct {
+type user struct {
 	ID       string `json:"-" bson:"_id,omitempty"`
 	Username string `json:"username,omitempty" bson:"username,omitempty"`
 	Email    string `json:"email,omitempty" bson:"email,omitempty"`
@@ -14,10 +14,10 @@ type User struct {
 }
 
 // getOneUserByID
-func getOneUserByID(ctx *fiber.Ctx, id interface{}) (*User, bool) {
+func getOneUserByID(ctx *fiber.Ctx, id interface{}) (*user, bool) {
 	collection := instanceMongo.Db.Collection(collectionUser)
 	filter := bson.D{{Key: "_id", Value: id}}
-	object := &User{}
+	object := &user{}
 
 	filteredSingleResult := collection.FindOne(ctx.Fasthttp, filter)
 	err := filteredSingleResult.Decode(object)
