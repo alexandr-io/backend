@@ -11,6 +11,7 @@ type user struct {
 	Username string `json:"username,omitempty" bson:"username,omitempty"`
 	Email    string `json:"email,omitempty" bson:"email,omitempty"`
 	Password string `json:"-" bson:"password,omitempty"`
+	JWT      string `json:"jwt" bson:"-"`
 }
 
 // getOneUserByID

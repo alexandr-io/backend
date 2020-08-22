@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/alexandr-io/backend_errors v1.2.2
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gofiber/fiber v1.14.2
 	github.com/klauspost/compress v1.10.10 // indirect
 	go.mongodb.org/mongo-driver v1.4.0

@@ -57,6 +57,13 @@ func register(ctx *fiber.Ctx) {
 		return
 	}
 
+	// Create JWT
+	jwt := newGlobalJWT(ctx, createdUser.Username)
+	if jwt == "" {
+		return
+	}
+	createdUser.JWT = jwt
+
 	// Return the new user to the user
 	if err := ctx.Status(201).JSON(createdUser); err != nil {
 		backend_errors.InternalServerError(ctx, err)
