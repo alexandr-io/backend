@@ -6,6 +6,7 @@ package main
 
 import (
 	"context"
+	"github.com/Alexandr-io/Backend/User/database"
 	"log"
 
 	"github.com/gofiber/fiber"
@@ -15,9 +16,9 @@ func main() {
 	log.Println("User Service started")
 
 	// MongoDB
-	connectToMongo()
-	defer instanceMongo.Client.Disconnect(context.Background())
-	initCollections()
+	database.ConnectToMongo()
+	defer database.Instance.Client.Disconnect(context.Background())
+	database.InitCollections()
 
 	// Fiber
 	app := fiber.New()
