@@ -1,0 +1,13 @@
+module github.com/Alexandr-io/Backend/User
+
+go 1.15
+
+require (
+	github.com/alexandr-io/backend_errors v1.2.2
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/gofiber/fiber v1.14.2
+	github.com/klauspost/compress v1.10.10 // indirect
+	go.mongodb.org/mongo-driver v1.4.0
+	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
+	golang.org/x/sys v0.0.0-20200625212154-ddb9806d33ae // indirect
+)
