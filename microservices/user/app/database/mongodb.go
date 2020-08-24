@@ -23,6 +23,8 @@ var Instance InstanceData
 
 // Database settings
 const dbName = "user"
+
+// CollectionUser is the name of the user collection in mongodb
 const CollectionUser = "user"
 
 var mongoURI = fmt.Sprintf(
