@@ -4,6 +4,7 @@ services:
 
   mongodb:
     image: mongo:4.4.0
+    container_name: mongodb
     env_file: .env-dev
     ports:
       - 27017:27017
