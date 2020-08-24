@@ -2,6 +2,7 @@ package database
 
 import (
 	"errors"
+
 	"go.mongodb.org/mongo-driver/mongo"
 )
 

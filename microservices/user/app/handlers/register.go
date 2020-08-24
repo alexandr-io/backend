@@ -1,11 +1,12 @@
 package handlers
 
 import (
-	"github.com/Alexandr-io/Backend/User/data"
-	"github.com/Alexandr-io/Backend/User/database"
 	"net/http"
 
+	"github.com/Alexandr-io/Backend/User/data"
+	"github.com/Alexandr-io/Backend/User/database"
 	"github.com/alexandr-io/backend_errors"
+
 	"github.com/gofiber/fiber"
 	"go.mongodb.org/mongo-driver/bson"
 )

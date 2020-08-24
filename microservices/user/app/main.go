@@ -6,8 +6,9 @@ package main
 
 import (
 	"context"
-	"github.com/Alexandr-io/Backend/User/database"
 	"log"
+
+	"github.com/Alexandr-io/Backend/User/database"
 
 	"github.com/gofiber/fiber"
 )
