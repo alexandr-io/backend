@@ -1,24 +1,46 @@
-package main
+package handlers
 
 import (
 	"net/http"
 
+	"github.com/Alexandr-io/Backend/User/data"
+	"github.com/Alexandr-io/Backend/User/database"
 	"github.com/alexandr-io/backend_errors"
+
 	"github.com/gofiber/fiber"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
 // userRegister is the body parameter given to register a new user to the database.
+// swagger:model
 type userRegister struct {
-	Email           string `json:"email" validate:"required,email"`
-	Username        string `json:"username" validate:"required"`
-	Password        string `json:"password" validate:"required"`
+	// The email of the user
+	// required: true
+	// example: john@provider.net
+	Email string `json:"email" validate:"required,email"`
+	// The username of the user
+	// required: true
+	// example: john
+	Username string `json:"username" validate:"required"`
+	// The password of the user
+	// required: true
+	// example: leHAiOjE1OTgzNz
+	Password string `json:"password" validate:"required"`
+	// The confirmation password of the user
+	// required: true
+	// example: leHAiOjE1OTgzNz
 	ConfirmPassword string `json:"confirm_password" validate:"required"`
 }
 
-// register take a userRegister in the body to create a new user in the database.
-// The register route return an user.
-func register(ctx *fiber.Ctx) {
+// swagger:route POST /register USER registerUser
+// Register a new user and return it's information and JWT
+// responses:
+//	201: userResponse
+//	400: badRequestErrorResponse
+
+// Register take a userRegister in the body to create a new user in the database.
+// The register route return a data.User.
+func Register(ctx *fiber.Ctx) {
 	ctx.Set("Content-Type", "application/json")
 
 	// Get and validate the body JSON
@@ -34,15 +56,15 @@ func register(ctx *fiber.Ctx) {
 	}
 
 	// Get the mango collection object
-	userCollection := instanceMongo.Db.Collection(collectionUser)
+	userCollection := database.Instance.Db.Collection(database.CollectionUser)
 
 	// Insert the new data to the collection
-	insertResult, err := userCollection.InsertOne(ctx.Fasthttp, user{
+	insertResult, err := userCollection.InsertOne(ctx.Fasthttp, data.User{
 		Username: userRegister.Username,
 		Email:    userRegister.Email,
 		Password: hashAndSalt(userRegister.Password),
 	})
-	if isMongoDupKey(err) {
+	if database.IsMongoDupKey(err) {
 		// If the mongo db error is a duplication error, return the proper error
 		checkRegisterFieldDuplication(ctx, userRegister)
 		return
@@ -52,7 +74,7 @@ func register(ctx *fiber.Ctx) {
 	}
 
 	// Get the newly created user
-	createdUser, ok := getOneUserByID(ctx, insertResult.InsertedID)
+	createdUser, ok := data.GetUserByID(ctx, insertResult.InsertedID)
 	if !ok {
 		return
 	}
@@ -78,8 +100,8 @@ func checkRegisterFieldDuplication(ctx *fiber.Ctx, userRegister *userRegister) {
 
 	// Check if the duplication is for the email field
 	filter := bson.D{{Key: "email", Value: userRegister.Email}}
-	filteredByEmailUser := &user{}
-	err := findOneWithFilter(ctx, filteredByEmailUser, filter)
+	filteredByEmailUser := &data.User{}
+	err := database.FindOneWithFilter(ctx, filteredByEmailUser, filter)
 	if err == nil && filteredByEmailUser.Email == userRegister.Email {
 		errorsFields["email"] = "Email has already been taken."
 	} else if err != nil {
@@ -89,8 +111,8 @@ func checkRegisterFieldDuplication(ctx *fiber.Ctx, userRegister *userRegister) {
 
 	// Check if the duplication is for the username field
 	filter = bson.D{{Key: "username", Value: userRegister.Username}}
-	filteredByUsernameUser := &user{}
-	err = findOneWithFilter(ctx, filteredByUsernameUser, filter)
+	filteredByUsernameUser := &data.User{}
+	err = database.FindOneWithFilter(ctx, filteredByUsernameUser, filter)
 	if err == nil && filteredByUsernameUser.Username == userRegister.Username {
 		errorsFields["username"] = "Username has already been taken."
 	} else if err != nil {

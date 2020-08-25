@@ -1,0 +1,112 @@
+basePath: /
+consumes:
+- application/json
+definitions:
+  BadInput:
+    properties:
+      fields:
+        items:
+          $ref: '#/definitions/field'
+        type: array
+        x-go-name: Fields
+    type: object
+    x-go-package: github.com/alexandr-io/backend_errors
+  User:
+    description: User defines the structure for an API user
+    properties:
+      email:
+        description: The email address of this user
+        example: john@provider.net
+        type: string
+        x-go-name: Email
+      jwt:
+        description: The authentication token of this user
+        example: eyJhb[...]FYqf4
+        type: string
+        x-go-name: JWT
+      username:
+        description: The username of this user
+        example: john
+        type: string
+        x-go-name: Username
+    required:
+    - username
+    - email
+    type: object
+    x-go-package: github.com/Alexandr-io/Backend/User/data
+  field:
+    properties:
+      name:
+        type: string
+        x-go-name: Name
+      reason:
+        type: string
+        x-go-name: Reason
+    type: object
+    x-go-package: github.com/alexandr-io/backend_errors
+  userRegister:
+    properties:
+      confirm_password:
+        description: The confirmation password of the user
+        example: leHAiOjE1OTgzNz
+        type: string
+        x-go-name: ConfirmPassword
+      email:
+        description: The email of the user
+        example: john@provider.net
+        type: string
+        x-go-name: Email
+      password:
+        description: The password of the user
+        example: leHAiOjE1OTgzNz
+        type: string
+        x-go-name: Password
+      username:
+        description: The username of the user
+        example: john
+        type: string
+        x-go-name: Username
+    required:
+    - email
+    - username
+    - password
+    - confirm_password
+    title: userRegister is the body parameter given to register a new user to the database.
+    type: object
+    x-go-package: github.com/Alexandr-io/Backend/User/handlers
+info:
+  description: Documentation for User API
+  title: of User API
+  version: 1.0.0
+paths:
+  /register:
+    post:
+      description: Register a new user and return it's information and JWT
+      operationId: registerUser
+      parameters:
+      - description: The information to register a new user
+        in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/userRegister'
+      responses:
+        "201":
+          $ref: '#/responses/userResponse'
+        "400":
+          $ref: '#/responses/badRequestErrorResponse'
+      tags:
+      - USER
+produces:
+- application/json
+responses:
+  badRequestErrorResponse:
+    description: A bad request error response.
+    schema:
+      $ref: '#/definitions/BadInput'
+  userResponse:
+    description: A user return in a response.
+    schema:
+      $ref: '#/definitions/User'
+schemes:
+- http
+swagger: "2.0"
