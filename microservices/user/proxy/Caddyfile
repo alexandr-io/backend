@@ -1,0 +1,6 @@
+user.alexandrio.cloud {
+    proxy / api {
+        transparent
+        websocket
+    }
+}
