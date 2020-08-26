@@ -32,7 +32,7 @@ type userRegister struct {
 	ConfirmPassword string `json:"confirm_password" validate:"required"`
 }
 
-// swagger:route POST /register USER registerUser
+// swagger:route POST /register USER register
 // Register a new user and return it's information and JWT
 // responses:
 //	201: userResponse

@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"fmt"
+	"log"
 	"os"
 	"time"
 
@@ -32,5 +34,35 @@ func newGlobalJWT(ctx *fiber.Ctx, username string) string {
 		backend_errors.InternalServerError(ctx, err)
 		return ""
 	}
+	log.Println("New JWT for " + username + ": " + signedToken)
 	return signedToken
+}
+
+// ExtractJWTClaims extract the map of claims contained in the JWT of the given context.
+func ExtractJWTClaims(ctx *fiber.Ctx) (jwt.MapClaims, bool) {
+	token, ok := ctx.Locals("jwt").(*jwt.Token)
+	if !ok {
+		log.Println("Error casting locals jwt to *jwt.Token")
+		return nil, false
+	}
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		log.Println("Error casting token.Claims to jwt.MapClaims")
+		return nil, false
+	}
+	return claims, true
+}
+
+// ExtractJWTUsername extract the username contained in the claims of the JWT of the given context.
+func ExtractJWTUsername(ctx *fiber.Ctx) (string, bool) {
+	claims, ok := ExtractJWTClaims(ctx)
+	if !ok {
+		return "", false
+	}
+	username, ok := claims["username"].(string)
+	if !ok {
+		fmt.Println("Error casting claims[\"username\"] to string")
+		return "", false
+	}
+	return username, true
 }

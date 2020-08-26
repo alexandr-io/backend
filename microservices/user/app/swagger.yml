@@ -44,6 +44,24 @@ definitions:
         x-go-name: Reason
     type: object
     x-go-package: github.com/alexandr-io/backend_errors
+  userLogin:
+    properties:
+      login:
+        description: The email or the username of the user
+        example: john@provider.net
+        type: string
+        x-go-name: Login
+      password:
+        description: The password of the user
+        example: leHAiOjE1OTgzNz
+        type: string
+        x-go-name: Password
+    required:
+    - login
+    - password
+    title: userLogin is the body parameter given to login a new user.
+    type: object
+    x-go-package: github.com/Alexandr-io/Backend/User/handlers
   userRegister:
     properties:
       confirm_password:
@@ -79,10 +97,40 @@ info:
   title: of User API
   version: 1.0.0
 paths:
+  /auth:
+    get:
+      description: Try a simple connection with the given JWT
+      operationId: auth
+      responses:
+        "200":
+          $ref: '#/responses/authResponse'
+        "401":
+          $ref: '#/responses/unauthorizedErrorResponse'
+      security:
+      - Bearer: []
+      tags:
+      - USER
+  /login:
+    post:
+      description: Login a user and return it's information and JWT
+      operationId: login
+      parameters:
+      - description: The information to login a user
+        in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/userLogin'
+      responses:
+        "200":
+          $ref: '#/responses/userResponse'
+        "400":
+          $ref: '#/responses/badRequestErrorResponse'
+      tags:
+      - USER
   /register:
     post:
       description: Register a new user and return it's information and JWT
-      operationId: registerUser
+      operationId: register
       parameters:
       - description: The information to register a new user
         in: body
@@ -99,14 +147,45 @@ paths:
 produces:
 - application/json
 responses:
+  authResponse:
+    description: A simple response from a simple route.
+    schema:
+      properties:
+        username:
+          description: The connected user's username
+          example: john
+          type: string
+          x-go-name: Username
+      required:
+      - username
+      type: object
   badRequestErrorResponse:
     description: A bad request error response.
     schema:
       $ref: '#/definitions/BadInput'
+  unauthorizedErrorResponse:
+    description: An unauthorized error response.
+    schema:
+      properties:
+        error:
+          description: The error message
+          example: Invalid or expired JWT
+          type: string
+          x-go-name: Error
+      required:
+      - error
+      type: object
   userResponse:
     description: A user return in a response.
     schema:
       $ref: '#/definitions/User'
 schemes:
 - http
+securityDefinitions:
+  Bearer:
+    description: |
+      For authentication, you need to send a JWT bearer token in the Header of the request. The JWT is given by the /register and /login routes.
+    in: header
+    name: Bearer
+    type: Bearer
 swagger: "2.0"

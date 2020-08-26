@@ -1,0 +1,8 @@
+securityDefinitions:
+  Bearer:
+    description: >
+      For authentication, you need to send a JWT bearer token in the Header of the request.
+      The JWT is given by the /register and /login routes.
+    type: Bearer
+    name: Bearer
+    in: header

@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/Alexandr-io/Backend/User/handlers"
+	userMiddleware "github.com/Alexandr-io/Backend/User/middleware"
 
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/gofiber/fiber"
@@ -14,10 +15,12 @@ import (
 func createRoute(app *fiber.App) {
 
 	app.Post("/register", handlers.Register)
+	app.Post("/login", handlers.Login)
 
 	app.Get("/docs", wrapDocHandler())
 	app.Get("/swagger.yml", wrapFileServer())
 
+	app.Get("/auth", userMiddleware.Protected(), handlers.Auth)
 	app.Get("/ping", func(c *fiber.Ctx) {
 		c.Send("pong")
 	})
