@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/Alexandr-io/Backend/User/data"
+	"github.com/Alexandr-io/Backend/User/database"
 	"github.com/alexandr-io/backend_errors"
 
 	"github.com/gofiber/fiber"
@@ -40,7 +40,7 @@ func Login(ctx *fiber.Ctx) {
 	}
 
 	// Get the user from it's login
-	user, ok := data.GetUserByLogin(ctx, userLogin.Login)
+	user, ok := database.GetUserByLogin(ctx, userLogin.Login)
 	if !ok {
 		return
 	}

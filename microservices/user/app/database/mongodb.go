@@ -24,9 +24,6 @@ var Instance InstanceData
 // Database settings
 const dbName = "user"
 
-// CollectionUser is the name of the user collection in mongodb
-const CollectionUser = "user"
-
 var mongoURI = fmt.Sprintf(
 	"mongodb://%s:%s@%s:27017/%s?authSource=admin&readPreference=primary&appname=UserService&ssl=false",
 	os.Getenv("MONGO_INITDB_ROOT_USERNAME"),
