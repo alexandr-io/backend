@@ -70,12 +70,13 @@ func Register(ctx *fiber.Ctx) {
 		return
 	}
 
-	// Create JWT
-	jwt := newGlobalJWT(ctx, createdUser.Username)
-	if jwt == "" {
+	// Create auth and refresh token
+	refreshToken, authToken, ok := generateNewRefreshTokenAndAuthToken(ctx, createdUser.ID)
+	if !ok {
 		return
 	}
-	createdUser.JWT = jwt
+	createdUser.AuthToken = authToken
+	createdUser.RefreshToken = refreshToken
 
 	// Return the new user to the user
 	if err := ctx.Status(201).JSON(createdUser); err != nil {

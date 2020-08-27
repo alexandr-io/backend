@@ -3,40 +3,16 @@ package handlers
 import (
 	"fmt"
 	"log"
-	"os"
+	"math/rand"
 	"time"
 
-	"github.com/alexandr-io/backend_errors"
+	"github.com/Alexandr-io/Backend/User/database"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
-
-const (
-	issuer   = "alexandrio_user_service"
-	audience = "alexandrio_backend"
-)
-
-// newGlobalJWT creat and sign a new global jwt token for connection.
-// In case of error, the proper http error is set to the context and an empty string is returned.
-func newGlobalJWT(ctx *fiber.Ctx, username string) string {
-	token := jwt.New(jwt.SigningMethodHS256)
-
-	claims := token.Claims.(jwt.MapClaims)
-	claims["iss"] = issuer                                          // Who created and signed the token
-	claims["sub"] = string(ctx.Fasthttp.Request.Header.UserAgent()) // Whom the token refers to
-	claims["aud"] = audience                                        // Who or what the token is intended for
-	claims["username"] = username                                   // Username of the auth user
-	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()           // Expire in 72 hours
-
-	signedToken, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
-	if err != nil {
-		backend_errors.InternalServerError(ctx, err)
-		return ""
-	}
-	log.Println("New JWT for " + username + ": " + signedToken)
-	return signedToken
-}
 
 // ExtractJWTClaims extract the map of claims contained in the JWT of the given context.
 func ExtractJWTClaims(ctx *fiber.Ctx) (jwt.MapClaims, bool) {
@@ -53,16 +29,61 @@ func ExtractJWTClaims(ctx *fiber.Ctx) (jwt.MapClaims, bool) {
 	return claims, true
 }
 
-// ExtractJWTUsername extract the username contained in the claims of the JWT of the given context.
-func ExtractJWTUsername(ctx *fiber.Ctx) (string, bool) {
+// ExtractJWTUserID extract the user_id contained in the claims of the JWT of the given context.
+func ExtractJWTUserID(ctx *fiber.Ctx) (string, bool) {
 	claims, ok := ExtractJWTClaims(ctx)
 	if !ok {
 		return "", false
 	}
-	username, ok := claims["username"].(string)
+	userID, ok := claims["user_id"].(string)
 	if !ok {
-		fmt.Println("Error casting claims[\"username\"] to string")
+		fmt.Println("Error casting claims[\"user_id\"] to string")
 		return "", false
 	}
-	return username, true
+	return userID, true
+}
+
+// ExtractJWTUsername extract the username from the user_id contained in the claims of the JWT of the given context.
+func ExtractJWTUsername(ctx *fiber.Ctx) (string, bool) {
+	userID, ok := ExtractJWTUserID(ctx)
+	if !ok {
+		return "", ok
+	}
+
+	userObjectID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		log.Println(err)
+		return "", false
+	}
+	user, ok := database.GetUserByID(ctx, userObjectID)
+	if !ok {
+		return "", ok
+	}
+	return user.Username, true
+}
+
+// generateNewRefreshTokenAndAuthToken generate both the auth and refresh token.
+func generateNewRefreshTokenAndAuthToken(
+	ctx *fiber.Ctx, userID string) (refreshToken string, authToken string, ok bool) {
+	ok = true
+	refreshToken = newRefreshToken(ctx, userID)
+	authToken = newGlobalAuthToken(ctx, userID)
+	if refreshToken == "" || authToken == "" {
+		ok = false
+	}
+	return
+}
+
+const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890123456789!@#$%^&*()_+<>?:\"|{}[]'."
+
+// randomString generate a random string of the given length with the charters in charset.
+func randomString(length int) string {
+	seededRand := rand.New(
+		rand.NewSource(time.Now().UnixNano()))
+
+	b := make([]byte, length)
+	for i := range b {
+		b[i] = charset[seededRand.Intn(len(charset))]
+	}
+	return string(b)
 }

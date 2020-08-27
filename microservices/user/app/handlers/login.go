@@ -52,12 +52,13 @@ func Login(ctx *fiber.Ctx) {
 		return
 	}
 
-	// Create JWT
-	jwt := newGlobalJWT(ctx, user.Username)
-	if jwt == "" {
+	// Create auth and refresh token
+	refreshToken, authToken, ok := generateNewRefreshTokenAndAuthToken(ctx, user.Username)
+	if !ok {
 		return
 	}
-	user.JWT = jwt
+	user.AuthToken = authToken
+	user.RefreshToken = refreshToken
 
 	if err := ctx.Status(200).JSON(user); err != nil {
 		backend_errors.InternalServerError(ctx, err)
