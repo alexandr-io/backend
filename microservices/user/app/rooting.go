@@ -16,11 +16,12 @@ func createRoute(app *fiber.App) {
 
 	app.Post("/register", handlers.Register)
 	app.Post("/login", handlers.Login)
+	app.Post("/auth/refresh", handlers.RefreshAuthToken)
+	app.Get("/auth", userMiddleware.Protected(), handlers.Auth)
 
 	app.Get("/docs", wrapDocHandler())
 	app.Get("/swagger.yml", wrapFileServer())
 
-	app.Get("/auth", userMiddleware.Protected(), handlers.Auth)
 	app.Get("/ping", func(c *fiber.Ctx) {
 		c.Send("pong")
 	})

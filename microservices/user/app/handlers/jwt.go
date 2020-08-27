@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"net/http"
 	"time"
 
 	"github.com/Alexandr-io/Backend/User/database"
@@ -14,11 +15,20 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// ExtractJWTClaims extract the map of claims contained in the JWT of the given context.
-func ExtractJWTClaims(ctx *fiber.Ctx) (jwt.MapClaims, bool) {
+// extractJWTFromContext extract a jwt from the context.
+func extractJWTFromContext(ctx *fiber.Ctx) (*jwt.Token, bool) {
 	token, ok := ctx.Locals("jwt").(*jwt.Token)
 	if !ok {
 		log.Println("Error casting locals jwt to *jwt.Token")
+		return nil, false
+	}
+	return token, true
+}
+
+// extractJWTClaims extract the map of claims contained in the JWT of the given context.
+func extractJWTClaims(ctx *fiber.Ctx) (jwt.MapClaims, bool) {
+	token, ok := extractJWTFromContext(ctx)
+	if !ok {
 		return nil, false
 	}
 	claims, ok := token.Claims.(jwt.MapClaims)
@@ -29,9 +39,9 @@ func ExtractJWTClaims(ctx *fiber.Ctx) (jwt.MapClaims, bool) {
 	return claims, true
 }
 
-// ExtractJWTUserID extract the user_id contained in the claims of the JWT of the given context.
-func ExtractJWTUserID(ctx *fiber.Ctx) (string, bool) {
-	claims, ok := ExtractJWTClaims(ctx)
+// extractJWTUserID extract the user_id contained in the claims of the JWT of the given context.
+func extractJWTUserID(ctx *fiber.Ctx) (string, bool) {
+	claims, ok := extractJWTClaims(ctx)
 	if !ok {
 		return "", false
 	}
@@ -45,7 +55,7 @@ func ExtractJWTUserID(ctx *fiber.Ctx) (string, bool) {
 
 // ExtractJWTUsername extract the username from the user_id contained in the claims of the JWT of the given context.
 func ExtractJWTUsername(ctx *fiber.Ctx) (string, bool) {
-	userID, ok := ExtractJWTUserID(ctx)
+	userID, ok := extractJWTUserID(ctx)
 	if !ok {
 		return "", ok
 	}
@@ -72,6 +82,18 @@ func generateNewRefreshTokenAndAuthToken(
 		ok = false
 	}
 	return
+}
+
+func parseJWT(ctx *fiber.Ctx, token string, secret string) (*jwt.Token, bool) {
+	tokenObject, err := jwt.Parse(token, func(*jwt.Token) (interface{}, error) {
+		return []byte(secret), nil
+	})
+	if err != nil {
+		log.Println(err)
+		_ = ctx.Status(http.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid or expired JWT"})
+		return nil, false
+	}
+	return tokenObject, true
 }
 
 const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890123456789!@#$%^&*()_+<>?:\"|{}[]'."

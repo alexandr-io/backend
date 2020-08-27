@@ -24,9 +24,9 @@ func Protected() func(*fiber.Ctx) {
 // jwtError manage errors for the jwt middleware
 func jwtError(ctx *fiber.Ctx, err error) {
 	if err.Error() == "Missing or malformed JWT" {
-		ctx.Status(http.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+		_ = ctx.Status(http.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	} else {
-		ctx.Status(http.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid or expired JWT"})
+		_ = ctx.Status(http.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid or expired JWT"})
 	}
 }
 

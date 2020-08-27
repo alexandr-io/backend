@@ -28,7 +28,7 @@ func StoreRefreshToken(ctx *fiber.Ctx, refreshToken string, secret string) error
 // GetRefreshTokenSecret get the secret from a given refresh token from redis.
 func GetRefreshTokenSecret(ctx *fiber.Ctx, refreshToken string) (string, error) {
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     os.Getenv("REDIS_ADDRESS") + ":" + os.Getenv("REDIS_PORT"),
+		Addr:     os.Getenv("REDIS_URL") + ":" + os.Getenv("REDIS_PORT"),
 		Password: "",
 		DB:       0,
 	})
@@ -39,4 +39,27 @@ func GetRefreshTokenSecret(ctx *fiber.Ctx, refreshToken string) (string, error) 
 		return "", err
 	}
 	return secret, nil
+}
+
+// DeleteRefreshToken delete the given refresh token from redis.
+func DeleteRefreshToken(ctx *fiber.Ctx, refreshToken string) error {
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     os.Getenv("REDIS_URL") + ":" + os.Getenv("REDIS_PORT"),
+		Password: "",
+		DB:       0,
+	})
+
+	iter := rdb.Scan(ctx.Fasthttp, 0, refreshToken, 0).Iterator()
+	for iter.Next(ctx.Fasthttp) {
+		err := rdb.Del(ctx.Fasthttp, iter.Val()).Err()
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+	}
+	if err := iter.Err(); err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
 }
