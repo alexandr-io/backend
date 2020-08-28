@@ -20,7 +20,11 @@ import (
 	"github.com/alexandr-io/backend_errors"
 )
 
-// A set of data consumed to register a new user.
+//
+// Input
+//
+
+// A set of data consumed to register a new user
 // swagger:parameters register
 type userRegisterParametersWrapper struct {
 	// The information to register a new user
@@ -28,7 +32,7 @@ type userRegisterParametersWrapper struct {
 	Body userRegister
 }
 
-// A set of data consumed to login a user.
+// A set of data consumed to login a user
 // swagger:parameters login
 type userLoginParametersWrapper struct {
 	// The information to login a user
@@ -36,7 +40,19 @@ type userLoginParametersWrapper struct {
 	Body userLogin
 }
 
-// A user return in a response.
+// A set of data consumed to refresh an auth and refresh token
+// swagger:parameters refresh_token
+type authRefreshParametersWrapper struct {
+	// The information to refresh an auth and refresh token
+	// in: body
+	Body authRefresh
+}
+
+//
+// Output
+//
+
+// User data with auth and refresh token
 // swagger:response userResponse
 type userResponseWrapper struct {
 	// A single user
@@ -44,7 +60,7 @@ type userResponseWrapper struct {
 	Body data.User
 }
 
-// A simple response from a simple route.
+// A simple response from a simple route
 // swagger:response authResponse
 type authResponseWrapper struct {
 	// A username gotten from the jwt
@@ -57,7 +73,11 @@ type authResponseWrapper struct {
 	}
 }
 
-// A bad request error response.
+//
+// Error
+//
+
+// A bad request error response
 // swagger:response badRequestErrorResponse
 type badRequestErrorResponseWrapper struct {
 	// A list of described bad request error
@@ -65,7 +85,7 @@ type badRequestErrorResponseWrapper struct {
 	Body backend_errors.BadInput
 }
 
-// An unauthorized error response.
+// An unauthorized error response
 // swagger:response unauthorizedErrorResponse
 type unauthorizedErrorResponseWrapper struct {
 	// The description of the unauthorized error

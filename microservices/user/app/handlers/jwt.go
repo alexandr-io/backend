@@ -1,17 +1,17 @@
 package handlers
 
 import (
-	"fmt"
 	"log"
 	"math/rand"
 	"net/http"
 	"time"
 
+	"github.com/Alexandr-io/Backend/User/data"
 	"github.com/Alexandr-io/Backend/User/database"
+	"github.com/alexandr-io/backend_errors"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber"
-
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -47,7 +47,7 @@ func extractJWTUserID(ctx *fiber.Ctx) (string, bool) {
 	}
 	userID, ok := claims["user_id"].(string)
 	if !ok {
-		fmt.Println("Error casting claims[\"user_id\"] to string")
+		log.Println("Error casting claims[\"user_id\"] to string")
 		return "", false
 	}
 	return userID, true
@@ -70,6 +70,28 @@ func ExtractJWTUsername(ctx *fiber.Ctx) (string, bool) {
 		return "", ok
 	}
 	return user.Username, true
+}
+
+func getUserFromContextJWT(ctx *fiber.Ctx) (*data.User, bool) {
+	// extract user ID from JWT
+	userID, ok := extractJWTUserID(ctx)
+	if !ok {
+		_ = ctx.Status(http.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid or expired JWT"})
+		return nil, false
+	}
+	// Create the bson objectID of the userID
+	userObjectID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		backend_errors.InternalServerError(ctx, err)
+		return nil, false
+	}
+	// Get the user
+	user, ok := database.GetUserByID(ctx, userObjectID)
+	if !ok {
+		ctx.SendStatus(http.StatusInternalServerError)
+		return nil, false
+	}
+	return user, true
 }
 
 // generateNewRefreshTokenAndAuthToken generate both the auth and refresh token.

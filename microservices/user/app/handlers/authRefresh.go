@@ -3,13 +3,10 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/Alexandr-io/Backend/User/database"
 	"github.com/Alexandr-io/Backend/User/redis"
 	"github.com/alexandr-io/backend_errors"
 
 	"github.com/gofiber/fiber"
-
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // authRefresh is the body parameter given to /auth/refresh call.
@@ -21,6 +18,14 @@ type authRefresh struct {
 	RefreshToken string `json:"refresh_token" validate:"required"`
 }
 
+// swagger:route POST /auth/refresh USER refresh_token
+// Get a new auth and refresh token from a valid refresh token
+// responses:
+//	201: userResponse
+//	400: badRequestErrorResponse
+//  401: unauthorizedErrorResponse
+
+// RefreshAuthToken generate a new auth and refresh token from a given valid refresh token.
 func RefreshAuthToken(ctx *fiber.Ctx) {
 	ctx.Set("Content-Type", "application/json")
 
@@ -30,48 +35,41 @@ func RefreshAuthToken(ctx *fiber.Ctx) {
 		return
 	}
 
+	// Get secret of refresh token from redis
 	secret, err := redis.GetRefreshTokenSecret(ctx, authRefresh.RefreshToken)
 	if err != nil {
 		_ = ctx.Status(http.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid or expired JWT"})
 		return
 	}
 
+	// Parse jwt with retrieved secret
 	tokenObject, ok := parseJWT(ctx, authRefresh.RefreshToken, secret)
 	if !ok {
 		return
 	}
 
+	// get user from refresh token
 	ctx.Locals("jwt", tokenObject)
-	userID, ok := extractJWTUserID(ctx)
+	user, ok := getUserFromContextJWT(ctx)
 	if !ok {
-		_ = ctx.Status(http.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid or expired JWT"})
-		return
-	}
-	userObjectID, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		backend_errors.InternalServerError(ctx, err)
-		return
-	}
-	user, ok := database.GetUserByID(ctx, userObjectID)
-	if !ok {
-		ctx.SendStatus(http.StatusInternalServerError)
 		return
 	}
 
-	if err := redis.DeleteRefreshToken(ctx, authRefresh.RefreshToken); err != nil {
-		backend_errors.InternalServerError(ctx, err)
-		return
-	}
-
-	// Create auth and refresh token
-	refreshToken, authToken, ok := generateNewRefreshTokenAndAuthToken(ctx, userID)
+	// Create new auth and refresh token
+	refreshToken, authToken, ok := generateNewRefreshTokenAndAuthToken(ctx, user.ID)
 	if !ok {
 		return
 	}
 	user.AuthToken = authToken
 	user.RefreshToken = refreshToken
 
-	// Return the new user to the user
+	// Delete the previous refresh token
+	if err := redis.DeleteRefreshToken(ctx, authRefresh.RefreshToken); err != nil {
+		backend_errors.InternalServerError(ctx, err)
+		return
+	}
+
+	// Return the new auth and refresh token
 	if err := ctx.Status(20).JSON(user); err != nil {
 		backend_errors.InternalServerError(ctx, err)
 	}

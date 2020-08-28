@@ -23,7 +23,7 @@ type userLogin struct {
 }
 
 // swagger:route POST /login USER login
-// Login a user and return it's information and JWT
+// Login a user and return it's information, auth token and refresh token
 // responses:
 //	200: userResponse
 //	400: badRequestErrorResponse

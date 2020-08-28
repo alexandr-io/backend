@@ -32,7 +32,7 @@ type userRegister struct {
 }
 
 // swagger:route POST /register USER register
-// Register a new user and return it's information and JWT
+// Register a new user and return it's information, auth token and refresh token
 // responses:
 //	201: userResponse
 //	400: badRequestErrorResponse

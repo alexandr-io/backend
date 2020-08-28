@@ -14,16 +14,21 @@ definitions:
   User:
     description: User defines the structure for an API user
     properties:
+      auth_token:
+        description: The authentication token of this user. Valid for 15 minutes.
+        example: eyJhb[...]FYqf4
+        type: string
+        x-go-name: AuthToken
       email:
         description: The email address of this user
         example: john@provider.net
         type: string
         x-go-name: Email
-      jwt:
-        description: The authentication token of this user
+      refresh_token:
+        description: The refresh token of this user. Valid for 30 days. Used to get a new auth token.
         example: eyJhb[...]FYqf4
         type: string
-        x-go-name: JWT
+        x-go-name: RefreshToken
       username:
         description: The username of this user
         example: john
@@ -34,6 +39,18 @@ definitions:
     - email
     type: object
     x-go-package: github.com/Alexandr-io/Backend/User/data
+  authRefresh:
+    properties:
+      refresh_token:
+        description: The refresh token of the user
+        example: eyJhb[...]FYqf4
+        type: string
+        x-go-name: RefreshToken
+    required:
+    - refresh_token
+    title: authRefresh is the body parameter given to /auth/refresh call.
+    type: object
+    x-go-package: github.com/Alexandr-io/Backend/User/handlers
   field:
     properties:
       name:
@@ -99,7 +116,7 @@ info:
 paths:
   /auth:
     get:
-      description: Try a simple connection with the given JWT
+      description: Try a simple connection with the given auth token
       operationId: auth
       responses:
         "200":
@@ -110,9 +127,28 @@ paths:
       - Bearer: []
       tags:
       - USER
+  /auth/refresh:
+    post:
+      description: Get a new auth and refresh token from a valid refresh token
+      operationId: refresh_token
+      parameters:
+      - description: The information to refresh an auth and refresh token
+        in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/authRefresh'
+      responses:
+        "201":
+          $ref: '#/responses/userResponse'
+        "400":
+          $ref: '#/responses/badRequestErrorResponse'
+        "401":
+          $ref: '#/responses/unauthorizedErrorResponse'
+      tags:
+      - USER
   /login:
     post:
-      description: Login a user and return it's information and JWT
+      description: Login a user and return it's information, auth token and refresh token
       operationId: login
       parameters:
       - description: The information to login a user
@@ -129,7 +165,7 @@ paths:
       - USER
   /register:
     post:
-      description: Register a new user and return it's information and JWT
+      description: Register a new user and return it's information, auth token and refresh token
       operationId: register
       parameters:
       - description: The information to register a new user
@@ -148,7 +184,7 @@ produces:
 - application/json
 responses:
   authResponse:
-    description: A simple response from a simple route.
+    description: A simple response from a simple route
     schema:
       properties:
         username:
@@ -160,11 +196,11 @@ responses:
       - username
       type: object
   badRequestErrorResponse:
-    description: A bad request error response.
+    description: A bad request error response
     schema:
       $ref: '#/definitions/BadInput'
   unauthorizedErrorResponse:
-    description: An unauthorized error response.
+    description: An unauthorized error response
     schema:
       properties:
         error:
@@ -176,15 +212,14 @@ responses:
       - error
       type: object
   userResponse:
-    description: A user return in a response.
+    description: User data with auth and refresh token
     schema:
       $ref: '#/definitions/User'
 schemes:
 - http
 securityDefinitions:
   Bearer:
-    description: |
-      For authentication, you need to send a JWT bearer token in the Header of the request. The JWT is given by the /register and /login routes.
+    description: "Alexandrio backend is using both auth token and refresh token.\n\nThe auth token is used to access resources as an authenticated user. This token is only valid for 15 minutes for security purposes.  \nThe auth token is given by the [`/register`](#operation/register), [`/login`](#operation/login) and [`/auth/refresh`](#operation/refresh_token) routes.  \nYou need to send the auth token as a Bearer authentication token in the header of the request to access protected routes.\n\nThe refresh token is used to get a new auth token. When the auth token is expired, you need to send this refresh token to [`/auth/refresh`](#operation/refresh_token) to get a new auth and refresh token.  \nThe refresh token is valid for 30 days and can be used only once. The [`/auth/refresh`](#operation/refresh_token) route return a new refresh token.\n\n<div align=\"center\">\n  <img alt=\"Workflow\" src=\"https://drive.google.com/uc?export=view&id=1h40WfIqjMcUmcJp-vSoKtr1RTUgpLqTH\" />\n</div>\n<center><p style=\"font-size:11px\">Schema of the authentication workflow</p></center>\n"
     in: header
     name: Bearer
     type: Bearer

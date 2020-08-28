@@ -1,8 +1,19 @@
 securityDefinitions:
   Bearer:
-    description: >
-      For authentication, you need to send a JWT bearer token in the Header of the request.
-      The JWT is given by the /register and /login routes.
+    description: |
+      Alexandrio backend is using both auth token and refresh token.
+
+      The auth token is used to access resources as an authenticated user. This token is only valid for 15 minutes for security purposes.  
+      The auth token is given by the [`/register`](#operation/register), [`/login`](#operation/login) and [`/auth/refresh`](#operation/refresh_token) routes.  
+      You need to send the auth token as a Bearer authentication token in the header of the request to access protected routes.
+
+      The refresh token is used to get a new auth token. When the auth token is expired, you need to send this refresh token to [`/auth/refresh`](#operation/refresh_token) to get a new auth and refresh token.  
+      The refresh token is valid for 30 days and can be used only once. The [`/auth/refresh`](#operation/refresh_token) route return a new refresh token.
+
+      <div align="center">
+        <img alt="Workflow" src="https://drive.google.com/uc?export=view&id=1h40WfIqjMcUmcJp-vSoKtr1RTUgpLqTH" />
+      </div>
+      <center><p style="font-size:11px">Schema of the authentication workflow</p></center>
     type: Bearer
     name: Bearer
     in: header

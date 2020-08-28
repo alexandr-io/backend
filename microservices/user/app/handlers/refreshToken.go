@@ -19,7 +19,7 @@ func newRefreshToken(ctx *fiber.Ctx, userID string) string {
 	claims["iss"] = issuer                                          // Who created and signed the token
 	claims["sub"] = string(ctx.Fasthttp.Request.Header.UserAgent()) // Whom the token refers to
 	claims["aud"] = audience                                        // Who or what the token is intended for
-	claims["user_id"] = userID                                      // Username of the auth user
+	claims["user_id"] = userID                                      // User ID of the auth user
 	claims["exp"] = time.Now().Add(time.Hour * 24 * 30).Unix()      // Expire in 30 days
 
 	secret := randomString(16)

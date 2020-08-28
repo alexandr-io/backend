@@ -25,7 +25,7 @@ func newGlobalAuthToken(ctx *fiber.Ctx, userID string) string {
 	claims["iss"] = issuer                                          // Who created and signed the token
 	claims["sub"] = string(ctx.Fasthttp.Request.Header.UserAgent()) // Whom the token refers to
 	claims["aud"] = audience                                        // Who or what the token is intended for
-	claims["user_id"] = userID                                      // Username of the auth user
+	claims["user_id"] = userID                                      // User ID of the auth user
 	claims["exp"] = time.Now().Add(time.Minute * 15).Unix()         // Expire in 15 minutes
 
 	signedToken, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))

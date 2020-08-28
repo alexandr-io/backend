@@ -7,7 +7,7 @@ import (
 )
 
 // swagger:route GET /auth USER auth
-// Try a simple connection with the given JWT
+// Try a simple connection with the given auth token
 // security:
 //	Bearer:
 // responses:
