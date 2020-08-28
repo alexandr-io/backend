@@ -24,3 +24,14 @@
       name: docker
       state: started
       enabled: true
+
+  - name: Add group docker
+    group:
+      name: docker
+      state: present
+
+  - name: Add user to docker group
+    user:
+      name: alexandrio
+      groups: docker
+      append: yes
