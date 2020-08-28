@@ -16,6 +16,3 @@
 
   - name: Start minikube
     shell: "minikube start"
-
-  - name: Enable minikube's ingress
-    shell: "minikube addons enable ingress"
