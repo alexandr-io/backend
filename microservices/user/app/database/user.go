@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/Alexandr-io/Backend/User/data"
-	"github.com/alexandr-io/backend_errors"
+	"github.com/alexandr-io/berrors"
 
 	"github.com/gofiber/fiber"
 	"go.mongodb.org/mongo-driver/bson"
@@ -36,7 +36,7 @@ func GetUserByID(ctx *fiber.Ctx, id interface{}) (*data.User, bool) {
 	filteredSingleResult := collection.FindOne(ctx.Fasthttp, filter)
 	err := filteredSingleResult.Decode(object)
 	if err != nil {
-		backend_errors.InternalServerError(ctx, err)
+		berrors.InternalServerError(ctx, err)
 		return nil, false
 	}
 	return object, true
@@ -63,7 +63,7 @@ func GetUserByLogin(ctx *fiber.Ctx, login string) (*data.User, bool) {
 	if err := filteredByEmailSingleResult.Decode(object); err != nil {
 		log.Println(err)
 		ctx.Status(http.StatusBadRequest).SendBytes(
-			backend_errors.BadInputJSONFromType("login", string(backend_errors.Login)))
+			berrors.BadInputJSONFromType("login", string(berrors.Login)))
 		return nil, false
 	}
 
@@ -90,7 +90,7 @@ func InsertUserRegister(ctx *fiber.Ctx, user data.User) *mongo.InsertOneResult {
 		checkRegisterFieldDuplication(ctx, user)
 		return nil
 	} else if err != nil {
-		backend_errors.InternalServerError(ctx, err)
+		berrors.InternalServerError(ctx, err)
 		return nil
 	}
 	return insertedResult
@@ -122,5 +122,5 @@ func checkRegisterFieldDuplication(ctx *fiber.Ctx, user data.User) {
 		log.Println(err)
 	}
 
-	ctx.Status(http.StatusBadRequest).SendBytes(backend_errors.BadInputsJSON(errorsFields))
+	ctx.Status(http.StatusBadRequest).SendBytes(berrors.BadInputsJSON(errorsFields))
 }

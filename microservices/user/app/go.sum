@@ -7,8 +7,8 @@ github.com/PuerkitoBio/purell v1.1.1 h1:WEQqlqaGbrPkxLJWfBwQmfEAE1Z7ONdDLqrN38tN
 github.com/PuerkitoBio/purell v1.1.1/go.mod h1:c11w/QuzBsJSee3cPx9rAFu61PvFxuPbtSwDGJws/X0=
 github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 h1:d+Bc7a5rLufV/sSk/8dngufqelfh6jnri85riMAaF/M=
 github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578/go.mod h1:uGdkoq3SwY9Y+13GIhn11/XLaGBb4BfwItxLd5jeuXE=
-github.com/alexandr-io/backend_errors v1.2.4 h1:XnsRriQhT0uOJyJT4FzHS2Zr7QvVDpeSdDxK+rrMUbg=
-github.com/alexandr-io/backend_errors v1.2.4/go.mod h1:iASjTV0nYfwozvFzYWTb5+YFM7M2VQ3c6+f2Kw2blT4=
+github.com/alexandr-io/berrors v1.2.5 h1:xW68JU3xjsxZSoIwYur+CzGFtDCBPCSuwB312VmlEpQ=
+github.com/alexandr-io/berrors v1.2.5/go.mod h1:I4v+QM82hAoAccZfMVz19IgpnUHvD3Nq8BwBXbSiqGY=
 github.com/andybalholm/brotli v1.0.0 h1:7UCwP93aiSfvWpapti8g88vVVGp2qqtGyePsSuDafo4=
 github.com/andybalholm/brotli v1.0.0/go.mod h1:loMXtMfwqflxFJPmdbJO0a3KNoPuLBgiu3qAvBg8x/Y=
 github.com/asaskevich/govalidator v0.0.0-20180720115003-f9ffefc3facf/go.mod h1:lB+ZfQJz7igIIfQNfa7Ml4HSf2uFQQRzpGGRXenZAgY=

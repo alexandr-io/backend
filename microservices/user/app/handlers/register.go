@@ -5,7 +5,7 @@ import (
 
 	"github.com/Alexandr-io/Backend/User/data"
 	"github.com/Alexandr-io/Backend/User/database"
-	"github.com/alexandr-io/backend_errors"
+	"github.com/alexandr-io/berrors"
 
 	"github.com/gofiber/fiber"
 )
@@ -44,12 +44,12 @@ func Register(ctx *fiber.Ctx) {
 
 	// Get and validate the body JSON
 	userRegister := new(userRegister)
-	if ok := backend_errors.ParseBodyJSON(ctx, userRegister); !ok {
+	if ok := berrors.ParseBodyJSON(ctx, userRegister); !ok {
 		return
 	}
 
 	if userRegister.Password != userRegister.ConfirmPassword {
-		errorData := backend_errors.BadInputJSON("confirm_password", "passwords does not match")
+		errorData := berrors.BadInputJSON("confirm_password", "passwords does not match")
 		ctx.Status(http.StatusBadRequest).SendBytes(errorData)
 		return
 	}
@@ -80,6 +80,6 @@ func Register(ctx *fiber.Ctx) {
 
 	// Return the new user to the user
 	if err := ctx.Status(201).JSON(createdUser); err != nil {
-		backend_errors.InternalServerError(ctx, err)
+		berrors.InternalServerError(ctx, err)
 	}
 }

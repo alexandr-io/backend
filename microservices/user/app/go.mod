@@ -3,7 +3,7 @@ module github.com/Alexandr-io/Backend/User
 go 1.15
 
 require (
-	github.com/alexandr-io/backend_errors v1.2.4
+	github.com/alexandr-io/berrors v1.2.5
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-openapi/runtime v0.19.20
 	github.com/go-redis/redis/v8 v8.0.0-beta.8

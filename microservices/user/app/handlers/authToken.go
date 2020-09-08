@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/alexandr-io/backend_errors"
+	"github.com/alexandr-io/berrors"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber"
@@ -30,7 +30,7 @@ func newGlobalAuthToken(ctx *fiber.Ctx, userID string) string {
 
 	signedToken, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	if err != nil {
-		backend_errors.InternalServerError(ctx, err)
+		berrors.InternalServerError(ctx, err)
 		return ""
 	}
 	log.Println("New JWT for " + userID + ": " + signedToken)

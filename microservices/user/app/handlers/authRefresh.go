@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/Alexandr-io/Backend/User/redis"
-	"github.com/alexandr-io/backend_errors"
+	"github.com/alexandr-io/berrors"
 
 	"github.com/gofiber/fiber"
 )
@@ -31,7 +31,7 @@ func RefreshAuthToken(ctx *fiber.Ctx) {
 
 	// Get and validate the body JSON
 	authRefresh := new(authRefresh)
-	if ok := backend_errors.ParseBodyJSON(ctx, authRefresh); !ok {
+	if ok := berrors.ParseBodyJSON(ctx, authRefresh); !ok {
 		return
 	}
 
@@ -65,12 +65,12 @@ func RefreshAuthToken(ctx *fiber.Ctx) {
 
 	// Delete the previous refresh token
 	if err := redis.DeleteRefreshToken(ctx, authRefresh.RefreshToken); err != nil {
-		backend_errors.InternalServerError(ctx, err)
+		berrors.InternalServerError(ctx, err)
 		return
 	}
 
 	// Return the new auth and refresh token
 	if err := ctx.Status(20).JSON(user); err != nil {
-		backend_errors.InternalServerError(ctx, err)
+		berrors.InternalServerError(ctx, err)
 	}
 }
