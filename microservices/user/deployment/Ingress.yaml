@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress
+  namespace: auth
+spec:
+  rules:
+  - host: user.alexandrio.cloud
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: api
+          servicePort: http
+  tls:
+    - secretName: user-alexandrio-cloud-tls-cert
