@@ -15,5 +15,6 @@
         - curl
         - gnupg2
         - software-properties-common
+        - conntrack
       state: present
       update_cache: no

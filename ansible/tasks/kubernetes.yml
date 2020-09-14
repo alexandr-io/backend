@@ -8,11 +8,12 @@
       name: kubectl
       classic: yes
 
-  - name: Add debian package for minikube
-    shell: "curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb"
-
-  - name: Install minikube
-    shell: "dpkg -i minikube_latest_amd64.deb"
-
-  - name: Start minikube
-    shell: "minikube start"
+  - name: Install kubeadm
+    snap:
+      name: kubeadm
+      classic: yes
+  
+  - name: Install kubelet
+    snap:
+      name: kubelet
+      classic: yes
