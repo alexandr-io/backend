@@ -6,3 +6,5 @@
 # Every secrets used in development (kubernetes)
 **secret**
 **Secret**
+**configmap**
+**Configmap**
