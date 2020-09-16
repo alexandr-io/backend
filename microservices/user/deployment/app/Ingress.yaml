@@ -1,0 +1,15 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  namespace: auth
+spec:
+  rules:
+  - host: user.preprod.alexandrio.cloud
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          serviceName: api
+          servicePort: http
