@@ -45,14 +45,15 @@ services:
       dockerfile: Dockerfile-dev
     env_file: .env-dev
     environment:
-      - MONGO_URL=mongodb
-      - REDIS_URL=redis
+      MONGO_URL: mongodb
+      REDIS_URL: redis
+      KAFKA_URL: ${MY_IP}
     ports:
       - "3000:3000"
     volumes:
       - "./microservices/user/app:/app"
 
-  # Aurh service
+  # Auth service
   auth:
     container_name: auth
     build:
@@ -60,7 +61,7 @@ services:
       dockerfile: Dockerfile-dev
     env_file: .env-dev
     environment:
-      MONGO_URL: mongodb
+      REDIS_URL: redis
       KAFKA_URL: ${MY_IP}
     ports:
       - "3001:3001"

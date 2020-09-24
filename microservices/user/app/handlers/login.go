@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/Alexandr-io/Backend/User/database"
+	"github.com/alexandr-io/backend/user/database"
 	"github.com/alexandr-io/berrors"
 
 	"github.com/gofiber/fiber"

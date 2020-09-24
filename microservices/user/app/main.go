@@ -8,7 +8,8 @@ import (
 	"context"
 	"log"
 
-	"github.com/Alexandr-io/Backend/User/database"
+	"github.com/alexandr-io/backend/user/database"
+	"github.com/alexandr-io/backend/user/kafka/consumers"
 
 	"github.com/gofiber/fiber"
 )
@@ -21,6 +22,8 @@ func main() {
 	database.ConnectToMongo()
 	defer database.Instance.Client.Disconnect(context.Background())
 	database.InitCollections()
+
+	consumers.StartConsumers()
 
 	// Fiber
 	app := fiber.New()

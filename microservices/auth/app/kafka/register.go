@@ -1,20 +1,25 @@
 package kafka
 
 import (
+	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
+	"net/http"
 	"sync"
 	"time"
 
 	"github.com/alexandr-io/backend/auth/data"
+	"github.com/alexandr-io/berrors"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
+	"github.com/gofiber/fiber"
 	"github.com/google/uuid"
 )
 
 var registerRequestChannels sync.Map
 
-func RegisterRequestHandler(user data.UserRegister) error {
+func RegisterRequestHandler(ctx *fiber.Ctx, user data.UserRegister) (*data.User, error) {
 	// Generate UUID
 	id := uuid.New()
 	// Create a channel for the request
@@ -26,10 +31,32 @@ func RegisterRequestHandler(user data.UserRegister) error {
 	// Produce the message to kafka
 	go produceRegisterMessage(id.String(), user, errorChannel)
 	// Watch for a response in the request channel
-	if err := registerResponseWatcher(id.String(), requestChannel, errorChannel); err != nil {
-		return err
+	kafkaMessage, err := registerResponseWatcher(id.String(), requestChannel, errorChannel)
+	if err != nil {
+		ctx.SendStatus(http.StatusInternalServerError)
+		return nil, err
 	}
-	return nil
+
+	// handle error
+	if errorSet := handleError(ctx, *kafkaMessage); errorSet {
+		// So that the proper ctx error is set in register route
+		return nil, errors.New("")
+	}
+
+	// handle success
+	if kafkaMessage.Code == http.StatusCreated {
+		var user data.User
+		if err := json.Unmarshal(kafkaMessage.Content, &user); err != nil {
+			fmt.Println(err)
+			return nil, err
+		}
+		return &user, nil
+	}
+
+	// If http code contained in the kafka message is not handled
+	fmt.Println(kafkaMessage.Code, kafkaMessage.Content)
+	ctx.SendStatus(http.StatusInternalServerError)
+	return nil, errors.New("")
 }
 
 func produceRegisterMessage(id string, user data.UserRegister, errorChannel chan error) {
@@ -55,7 +82,7 @@ func produceRegisterMessage(id string, user data.UserRegister, errorChannel chan
 
 	// Produce message to topic (asynchronously)
 	if err := producer.Produce(&kafka.Message{
-		TopicPartition: kafka.TopicPartition{Topic: &register, Partition: kafka.PartitionAny},
+		TopicPartition: kafka.TopicPartition{Topic: &registerRequest, Partition: kafka.PartitionAny},
 		Value:          message,
 	}, nil); err != nil {
 		log.Println(err)
@@ -104,16 +131,19 @@ func consumeRegisterResponseMessages() {
 	}
 }
 
-func registerResponseWatcher(id string, requestChannel chan string, errorChannel chan error) error {
+func registerResponseWatcher(id string, requestChannel chan string, errorChannel chan error) (*berrors.KafkaErrorMessage, error) {
 	for {
-		fmt.Println("IN")
 		select {
 		case err := <-errorChannel:
-			return err
+			return nil, err
 		case message := <-requestChannel:
 			fmt.Println(message)
+			var kafkaMessage berrors.KafkaErrorMessage
+			if err := json.Unmarshal([]byte(message), &kafkaMessage); err != nil {
+				return nil, err
+			}
 			registerRequestChannels.Delete(id)
-			return nil
+			return &kafkaMessage, nil
 		}
 	}
 }

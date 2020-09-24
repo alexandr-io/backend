@@ -3,7 +3,7 @@ package handlers
 import (
 	"time"
 
-	"github.com/alexandr-io/backend/user/redis"
+	"github.com/alexandr-io/backend/auth/redis"
 	"github.com/alexandr-io/berrors"
 
 	"github.com/dgrijalva/jwt-go"

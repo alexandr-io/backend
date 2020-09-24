@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	register         = "register"
+	registerRequest  = "register"
 	registerResponse = "register-response"
 )
 
