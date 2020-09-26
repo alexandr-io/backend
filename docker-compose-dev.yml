@@ -34,8 +34,6 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_HOST_NAME: ${MY_IP}
       KAFKA_CREATE_TOPICS: "register:1:1,register-response:1:1"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
 
   # User Service
   user:
@@ -64,7 +62,7 @@ services:
       REDIS_URL: redis
       KAFKA_URL: ${MY_IP}
     ports:
-      - "3001:3001"
+      - "3001:3000"
     volumes:
       - "./microservices/auth/app:/app"
 

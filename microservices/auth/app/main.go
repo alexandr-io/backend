@@ -21,5 +21,5 @@ func main() {
 
 	kafka.StartConsumers()
 
-	app.Listen(3001)
+	app.Listen(3000)
 }
