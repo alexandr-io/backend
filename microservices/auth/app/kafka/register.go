@@ -56,7 +56,7 @@ func RegisterRequestHandler(ctx *fiber.Ctx, user data.UserRegister) (*data.User,
 	// If http code contained in the kafka message is not handled
 	log.Printf("Unmanaged code: %d\n", kafkaMessage.Data.Code)
 	ctx.SendStatus(http.StatusInternalServerError)
-	return nil, fmt.Errorf("unmanaged code: %d\n", kafkaMessage.Data.Code)
+	return nil, fmt.Errorf("unmanaged code: %d", kafkaMessage.Data.Code)
 }
 
 // produceRegisterMessage produce a register message to the `register` topic.

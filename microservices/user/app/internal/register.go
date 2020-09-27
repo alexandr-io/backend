@@ -21,9 +21,8 @@ func Register(message data.KafkaUserRegisterRequest) error {
 		var badInput *data.BadInput
 		if errors.As(err, &badInput) {
 			return producers.SendBadRequestRegisterMessage(message.UUID, badInput.JSONError)
-		} else {
-			return producers.SendInternalErrorRegisterMessage(message.UUID, err.Error())
 		}
+		return producers.SendInternalErrorRegisterMessage(message.UUID, err.Error())
 	}
 
 	// Get the newly created user
