@@ -1,4 +1,4 @@
-package errorTypes
+package data
 
 type BadInput struct {
 	JsonError []byte

@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"log"
 	"os"
 	"time"
 
@@ -33,6 +32,5 @@ func newGlobalAuthToken(ctx *fiber.Ctx, userID string) string {
 		berrors.InternalServerError(ctx, err)
 		return ""
 	}
-	log.Println("New JWT for " + userID + ": " + signedToken)
 	return signedToken
 }

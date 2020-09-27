@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/alexandr-io/backend/user/data"
-	"github.com/alexandr-io/backend/user/errorTypes"
 	"github.com/alexandr-io/berrors"
 
 	"github.com/gofiber/fiber"
@@ -135,7 +134,7 @@ func checkRegisterFieldDuplication(user data.User) error {
 	}
 
 	if len(errorsFields) != 0 {
-		return &errorTypes.BadInput{
+		return &data.BadInput{
 			JsonError: berrors.BadInputsJSON(errorsFields),
 			Err:       errors.New("register duplication error"),
 		}

@@ -22,8 +22,6 @@ func produceMessageReport(producer *kafka.Producer) {
 		case *kafka.Message:
 			if ev.TopicPartition.Error != nil {
 				log.Printf("Delivery failed: %v\n", ev.TopicPartition)
-			} else {
-				log.Printf("Delivered message to %+v\n", ev.TopicPartition)
 			}
 		default:
 			log.Printf("Kafka Error: %v\n", e)

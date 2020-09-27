@@ -2,22 +2,16 @@ package producers
 
 import (
 	"encoding/json"
-	"github.com/alexandr-io/berrors"
 	"log"
 	"time"
 
 	"github.com/alexandr-io/backend/user/data"
+	"github.com/alexandr-io/berrors"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
-func ProduceRegisterResponseMessage(id string, messageData []byte) error {
-	// Create the message in the correct format
-	message, err := data.CreateMessage(id, messageData)
-	if err != nil {
-		return err
-	}
-
+func produceRegisterResponse(message []byte) error {
 	// Create a new producer
 	producer, err := newProducer()
 	if err != nil {
@@ -42,14 +36,38 @@ func ProduceRegisterResponseMessage(id string, messageData []byte) error {
 	return nil
 }
 
-func SendKafkaMessageToProducer(ID string, kafkaMessage berrors.KafkaErrorMessage) {
-	kafkaMessageJSON, err := json.Marshal(kafkaMessage)
+func SendSuccessRegisterMessage(id string, code int, user data.User) error {
+	message, err := data.CreateRegisterResponseMessage(id, code,
+		data.KafkaUserRegisterResponseContent{
+			Email:    user.Email,
+			Username: user.Username,
+		})
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
-	if err := ProduceRegisterResponseMessage(ID, kafkaMessageJSON); err != nil {
-		log.Println(err)
-		return
+
+	return produceRegisterResponse(message)
+}
+
+func SendInternalErrorRegisterMessage(id string, content string) error {
+	message, err := data.CreateKafkaInternalErrorMessage(id, content)
+	if err != nil {
+		return err
 	}
+
+	return produceRegisterResponse(message)
+}
+
+func SendBadRequestRegisterMessage(id string, content []byte) error {
+	var badInput berrors.BadInput
+	if err := json.Unmarshal(content, &badInput); err != nil {
+		return err
+	}
+
+	message, err := data.CreateKafkaBadRequestMessage(id, badInput)
+	if err != nil {
+		return err
+	}
+
+	return produceRegisterResponse(message)
 }

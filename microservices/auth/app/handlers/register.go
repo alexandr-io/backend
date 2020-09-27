@@ -1,11 +1,12 @@
 package handlers
 
 import (
+	"net/http"
+
 	"github.com/alexandr-io/backend/auth/data"
 	"github.com/alexandr-io/backend/auth/kafka"
 	"github.com/alexandr-io/berrors"
 	"github.com/gofiber/fiber"
-	"net/http"
 )
 
 // swagger:route POST /register USER register
