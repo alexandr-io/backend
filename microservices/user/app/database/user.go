@@ -135,7 +135,7 @@ func checkRegisterFieldDuplication(user data.User) error {
 
 	if len(errorsFields) != 0 {
 		return &data.BadInput{
-			JsonError: berrors.BadInputsJSON(errorsFields),
+			JSONError: berrors.BadInputsJSON(errorsFields),
 			Err:       errors.New("register duplication error"),
 		}
 	}

@@ -8,6 +8,8 @@ import (
 	"github.com/alexandr-io/backend/user/internal"
 )
 
+// consumeRegisterRequestMessages consume all the kafka message from the `register` topic.
+// Once a message is consumed, it is sent to the register internal logic.
 func consumeRegisterRequestMessages() {
 	// Create new consumer
 	consumer, err := newConsumer()

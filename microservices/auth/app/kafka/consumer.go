@@ -7,10 +7,12 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
+// StartConsumers starts all the kafka consumers in goroutines.
 func StartConsumers() {
 	go consumeRegisterResponseMessages()
 }
 
+// newConsumer create a new kafka consumer.
 func newConsumer() (*kafka.Consumer, error) {
 	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": os.Getenv("KAFKA_URL"),

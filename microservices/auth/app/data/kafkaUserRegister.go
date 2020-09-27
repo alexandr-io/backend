@@ -5,17 +5,20 @@ import (
 	"log"
 )
 
+// KafkaUserRegisterMessage is the JSON struct sent to the user MS using the kafka topic `register`.
 type KafkaUserRegisterMessage struct {
 	UUID string                `json:"uuid"`
 	Data KafkaUserRegisterData `json:"data"`
 }
 
+// KafkaUserRegisterData contain the data to be sent to the user MS using the kafka topic `register`.
 type KafkaUserRegisterData struct {
 	Email    string `json:"email"`
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
+// CreateRegisterMessage return a JSON of KafkaUserRegisterMessage from an id (UUID) and an UserRegister.
 func CreateRegisterMessage(id string, user UserRegister) ([]byte, error) {
 	// Create message struct
 	message := KafkaUserRegisterMessage{
@@ -28,11 +31,11 @@ func CreateRegisterMessage(id string, user UserRegister) ([]byte, error) {
 	}
 
 	// Marshal message
-	messageJson, err := json.Marshal(message)
+	messageJSON, err := json.Marshal(message)
 	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
 
-	return messageJson, nil
+	return messageJSON, nil
 }

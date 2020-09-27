@@ -18,6 +18,12 @@ import (
 
 var registerRequestChannels sync.Map
 
+// RegisterRequestHandler is the entry point of a new register message to the user MS using kafka.
+// The function produce a new message to kafka,
+// create a channel for the answer,
+// call a watcher to wait for the proper answer from the register-response topic,
+// interpret the answer (possible errors or success) and send the proper http code to the context
+// In case of success, and data.User is returned containing the username and email of the new user.
 func RegisterRequestHandler(ctx *fiber.Ctx, user data.UserRegister) (*data.User, error) {
 	// Generate UUID
 	id := uuid.New()
@@ -53,6 +59,8 @@ func RegisterRequestHandler(ctx *fiber.Ctx, user data.UserRegister) (*data.User,
 	return nil, fmt.Errorf("unmanaged code: %d\n", kafkaMessage.Data.Code)
 }
 
+// produceRegisterMessage produce a register message to the `register` topic.
+// The message sent is a JSON of the data.KafkaUserRegisterMessage struct.
 func produceRegisterMessage(id string, user data.UserRegister, errorChannel chan error) {
 	// Create the message in the correct format
 	user.ConfirmPassword = "" // Not needed
@@ -89,6 +97,8 @@ func produceRegisterMessage(id string, user data.UserRegister, errorChannel chan
 	return
 }
 
+// consumeRegisterResponseMessages consume all the messages coming to the `register-response` topic.
+// Once a message is consumed, the UUID is extracted to store the message to the correct registerRequestChannels channel.
 func consumeRegisterResponseMessages() {
 	// Create new consumer
 	consumer, err := newConsumer()
@@ -127,6 +137,9 @@ func consumeRegisterResponseMessages() {
 	}
 }
 
+// registerResponseWatcher is waiting for an update in the given channel. The message will be set in the channel by
+// consumeRegisterResponseMessages once the user MS has answered to the request.
+// The channel is then deleted from the map and the kafka message is returned.
 func registerResponseWatcher(id string, requestChannel chan string, errorChannel chan error) (*data.KafkaResponseMessage, []byte, error) {
 	for {
 		select {

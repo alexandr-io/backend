@@ -9,6 +9,7 @@ import (
 	"github.com/alexandr-io/backend/user/kafka/producers"
 )
 
+// Register is the internal logic function used to register a user.
 func Register(message data.KafkaUserRegisterRequest) error {
 	// Insert the new data to the collection
 	insertedResult, err := database.InsertUserRegister(data.User{
@@ -19,7 +20,7 @@ func Register(message data.KafkaUserRegisterRequest) error {
 	if err != nil {
 		var badInput *data.BadInput
 		if errors.As(err, &badInput) {
-			return producers.SendBadRequestRegisterMessage(message.UUID, badInput.JsonError)
+			return producers.SendBadRequestRegisterMessage(message.UUID, badInput.JSONError)
 		} else {
 			return producers.SendInternalErrorRegisterMessage(message.UUID, err.Error())
 		}
