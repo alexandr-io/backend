@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"github.com/alexandr-io/backend_errors"
+	"github.com/alexandr-io/berrors"
 
 	"github.com/gofiber/fiber"
 )
@@ -21,6 +21,6 @@ func Auth(ctx *fiber.Ctx) {
 		return
 	}
 	if err := ctx.Status(200).JSON(fiber.Map{"username": username}); err != nil {
-		backend_errors.InternalServerError(ctx, err)
+		berrors.InternalServerError(ctx, err)
 	}
 }

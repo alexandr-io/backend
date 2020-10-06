@@ -17,6 +17,24 @@ services:
     ports:
       - 6379:6379
 
+  zookeeper: # needed for kafka
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+
+  broker:
+    image: wurstmeister/kafka:2.12-2.5.0
+    hostname: broker
+    container_name: broker
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_HOST_NAME: ${MY_IP}
+      KAFKA_CREATE_TOPICS: "register:1:1,register-response:1:1"
+
   # User Service
   user:
     container_name: user
@@ -25,12 +43,28 @@ services:
       dockerfile: Dockerfile-dev
     env_file: .env-dev
     environment:
-      - MONGO_URL=mongodb
-      - REDIS_URL=redis
+      MONGO_URL: mongodb
+      REDIS_URL: redis
+      KAFKA_URL: ${MY_IP}
     ports:
       - "3000:3000"
     volumes:
       - "./microservices/user/app:/app"
+
+  # Auth service
+  auth:
+    container_name: auth
+    build:
+      context: microservices/auth/app
+      dockerfile: Dockerfile-dev
+    env_file: .env-dev
+    environment:
+      REDIS_URL: redis
+      KAFKA_URL: ${MY_IP}
+    ports:
+      - "3001:3000"
+    volumes:
+      - "./microservices/auth/app:/app"
 
 volumes:
   mongodb_data_container:

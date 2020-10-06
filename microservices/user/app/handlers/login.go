@@ -3,8 +3,8 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/Alexandr-io/Backend/User/database"
-	"github.com/alexandr-io/backend_errors"
+	"github.com/alexandr-io/backend/user/database"
+	"github.com/alexandr-io/berrors"
 
 	"github.com/gofiber/fiber"
 )
@@ -35,7 +35,7 @@ func Login(ctx *fiber.Ctx) {
 
 	// Get and validate the body JSON
 	userLogin := new(userLogin)
-	if ok := backend_errors.ParseBodyJSON(ctx, userLogin); !ok {
+	if ok := berrors.ParseBodyJSON(ctx, userLogin); !ok {
 		return
 	}
 
@@ -48,7 +48,7 @@ func Login(ctx *fiber.Ctx) {
 	// Check the user's password
 	if !comparePasswords(user.Password, []byte(userLogin.Password)) {
 		ctx.Status(http.StatusBadRequest).SendBytes(
-			backend_errors.BadInputJSONFromType("login", string(backend_errors.Login)))
+			berrors.BadInputJSONFromType("login", string(berrors.Login)))
 		return
 	}
 
@@ -61,6 +61,6 @@ func Login(ctx *fiber.Ctx) {
 	user.RefreshToken = refreshToken
 
 	if err := ctx.Status(200).JSON(user); err != nil {
-		backend_errors.InternalServerError(ctx, err)
+		berrors.InternalServerError(ctx, err)
 	}
 }

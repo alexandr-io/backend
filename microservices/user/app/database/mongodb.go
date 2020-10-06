@@ -25,7 +25,7 @@ var Instance InstanceData
 const dbName = "user"
 
 var mongoURI = fmt.Sprintf(
-	"mongodb://%s:%s@%s:27017/%s?authSource=admin&readPreference=primary&appname=UserService&ssl=false",
+	"mongodb+srv://%s:%s@%s/%s?authSource=admin&readPreference=primary&appname=UserService&ssl=false",
 	os.Getenv("MONGO_INITDB_ROOT_USERNAME"),
 	os.Getenv("MONGO_INITDB_ROOT_PASSWORD"),
 	os.Getenv("MONGO_URL"),
@@ -34,6 +34,15 @@ var mongoURI = fmt.Sprintf(
 // ConnectToMongo is connecting the service to mongodb using mongoURI.
 // After success, instanceMongo is filled with the db client and db handler.
 func ConnectToMongo() {
+	if _, ok := os.LookupEnv("DEV"); ok {
+		mongoURI = fmt.Sprintf(
+			"mongodb://%s:%s@%s:27017/%s?authSource=admin&readPreference=primary&appname=UserService&ssl=false",
+			os.Getenv("MONGO_INITDB_ROOT_USERNAME"),
+			os.Getenv("MONGO_INITDB_ROOT_PASSWORD"),
+			os.Getenv("MONGO_URL"),
+			dbName)
+	}
+
 	client, err := mongo.NewClient(options.Client().ApplyURI(mongoURI))
 	if err != nil {
 		log.Fatal(err)

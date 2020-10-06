@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/Alexandr-io/Backend/User/handlers"
+	"github.com/alexandr-io/backend/user/handlers"
 
 	"github.com/gofiber/fiber"
 	jwtware "github.com/gofiber/jwt"

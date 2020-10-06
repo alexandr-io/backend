@@ -18,13 +18,12 @@ RUN go mod download
 
 COPY . ./
 
-RUN go build -a -tags musl -installsuffix cgo -ldflags '-extldflags "-static"' -o alexandrio-backend-user .
+RUN go build -a -tags musl -installsuffix cgo -ldflags '-extldflags "-static"' -o alexandrio-backend-auth .
 
 
 # Run stage
 FROM scratch
 
-COPY --from=builder /app/alexandrio-backend-user ./
-COPY --from=builder /app/swagger.yml ./
+COPY --from=builder /app/alexandrio-backend-auth ./
 
-ENTRYPOINT ["./alexandrio-backend-user"]
+ENTRYPOINT ["./alexandrio-backend-auth"]

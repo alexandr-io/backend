@@ -1,11 +1,14 @@
 package database
 
 import (
+	"context"
+	"errors"
 	"log"
 	"net/http"
+	"time"
 
-	"github.com/Alexandr-io/Backend/User/data"
-	"github.com/alexandr-io/backend_errors"
+	"github.com/alexandr-io/backend/user/data"
+	"github.com/alexandr-io/berrors"
 
 	"github.com/gofiber/fiber"
 	"go.mongodb.org/mongo-driver/bson"
@@ -20,23 +23,28 @@ const CollectionUser = "user"
 //
 
 // FindOneWithFilter fill the given object with a mongodb single result filtered by the given filters.
-func FindOneWithFilter(ctx *fiber.Ctx, object interface{}, filters interface{}) error {
+func FindOneWithFilter(object interface{}, filters interface{}) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
 	collection := Instance.Db.Collection(CollectionUser)
-	filteredSingleResult := collection.FindOne(ctx.Fasthttp, filters)
+	filteredSingleResult := collection.FindOne(ctx, filters)
 	return filteredSingleResult.Decode(object)
 }
 
 // GetUserByID get an user by it's given id.
-// In case of error, the proper error is set to the context and false is returned.
-func GetUserByID(ctx *fiber.Ctx, id interface{}) (*data.User, bool) {
+func GetUserByID(id interface{}) (*data.User, bool) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
 	collection := Instance.Db.Collection(CollectionUser)
 	filter := bson.D{{Key: "_id", Value: id}}
 	object := &data.User{}
 
-	filteredSingleResult := collection.FindOne(ctx.Fasthttp, filter)
+	filteredSingleResult := collection.FindOne(ctx, filter)
 	err := filteredSingleResult.Decode(object)
 	if err != nil {
-		backend_errors.InternalServerError(ctx, err)
+		log.Println(err)
 		return nil, false
 	}
 	return object, true
@@ -63,7 +71,7 @@ func GetUserByLogin(ctx *fiber.Ctx, login string) (*data.User, bool) {
 	if err := filteredByEmailSingleResult.Decode(object); err != nil {
 		log.Println(err)
 		ctx.Status(http.StatusBadRequest).SendBytes(
-			backend_errors.BadInputJSONFromType("login", string(backend_errors.Login)))
+			berrors.BadInputJSONFromType("login", string(berrors.Login)))
 		return nil, false
 	}
 
@@ -76,51 +84,60 @@ func GetUserByLogin(ctx *fiber.Ctx, login string) (*data.User, bool) {
 //
 
 // InsertUserRegister insert a new user into the database.
-// The proper error is set to the context in case of error or duplication.
-func InsertUserRegister(ctx *fiber.Ctx, user data.User) *mongo.InsertOneResult {
+func InsertUserRegister(user data.User) (*mongo.InsertOneResult, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
 	userCollection := Instance.Db.Collection(CollectionUser)
 
-	insertedResult, err := userCollection.InsertOne(ctx.Fasthttp, data.User{
+	insertedResult, err := userCollection.InsertOne(ctx, data.User{
 		Username: user.Username,
 		Email:    user.Email,
 		Password: user.Password,
 	})
 	if IsMongoDupKey(err) {
 		// If the mongo db error is a duplication error, return the proper error
-		checkRegisterFieldDuplication(ctx, user)
-		return nil
+		err := checkRegisterFieldDuplication(user)
+		return nil, err
 	} else if err != nil {
-		backend_errors.InternalServerError(ctx, err)
-		return nil
+		return nil, err
 	}
-	return insertedResult
+	return insertedResult, nil
 }
 
 // checkRegisterFieldDuplication check which field is a duplication on a register call.
-// The correct http error and content is handled and returned.
 // The function should only be called when an insertion return a duplication error. This can be checked by isMongoDupKey.
-func checkRegisterFieldDuplication(ctx *fiber.Ctx, user data.User) {
+// The error returned is a formatted json of berrors.BadInput
+func checkRegisterFieldDuplication(user data.User) error {
 	errorsFields := make(map[string]string)
 
 	// Check if the duplication is for the email field
 	filter := bson.D{{Key: "email", Value: user.Email}}
 	filteredByEmailUser := &data.User{}
-	err := FindOneWithFilter(ctx, filteredByEmailUser, filter)
+	err := FindOneWithFilter(filteredByEmailUser, filter)
 	if err == nil && filteredByEmailUser.Email == user.Email {
 		errorsFields["email"] = "Email has already been taken."
 	} else if err != nil {
 		log.Println(err)
+		return err
 	}
 
 	// Check if the duplication is for the username field
 	filter = bson.D{{Key: "username", Value: user.Username}}
 	filteredByUsernameUser := &data.User{}
-	err = FindOneWithFilter(ctx, filteredByUsernameUser, filter)
+	err = FindOneWithFilter(filteredByUsernameUser, filter)
 	if err == nil && filteredByUsernameUser.Username == user.Username {
 		errorsFields["username"] = "Username has already been taken."
 	} else if err != nil {
 		log.Println(err)
+		return err
 	}
 
-	ctx.Status(http.StatusBadRequest).SendBytes(backend_errors.BadInputsJSON(errorsFields))
+	if len(errorsFields) != 0 {
+		return &data.BadInput{
+			JSONError: berrors.BadInputsJSON(errorsFields),
+			Err:       errors.New("register duplication error"),
+		}
+	}
+	return nil
 }

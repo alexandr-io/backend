@@ -10,7 +10,7 @@ definitions:
         type: array
         x-go-name: Fields
     type: object
-    x-go-package: github.com/alexandr-io/backend_errors
+    x-go-package: github.com/alexandr-io/berrors
   User:
     description: User defines the structure for an API user
     properties:
@@ -38,7 +38,7 @@ definitions:
     - username
     - email
     type: object
-    x-go-package: github.com/Alexandr-io/Backend/User/data
+    x-go-package: github.com/alexandr-io/backend/user/data
   authRefresh:
     properties:
       refresh_token:
@@ -50,7 +50,7 @@ definitions:
     - refresh_token
     title: authRefresh is the body parameter given to /auth/refresh call.
     type: object
-    x-go-package: github.com/Alexandr-io/Backend/User/handlers
+    x-go-package: github.com/alexandr-io/backend/user/handlers
   field:
     properties:
       name:
@@ -60,7 +60,7 @@ definitions:
         type: string
         x-go-name: Reason
     type: object
-    x-go-package: github.com/alexandr-io/backend_errors
+    x-go-package: github.com/alexandr-io/berrors
   userLogin:
     properties:
       login:
@@ -78,7 +78,7 @@ definitions:
     - password
     title: userLogin is the body parameter given to login a new user.
     type: object
-    x-go-package: github.com/Alexandr-io/Backend/User/handlers
+    x-go-package: github.com/alexandr-io/backend/user/handlers
   userRegister:
     properties:
       confirm_password:
@@ -108,7 +108,7 @@ definitions:
     - confirm_password
     title: userRegister is the body parameter given to register a new user to the database.
     type: object
-    x-go-package: github.com/Alexandr-io/Backend/User/handlers
+    x-go-package: github.com/alexandr-io/backend/user/handlers
 info:
   description: Documentation for User API
   title: of User API

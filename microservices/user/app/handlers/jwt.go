@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Alexandr-io/Backend/User/data"
-	"github.com/Alexandr-io/Backend/User/database"
-	"github.com/alexandr-io/backend_errors"
+	"github.com/alexandr-io/backend/user/data"
+	"github.com/alexandr-io/backend/user/database"
+	"github.com/alexandr-io/berrors"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber"
@@ -65,7 +65,7 @@ func ExtractJWTUsername(ctx *fiber.Ctx) (string, bool) {
 		log.Println(err)
 		return "", false
 	}
-	user, ok := database.GetUserByID(ctx, userObjectID)
+	user, ok := database.GetUserByID(userObjectID)
 	if !ok {
 		return "", ok
 	}
@@ -82,11 +82,11 @@ func getUserFromContextJWT(ctx *fiber.Ctx) (*data.User, bool) {
 	// Create the bson objectID of the userID
 	userObjectID, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
-		backend_errors.InternalServerError(ctx, err)
+		berrors.InternalServerError(ctx, err)
 		return nil, false
 	}
 	// Get the user
-	user, ok := database.GetUserByID(ctx, userObjectID)
+	user, ok := database.GetUserByID(userObjectID)
 	if !ok {
 		ctx.SendStatus(http.StatusInternalServerError)
 		return nil, false

@@ -16,8 +16,8 @@
 package handlers
 
 import (
-	"github.com/Alexandr-io/Backend/User/data"
-	"github.com/alexandr-io/backend_errors"
+	"github.com/alexandr-io/backend/user/data"
+	"github.com/alexandr-io/berrors"
 )
 
 //
@@ -29,7 +29,7 @@ import (
 type userRegisterParametersWrapper struct {
 	// The information to register a new user
 	// in: body
-	Body userRegister
+	Body data.UserRegister
 }
 
 // A set of data consumed to login a user
@@ -82,7 +82,7 @@ type authResponseWrapper struct {
 type badRequestErrorResponseWrapper struct {
 	// A list of described bad request error
 	// in: body
-	Body backend_errors.BadInput
+	Body berrors.BadInput
 }
 
 // An unauthorized error response

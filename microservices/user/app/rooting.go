@@ -3,8 +3,8 @@ package main
 import (
 	"net/http"
 
-	"github.com/Alexandr-io/Backend/User/handlers"
-	userMiddleware "github.com/Alexandr-io/Backend/User/middleware"
+	"github.com/alexandr-io/backend/user/handlers"
+	userMiddleware "github.com/alexandr-io/backend/user/middleware"
 
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/gofiber/fiber"
