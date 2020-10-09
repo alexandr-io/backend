@@ -11,7 +11,7 @@ import (
 	"github.com/alexandr-io/backend/user/database"
 	"github.com/alexandr-io/backend/user/kafka/consumers"
 
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
 )
 
 func main() {
@@ -28,5 +28,5 @@ func main() {
 	// Fiber
 	app := fiber.New()
 	createRoute(app)
-	app.Listen(3000)
+	log.Fatal(app.Listen(":3000"))
 }

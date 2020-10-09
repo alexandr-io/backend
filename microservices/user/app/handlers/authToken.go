@@ -8,7 +8,7 @@ import (
 	"github.com/alexandr-io/berrors"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
 )
 
 const (
@@ -22,11 +22,11 @@ func newGlobalAuthToken(ctx *fiber.Ctx, userID string) string {
 	token := jwt.New(jwt.SigningMethodHS256)
 
 	claims := token.Claims.(jwt.MapClaims)
-	claims["iss"] = issuer                                          // Who created and signed the token
-	claims["sub"] = string(ctx.Fasthttp.Request.Header.UserAgent()) // Whom the token refers to
-	claims["aud"] = audience                                        // Who or what the token is intended for
-	claims["user_id"] = userID                                      // User ID of the auth user
-	claims["exp"] = time.Now().Add(time.Minute * 15).Unix()         // Expire in 15 minutes
+	claims["iss"] = issuer                                           // Who created and signed the token
+	claims["sub"] = string(ctx.Context().Request.Header.UserAgent()) // Whom the token refers to
+	claims["aud"] = audience                                         // Who or what the token is intended for
+	claims["user_id"] = userID                                       // User ID of the auth user
+	claims["exp"] = time.Now().Add(time.Minute * 15).Unix()          // Expire in 15 minutes
 
 	signedToken, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	if err != nil {

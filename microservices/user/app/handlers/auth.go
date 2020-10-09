@@ -1,9 +1,11 @@
 package handlers
 
 import (
+	"errors"
+
 	"github.com/alexandr-io/berrors"
 
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
 )
 
 // swagger:route GET /auth USER auth
@@ -15,12 +17,13 @@ import (
 //	401: unauthorizedErrorResponse
 
 // Auth test the authentication a user with the given jwt
-func Auth(ctx *fiber.Ctx) {
+func Auth(ctx *fiber.Ctx) error {
 	username, ok := ExtractJWTUsername(ctx)
 	if !ok {
-		return
+		return errors.New("can't extract username from jwt")
 	}
 	if err := ctx.Status(200).JSON(fiber.Map{"username": username}); err != nil {
 		berrors.InternalServerError(ctx, err)
 	}
+	return nil
 }

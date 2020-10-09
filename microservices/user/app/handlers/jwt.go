@@ -11,7 +11,7 @@ import (
 	"github.com/alexandr-io/berrors"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -88,7 +88,7 @@ func getUserFromContextJWT(ctx *fiber.Ctx) (*data.User, bool) {
 	// Get the user
 	user, ok := database.GetUserByID(userObjectID)
 	if !ok {
-		ctx.SendStatus(http.StatusInternalServerError)
+		_ = ctx.SendStatus(http.StatusInternalServerError)
 		return nil, false
 	}
 	return user, true
