@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/alexandr-io/backend/auth/data"
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
 )
 
 // handleError check weather the kafkaMessage contain an error and set the proper http error to context.
@@ -14,13 +14,13 @@ func handleError(ctx *fiber.Ctx, kafkaMessage data.KafkaResponseMessage, rawMess
 	case http.StatusBadRequest:
 		badRequestJSON, err := data.GetBadInputJSON(rawMessage)
 		if err != nil {
-			ctx.SendStatus(http.StatusInternalServerError)
+			_ = ctx.SendStatus(http.StatusInternalServerError)
 			return true
 		}
-		ctx.Status(http.StatusBadRequest).SendBytes(badRequestJSON)
+		_ = ctx.Status(http.StatusBadRequest).Send(badRequestJSON)
 		return true
 	case http.StatusInternalServerError:
-		ctx.SendStatus(http.StatusInternalServerError)
+		_ = ctx.SendStatus(http.StatusInternalServerError)
 		return true
 	}
 	return false

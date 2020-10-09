@@ -12,7 +12,7 @@ import (
 	"github.com/alexandr-io/backend/auth/data"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
 
@@ -38,7 +38,7 @@ func RegisterRequestHandler(ctx *fiber.Ctx, user data.UserRegister) (*data.User,
 	// Watch for a response in the request channel
 	kafkaMessage, rawMessage, err := registerResponseWatcher(id.String(), requestChannel, errorChannel)
 	if err != nil {
-		ctx.SendStatus(http.StatusInternalServerError)
+		_ = ctx.SendStatus(http.StatusInternalServerError)
 		return nil, err
 	}
 
@@ -55,7 +55,7 @@ func RegisterRequestHandler(ctx *fiber.Ctx, user data.UserRegister) (*data.User,
 
 	// If http code contained in the kafka message is not handled
 	log.Printf("Unmanaged code: %d\n", kafkaMessage.Data.Code)
-	ctx.SendStatus(http.StatusInternalServerError)
+	_ = ctx.SendStatus(http.StatusInternalServerError)
 	return nil, fmt.Errorf("unmanaged code: %d", kafkaMessage.Data.Code)
 }
 

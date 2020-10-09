@@ -9,7 +9,7 @@ import (
 
 	"github.com/alexandr-io/backend/auth/kafka"
 
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
 )
 
 func main() {
@@ -21,5 +21,5 @@ func main() {
 
 	kafka.StartConsumers()
 
-	app.Listen(3000)
+	log.Fatal(app.Listen(":3000"))
 }
