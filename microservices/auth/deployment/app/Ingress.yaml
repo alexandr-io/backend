@@ -5,7 +5,7 @@ metadata:
   namespace: user
 spec:
   rules:
-  - host: user.preprod.alexandrio.cloud
+  - host: auth.preprod.alexandrio.cloud
     http:
       paths:
       - pathType: Prefix
