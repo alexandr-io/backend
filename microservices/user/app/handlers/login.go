@@ -6,7 +6,7 @@ import (
 	"github.com/alexandr-io/backend/user/database"
 	"github.com/alexandr-io/berrors"
 
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
 )
 
 // userLogin is the body parameter given to login a new user.
@@ -30,32 +30,32 @@ type userLogin struct {
 
 // Login take a userLogin in the body to login a user to the backend.
 // The login route return a data.User.
-func Login(ctx *fiber.Ctx) {
+func Login(ctx *fiber.Ctx) error {
 	ctx.Set("Content-Type", "application/json")
 
 	// Get and validate the body JSON
 	userLogin := new(userLogin)
 	if ok := berrors.ParseBodyJSON(ctx, userLogin); !ok {
-		return
+		return nil
 	}
 
 	// Get the user from it's login
 	user, ok := database.GetUserByLogin(ctx, userLogin.Login)
 	if !ok {
-		return
+		return nil
 	}
 
 	// Check the user's password
 	if !comparePasswords(user.Password, []byte(userLogin.Password)) {
-		ctx.Status(http.StatusBadRequest).SendBytes(
+		_ = ctx.Status(http.StatusBadRequest).Send(
 			berrors.BadInputJSONFromType("login", string(berrors.Login)))
-		return
+		return nil
 	}
 
 	// Create auth and refresh token
 	refreshToken, authToken, ok := generateNewRefreshTokenAndAuthToken(ctx, user.Username)
 	if !ok {
-		return
+		return nil
 	}
 	user.AuthToken = authToken
 	user.RefreshToken = refreshToken
@@ -63,4 +63,5 @@ func Login(ctx *fiber.Ctx) {
 	if err := ctx.Status(200).JSON(user); err != nil {
 		berrors.InternalServerError(ctx, err)
 	}
+	return nil
 }

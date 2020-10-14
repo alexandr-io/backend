@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
 )
 
 // swagger:route POST /register USER register
@@ -12,7 +12,7 @@ import (
 
 // Register take a data.UserRegister in the body to create a new user in the database.
 // The register route return a data.User.
-func Register(ctx *fiber.Ctx) {
+func Register(ctx *fiber.Ctx) error {
 	ctx.Set("Content-Type", "application/json")
 
 	//// Get and validate the body JSON
@@ -55,5 +55,5 @@ func Register(ctx *fiber.Ctx) {
 	//if err := ctx.Status(201).JSON(createdUser); err != nil {
 	//	berrors.InternalServerError(ctx, err)
 	//}
-	ctx.SendStatus(200)
+	return ctx.SendStatus(200)
 }

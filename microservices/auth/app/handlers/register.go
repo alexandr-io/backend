@@ -1,12 +1,13 @@
 package handlers
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/alexandr-io/backend/auth/data"
 	"github.com/alexandr-io/backend/auth/kafka"
 	"github.com/alexandr-io/berrors"
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
 )
 
 // swagger:route POST /register USER register
@@ -17,32 +18,32 @@ import (
 
 // Register take a data.UserRegister in the body to create a new user in the database.
 // The register route return a data.User.
-func Register(ctx *fiber.Ctx) {
+func Register(ctx *fiber.Ctx) error {
 	ctx.Set("Content-Type", "application/json")
 
 	// Get and validate the body JSON
 	userRegister := new(data.UserRegister)
 	if ok := berrors.ParseBodyJSON(ctx, userRegister); !ok {
-		return
+		return errors.New("error while parsing the json")
 	}
 
 	if userRegister.Password != userRegister.ConfirmPassword {
 		errorData := berrors.BadInputJSON("confirm_password", "passwords does not match")
-		ctx.Status(http.StatusBadRequest).SendBytes(errorData)
-		return
+		_ = ctx.Status(http.StatusBadRequest).Send(errorData)
+		return errors.New(string(errorData))
 	}
 
 	userRegister.Password = hashAndSalt(userRegister.Password)
 
 	user, err := kafka.RegisterRequestHandler(ctx, *userRegister)
 	if err != nil {
-		return
+		return nil
 	}
 
 	// Create auth and refresh token
 	refreshToken, authToken, ok := generateNewRefreshTokenAndAuthToken(ctx, user.ID)
 	if !ok {
-		return
+		return errors.New("error while generating auth and refresh token")
 	}
 	user.AuthToken = authToken
 	user.RefreshToken = refreshToken
@@ -51,4 +52,5 @@ func Register(ctx *fiber.Ctx) {
 	if err := ctx.Status(201).JSON(user); err != nil {
 		berrors.InternalServerError(ctx, err)
 	}
+	return nil
 }

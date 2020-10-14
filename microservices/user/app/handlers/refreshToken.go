@@ -7,7 +7,7 @@ import (
 	"github.com/alexandr-io/berrors"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
 )
 
 // newRefreshToken creat and sign a new refresh jwt token.
@@ -16,11 +16,11 @@ func newRefreshToken(ctx *fiber.Ctx, userID string) string {
 	token := jwt.New(jwt.SigningMethodHS256)
 
 	claims := token.Claims.(jwt.MapClaims)
-	claims["iss"] = issuer                                          // Who created and signed the token
-	claims["sub"] = string(ctx.Fasthttp.Request.Header.UserAgent()) // Whom the token refers to
-	claims["aud"] = audience                                        // Who or what the token is intended for
-	claims["user_id"] = userID                                      // User ID of the auth user
-	claims["exp"] = time.Now().Add(time.Hour * 24 * 30).Unix()      // Expire in 30 days
+	claims["iss"] = issuer                                           // Who created and signed the token
+	claims["sub"] = string(ctx.Context().Request.Header.UserAgent()) // Whom the token refers to
+	claims["aud"] = audience                                         // Who or what the token is intended for
+	claims["user_id"] = userID                                       // User ID of the auth user
+	claims["exp"] = time.Now().Add(time.Hour * 24 * 30).Unix()       // Expire in 30 days
 
 	secret := randomString(16)
 	signedToken, err := token.SignedString([]byte(secret))

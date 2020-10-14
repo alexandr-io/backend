@@ -10,7 +10,7 @@ import (
 	"github.com/alexandr-io/backend/user/data"
 	"github.com/alexandr-io/berrors"
 
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -58,7 +58,7 @@ func GetUserByLogin(ctx *fiber.Ctx, login string) (*data.User, bool) {
 
 	// Get user by username
 	usernameFilter := bson.D{{Key: "username", Value: login}}
-	filteredByUsernameSingleResult := collection.FindOne(ctx.Fasthttp, usernameFilter)
+	filteredByUsernameSingleResult := collection.FindOne(ctx.Context(), usernameFilter)
 	// Return the user object if user is found
 	if err := filteredByUsernameSingleResult.Decode(object); err == nil {
 		return object, true
@@ -66,11 +66,11 @@ func GetUserByLogin(ctx *fiber.Ctx, login string) (*data.User, bool) {
 
 	// Get user by email
 	emailFilter := bson.D{{Key: "email", Value: login}}
-	filteredByEmailSingleResult := collection.FindOne(ctx.Fasthttp, emailFilter)
+	filteredByEmailSingleResult := collection.FindOne(ctx.Context(), emailFilter)
 	// Return a login error if the user is not found
 	if err := filteredByEmailSingleResult.Decode(object); err != nil {
 		log.Println(err)
-		ctx.Status(http.StatusBadRequest).SendBytes(
+		_ = ctx.Status(http.StatusBadRequest).Send(
 			berrors.BadInputJSONFromType("login", string(berrors.Login)))
 		return nil, false
 	}

@@ -7,7 +7,7 @@ import (
 	userMiddleware "github.com/alexandr-io/backend/user/middleware"
 
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
 	"github.com/valyala/fasthttp/fasthttpadaptor"
 )
 
@@ -22,22 +22,24 @@ func createRoute(app *fiber.App) {
 	app.Get("/docs", wrapDocHandler())
 	app.Get("/swagger.yml", wrapFileServer())
 
-	app.Get("/ping", func(c *fiber.Ctx) {
-		c.Send("pong")
+	app.Get("/ping", func(c *fiber.Ctx) error {
+		return c.SendString("pong")
 	})
 }
 
-func wrapDocHandler() func(ctx *fiber.Ctx) {
+func wrapDocHandler() func(ctx *fiber.Ctx) error {
 	options := middleware.RedocOpts{SpecURL: "/swagger.yml"}
 	swaggerHandler := middleware.Redoc(options, nil)
 
-	return func(ctx *fiber.Ctx) {
-		fasthttpadaptor.NewFastHTTPHandler(swaggerHandler)(ctx.Fasthttp)
+	return func(ctx *fiber.Ctx) error {
+		fasthttpadaptor.NewFastHTTPHandler(swaggerHandler)(ctx.Context())
+		return nil
 	}
 }
 
-func wrapFileServer() func(ctx *fiber.Ctx) {
-	return func(ctx *fiber.Ctx) {
-		fasthttpadaptor.NewFastHTTPHandler(http.FileServer(http.Dir("./")))(ctx.Fasthttp)
+func wrapFileServer() func(ctx *fiber.Ctx) error {
+	return func(ctx *fiber.Ctx) error {
+		fasthttpadaptor.NewFastHTTPHandler(http.FileServer(http.Dir("./")))(ctx.Context())
+		return nil
 	}
 }

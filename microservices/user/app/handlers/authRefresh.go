@@ -6,7 +6,7 @@ import (
 	"github.com/alexandr-io/backend/user/redis"
 	"github.com/alexandr-io/berrors"
 
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
 )
 
 // authRefresh is the body parameter given to /auth/refresh call.
@@ -26,39 +26,39 @@ type authRefresh struct {
 //  401: unauthorizedErrorResponse
 
 // RefreshAuthToken generate a new auth and refresh token from a given valid refresh token.
-func RefreshAuthToken(ctx *fiber.Ctx) {
+func RefreshAuthToken(ctx *fiber.Ctx) error {
 	ctx.Set("Content-Type", "application/json")
 
 	// Get and validate the body JSON
 	authRefresh := new(authRefresh)
 	if ok := berrors.ParseBodyJSON(ctx, authRefresh); !ok {
-		return
+		return nil
 	}
 
 	// Get secret of refresh token from redis
 	secret, err := redis.GetRefreshTokenSecret(ctx, authRefresh.RefreshToken)
 	if err != nil {
 		_ = ctx.Status(http.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid or expired JWT"})
-		return
+		return nil
 	}
 
 	// Parse jwt with retrieved secret
 	tokenObject, ok := parseJWT(ctx, authRefresh.RefreshToken, secret)
 	if !ok {
-		return
+		return nil
 	}
 
 	// get user from refresh token
 	ctx.Locals("jwt", tokenObject)
 	user, ok := getUserFromContextJWT(ctx)
 	if !ok {
-		return
+		return nil
 	}
 
 	// Create new auth and refresh token
 	refreshToken, authToken, ok := generateNewRefreshTokenAndAuthToken(ctx, user.ID)
 	if !ok {
-		return
+		return nil
 	}
 	user.AuthToken = authToken
 	user.RefreshToken = refreshToken
@@ -66,11 +66,12 @@ func RefreshAuthToken(ctx *fiber.Ctx) {
 	// Delete the previous refresh token
 	if err := redis.DeleteRefreshToken(ctx, authRefresh.RefreshToken); err != nil {
 		berrors.InternalServerError(ctx, err)
-		return
+		return nil
 	}
 
 	// Return the new auth and refresh token
 	if err := ctx.Status(20).JSON(user); err != nil {
 		berrors.InternalServerError(ctx, err)
 	}
+	return nil
 }

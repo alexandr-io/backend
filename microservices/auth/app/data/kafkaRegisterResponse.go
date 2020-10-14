@@ -17,7 +17,7 @@ type KafkaRegisterResponseMessage struct {
 // UnmarshalRegisterResponse unmarshal the kafka message into a KafkaRegisterResponseMessage.
 func UnmarshalRegisterResponse(message []byte) (*User, error) {
 	var messageStruct KafkaRegisterResponseMessage
-	if err := json.Unmarshal(message, &message); err != nil {
+	if err := json.Unmarshal(message, &messageStruct); err != nil {
 		log.Println(err)
 		return nil, err
 	}

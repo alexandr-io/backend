@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis/v8"
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
 )
 
 // StoreRefreshToken store a given refresh token and it's secret to redis.
@@ -17,7 +17,7 @@ func StoreRefreshToken(ctx *fiber.Ctx, refreshToken string, secret string) error
 		DB:       0,
 	})
 
-	err := rdb.Set(ctx.Fasthttp, refreshToken, secret, time.Hour*24*30).Err()
+	err := rdb.Set(ctx.Context(), refreshToken, secret, time.Hour*24*30).Err()
 	if err != nil {
 		log.Println(err)
 		return err
@@ -33,7 +33,7 @@ func GetRefreshTokenSecret(ctx *fiber.Ctx, refreshToken string) (string, error) 
 		DB:       0,
 	})
 
-	secret, err := rdb.Get(ctx.Fasthttp, refreshToken).Result()
+	secret, err := rdb.Get(ctx.Context(), refreshToken).Result()
 	if err != nil {
 		log.Println(err)
 		return "", err
@@ -49,9 +49,9 @@ func DeleteRefreshToken(ctx *fiber.Ctx, refreshToken string) error {
 		DB:       0,
 	})
 
-	iter := rdb.Scan(ctx.Fasthttp, 0, refreshToken, 0).Iterator()
-	for iter.Next(ctx.Fasthttp) {
-		err := rdb.Del(ctx.Fasthttp, iter.Val()).Err()
+	iter := rdb.Scan(ctx.Context(), 0, refreshToken, 0).Iterator()
+	for iter.Next(ctx.Context()) {
+		err := rdb.Del(ctx.Context(), iter.Val()).Err()
 		if err != nil {
 			log.Println(err)
 			return err
