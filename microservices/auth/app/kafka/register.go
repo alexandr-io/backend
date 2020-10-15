@@ -2,7 +2,6 @@ package kafka
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -24,7 +23,7 @@ var registerRequestChannels sync.Map
 // call a watcher to wait for the proper answer from the register-response topic,
 // interpret the answer (possible errors or success) and send the proper http code to the context
 // In case of success, and data.User is returned containing the username and email of the new user.
-func RegisterRequestHandler(ctx *fiber.Ctx, user data.UserRegister) (*data.User, error) {
+func RegisterRequestHandler(user data.UserRegister) (*data.User, error) {
 	// Generate UUID
 	id := uuid.New()
 	// Create a channel for the request
@@ -38,14 +37,12 @@ func RegisterRequestHandler(ctx *fiber.Ctx, user data.UserRegister) (*data.User,
 	// Watch for a response in the request channel
 	kafkaMessage, rawMessage, err := registerResponseWatcher(id.String(), requestChannel, errorChannel)
 	if err != nil {
-		_ = ctx.SendStatus(http.StatusInternalServerError)
 		return nil, err
 	}
 
 	// handle error
-	if errorSet := handleError(ctx, *kafkaMessage, rawMessage); errorSet {
-		// So that the proper ctx error is set in register route
-		return nil, errors.New("")
+	if err := handleError(*kafkaMessage, rawMessage); err != nil {
+		return nil, err
 	}
 
 	// handle success
@@ -54,9 +51,7 @@ func RegisterRequestHandler(ctx *fiber.Ctx, user data.UserRegister) (*data.User,
 	}
 
 	// If http code contained in the kafka message is not handled
-	log.Printf("Unmanaged code: %d\n", kafkaMessage.Data.Code)
-	_ = ctx.SendStatus(http.StatusInternalServerError)
-	return nil, fmt.Errorf("unmanaged code: %d", kafkaMessage.Data.Code)
+	return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, fmt.Sprintf("unmanaged code: %d", kafkaMessage.Data.Code))
 }
 
 // produceRegisterMessage produce a register message to the `register` topic.
@@ -66,15 +61,14 @@ func produceRegisterMessage(id string, user data.UserRegister, errorChannel chan
 	user.ConfirmPassword = "" // Not needed
 	message, err := data.CreateRegisterMessage(id, user)
 	if err != nil {
-		errorChannel <- err
+		errorChannel <- data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 		return
 	}
 
 	// Create a new producer
 	producer, err := newProducer()
 	if err != nil {
-		log.Println(err)
-		errorChannel <- err
+		errorChannel <- data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 		return
 	}
 	defer producer.Close()
@@ -87,8 +81,7 @@ func produceRegisterMessage(id string, user data.UserRegister, errorChannel chan
 		TopicPartition: kafka.TopicPartition{Topic: &registerRequest, Partition: kafka.PartitionAny},
 		Value:          message,
 	}, nil); err != nil {
-		log.Println(err)
-		errorChannel <- err
+		errorChannel <- data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -116,7 +109,7 @@ func consumeRegisterResponseMessages() {
 	for {
 		msg, err := consumer.ReadMessage(-1)
 		if err == nil {
-			fmt.Printf("Message on %s: %s\n", msg.TopicPartition, string(msg.Value))
+			fmt.Printf("[KAFKA]: Message on %s: %s\n", msg.TopicPartition, string(msg.Value))
 			var kafkaMessage data.KafkaResponseMessageUUIDData
 			if err := json.Unmarshal(msg.Value, &kafkaMessage); err != nil {
 				log.Println(err)
@@ -141,8 +134,13 @@ func consumeRegisterResponseMessages() {
 // consumeRegisterResponseMessages once the user MS has answered to the request.
 // The channel is then deleted from the map and the kafka message is returned.
 func registerResponseWatcher(id string, requestChannel chan string, errorChannel chan error) (*data.KafkaResponseMessage, []byte, error) {
+	timeout := time.After(5 * time.Second)
 	for {
 		select {
+		case <-timeout:
+			// In case of time out, we delete the channel and return an error
+			registerRequestChannels.Delete(id)
+			return nil, nil, data.NewHTTPErrorInfo(fiber.StatusGatewayTimeout, "Kafka register response timed out")
 		case err := <-errorChannel:
 			return nil, nil, err
 		case message := <-requestChannel:

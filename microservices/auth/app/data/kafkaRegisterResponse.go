@@ -3,6 +3,8 @@ package data
 import (
 	"encoding/json"
 	"log"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 // KafkaRegisterResponseMessage is the success answer expected from the register-response topic.
@@ -19,7 +21,7 @@ func UnmarshalRegisterResponse(message []byte) (*User, error) {
 	var messageStruct KafkaRegisterResponseMessage
 	if err := json.Unmarshal(message, &messageStruct); err != nil {
 		log.Println(err)
-		return nil, err
+		return nil, NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return &messageStruct.Data.Content, nil
 }

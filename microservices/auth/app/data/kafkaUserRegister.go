@@ -2,7 +2,6 @@ package data
 
 import (
 	"encoding/json"
-	"log"
 )
 
 // KafkaUserRegisterMessage is the JSON struct sent to the user MS using the kafka topic `register`.
@@ -33,7 +32,6 @@ func CreateRegisterMessage(id string, user UserRegister) ([]byte, error) {
 	// Marshal message
 	messageJSON, err := json.Marshal(message)
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
 
