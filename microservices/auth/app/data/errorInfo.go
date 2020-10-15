@@ -41,8 +41,8 @@ func NewErrorInfoMarshal(message string, depth int) string {
 	return errorInfo.MarshalErrorInfo()
 }
 
-// NewHttpErrorInfo return a fiber error containing a ErrorInfo JSON as message
-func NewHttpErrorInfo(code int, message string) error {
+// NewHTTPErrorInfo return a fiber error containing a ErrorInfo JSON as message
+func NewHTTPErrorInfo(code int, message string) error {
 	contentTypeValue := fiber.MIMETextHTMLCharsetUTF8
 	return fiber.NewError(code, NewErrorInfoMarshal(message, 1), contentTypeValue)
 }

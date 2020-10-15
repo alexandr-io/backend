@@ -54,7 +54,7 @@ func ParseBodyJSON(ctx *fiber.Ctx, object interface{}) error {
 		for _, e := range err.(validator.ValidationErrors) {
 			jsonTagName, err := getJSONFieldName(object, e.Field())
 			if err != nil {
-				return data.NewHttpErrorInfo(fiber.StatusInternalServerError, err.Error())
+				return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 			}
 			errorMap[jsonTagName] = e.Tag()
 		}

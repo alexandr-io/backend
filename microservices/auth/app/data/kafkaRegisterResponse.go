@@ -21,7 +21,7 @@ func UnmarshalRegisterResponse(message []byte) (*User, error) {
 	var messageStruct KafkaRegisterResponseMessage
 	if err := json.Unmarshal(message, &messageStruct); err != nil {
 		log.Println(err)
-		return nil, NewHttpErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return nil, NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return &messageStruct.Data.Content, nil
 }

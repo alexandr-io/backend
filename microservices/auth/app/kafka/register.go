@@ -51,7 +51,7 @@ func RegisterRequestHandler(user data.UserRegister) (*data.User, error) {
 	}
 
 	// If http code contained in the kafka message is not handled
-	return nil, data.NewHttpErrorInfo(fiber.StatusInternalServerError, fmt.Sprintf("unmanaged code: %d", kafkaMessage.Data.Code))
+	return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, fmt.Sprintf("unmanaged code: %d", kafkaMessage.Data.Code))
 }
 
 // produceRegisterMessage produce a register message to the `register` topic.
@@ -61,14 +61,14 @@ func produceRegisterMessage(id string, user data.UserRegister, errorChannel chan
 	user.ConfirmPassword = "" // Not needed
 	message, err := data.CreateRegisterMessage(id, user)
 	if err != nil {
-		errorChannel <- data.NewHttpErrorInfo(fiber.StatusInternalServerError, err.Error())
+		errorChannel <- data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 		return
 	}
 
 	// Create a new producer
 	producer, err := newProducer()
 	if err != nil {
-		errorChannel <- data.NewHttpErrorInfo(fiber.StatusInternalServerError, err.Error())
+		errorChannel <- data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 		return
 	}
 	defer producer.Close()
@@ -81,7 +81,7 @@ func produceRegisterMessage(id string, user data.UserRegister, errorChannel chan
 		TopicPartition: kafka.TopicPartition{Topic: &registerRequest, Partition: kafka.PartitionAny},
 		Value:          message,
 	}, nil); err != nil {
-		errorChannel <- data.NewHttpErrorInfo(fiber.StatusInternalServerError, err.Error())
+		errorChannel <- data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -140,7 +140,7 @@ func registerResponseWatcher(id string, requestChannel chan string, errorChannel
 		case <-timeout:
 			// In case of time out, we delete the channel and return an error
 			registerRequestChannels.Delete(id)
-			return nil, nil, data.NewHttpErrorInfo(fiber.StatusGatewayTimeout, "Kafka register response timed out")
+			return nil, nil, data.NewHTTPErrorInfo(fiber.StatusGatewayTimeout, "Kafka register response timed out")
 		case err := <-errorChannel:
 			return nil, nil, err
 		case message := <-requestChannel:

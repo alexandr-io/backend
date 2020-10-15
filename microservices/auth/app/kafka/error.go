@@ -14,13 +14,13 @@ func handleError(kafkaMessage data.KafkaResponseMessage, rawMessage []byte) erro
 	case http.StatusBadRequest:
 		badRequestJSON, err := data.GetBadInputJSON(rawMessage)
 		if err != nil {
-			return data.NewHttpErrorInfo(fiber.StatusInternalServerError, err.Error())
+			return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 		}
 		errorInfo := data.NewErrorInfo(string(badRequestJSON), 0)
 		errorInfo.ContentType = fiber.MIMEApplicationJSON
 		return fiber.NewError(fiber.StatusBadRequest, errorInfo.MarshalErrorInfo())
 	case http.StatusInternalServerError:
-		return data.NewHttpErrorInfo(fiber.StatusInternalServerError, "Internal error return to the kafka topic")
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, "Internal error return to the kafka topic")
 	}
 	return nil
 }

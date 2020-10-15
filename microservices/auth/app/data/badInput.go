@@ -14,6 +14,7 @@ type Field struct {
 // ErrorType is a string type to contain error types
 type ErrorType string
 
+// error type variables
 const (
 	Email    ErrorType = "email"
 	Required ErrorType = "required"
