@@ -6,7 +6,6 @@ import (
 
 // KafkaUserRegisterMessage is the JSON struct sent to the user MS using the kafka topic `register`.
 type KafkaUserRegisterMessage struct {
-	UUID string                `json:"uuid"`
 	Data KafkaUserRegisterData `json:"data"`
 }
 
@@ -18,10 +17,9 @@ type KafkaUserRegisterData struct {
 }
 
 // CreateRegisterMessage return a JSON of KafkaUserRegisterMessage from an id (UUID) and an UserRegister.
-func CreateRegisterMessage(id string, user UserRegister) ([]byte, error) {
+func CreateRegisterMessage(user UserRegister) ([]byte, error) {
 	// Create message struct
 	message := KafkaUserRegisterMessage{
-		UUID: id,
 		Data: KafkaUserRegisterData{
 			Email:    user.Email,
 			Username: user.Username,

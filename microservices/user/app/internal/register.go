@@ -10,7 +10,7 @@ import (
 )
 
 // Register is the internal logic function used to register a user.
-func Register(message data.KafkaUserRegisterRequest) error {
+func Register(key string, message data.KafkaUserRegisterRequest) error {
 	// Insert the new data to the collection
 	insertedResult, err := database.InsertUserRegister(data.User{
 		Username: message.Data.Username,
@@ -20,16 +20,16 @@ func Register(message data.KafkaUserRegisterRequest) error {
 	if err != nil {
 		var badInput *data.BadInput
 		if errors.As(err, &badInput) {
-			return producers.SendBadRequestRegisterMessage(message.UUID, badInput.JSONError)
+			return producers.SendBadRequestRegisterMessage(key, badInput.JSONError)
 		}
-		return producers.SendInternalErrorRegisterMessage(message.UUID, err.Error())
+		return producers.SendInternalErrorRegisterMessage(key, err.Error())
 	}
 
 	// Get the newly created user
 	createdUser, ok := database.GetUserByID(insertedResult.InsertedID)
 	if !ok {
-		return producers.SendInternalErrorRegisterMessage(message.UUID, "internal server error after user insertion")
+		return producers.SendInternalErrorRegisterMessage(key, "internal server error after user insertion")
 	}
 
-	return producers.SendSuccessRegisterMessage(message.UUID, http.StatusCreated, *createdUser)
+	return producers.SendSuccessRegisterMessage(key, http.StatusCreated, *createdUser)
 }

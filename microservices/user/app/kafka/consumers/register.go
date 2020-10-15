@@ -28,13 +28,13 @@ func consumeRegisterRequestMessages() {
 	for {
 		msg, err := consumer.ReadMessage(-1)
 		if err == nil {
-			fmt.Printf("Message on %s: %s\n", msg.TopicPartition, string(msg.Value))
+			fmt.Printf("[KAFKA]: Message on %s: %s:%s\n", msg.TopicPartition, string(msg.Key), string(msg.Value))
 			messageData, err := data.GetUserRegisterMessage(*msg)
 			if err != nil {
 				continue
 			}
 			// Send to logic
-			_ = internal.Register(messageData)
+			_ = internal.Register(string(msg.Key), messageData)
 		} else {
 			log.Printf("Topic: %s -> consumer error: %s", msg.TopicPartition, err)
 		}

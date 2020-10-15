@@ -8,7 +8,6 @@ import (
 
 // KafkaInternalError is the JSON struct used in kafka communication in case of an internal error.
 type KafkaInternalError struct {
-	UUID string                 `json:"uuid"`
 	Data KafkaInternalErrorData `json:"data"`
 }
 
@@ -19,9 +18,8 @@ type KafkaInternalErrorData struct {
 }
 
 // CreateKafkaInternalErrorMessage return a JSON of KafkaInternalError from an id (UUID) and a string.
-func CreateKafkaInternalErrorMessage(id string, content string) ([]byte, error) {
+func CreateKafkaInternalErrorMessage(content string) ([]byte, error) {
 	message := KafkaInternalError{
-		UUID: id,
 		Data: KafkaInternalErrorData{
 			Code:    http.StatusInternalServerError,
 			Content: content,

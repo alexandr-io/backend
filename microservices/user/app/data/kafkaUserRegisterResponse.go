@@ -7,7 +7,6 @@ import (
 
 // KafkaUserRegisterResponse is the data used for a success response in kafka for a registration.
 type KafkaUserRegisterResponse struct {
-	UUID string                        `json:"uuid"`
 	Data KafkaUserRegisterResponseData `json:"data"`
 }
 
@@ -25,9 +24,8 @@ type KafkaUserRegisterResponseContent struct {
 
 // CreateRegisterResponseMessage return a JSON of KafkaUserRegisterResponse from an id (UUID),
 // a http code and a KafkaUserRegisterResponseContent.
-func CreateRegisterResponseMessage(id string, code int, content KafkaUserRegisterResponseContent) ([]byte, error) {
+func CreateRegisterResponseMessage(code int, content KafkaUserRegisterResponseContent) ([]byte, error) {
 	message := KafkaUserRegisterResponse{
-		UUID: id,
 		Data: KafkaUserRegisterResponseData{
 			Code:    code,
 			Content: content,

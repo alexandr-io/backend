@@ -12,7 +12,7 @@ import (
 )
 
 // produceRegisterResponse produce a message to the `register-response` topic.
-func produceRegisterResponse(message []byte) error {
+func produceRegisterResponse(key string, message []byte) error {
 	// Create a new producer
 	producer, err := newProducer()
 	if err != nil {
@@ -26,6 +26,7 @@ func produceRegisterResponse(message []byte) error {
 	// Produce message to topic (asynchronously)
 	if err := producer.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &registerResponse, Partition: kafka.PartitionAny},
+		Key:            []byte(key),
 		Value:          message,
 	}, nil); err != nil {
 		log.Println(err)
@@ -38,8 +39,8 @@ func produceRegisterResponse(message []byte) error {
 }
 
 // SendSuccessRegisterMessage create a success register response and send it the the topic.
-func SendSuccessRegisterMessage(id string, code int, user data.User) error {
-	message, err := data.CreateRegisterResponseMessage(id, code,
+func SendSuccessRegisterMessage(key string, code int, user data.User) error {
+	message, err := data.CreateRegisterResponseMessage(code,
 		data.KafkaUserRegisterResponseContent{
 			Email:    user.Email,
 			Username: user.Username,
@@ -48,30 +49,30 @@ func SendSuccessRegisterMessage(id string, code int, user data.User) error {
 		return err
 	}
 
-	return produceRegisterResponse(message)
+	return produceRegisterResponse(key, message)
 }
 
 // SendInternalErrorRegisterMessage create an internal error response and send it the the `register-response` topic.
-func SendInternalErrorRegisterMessage(id string, content string) error {
-	message, err := data.CreateKafkaInternalErrorMessage(id, content)
+func SendInternalErrorRegisterMessage(key string, content string) error {
+	message, err := data.CreateKafkaInternalErrorMessage(content)
 	if err != nil {
 		return err
 	}
 
-	return produceRegisterResponse(message)
+	return produceRegisterResponse(key, message)
 }
 
 // SendBadRequestRegisterMessage create an bad request error response and send it the the `register-response` topic.
-func SendBadRequestRegisterMessage(id string, content []byte) error {
+func SendBadRequestRegisterMessage(key string, content []byte) error {
 	var badInput berrors.BadInput
 	if err := json.Unmarshal(content, &badInput); err != nil {
 		return err
 	}
 
-	message, err := data.CreateKafkaBadRequestMessage(id, badInput)
+	message, err := data.CreateKafkaBadRequestMessage(badInput)
 	if err != nil {
 		return err
 	}
 
-	return produceRegisterResponse(message)
+	return produceRegisterResponse(key, message)
 }

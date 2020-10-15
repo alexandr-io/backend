@@ -59,7 +59,7 @@ func RegisterRequestHandler(user data.UserRegister) (*data.User, error) {
 func produceRegisterMessage(id string, user data.UserRegister, errorChannel chan error) {
 	// Create the message in the correct format
 	user.ConfirmPassword = "" // Not needed
-	message, err := data.CreateRegisterMessage(id, user)
+	message, err := data.CreateRegisterMessage(user)
 	if err != nil {
 		errorChannel <- data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 		return
@@ -79,6 +79,7 @@ func produceRegisterMessage(id string, user data.UserRegister, errorChannel chan
 	// Produce message to topic (asynchronously)
 	if err := producer.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &registerRequest, Partition: kafka.PartitionAny},
+		Key:            []byte(id),
 		Value:          message,
 	}, nil); err != nil {
 		errorChannel <- data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
@@ -91,7 +92,7 @@ func produceRegisterMessage(id string, user data.UserRegister, errorChannel chan
 }
 
 // consumeRegisterResponseMessages consume all the messages coming to the `register-response` topic.
-// Once a message is consumed, the UUID is extracted to store the message to the correct registerRequestChannels channel.
+// Once a message is consumed, the UUID is extracted from the key to store the message to the correct registerRequestChannels channel.
 func consumeRegisterResponseMessages() {
 	// Create new consumer
 	consumer, err := newConsumer()
@@ -109,16 +110,11 @@ func consumeRegisterResponseMessages() {
 	for {
 		msg, err := consumer.ReadMessage(-1)
 		if err == nil {
-			fmt.Printf("[KAFKA]: Message on %s: %s\n", msg.TopicPartition, string(msg.Value))
-			var kafkaMessage data.KafkaResponseMessageUUIDData
-			if err := json.Unmarshal(msg.Value, &kafkaMessage); err != nil {
-				log.Println(err)
-				continue
-			}
+			fmt.Printf("[KAFKA]: Message on %s: %s:%s\n", msg.TopicPartition, string(msg.Key), string(msg.Value))
 
-			requestChannelInterface, ok := registerRequestChannels.Load(kafkaMessage.UUID)
+			requestChannelInterface, ok := registerRequestChannels.Load(string(msg.Key))
 			if !ok {
-				log.Printf("Can't load channel %s from requestChannels", kafkaMessage.UUID)
+				log.Printf("Can't load channel %s from requestChannels", msg.Key)
 				continue
 			}
 			requestChannel := requestChannelInterface.(chan string)
