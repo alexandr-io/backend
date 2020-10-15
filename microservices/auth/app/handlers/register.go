@@ -2,11 +2,11 @@ package handlers
 
 import (
 	"errors"
-	"net/http"
 
 	"github.com/alexandr-io/backend/auth/data"
 	"github.com/alexandr-io/backend/auth/kafka"
 	"github.com/alexandr-io/berrors"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -19,25 +19,27 @@ import (
 // Register take a data.UserRegister in the body to create a new user in the database.
 // The register route return a data.User.
 func Register(ctx *fiber.Ctx) error {
-	ctx.Set("Content-Type", "application/json")
+	// Set Content-Type: application/json
+	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
 	// Get and validate the body JSON
 	userRegister := new(data.UserRegister)
-	if ok := berrors.ParseBodyJSON(ctx, userRegister); !ok {
-		return errors.New("error while parsing the json")
+	if err := ParseBodyJSON(ctx, userRegister); err != nil {
+		return err
 	}
 
 	if userRegister.Password != userRegister.ConfirmPassword {
-		errorData := berrors.BadInputJSON("confirm_password", "passwords does not match")
-		_ = ctx.Status(http.StatusBadRequest).Send(errorData)
-		return errors.New(string(errorData))
+		errorData := badInputJSON("confirm_password", "passwords does not match")
+		errorInfo := data.NewErrorInfo(string(errorData), 0)
+		errorInfo.ContentType = fiber.MIMEApplicationJSON
+		return fiber.NewError(fiber.StatusBadRequest, errorInfo.MarshalErrorInfo())
 	}
 
 	userRegister.Password = hashAndSalt(userRegister.Password)
 
-	user, err := kafka.RegisterRequestHandler(ctx, *userRegister)
+	user, err := kafka.RegisterRequestHandler(*userRegister)
 	if err != nil {
-		return nil
+		return err
 	}
 
 	// Create auth and refresh token

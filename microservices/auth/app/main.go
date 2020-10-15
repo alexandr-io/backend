@@ -16,7 +16,11 @@ func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.Println("Auth Service started")
 
-	app := fiber.New()
+	// Create a new fiber instance with custom config
+	app := fiber.New(fiber.Config{
+		// Override default error handler
+		ErrorHandler: errorHandler,
+	})
 	createRoute(app)
 
 	kafka.StartConsumers()
