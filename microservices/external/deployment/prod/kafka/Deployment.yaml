@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: broker
+  namespace: external
+  labels:
+    app: broker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: broker
+  template:
+    metadata:
+      labels:
+        app: broker
+    spec:
+      containers:
+      - name: broker
+        image: wurstmeister/kafka:2.12-2.5.0
+        imagePullPolicy: Always
+        env:
+          - name: KAFKA_BROKER_ID
+            value: "1"
+          - name: KAFKA_ZOOKEEPER_CONNECT
+            value: zookeeper:2181
+          - name: KAFKA_ADVERTISED_HOST_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: kafka
+                key: ADVERTISED_HOST_NAME
+          - name: KAFKA_ADVERTISED_PORT
+            value: "30001"
+          - name: KAFKA_CREATE_TOPICS
+            valueFrom:
+              configMapKeyRef:
+                name: kafka
+                key: KAFKA_ADVERTISED_PORT
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: external
+  name: broker
+spec:
+  selector:
+    app: broker
+  ports:
+    - protocol: TCP
+      port: 9092
+      nodePort: 30001
+  type: NodePort
+status:
+  loadBalancer: {}
