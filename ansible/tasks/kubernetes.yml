@@ -29,8 +29,23 @@
       daemon_reload: yes
       state: restarted
 
+- hosts: pre_production:development
+
+  tasks:
+
   - name: kubeadm init
-    shell: "kubeadm init --pod-network-cidr=192.168.0.0/16"
+    shell: "kubeadm init --pod-network-cidr=192.168.0.0/16 --node-name=preprod"
+
+- hosts: production
+
+  tasks:
+
+  - name: kubeadm init
+    shell: "kubeadm init --pod-network-cidr=192.168.0.0/16 --node-name=prod"
+
+- hosts: all
+
+  tasks:
 
   - name: Giving user alexandrio permission to use kubectl (1)
     file:
