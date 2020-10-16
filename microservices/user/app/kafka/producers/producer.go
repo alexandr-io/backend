@@ -1,6 +1,7 @@
 package producers
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -26,7 +27,7 @@ func produceMessageReport(producer *kafka.Producer) {
 			if ev.TopicPartition.Error != nil {
 				log.Printf("Delivery failed: %v\n", ev.TopicPartition)
 			} else {
-				log.Printf("Delivered message to %+v\n", ev.TopicPartition)
+				fmt.Printf("[KAFKA]: Delivered message to %v\n", ev.TopicPartition)
 			}
 		default:
 			log.Printf("Kafka Error: %v\n", e)

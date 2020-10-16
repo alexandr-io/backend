@@ -9,7 +9,6 @@ import (
 
 // KafkaUserRegisterRequest is the struct JSON data sent by the auth MS using kafka to register an user.
 type KafkaUserRegisterRequest struct {
-	UUID string                       `json:"uuid"`
 	Data KafkaUserRegisterRequestData `json:"data"`
 }
 

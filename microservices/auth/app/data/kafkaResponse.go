@@ -7,15 +7,8 @@ import (
 	"github.com/alexandr-io/berrors"
 )
 
-// KafkaResponseMessageUUIDData is used to get the UUID from a kafka message.
-type KafkaResponseMessageUUIDData struct {
-	UUID string      `json:"uuid"`
-	Data interface{} `json:"data"`
-}
-
 // KafkaResponseMessage is used to get the Code from a kafka message.
 type KafkaResponseMessage struct {
-	UUID string `json:"uuid"`
 	Data struct {
 		Code    int         `json:"code"`
 		Content interface{} `json:"content"`
@@ -24,7 +17,6 @@ type KafkaResponseMessage struct {
 
 // KafkaResponseMessageBadRequest is used to get the Content of a kafka message.
 type KafkaResponseMessageBadRequest struct {
-	UUID string `json:"uuid"`
 	Data struct {
 		Code    int              `json:"code"`
 		Content berrors.BadInput `json:"content"`

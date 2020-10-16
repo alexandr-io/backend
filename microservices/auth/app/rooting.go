@@ -17,10 +17,10 @@ func createRoute(app *fiber.App) {
 		TimeFormat: "2 Jan 15:04:05 MST",
 		TimeZone:   "Europe/Paris",
 		Next: func(ctx *fiber.Ctx) bool {
-			if string(ctx.Request().RequestURI()) == "/register" {
-				return false
+			if string(ctx.Request().RequestURI()) == "/dashboard" {
+				return true
 			}
-			return true
+			return false
 		},
 	}))
 	app.Get("/dashboard", monitor.New())
