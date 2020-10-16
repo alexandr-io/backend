@@ -33,14 +33,14 @@
 
   tasks:
 
-  - name: kubeadm init
+  - name: kubeadm init (preprod/dev)
     shell: "kubeadm init --pod-network-cidr=192.168.0.0/16 --node-name=preprod"
 
 - hosts: production
 
   tasks:
 
-  - name: kubeadm init
+  - name: kubeadm init (prod)
     shell: "kubeadm init --pod-network-cidr=192.168.0.0/16 --node-name=prod"
 
 - hosts: all
