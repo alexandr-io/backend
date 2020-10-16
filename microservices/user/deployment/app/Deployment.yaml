@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: api
-        image: docker.pkg.github.com/alexandr-io/backend/user:latest
+        image: docker.pkg.github.com/alexandr-io/backend/user:latest-preprod
         imagePullPolicy: Always
         env:
           - name: MONGO_URL
@@ -38,11 +38,18 @@ spec:
                 key: password
           - name: REDIS_URL
             value: redis
-          - name: KAFKA_URL
+          - name: KAFKA_ADVERTISED_HOST_NAME
             valueFrom:
               configMapKeyRef:
                 name: kafka
                 key: ADVERTISED_HOST_NAME
+          - name: KAFKA_ADVERTISED_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: kafka
+                key: KAFKA_ADVERTISED_PORT
+          - name: KAFKA_URL
+            value: "$(KAFKA_ADVERTISED_HOST_NAME):$(KAFKA_ADVERTISED_PORT)"
 
       imagePullSecrets:
       - name: regcred
