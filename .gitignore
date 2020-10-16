@@ -7,3 +7,9 @@
 
 # macOS
 .DS_Store
+
+# Every secrets used in development (kubernetes)
+**secret**
+**Secret**
+**configmap**
+**Configmap**

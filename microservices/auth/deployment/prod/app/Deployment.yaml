@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: auth
+  labels:
+    app: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - name: api
+        image: docker.pkg.github.com/alexandr-io/backend/auth:latest
+        imagePullPolicy: Always
+        env:
+          - name: REDIS_URL
+            value: redis
+          - name: REDIS_PORT
+            value: "6379"
+          - name: KAFKA_ADVERTISED_HOST_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: kafka
+                key: ADVERTISED_HOST_NAME
+          - name: KAFKA_ADVERTISED_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: kafka
+                key: KAFKA_ADVERTISED_PORT
+          - name: KAFKA_URL
+            value: "$(KAFKA_ADVERTISED_HOST_NAME):$(KAFKA_ADVERTISED_PORT)"
+
+      imagePullSecrets:
+      - name: regcred
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+  namespace: auth
+spec:
+  selector:
+    app: api
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 3000
