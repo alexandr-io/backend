@@ -11,8 +11,8 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
-// produceRegisterResponse produce a message to the `register-response` topic.
-func produceRegisterResponse(key string, message []byte) error {
+// produceLoginResponse produce a message to the `login-response` topic.
+func produceLoginResponse(key string, message []byte) error {
 	// Create a new producer
 	producer, err := newProducer()
 	if err != nil {
@@ -25,7 +25,7 @@ func produceRegisterResponse(key string, message []byte) error {
 
 	// Produce message to topic (asynchronously)
 	if err := producer.Produce(&kafka.Message{
-		TopicPartition: kafka.TopicPartition{Topic: &registerResponse, Partition: kafka.PartitionAny},
+		TopicPartition: kafka.TopicPartition{Topic: &loginResponse, Partition: kafka.PartitionAny},
 		Key:            []byte(key),
 		Value:          message,
 	}, nil); err != nil {
@@ -38,8 +38,8 @@ func produceRegisterResponse(key string, message []byte) error {
 	return nil
 }
 
-// SendSuccessRegisterMessage create a success register response and send it the the topic.
-func SendSuccessRegisterMessage(key string, code int, user data.User) error {
+// SendSuccessLoginMessage create a success login response and send it the the topic.
+func SendSuccessLoginMessage(key string, code int, user data.User) error {
 	message, err := data.CreateUserResponseMessage(code,
 		data.KafkaUserResponseContent{
 			Email:    user.Email,
@@ -49,21 +49,21 @@ func SendSuccessRegisterMessage(key string, code int, user data.User) error {
 		return err
 	}
 
-	return produceRegisterResponse(key, message)
+	return produceLoginResponse(key, message)
 }
 
-// SendInternalErrorRegisterMessage create an internal error response and send it the the `register-response` topic.
-func SendInternalErrorRegisterMessage(key string, content string) error {
+// SendInternalErrorLoginMessage create an internal error response and send it the the `login-response` topic.
+func SendInternalErrorLoginMessage(key string, content string) error {
 	message, err := data.CreateKafkaInternalErrorMessage(content)
 	if err != nil {
 		return err
 	}
 
-	return produceRegisterResponse(key, message)
+	return produceLoginResponse(key, message)
 }
 
-// SendBadRequestRegisterMessage create an bad request error response and send it the the `register-response` topic.
-func SendBadRequestRegisterMessage(key string, content []byte) error {
+// SendBadRequestLoginMessage create an bad request error response and send it the the `login-response` topic.
+func SendBadRequestLoginMessage(key string, content []byte) error {
 	var badInput berrors.BadInput
 	if err := json.Unmarshal(content, &badInput); err != nil {
 		return err
@@ -74,5 +74,5 @@ func SendBadRequestRegisterMessage(key string, content []byte) error {
 		return err
 	}
 
-	return produceRegisterResponse(key, message)
+	return produceLoginResponse(key, message)
 }

@@ -35,7 +35,7 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_HOST_NAME: ${MY_IP}
-      KAFKA_CREATE_TOPICS: "register:1:1,register-response:1:1"
+      KAFKA_CREATE_TOPICS: "register:1:1,register-response:1:1,login:1:1,login-response:1:1"
 
   # User Service
   user:

@@ -24,21 +24,21 @@ import (
 // Input
 //
 
-// A set of data consumed to register a new user
-// swagger:parameters register
-type userRegisterParametersWrapper struct {
-	// The information to register a new user
-	// in: body
-	Body data.UserRegister
-}
+//// A set of data consumed to register a new user
+//// swagger:parameters register
+//type userRegisterParametersWrapper struct {
+//	// The information to register a new user
+//	// in: body
+//	Body data.UserRegister
+//}
 
-// A set of data consumed to login a user
-// swagger:parameters login
-type userLoginParametersWrapper struct {
-	// The information to login a user
-	// in: body
-	Body userLogin
-}
+//// A set of data consumed to login a user
+//// swagger:parameters login
+//type userLoginParametersWrapper struct {
+//	// The information to login a user
+//	// in: body
+//	Body userLogin
+//}
 
 // A set of data consumed to refresh an auth and refresh token
 // swagger:parameters refresh_token

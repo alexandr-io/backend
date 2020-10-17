@@ -15,15 +15,15 @@ import (
 	"github.com/google/uuid"
 )
 
-var registerRequestChannels sync.Map
+var loginRequestChannels sync.Map
 
-// RegisterRequestHandler is the entry point of a new register message to the user MS using kafka.
+// LoginRequestHandler is the entry point of a new login message to the user MS using kafka.
 // The function produce a new message to kafka,
 // create a channel for the answer,
-// call a watcher to wait for the proper answer from the register-response topic,
+// call a watcher to wait for the proper answer from the login-response topic,
 // interpret the answer (possible errors or success) and return and error with the proper http code
-// In case of success, a data.User is returned containing the username and email of the new user.
-func RegisterRequestHandler(user data.UserRegister) (*data.User, error) {
+// In case of success, a data.User is returned containing the username and email of the user.
+func LoginRequestHandler(user data.UserLogin) (*data.User, error) {
 	// Generate UUID
 	id := uuid.New()
 	// Create a channel for the request
@@ -31,11 +31,11 @@ func RegisterRequestHandler(user data.UserRegister) (*data.User, error) {
 	// Create a channel to manage error in goroutines
 	errorChannel := make(chan error)
 	// Store request channel to the channel map
-	registerRequestChannels.Store(id.String(), requestChannel)
+	loginRequestChannels.Store(id.String(), requestChannel)
 	// Produce the message to kafka
-	go produceRegisterMessage(id.String(), user, errorChannel)
+	go produceLoginMessage(id.String(), user, errorChannel)
 	// Watch for a response in the request channel
-	kafkaMessage, rawMessage, err := registerResponseWatcher(id.String(), requestChannel, errorChannel)
+	kafkaMessage, rawMessage, err := loginResponseWatcher(id.String(), requestChannel, errorChannel)
 	if err != nil {
 		return nil, err
 	}
@@ -54,12 +54,10 @@ func RegisterRequestHandler(user data.UserRegister) (*data.User, error) {
 	return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, fmt.Sprintf("unmanaged code: %d", kafkaMessage.Data.Code))
 }
 
-// produceRegisterMessage produce a register message to the `register` topic.
-// The message sent is a JSON of the data.KafkaUserRegisterMessage struct.
-func produceRegisterMessage(id string, user data.UserRegister, errorChannel chan error) {
-	// Create the message in the correct format
-	user.ConfirmPassword = "" // Not needed
-	message, err := data.CreateRegisterMessage(user)
+// produceLoginMessage produce a login message to the `login` topic.
+// The message sent is a JSON of the data.KafkaUserLoginMessage struct.
+func produceLoginMessage(id string, user data.UserLogin, errorChannel chan error) {
+	message, err := data.CreateLoginMessage(user)
 	if err != nil {
 		errorChannel <- data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 		return
@@ -78,7 +76,7 @@ func produceRegisterMessage(id string, user data.UserRegister, errorChannel chan
 
 	// Produce message to topic (asynchronously)
 	if err := producer.Produce(&kafka.Message{
-		TopicPartition: kafka.TopicPartition{Topic: &registerRequest, Partition: kafka.PartitionAny},
+		TopicPartition: kafka.TopicPartition{Topic: &loginRequest, Partition: kafka.PartitionAny},
 		Key:            []byte(id),
 		Value:          message,
 	}, nil); err != nil {
@@ -91,9 +89,9 @@ func produceRegisterMessage(id string, user data.UserRegister, errorChannel chan
 	return
 }
 
-// consumeRegisterResponseMessages consume all the messages coming to the `register-response` topic.
-// Once a message is consumed, the UUID is extracted from the key to store the message to the correct registerRequestChannels channel.
-func consumeRegisterResponseMessages() {
+// consumeLoginResponseMessages consume all the messages coming to the `login-response` topic.
+// Once a message is consumed, the UUID is extracted from the key to store the message to the correct loginRequestChannels channel.
+func consumeLoginResponseMessages() {
 	// Create new consumer
 	consumer, err := newConsumer()
 	if err != nil {
@@ -101,8 +99,8 @@ func consumeRegisterResponseMessages() {
 	}
 	defer consumer.Close()
 
-	// Subscribe consumer to topic register-
-	if err := consumer.SubscribeTopics([]string{registerResponse}, nil); err != nil {
+	// Subscribe consumer to topic login-response
+	if err := consumer.SubscribeTopics([]string{loginResponse}, nil); err != nil {
 		log.Println(err)
 		return
 	}
@@ -112,7 +110,7 @@ func consumeRegisterResponseMessages() {
 		if err == nil {
 			fmt.Printf("[KAFKA]: Message on %s: %s:%s\n", msg.TopicPartition, string(msg.Key), string(msg.Value))
 
-			requestChannelInterface, ok := registerRequestChannels.Load(string(msg.Key))
+			requestChannelInterface, ok := loginRequestChannels.Load(string(msg.Key))
 			if !ok {
 				log.Printf("Can't load channel %s from requestChannels", msg.Key)
 				continue
@@ -126,17 +124,17 @@ func consumeRegisterResponseMessages() {
 	}
 }
 
-// registerResponseWatcher is waiting for an update in the given channel. The message will be set in the channel by
-// consumeRegisterResponseMessages once the user MS has answered to the request.
+// loginResponseWatcher is waiting for an update in the given channel. The message will be set in the channel by
+// consumeLoginResponseMessages once the user MS has answered to the request.
 // The channel is then deleted from the map and the kafka message is returned.
-func registerResponseWatcher(id string, requestChannel chan string, errorChannel chan error) (*data.KafkaResponseMessage, []byte, error) {
+func loginResponseWatcher(id string, requestChannel chan string, errorChannel chan error) (*data.KafkaResponseMessage, []byte, error) {
 	timeout := time.After(5 * time.Second)
 	for {
 		select {
 		case <-timeout:
 			// In case of time out, we delete the channel and return an error
-			registerRequestChannels.Delete(id)
-			return nil, nil, data.NewHTTPErrorInfo(fiber.StatusGatewayTimeout, "Kafka register response timed out")
+			loginRequestChannels.Delete(id)
+			return nil, nil, data.NewHTTPErrorInfo(fiber.StatusGatewayTimeout, "Kafka login response timed out")
 		case err := <-errorChannel:
 			return nil, nil, err
 		case message := <-requestChannel:
@@ -144,7 +142,7 @@ func registerResponseWatcher(id string, requestChannel chan string, errorChannel
 			if err := json.Unmarshal([]byte(message), &kafkaMessage); err != nil {
 				return nil, nil, err
 			}
-			registerRequestChannels.Delete(id)
+			loginRequestChannels.Delete(id)
 			return &kafkaMessage, []byte(message), nil
 		}
 	}
