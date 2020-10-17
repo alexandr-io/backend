@@ -16,5 +16,32 @@
         - gnupg2
         - software-properties-common
         - conntrack
+        - subversion
       state: present
       update_cache: no
+
+- hosts: pre_production:development
+
+  tasks:
+
+    - name: Set env variable HOST_TYPE
+      shell: "echo 'HOST_TYPE=PREPROD' >> /etc/environment"
+
+- hosts: production
+
+  tasks:
+    - name: Set env variable HOST_TYPE
+      shell: "echo 'HOST_TYPE=PROD' >> /etc/environment"
+      
+- hosts: all
+
+  tasks:
+
+    - name: Set env variable SVN_USERNAME
+      shell: "echo 'SVN_USERNAME={{ SVN_USERNAME }}' >> /etc/environment"
+
+    - name: Set env variable SVN_PASSWORD
+      shell: "echo 'SVN_PASSWORD={{ SVN_PASSWORD }}' >> /etc/environment"
+
+    - name: Set env variable GITHUB_TOKEN
+      shell: "echo 'GITHUB_TOKEN={{ GITHUB_TOKEN }}' >> /etc/environment"

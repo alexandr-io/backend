@@ -81,3 +81,27 @@
     become: yes
     become_method: su
     become_user: alexandrio
+
+  - name: Create /kubernetes folder
+    file:
+      path: /kubernetes
+      state: directory
+      owner: alexandrio
+      group: alexandrio
+
+  - name: Copy app-deployment.sh script from the host to the serveur
+    copy:
+      src: ../../kubernetes/app-deployment.sh
+      dest: /kubernetes
+      owner: alexandrio
+      group: alexandrio
+      
+  - name: Make /kubernetes/app-deployment.sh an executable
+    file: dest=/kubernetes/app-deployment.sh mode=a+x
+
+  - name: Create volume folder in /mnt/disk/data
+    file:
+      path: /mnt/disk/data
+      state: directory
+      owner: alexandrio
+      group: alexandrio

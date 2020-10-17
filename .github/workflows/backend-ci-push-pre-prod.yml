@@ -41,6 +41,14 @@ jobs:
           path: microservices/user/app
           push: true
 
+      - name: Deploy or redeploy user app
+        uses: cross-the-world/ssh-pipeline@master
+        with:
+          host: ${{ secrets.HOST_PREPROD }}
+          user: ${{ secrets.HOST_PREPROD_USERNAME }}
+          pass: ${{ secrets.HOST_PREPROD_PASSWORD }}
+          script: /kubernetes/app-deployment.sh user
+
   build-and-push-auth:
     name: Docker Build Auth and push image
     runs-on: ubuntu-18.04
@@ -75,3 +83,11 @@ jobs:
           tags: latest-preprod
           path: microservices/auth/app
           push: true
+
+      - name: Deploy or redeploy auth app
+        uses: cross-the-world/ssh-pipeline@master
+        with:
+          host: ${{ secrets.HOST_PREPROD }}
+          user: ${{ secrets.HOST_PREPROD_USERNAME }}
+          pass: ${{ secrets.HOST_PREPROD_PASSWORD }}
+          script: /kubernetes/app-deployment.sh auth
