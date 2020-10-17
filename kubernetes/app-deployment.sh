@@ -1,5 +1,8 @@
 #!/bin/sh
 
+
+echo -e "\033[0;33mPrint env...\033[0m"
+env
 echo -e "\033[0;33mMoving on the /kubernetes folder...\033[0m"
 cd /kubernetes
 echo -e "\033[0;33mChecking if folder $1 exist...\033[0m"
