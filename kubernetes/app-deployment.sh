@@ -18,7 +18,7 @@ if [ ! -d "$1" ]; then
         echo -e "\033[0;33mFind preprod deployment, downloading preprod $1 deployment folder on the develop branch\033[0m"
         echo "yes" | svn export https://github.com/alexandr-io/backend/branches/develop/microservices/$1/deployment/preprod --username=$(printenv SVN_USERNAME) --password=$(printenv SVN_PASSWORD)
     else
-        echo -e "\033[0;33mFind prod deployment, downloading preprod $1 deployment file on the master branch\033[0m"
+        echo -e "\033[0;33mFind prod deployment, downloading prod $1 deployment file on the master branch\033[0m"
         echo "yes" | svn export https://github.com/alexandr-io/backend/trunk/microservices/$1/deployment/prod --username=$(printenv SVN_USERNAME) --password=$(printenv SVN_PASSWORD)
     fi
     echo -e "\033[0;33mDownload done\033[0m"
