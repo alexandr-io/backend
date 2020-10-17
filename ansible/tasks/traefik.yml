@@ -5,25 +5,25 @@
 
   - name: Copy Traefik config files from the host to the serveur
     copy:
-      src: ../../kubernetes
-      dest: /
+      src: ../../kubernetes/traefik
+      dest: /kubernetes
       owner: alexandrio
       group: alexandrio
 
   - name: Define the Ressources used by Traefik on the k8s cluster
-    shell: "kubectl apply -f /kubernetes/Ressources.yaml"
+    shell: "kubectl apply -f /kubernetes/traefik/Ressources.yaml"
     become: yes
     become_method: su
     become_user: alexandrio
 
   - name: Give the autorization to use the Ressources to the Traefik Service
-    shell: "kubectl apply -f /kubernetes/Authorisation.yaml"
+    shell: "kubectl apply -f /kubernetes/traefik/Authorisation.yaml"
     become: yes
     become_method: su
     become_user: alexandrio
 
   - name: Create the Traefik Daemonset
-    shell: "kubectl apply -f /kubernetes/Traefik-Daemonset.yaml"
+    shell: "kubectl apply -f /kubernetes/traefik/Traefik-Daemonset.yaml"
     become: yes
     become_method: su
     become_user: alexandrio

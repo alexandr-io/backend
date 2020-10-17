@@ -6,3 +6,4 @@ all:
       hosts:
     development:
       hosts:
+        eip.duter99.com

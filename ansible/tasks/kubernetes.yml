@@ -3,81 +3,95 @@
 
   tasks:
 
-  - name: Add an apt signing key for Kubernetes
-    apt_key:
-      url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-      state: present
+#   - name: Add an apt signing key for Kubernetes
+#     apt_key:
+#       url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+#       state: present
 
-  - name: Adding apt repository for Kubernetes
-    apt_repository:
-      repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
-      state: present
-      filename: kubernetes.list
+#   - name: Adding apt repository for Kubernetes
+#     apt_repository:
+#       repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+#       state: present
+#       filename: kubernetes.list
 
-  - name: Install kubelet kubeadm kubectl
-    apt:
-      name:
-        - kubelet
-        - kubeadm
-        - kubectl
-      state: present
-      update_cache: no
+#   - name: Install kubelet kubeadm kubectl
+#     apt:
+#       name:
+#         - kubelet
+#         - kubeadm
+#         - kubectl
+#       state: present
+#       update_cache: no
 
-  - name: Restart kubelet
-    service:
-      name: kubelet
-      daemon_reload: yes
-      state: restarted
+#   - name: Restart kubelet
+#     service:
+#       name: kubelet
+#       daemon_reload: yes
+#       state: restarted
 
-- hosts: pre_production:development
+# - hosts: pre_production:development
 
-  tasks:
+#   tasks:
 
-  - name: kubeadm init (preprod/dev)
-    shell: "kubeadm init --pod-network-cidr=192.168.0.0/16 --node-name=preprod"
+#   - name: kubeadm init (preprod/dev)
+#     shell: "kubeadm init --pod-network-cidr=192.168.0.0/16 --node-name=preprod"
 
-- hosts: production
+# - hosts: production
 
-  tasks:
+#   tasks:
 
-  - name: kubeadm init (prod)
-    shell: "kubeadm init --pod-network-cidr=192.168.0.0/16 --node-name=prod"
+#   - name: kubeadm init (prod)
+#     shell: "kubeadm init --pod-network-cidr=192.168.0.0/16 --node-name=prod"
 
-- hosts: all
+# - hosts: all
 
-  tasks:
+#   tasks:
 
-  - name: Giving user alexandrio permission to use kubectl (1)
+#   - name: Giving user alexandrio permission to use kubectl (1)
+#     file:
+#       path: /home/alexandrio/.kube
+#       state: directory
+#       owner: alexandrio
+#       group: alexandrio
+
+#   - name: Giving user alexandrio permission to use kubectl (2)
+#     shell: "cp -i /etc/kubernetes/admin.conf /home/alexandrio/.kube/config"
+
+#   - name: Giving user alexandrio permission to use kubectl (3)
+#     shell: "chown alexandrio:alexandrio /home/alexandrio/.kube/config"
+
+#   - name: Add Calico containers (1)
+#     shell: "kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml"
+#     become: yes
+#     become_method: su
+#     become_user: alexandrio
+
+#   - name: Add Calico containers (2)
+#     shell: "kubectl create -f https://docs.projectcalico.org/manifests/custom-resources.yaml"
+#     become: yes
+#     become_method: su
+#     become_user: alexandrio
+
+#   - name: Sleep for 30
+#     wait_for:
+#       timeout: 30
+
+#   - name: Taint node
+#     shell: "kubectl taint nodes --all node-role.kubernetes.io/master-"
+#     become: yes
+#     become_method: su
+#     become_user: alexandrio
+
+  - name: Create /kubernetes
     file:
-      path: /home/alexandrio/.kube
+      path: /kubernetes
       state: directory
       owner: alexandrio
       group: alexandrio
 
-  - name: Giving user alexandrio permission to use kubectl (2)
-    shell: "cp -i /etc/kubernetes/admin.conf /home/alexandrio/.kube/config"
-
-  - name: Giving user alexandrio permission to use kubectl (3)
-    shell: "chown alexandrio:alexandrio /home/alexandrio/.kube/config"
-
-  - name: Add Calico containers (1)
-    shell: "kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml"
-    become: yes
-    become_method: su
-    become_user: alexandrio
-
-  - name: Add Calico containers (2)
-    shell: "kubectl create -f https://docs.projectcalico.org/manifests/custom-resources.yaml"
-    become: yes
-    become_method: su
-    become_user: alexandrio
-
-  - name: Sleep for 30
-    wait_for:
-      timeout: 30
-
-  - name: Taint node
-    shell: "kubectl taint nodes --all node-role.kubernetes.io/master-"
-    become: yes
-    become_method: su
-    become_user: alexandrio
+  - name: Copy app-deployment.sh script from the host to the serveur
+    copy:
+      src: ../../kubernetes/app-deployment.sh
+      dest: /kubernetes
+      owner: alexandrio
+      group: alexandrio
