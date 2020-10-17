@@ -47,7 +47,10 @@ jobs:
           host: ${{ secrets.HOST_PREPROD }}
           user: ${{ secrets.HOST_PREPROD_USERNAME }}
           pass: ${{ secrets.HOST_PREPROD_PASSWORD }}
-          script: /kubernetes/app-deployment.sh user
+          script: |
+            cat ~/.bashrc
+            source ~/.bashrc
+            /kubernetes/app-deployment.sh user
 
   build-and-push-auth:
     name: Docker Build Auth and push image
@@ -90,4 +93,7 @@ jobs:
           host: ${{ secrets.HOST_PREPROD }}
           user: ${{ secrets.HOST_PREPROD_USERNAME }}
           pass: ${{ secrets.HOST_PREPROD_PASSWORD }}
-          script: /kubernetes/app-deployment.sh auth
+          script: |
+            cat ~/.bashrc
+            source ~/.bashrc
+            /kubernetes/app-deployment.sh auth
