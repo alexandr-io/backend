@@ -15,6 +15,8 @@ type KafkaUserResponseMessage struct {
 	} `json:"data"`
 }
 
+// KafkaUser is the data send by kafka for user info.
+// We don't use data.User since we need to get the ID of the user that we don't want to return in the route JSON.
 type KafkaUser struct {
 	ID       string `json:"id"`
 	Username string `json:"username"`
