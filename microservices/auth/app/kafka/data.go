@@ -5,4 +5,6 @@ var (
 	registerResponse = "register-response"
 	loginRequest     = "login"
 	loginResponse    = "login-response"
+	userRequest      = "user"
+	userResponse     = "user-response"
 )

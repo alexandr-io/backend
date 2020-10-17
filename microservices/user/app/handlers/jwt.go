@@ -1,14 +1,8 @@
 package handlers
 
 import (
-	"log"
-	"math/rand"
-	"net/http"
-	"time"
-
-	"github.com/alexandr-io/backend/user/data"
 	"github.com/alexandr-io/backend/user/database"
-	"github.com/alexandr-io/berrors"
+	"log"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
@@ -65,69 +59,9 @@ func ExtractJWTUsername(ctx *fiber.Ctx) (string, bool) {
 		log.Println(err)
 		return "", false
 	}
-	user, ok := database.GetUserByID(userObjectID)
-	if !ok {
-		return "", ok
+	user, err := database.GetUserByID(userObjectID)
+	if err != nil {
+		return "", false
 	}
 	return user.Username, true
-}
-
-func getUserFromContextJWT(ctx *fiber.Ctx) (*data.User, bool) {
-	// extract user ID from JWT
-	userID, ok := extractJWTUserID(ctx)
-	if !ok {
-		_ = ctx.Status(http.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid or expired JWT"})
-		return nil, false
-	}
-	// Create the bson objectID of the userID
-	userObjectID, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		berrors.InternalServerError(ctx, err)
-		return nil, false
-	}
-	// Get the user
-	user, ok := database.GetUserByID(userObjectID)
-	if !ok {
-		_ = ctx.SendStatus(http.StatusInternalServerError)
-		return nil, false
-	}
-	return user, true
-}
-
-// generateNewRefreshTokenAndAuthToken generate both the auth and refresh token.
-func generateNewRefreshTokenAndAuthToken(
-	ctx *fiber.Ctx, userID string) (refreshToken string, authToken string, ok bool) {
-	ok = true
-	refreshToken = newRefreshToken(ctx, userID)
-	authToken = newGlobalAuthToken(ctx, userID)
-	if refreshToken == "" || authToken == "" {
-		ok = false
-	}
-	return
-}
-
-func parseJWT(ctx *fiber.Ctx, token string, secret string) (*jwt.Token, bool) {
-	tokenObject, err := jwt.Parse(token, func(*jwt.Token) (interface{}, error) {
-		return []byte(secret), nil
-	})
-	if err != nil {
-		log.Println(err)
-		_ = ctx.Status(http.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid or expired JWT"})
-		return nil, false
-	}
-	return tokenObject, true
-}
-
-const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890123456789!@#$%^&*()_+<>?:\"|{}[]'."
-
-// randomString generate a random string of the given length with the charters in charset.
-func randomString(length int) string {
-	seededRand := rand.New(
-		rand.NewSource(time.Now().UnixNano()))
-
-	b := make([]byte, length)
-	for i := range b {
-		b[i] = charset[seededRand.Intn(len(charset))]
-	}
-	return string(b)
 }

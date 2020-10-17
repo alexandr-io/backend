@@ -31,7 +31,7 @@ func FindOneWithFilter(object interface{}, filters interface{}) error {
 }
 
 // GetUserByID get an user by it's given id.
-func GetUserByID(id interface{}) (*data.User, bool) {
+func GetUserByID(id interface{}) (*data.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -43,9 +43,9 @@ func GetUserByID(id interface{}) (*data.User, bool) {
 	err := filteredSingleResult.Decode(object)
 	if err != nil {
 		log.Println(err)
-		return nil, false
+		return nil, err
 	}
-	return object, true
+	return object, nil
 }
 
 // GetUserByLogin get an user by it's given login (username or email).

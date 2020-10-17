@@ -39,18 +39,6 @@ definitions:
     - email
     type: object
     x-go-package: github.com/alexandr-io/backend/user/data
-  authRefresh:
-    properties:
-      refresh_token:
-        description: The refresh token of the user
-        example: eyJhb[...]FYqf4
-        type: string
-        x-go-name: RefreshToken
-    required:
-    - refresh_token
-    title: authRefresh is the body parameter given to /auth/refresh call.
-    type: object
-    x-go-package: github.com/alexandr-io/backend/user/handlers
   field:
     properties:
       name:
@@ -61,54 +49,6 @@ definitions:
         x-go-name: Reason
     type: object
     x-go-package: github.com/alexandr-io/berrors
-  userLogin:
-    properties:
-      login:
-        description: The email or the username of the user
-        example: john@provider.net
-        type: string
-        x-go-name: Login
-      password:
-        description: The password of the user
-        example: leHAiOjE1OTgzNz
-        type: string
-        x-go-name: Password
-    required:
-    - login
-    - password
-    title: userLogin is the body parameter given to login a new user.
-    type: object
-    x-go-package: github.com/alexandr-io/backend/user/handlers
-  userRegister:
-    properties:
-      confirm_password:
-        description: The confirmation password of the user
-        example: leHAiOjE1OTgzNz
-        type: string
-        x-go-name: ConfirmPassword
-      email:
-        description: The email of the user
-        example: john@provider.net
-        type: string
-        x-go-name: Email
-      password:
-        description: The password of the user
-        example: leHAiOjE1OTgzNz
-        type: string
-        x-go-name: Password
-      username:
-        description: The username of the user
-        example: john
-        type: string
-        x-go-name: Username
-    required:
-    - email
-    - username
-    - password
-    - confirm_password
-    title: userRegister is the body parameter given to register a new user to the database.
-    type: object
-    x-go-package: github.com/alexandr-io/backend/user/handlers
 info:
   description: Documentation for User API
   title: of User API
@@ -125,59 +65,6 @@ paths:
           $ref: '#/responses/unauthorizedErrorResponse'
       security:
       - Bearer: []
-      tags:
-      - USER
-  /auth/refresh:
-    post:
-      description: Get a new auth and refresh token from a valid refresh token
-      operationId: refresh_token
-      parameters:
-      - description: The information to refresh an auth and refresh token
-        in: body
-        name: Body
-        schema:
-          $ref: '#/definitions/authRefresh'
-      responses:
-        "201":
-          $ref: '#/responses/userResponse'
-        "400":
-          $ref: '#/responses/badRequestErrorResponse'
-        "401":
-          $ref: '#/responses/unauthorizedErrorResponse'
-      tags:
-      - USER
-  /login:
-    post:
-      description: Login a user and return it's information, auth token and refresh token
-      operationId: login
-      parameters:
-      - description: The information to login a user
-        in: body
-        name: Body
-        schema:
-          $ref: '#/definitions/userLogin'
-      responses:
-        "200":
-          $ref: '#/responses/userResponse'
-        "400":
-          $ref: '#/responses/badRequestErrorResponse'
-      tags:
-      - USER
-  /register:
-    post:
-      description: Register a new user and return it's information, auth token and refresh token
-      operationId: register
-      parameters:
-      - description: The information to register a new user
-        in: body
-        name: Body
-        schema:
-          $ref: '#/definitions/userRegister'
-      responses:
-        "201":
-          $ref: '#/responses/userResponse'
-        "400":
-          $ref: '#/responses/badRequestErrorResponse'
       tags:
       - USER
 produces:
@@ -211,10 +98,6 @@ responses:
       required:
       - error
       type: object
-  userResponse:
-    description: User data with auth and refresh token
-    schema:
-      $ref: '#/definitions/User'
 schemes:
 - http
 securityDefinitions:

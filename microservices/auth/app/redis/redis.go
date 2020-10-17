@@ -1,7 +1,7 @@
 package redis
 
 import (
-	"log"
+	"github.com/alexandr-io/backend/auth/data"
 	"os"
 	"time"
 
@@ -19,8 +19,7 @@ func StoreRefreshToken(ctx *fiber.Ctx, refreshToken string, secret string) error
 
 	err := rdb.Set(ctx.Context(), refreshToken, secret, time.Hour*24*30).Err()
 	if err != nil {
-		log.Println(err)
-		return err
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil
 }
@@ -35,8 +34,7 @@ func GetRefreshTokenSecret(ctx *fiber.Ctx, refreshToken string) (string, error) 
 
 	secret, err := rdb.Get(ctx.Context(), refreshToken).Result()
 	if err != nil {
-		log.Println(err)
-		return "", err
+		return "", data.NewHTTPErrorInfo(fiber.StatusUnauthorized, err.Error())
 	}
 	return secret, nil
 }
@@ -53,13 +51,11 @@ func DeleteRefreshToken(ctx *fiber.Ctx, refreshToken string) error {
 	for iter.Next(ctx.Context()) {
 		err := rdb.Del(ctx.Context(), iter.Val()).Err()
 		if err != nil {
-			log.Println(err)
-			return err
+			return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 		}
 	}
 	if err := iter.Err(); err != nil {
-		log.Println(err)
-		return err
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil
 }

@@ -23,7 +23,7 @@ var loginRequestChannels sync.Map
 // call a watcher to wait for the proper answer from the login-response topic,
 // interpret the answer (possible errors or success) and return and error with the proper http code
 // In case of success, a data.User is returned containing the username and email of the user.
-func LoginRequestHandler(user data.UserLogin) (*data.User, error) {
+func LoginRequestHandler(user data.UserLogin) (*data.KafkaUser, error) {
 	// Generate UUID
 	id := uuid.New()
 	// Create a channel for the request
@@ -46,7 +46,7 @@ func LoginRequestHandler(user data.UserLogin) (*data.User, error) {
 	}
 
 	// handle success
-	if kafkaMessage.Data.Code == http.StatusCreated {
+	if kafkaMessage.Data.Code == http.StatusOK {
 		return data.UnmarshalUserResponse(rawMessage)
 	}
 

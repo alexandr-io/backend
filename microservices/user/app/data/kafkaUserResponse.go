@@ -18,6 +18,7 @@ type KafkaUserResponseData struct {
 
 // KafkaUserResponseContent contain the user fields of a success response of a registration.
 type KafkaUserResponseContent struct {
+	ID       string `json:"id"`
 	Email    string `json:"email"`
 	Username string `json:"username"`
 }

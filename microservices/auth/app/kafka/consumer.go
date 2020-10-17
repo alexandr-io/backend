@@ -11,6 +11,7 @@ import (
 func StartConsumers() {
 	go consumeRegisterResponseMessages()
 	go consumeLoginResponseMessages()
+	go consumeUserResponseMessages()
 }
 
 // newConsumer create a new kafka consumer.

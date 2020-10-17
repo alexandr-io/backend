@@ -40,13 +40,13 @@ type userLoginParametersWrapper struct {
 	Body data.UserLogin
 }
 
-//// A set of data consumed to refresh an auth and refresh token
-//// swagger:parameters refresh_token
-//type authRefreshParametersWrapper struct {
-//	// The information to refresh an auth and refresh token
-//	// in: body
-//	Body authRefresh
-//}
+// A set of data consumed to refresh an auth and refresh token
+// swagger:parameters refresh_token
+type authRefreshParametersWrapper struct {
+	// The information to refresh an auth and refresh token
+	// in: body
+	Body authRefresh
+}
 
 //
 // Output
@@ -85,15 +85,15 @@ type badRequestErrorResponseWrapper struct {
 	Body berrors.BadInput
 }
 
-//// An unauthorized error response
-//// swagger:response unauthorizedErrorResponse
-//type unauthorizedErrorResponseWrapper struct {
-//	// The description of the unauthorized error
-//	// in: body
-//	Body struct {
-//		// The error message
-//		// Required: true
-//		// Example: Invalid or expired JWT
-//		Error string `json:"error"`
-//	}
-//}
+// An unauthorized error response
+// swagger:response unauthorizedErrorResponse
+type unauthorizedErrorResponseWrapper struct {
+	// The description of the unauthorized error
+	// in: body
+	Body struct {
+		// The error message
+		// Required: true
+		// Example: Invalid or expired JWT
+		Error string `json:"error"`
+	}
+}

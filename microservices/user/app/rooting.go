@@ -14,7 +14,6 @@ import (
 // createRoute creates all the routes of the service.
 func createRoute(app *fiber.App) {
 
-	app.Post("/auth/refresh", handlers.RefreshAuthToken)
 	app.Get("/auth", userMiddleware.Protected(), handlers.Auth)
 
 	app.Get("/docs", wrapDocHandler())

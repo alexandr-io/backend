@@ -1,9 +1,8 @@
 package handlers
 
 import (
-	"net/http"
-
 	"github.com/alexandr-io/backend/auth/data"
+	authJWT "github.com/alexandr-io/backend/auth/jwt"
 	"github.com/alexandr-io/backend/auth/kafka"
 
 	"github.com/gofiber/fiber/v2"
@@ -27,18 +26,22 @@ func Login(ctx *fiber.Ctx) error {
 	}
 
 	// Kafka request to user
-	user, err := kafka.LoginRequestHandler(*userLogin)
+	kafkaUser, err := kafka.LoginRequestHandler(*userLogin)
 	if err != nil {
 		return err
 	}
 
 	// Create auth and refresh token
-	refreshToken, authToken, ok := generateNewRefreshTokenAndAuthToken(ctx, user.ID)
-	if !ok {
-		return data.NewHTTPErrorInfo(http.StatusInternalServerError, "error while generating auth and refresh token")
+	refreshToken, authToken, err := authJWT.GenerateNewRefreshTokenAndAuthToken(ctx, kafkaUser.ID)
+	if err != nil {
+		return err
 	}
-	user.AuthToken = authToken
-	user.RefreshToken = refreshToken
+	user := data.User{
+		Username:     kafkaUser.Username,
+		Email:        kafkaUser.Email,
+		AuthToken:    authToken,
+		RefreshToken: refreshToken,
+	}
 
 	// Return the new user to the user
 	if err := ctx.Status(fiber.StatusOK).JSON(user); err != nil {

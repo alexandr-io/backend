@@ -42,6 +42,7 @@ func produceLoginResponse(key string, message []byte) error {
 func SendSuccessLoginMessage(key string, code int, user data.User) error {
 	message, err := data.CreateUserResponseMessage(code,
 		data.KafkaUserResponseContent{
+			ID:       user.ID,
 			Email:    user.Email,
 			Username: user.Username,
 		})

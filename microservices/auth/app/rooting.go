@@ -22,7 +22,9 @@ func createRoute(app *fiber.App) {
 		TimeFormat: "2 Jan 15:04:05 MST",
 		TimeZone:   "Europe/Paris",
 		Next: func(ctx *fiber.Ctx) bool {
-			if string(ctx.Request().RequestURI()) == "/dashboard" {
+			if string(ctx.Request().RequestURI()) == "/dashboard" ||
+				string(ctx.Request().RequestURI()) == "/docs" ||
+				string(ctx.Request().RequestURI()) == "/swagger.yml" {
 				return true
 			}
 			return false
@@ -32,7 +34,7 @@ func createRoute(app *fiber.App) {
 
 	app.Post("/register", handlers.Register)
 	app.Post("/login", handlers.Login)
-	//app.Post("/auth/refresh", handlers.RefreshAuthToken)
+	app.Post("/auth/refresh", handlers.RefreshAuthToken)
 	//app.Get("/auth", userMiddleware.Protected(), handlers.Auth)
 
 	app.Get("/docs", wrapDocHandler())

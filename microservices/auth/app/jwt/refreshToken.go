@@ -1,10 +1,10 @@
-package handlers
+package jwt
 
 import (
 	"time"
 
+	"github.com/alexandr-io/backend/auth/data"
 	"github.com/alexandr-io/backend/auth/redis"
-	"github.com/alexandr-io/berrors"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
@@ -12,7 +12,7 @@ import (
 
 // newRefreshToken creat and sign a new refresh jwt token.
 // In case of error, the proper http error is set to the context and an empty string is returned.
-func newRefreshToken(ctx *fiber.Ctx, userID string) string {
+func newRefreshToken(ctx *fiber.Ctx, userID string) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 
 	claims := token.Claims.(jwt.MapClaims)
@@ -22,15 +22,13 @@ func newRefreshToken(ctx *fiber.Ctx, userID string) string {
 	claims["user_id"] = userID                                       // User ID of the auth user
 	claims["exp"] = time.Now().Add(time.Hour * 24 * 30).Unix()       // Expire in 30 days
 
-	secret := randomString(16)
+	secret := RandomString(16)
 	signedToken, err := token.SignedString([]byte(secret))
 	if err != nil {
-		berrors.InternalServerError(ctx, err)
-		return ""
+		return "", data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	if err := redis.StoreRefreshToken(ctx, signedToken, secret); err != nil {
-		berrors.InternalServerError(ctx, err)
-		return ""
+		return "", err
 	}
-	return signedToken
+	return signedToken, nil
 }

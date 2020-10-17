@@ -31,7 +31,7 @@ func Login(key string, message data.KafkaUserLoginRequest) error {
 		return producers.SendBadRequestLoginMessage(key, berrors.BadInputJSONFromType("login", string(berrors.Login)))
 	}
 
-	return producers.SendSuccessLoginMessage(key, http.StatusCreated, *user)
+	return producers.SendSuccessLoginMessage(key, http.StatusOK, *user)
 }
 
 // comparePasswords compare a hashed password with a plain string password.
