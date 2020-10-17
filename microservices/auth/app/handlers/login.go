@@ -1,10 +1,12 @@
 package handlers
 
 import (
+	"net/http"
+
 	"github.com/alexandr-io/backend/auth/data"
 	"github.com/alexandr-io/backend/auth/kafka"
+
 	"github.com/gofiber/fiber/v2"
-	"net/http"
 )
 
 // swagger:route POST /login AUTH login
@@ -24,7 +26,7 @@ func Login(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	// Kakfa request to user
+	// Kafka request to user
 	user, err := kafka.LoginRequestHandler(*userLogin)
 	if err != nil {
 		return err
