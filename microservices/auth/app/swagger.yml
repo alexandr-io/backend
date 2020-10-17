@@ -110,10 +110,23 @@ definitions:
     type: object
     x-go-package: github.com/alexandr-io/berrors
 info:
-  description: Documentation for User API
-  title: of User API
+  description: Documentation for the Auth microservice REST API
+  title: Documentation of Auth API
   version: 1.0.0
 paths:
+  /auth:
+    get:
+      description: Try a simple connection with the given auth token
+      operationId: auth
+      responses:
+        "200":
+          $ref: '#/responses/authResponse'
+        "401":
+          $ref: '#/responses/unauthorizedErrorResponse'
+      security:
+      - Bearer: []
+      tags:
+      - AUTH
   /auth/refresh:
     post:
       description: Get a new auth and refresh token from a valid refresh token
@@ -170,6 +183,18 @@ paths:
 produces:
 - application/json
 responses:
+  authResponse:
+    description: A simple response from a simple route
+    schema:
+      properties:
+        username:
+          description: The connected user's username
+          example: john
+          type: string
+          x-go-name: Username
+      required:
+      - username
+      type: object
   badRequestErrorResponse:
     description: A bad request error response
     schema:

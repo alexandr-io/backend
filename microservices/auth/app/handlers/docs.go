@@ -1,6 +1,6 @@
-// Package handlers of User API
+// Package handlers Documentation of Auth API
 //
-// Documentation for User API
+// Documentation for the Auth microservice REST API
 //
 //	Schemes: http
 //	BasePath: /
@@ -60,18 +60,18 @@ type userResponseWrapper struct {
 	Body data.User
 }
 
-//// A simple response from a simple route
-//// swagger:response authResponse
-//type authResponseWrapper struct {
-//	// A username gotten from the jwt
-//	// in: body
-//	Body struct {
-//		// The connected user's username
-//		// Required: true
-//		// Example: john
-//		Username string `json:"username"`
-//	}
-//}
+// A simple response from a simple route
+// swagger:response authResponse
+type authResponseWrapper struct {
+	// A username gotten from the jwt
+	// in: body
+	Body struct {
+		// The connected user's username
+		// Required: true
+		// Example: john
+		Username string `json:"username"`
+	}
+}
 
 //
 // Error

@@ -50,38 +50,13 @@ definitions:
     type: object
     x-go-package: github.com/alexandr-io/berrors
 info:
-  description: Documentation for User API
-  title: of User API
+  description: Documentation for the User microservice REST API
+  title: Documentation of User API
   version: 1.0.0
-paths:
-  /auth:
-    get:
-      description: Try a simple connection with the given auth token
-      operationId: auth
-      responses:
-        "200":
-          $ref: '#/responses/authResponse'
-        "401":
-          $ref: '#/responses/unauthorizedErrorResponse'
-      security:
-      - Bearer: []
-      tags:
-      - USER
+paths: {}
 produces:
 - application/json
 responses:
-  authResponse:
-    description: A simple response from a simple route
-    schema:
-      properties:
-        username:
-          description: The connected user's username
-          example: john
-          type: string
-          x-go-name: Username
-      required:
-      - username
-      type: object
   badRequestErrorResponse:
     description: A bad request error response
     schema:
@@ -100,10 +75,4 @@ responses:
       type: object
 schemes:
 - http
-securityDefinitions:
-  Bearer:
-    description: "Alexandrio backend is using both auth token and refresh token.\n\nThe auth token is used to access resources as an authenticated user. This token is only valid for 15 minutes for security purposes.  \nThe auth token is given by the [`/register`](#operation/register), [`/login`](#operation/login) and [`/auth/refresh`](#operation/refresh_token) routes.  \nYou need to send the auth token as a Bearer authentication token in the header of the request to access protected routes.\n\nThe refresh token is used to get a new auth token. When the auth token is expired, you need to send this refresh token to [`/auth/refresh`](#operation/refresh_token) to get a new auth and refresh token.  \nThe refresh token is valid for 30 days and can be used only once. The [`/auth/refresh`](#operation/refresh_token) route return a new refresh token.\n\n<div align=\"center\">\n  <img alt=\"Workflow\" src=\"https://drive.google.com/uc?export=view&id=1h40WfIqjMcUmcJp-vSoKtr1RTUgpLqTH\" />\n</div>\n<center><p style=\"font-size:11px\">Schema of the authentication workflow</p></center>\n"
-    in: header
-    name: Bearer
-    type: Bearer
 swagger: "2.0"

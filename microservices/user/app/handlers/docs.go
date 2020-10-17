@@ -1,6 +1,6 @@
-// Package handlers of User API
+// Package handlers Documentation of User API
 //
-// Documentation for User API
+// Documentation for the User microservice REST API
 //
 //	Schemes: http
 //	BasePath: /
@@ -18,23 +18,6 @@ package handlers
 import (
 	"github.com/alexandr-io/berrors"
 )
-
-// A simple response from a simple route
-// swagger:response authResponse
-type authResponseWrapper struct {
-	// A username gotten from the jwt
-	// in: body
-	Body struct {
-		// The connected user's username
-		// Required: true
-		// Example: john
-		Username string `json:"username"`
-	}
-}
-
-//
-// Error
-//
 
 // A bad request error response
 // swagger:response badRequestErrorResponse
