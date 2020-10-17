@@ -1,9 +1,10 @@
 package redis
 
 import (
-	"github.com/alexandr-io/backend/auth/data"
 	"os"
 	"time"
+
+	"github.com/alexandr-io/backend/auth/data"
 
 	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2"

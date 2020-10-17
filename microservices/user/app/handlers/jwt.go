@@ -1,8 +1,9 @@
 package handlers
 
 import (
-	"github.com/alexandr-io/backend/user/database"
 	"log"
+
+	"github.com/alexandr-io/backend/user/database"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
