@@ -42,12 +42,12 @@ jobs:
           push: true
 
       - name: Deploy or redeploy user app
-        uses: appleboy/ssh-action@master
+        uses: cross-the-world/ssh-pipeline@master
         with:
           host: ${{ secrets.HOST_PREPROD }}
-          username: ${{ secrets.HOST_PREPROD_USERNAME }}
-          password: ${{ secrets.HOST_PREPROD_PASSWORD }}
-          script: /kubernetes/app-deployment.sh user preprod ${{ secrets.ACCESS_TOKEN_GITHUB }}
+          user: ${{ secrets.HOST_PREPROD_USERNAME }}
+          pass: ${{ secrets.HOST_PREPROD_PASSWORD }}
+          script: /kubernetes/app-deployment.sh user
 
   build-and-push-auth:
     name: Docker Build Auth and push image
@@ -85,9 +85,9 @@ jobs:
           push: true
 
       - name: Deploy or redeploy auth app
-        uses: appleboy/ssh-action@master
+        uses: cross-the-world/ssh-pipeline@master
         with:
           host: ${{ secrets.HOST_PREPROD }}
-          username: ${{ secrets.HOST_PREPROD_USERNAME }}
-          password: ${{ secrets.HOST_PREPROD_PASSWORD }}
-          script: /kubernetes/app-deployment.sh auth preprod ${{ secrets.ACCESS_TOKEN_GITHUB }}
+          user: ${{ secrets.HOST_PREPROD_USERNAME }}
+          pass: ${{ secrets.HOST_PREPROD_PASSWORD }}
+          script: /kubernetes/app-deployment.sh auth
