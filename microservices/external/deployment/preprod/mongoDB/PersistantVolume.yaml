@@ -8,7 +8,6 @@ spec:
   volumeMode: Filesystem
   accessModes:
   - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Delete
   storageClassName: local-storage-mongo
   local:
     path: /mnt/disk/data
