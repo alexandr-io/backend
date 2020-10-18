@@ -1,2 +1,2 @@
-kafka/
-mongo/
+kafka
+mongo
