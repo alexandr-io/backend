@@ -34,7 +34,7 @@ func errorHandler(ctx *fiber.Ctx, err error) error {
 	}
 
 	// Return default message for 500+ error
-	if code >= fiber.StatusInternalServerError {
+	if code >= fiber.StatusInternalServerError || code == fiber.StatusUnauthorized {
 		return ctx.SendStatus(code)
 	}
 	// Send custom message if set or message contained in the errorInfo

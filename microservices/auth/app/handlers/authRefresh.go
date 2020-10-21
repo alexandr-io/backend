@@ -1,11 +1,10 @@
 package handlers
 
 import (
-	"net/http"
+	"github.com/alexandr-io/backend/auth/data"
+	authJWT "github.com/alexandr-io/backend/auth/jwt"
 
-	"github.com/alexandr-io/backend/user/redis"
-	"github.com/alexandr-io/berrors"
-
+	"github.com/alexandr-io/backend/auth/redis"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -18,7 +17,7 @@ type authRefresh struct {
 	RefreshToken string `json:"refresh_token" validate:"required"`
 }
 
-// swagger:route POST /auth/refresh USER refresh_token
+// swagger:route POST /auth/refresh AUTH refresh_token
 // Get a new auth and refresh token from a valid refresh token
 // responses:
 //	201: userResponse
@@ -27,51 +26,50 @@ type authRefresh struct {
 
 // RefreshAuthToken generate a new auth and refresh token from a given valid refresh token.
 func RefreshAuthToken(ctx *fiber.Ctx) error {
-	ctx.Set("Content-Type", "application/json")
+	// Set Content-Type: application/json
+	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
 	// Get and validate the body JSON
 	authRefresh := new(authRefresh)
-	if ok := berrors.ParseBodyJSON(ctx, authRefresh); !ok {
-		return nil
+	if err := ParseBodyJSON(ctx, authRefresh); err != nil {
+		return err
 	}
 
 	// Get secret of refresh token from redis
 	secret, err := redis.GetRefreshTokenSecret(ctx, authRefresh.RefreshToken)
 	if err != nil {
-		_ = ctx.Status(http.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid or expired JWT"})
-		return nil
+		return err
 	}
 
 	// Parse jwt with retrieved secret
-	tokenObject, ok := parseJWT(ctx, authRefresh.RefreshToken, secret)
-	if !ok {
-		return nil
+	tokenObject, err := authJWT.ParseJWT(authRefresh.RefreshToken, secret)
+	if err != nil {
+		return err
 	}
 
 	// get user from refresh token
 	ctx.Locals("jwt", tokenObject)
-	user, ok := getUserFromContextJWT(ctx)
-	if !ok {
-		return nil
+	user, err := authJWT.GetUserFromContextJWT(ctx)
+	if err != nil {
+		return err
 	}
 
 	// Create new auth and refresh token
-	refreshToken, authToken, ok := generateNewRefreshTokenAndAuthToken(ctx, user.ID)
-	if !ok {
-		return nil
+	refreshToken, authToken, err := authJWT.GenerateNewRefreshTokenAndAuthToken(ctx, user.ID)
+	if err != nil {
+		return err
 	}
 	user.AuthToken = authToken
 	user.RefreshToken = refreshToken
 
 	// Delete the previous refresh token
 	if err := redis.DeleteRefreshToken(ctx, authRefresh.RefreshToken); err != nil {
-		berrors.InternalServerError(ctx, err)
-		return nil
+		return err
 	}
 
 	// Return the new auth and refresh token
-	if err := ctx.Status(20).JSON(user); err != nil {
-		berrors.InternalServerError(ctx, err)
+	if err := ctx.Status(fiber.StatusOK).JSON(user); err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil
 }

@@ -16,7 +16,7 @@ type KafkaUserRegisterData struct {
 	Password string `json:"password"`
 }
 
-// CreateRegisterMessage return a JSON of KafkaUserRegisterMessage from an id (UUID) and an UserRegister.
+// CreateRegisterMessage return a JSON of KafkaUserRegisterMessage from an UserRegister.
 func CreateRegisterMessage(user UserRegister) ([]byte, error) {
 	// Create message struct
 	message := KafkaUserRegisterMessage{

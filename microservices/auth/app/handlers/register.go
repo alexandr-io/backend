@@ -1,16 +1,14 @@
 package handlers
 
 import (
-	"errors"
-
 	"github.com/alexandr-io/backend/auth/data"
+	authJWT "github.com/alexandr-io/backend/auth/jwt"
 	"github.com/alexandr-io/backend/auth/kafka"
-	"github.com/alexandr-io/berrors"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-// swagger:route POST /register USER register
+// swagger:route POST /register AUTH register
 // Register a new user and return it's information, auth token and refresh token
 // responses:
 //	201: userResponse
@@ -37,22 +35,26 @@ func Register(ctx *fiber.Ctx) error {
 
 	userRegister.Password = hashAndSalt(userRegister.Password)
 
-	user, err := kafka.RegisterRequestHandler(*userRegister)
+	kafkaUser, err := kafka.RegisterRequestHandler(*userRegister)
 	if err != nil {
 		return err
 	}
 
 	// Create auth and refresh token
-	refreshToken, authToken, ok := generateNewRefreshTokenAndAuthToken(ctx, user.ID)
-	if !ok {
-		return errors.New("error while generating auth and refresh token")
+	refreshToken, authToken, err := authJWT.GenerateNewRefreshTokenAndAuthToken(ctx, kafkaUser.ID)
+	if err != nil {
+		return err
 	}
-	user.AuthToken = authToken
-	user.RefreshToken = refreshToken
+	user := data.User{
+		Username:     kafkaUser.Username,
+		Email:        kafkaUser.Email,
+		AuthToken:    authToken,
+		RefreshToken: refreshToken,
+	}
 
 	// Return the new user to the user
-	if err := ctx.Status(201).JSON(user); err != nil {
-		berrors.InternalServerError(ctx, err)
+	if err := ctx.Status(fiber.StatusCreated).JSON(user); err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil
 }

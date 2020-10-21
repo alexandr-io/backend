@@ -1,0 +1,32 @@
+package handlers
+
+import (
+	"github.com/alexandr-io/backend/auth/data"
+	authJWT "github.com/alexandr-io/backend/auth/jwt"
+
+	"github.com/gofiber/fiber/v2"
+)
+
+// swagger:route GET /auth AUTH auth
+// Try a simple connection with the given auth token
+// security:
+//	Bearer:
+// responses:
+//	200: authResponse
+//	401: unauthorizedErrorResponse
+
+// Auth test the authentication a user with the given jwt
+func Auth(ctx *fiber.Ctx) error {
+	// Set Content-Type: application/json
+	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
+
+	user, err := authJWT.GetUserFromContextJWT(ctx)
+	if err != nil {
+		return err
+	}
+
+	if err := ctx.Status(fiber.StatusOK).JSON(fiber.Map{"username": user.Username}); err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+	return nil
+}

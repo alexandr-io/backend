@@ -4,13 +4,11 @@ import (
 	"context"
 	"errors"
 	"log"
-	"net/http"
 	"time"
 
 	"github.com/alexandr-io/backend/user/data"
 	"github.com/alexandr-io/berrors"
 
-	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -33,7 +31,7 @@ func FindOneWithFilter(object interface{}, filters interface{}) error {
 }
 
 // GetUserByID get an user by it's given id.
-func GetUserByID(id interface{}) (*data.User, bool) {
+func GetUserByID(id interface{}) (*data.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -45,38 +43,42 @@ func GetUserByID(id interface{}) (*data.User, bool) {
 	err := filteredSingleResult.Decode(object)
 	if err != nil {
 		log.Println(err)
-		return nil, false
+		return nil, err
 	}
-	return object, true
+	return object, nil
 }
 
 // GetUserByLogin get an user by it's given login (username or email).
 // In case of error, the proper error is set to the context and false is returned.
-func GetUserByLogin(ctx *fiber.Ctx, login string) (*data.User, bool) {
+func GetUserByLogin(login string) (*data.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
 	collection := Instance.Db.Collection(CollectionUser)
 	object := &data.User{}
 
 	// Get user by username
 	usernameFilter := bson.D{{Key: "username", Value: login}}
-	filteredByUsernameSingleResult := collection.FindOne(ctx.Context(), usernameFilter)
+	filteredByUsernameSingleResult := collection.FindOne(ctx, usernameFilter)
 	// Return the user object if user is found
 	if err := filteredByUsernameSingleResult.Decode(object); err == nil {
-		return object, true
+		return object, err
 	}
 
 	// Get user by email
 	emailFilter := bson.D{{Key: "email", Value: login}}
-	filteredByEmailSingleResult := collection.FindOne(ctx.Context(), emailFilter)
+	filteredByEmailSingleResult := collection.FindOne(ctx, emailFilter)
 	// Return a login error if the user is not found
 	if err := filteredByEmailSingleResult.Decode(object); err != nil {
 		log.Println(err)
-		_ = ctx.Status(http.StatusBadRequest).Send(
-			berrors.BadInputJSONFromType("login", string(berrors.Login)))
-		return nil, false
+		return nil, &data.BadInput{
+			JSONError: berrors.BadInputJSONFromType("login", string(berrors.Login)),
+			Err:       errors.New("can't find user with login " + login),
+		}
 	}
 
 	// Return the email user object
-	return object, true
+	return object, nil
 }
 
 //

@@ -26,9 +26,9 @@ func Register(key string, message data.KafkaUserRegisterRequest) error {
 	}
 
 	// Get the newly created user
-	createdUser, ok := database.GetUserByID(insertedResult.InsertedID)
-	if !ok {
-		return producers.SendInternalErrorRegisterMessage(key, "internal server error after user insertion")
+	createdUser, err := database.GetUserByID(insertedResult.InsertedID)
+	if err != nil {
+		return producers.SendInternalErrorRegisterMessage(key, err.Error())
 	}
 
 	return producers.SendSuccessRegisterMessage(key, http.StatusCreated, *createdUser)
