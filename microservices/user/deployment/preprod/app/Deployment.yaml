@@ -36,8 +36,6 @@ spec:
               secretKeyRef:
                 name: mongo-secret
                 key: password
-          - name: REDIS_URL
-            value: redis
           - name: KAFKA_ADVERTISED_HOST_NAME
             valueFrom:
               configMapKeyRef:
