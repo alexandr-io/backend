@@ -3,7 +3,6 @@ package internal
 import (
 	"errors"
 	"log"
-	"net/http"
 
 	"github.com/alexandr-io/berrors"
 
@@ -11,6 +10,7 @@ import (
 	"github.com/alexandr-io/backend/user/database"
 	"github.com/alexandr-io/backend/user/kafka/producers"
 
+	"github.com/gofiber/fiber/v2"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -31,7 +31,7 @@ func Login(key string, message data.KafkaUserLoginRequest) error {
 		return producers.SendBadRequestLoginMessage(key, berrors.BadInputJSONFromType("login", string(berrors.Login)))
 	}
 
-	return producers.SendSuccessLoginMessage(key, http.StatusOK, *user)
+	return producers.SendSuccessLoginMessage(key, fiber.StatusOK, *user)
 }
 
 // comparePasswords compare a hashed password with a plain string password.

@@ -1,11 +1,10 @@
 package internal
 
 import (
-	"net/http"
-
 	"github.com/alexandr-io/backend/user/database"
 	"github.com/alexandr-io/backend/user/kafka/producers"
 
+	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -20,8 +19,11 @@ func User(key string, message string) error {
 	// Get the user from it's user
 	user, err := database.GetUserByID(userObjectID)
 	if err != nil {
+		if database.IsMongoNoDocument(err) {
+			return producers.SendUnauthorizedUserMessage(key, err.Error())
+		}
 		return producers.SendInternalErrorUserMessage(key, err.Error())
 	}
 
-	return producers.SendSuccessUserMessage(key, http.StatusOK, *user)
+	return producers.SendSuccessUserMessage(key, fiber.StatusOK, *user)
 }

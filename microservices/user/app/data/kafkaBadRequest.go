@@ -3,9 +3,9 @@ package data
 import (
 	"encoding/json"
 	"log"
-	"net/http"
 
 	"github.com/alexandr-io/berrors"
+	"github.com/gofiber/fiber/v2"
 )
 
 // KafkaBadRequest is the JSON struct used in kafka communication in case of a bad request (e.g. username already taken).
@@ -23,7 +23,7 @@ type KafkaBadRequestData struct {
 func CreateKafkaBadRequestMessage(content berrors.BadInput) ([]byte, error) {
 	message := KafkaBadRequest{
 		Data: KafkaBadRequestData{
-			Code:    http.StatusBadRequest,
+			Code:    fiber.StatusBadRequest,
 			Content: content,
 		},
 	}

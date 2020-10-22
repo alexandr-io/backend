@@ -3,7 +3,8 @@ package data
 import (
 	"encoding/json"
 	"log"
-	"net/http"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 // KafkaInternalError is the JSON struct used in kafka communication in case of an internal error.
@@ -21,7 +22,7 @@ type KafkaInternalErrorData struct {
 func CreateKafkaInternalErrorMessage(content string) ([]byte, error) {
 	message := KafkaInternalError{
 		Data: KafkaInternalErrorData{
-			Code:    http.StatusInternalServerError,
+			Code:    fiber.StatusInternalServerError,
 			Content: content,
 		},
 	}
