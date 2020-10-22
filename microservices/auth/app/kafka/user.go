@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
 	"sync"
 	"time"
 
@@ -46,7 +45,7 @@ func UserRequestHandler(userID string) (*data.KafkaUser, error) {
 	}
 
 	// handle success
-	if kafkaMessage.Data.Code == http.StatusOK {
+	if kafkaMessage.Data.Code == fiber.StatusOK {
 		return data.UnmarshalUserResponse(rawMessage)
 	}
 
