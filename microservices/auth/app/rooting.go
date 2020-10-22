@@ -18,7 +18,6 @@ import (
 func createRoute(app *fiber.App) {
 	// Recover middleware in case of panic
 	app.Use(recover.New())
-	//15 Oct 09:36:56 CEST | 504 |   523ms |      172.19.0.1 | POST    | /register        | {"message":"Kafka register response timed out","file":"/app/kafka/register.go","line":143,"content-type":"text/html; charset=utf-8","custom-message":""}
 	app.Use(logger.New(logger.Config{
 		TimeFormat: "2 Jan 15:04:05 MST",
 		TimeZone:   "Europe/Paris",

@@ -59,3 +59,13 @@ func SendInternalErrorUserMessage(key string, content string) error {
 
 	return produceUserResponse(key, message)
 }
+
+// SendUnauthorizedUserMessage create an bad request error response and send it the the `user-response` topic.
+func SendUnauthorizedUserMessage(key string, content string) error {
+	message, err := data.CreateKafkaUnauthorizedErrorMessage(content)
+	if err != nil {
+		return err
+	}
+
+	return produceUserResponse(key, message)
+}

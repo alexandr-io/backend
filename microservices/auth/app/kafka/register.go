@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
 	"sync"
 	"time"
 
@@ -46,7 +45,7 @@ func RegisterRequestHandler(user data.UserRegister) (*data.KafkaUser, error) {
 	}
 
 	// handle success
-	if kafkaMessage.Data.Code == http.StatusCreated {
+	if kafkaMessage.Data.Code == fiber.StatusCreated {
 		return data.UnmarshalUserResponse(rawMessage)
 	}
 

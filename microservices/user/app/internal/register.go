@@ -2,11 +2,12 @@ package internal
 
 import (
 	"errors"
-	"net/http"
 
 	"github.com/alexandr-io/backend/user/data"
 	"github.com/alexandr-io/backend/user/database"
 	"github.com/alexandr-io/backend/user/kafka/producers"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 // Register is the internal logic function used to register a user.
@@ -31,5 +32,5 @@ func Register(key string, message data.KafkaUserRegisterRequest) error {
 		return producers.SendInternalErrorRegisterMessage(key, err.Error())
 	}
 
-	return producers.SendSuccessRegisterMessage(key, http.StatusCreated, *createdUser)
+	return producers.SendSuccessRegisterMessage(key, fiber.StatusCreated, *createdUser)
 }

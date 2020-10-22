@@ -18,7 +18,7 @@ func GetUserFromContextJWT(ctx *fiber.Ctx) (*data.User, error) {
 	// Get the user from user MS using kafka
 	kafkaUser, err := kafka.UserRequestHandler(userID)
 	if err != nil {
-		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return nil, err
 	}
 	return &data.User{
 		ID:       kafkaUser.ID,
