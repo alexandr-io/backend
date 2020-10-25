@@ -11,7 +11,7 @@ import (
 // Once a message is consumed, it is sent to the user internal logic.
 func consumeUserRequestMessages() {
 	// Create new consumer
-	consumer, err := newConsumer()
+	consumer, err := newConsumer(userRequest)
 	if err != nil {
 		log.Println(err)
 		return

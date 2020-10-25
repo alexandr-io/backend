@@ -92,7 +92,7 @@ func produceLoginMessage(id string, user data.UserLogin, errorChannel chan error
 // Once a message is consumed, the UUID is extracted from the key to store the message to the correct loginRequestChannels channel.
 func consumeLoginResponseMessages() {
 	// Create new consumer
-	consumer, err := newConsumer()
+	consumer, err := newConsumer(loginResponse)
 	if err != nil {
 		return
 	}
