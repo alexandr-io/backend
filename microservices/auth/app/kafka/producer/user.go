@@ -44,12 +44,12 @@ func UserRequestHandler(userID string) (*data.KafkaUser, error) {
 	}
 
 	// handle success
-	if kafkaMessage.Data.Code == fiber.StatusOK {
+	if kafkaMessage.Code == fiber.StatusOK {
 		return data.UnmarshalUserResponse(rawMessage)
 	}
 
 	// If http code contained in the kafka message is not handled
-	return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, fmt.Sprintf("unmanaged code: %d", kafkaMessage.Data.Code))
+	return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, fmt.Sprintf("unmanaged code: %d", kafkaMessage.Code))
 }
 
 // produceUserMessage produce a user message to the `user` topic.

@@ -9,7 +9,7 @@ import (
 // handleError check weather the kafkaMessage contain an error and set the proper http error to context.
 // It return true if an error has been set and false if nothing is detected.
 func handleError(kafkaMessage data.KafkaResponseMessage, rawMessage []byte) error {
-	switch kafkaMessage.Data.Code {
+	switch kafkaMessage.Code {
 	case fiber.StatusBadRequest:
 		badRequestJSON, err := data.GetBadInputJSON(rawMessage)
 		if err != nil {

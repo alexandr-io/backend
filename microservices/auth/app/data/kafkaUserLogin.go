@@ -6,11 +6,6 @@ import (
 
 // KafkaUserLoginMessage is the JSON struct sent to the user MS using the kafka topic `login`.
 type KafkaUserLoginMessage struct {
-	Data KafkaUserLoginData `json:"data"`
-}
-
-// KafkaUserLoginData contain the data to be sent to the user MS using the kafka topic `login`.
-type KafkaUserLoginData struct {
 	Login    string `json:"login"`
 	Password string `json:"password"`
 }
@@ -19,10 +14,8 @@ type KafkaUserLoginData struct {
 func CreateLoginMessage(user UserLogin) ([]byte, error) {
 	// Create message struct
 	message := KafkaUserLoginMessage{
-		Data: KafkaUserLoginData{
-			Login:    user.Login,
-			Password: user.Password,
-		},
+		Login:    user.Login,
+		Password: user.Password,
 	}
 
 	// Marshal message

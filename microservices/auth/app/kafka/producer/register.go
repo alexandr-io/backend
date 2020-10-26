@@ -44,12 +44,12 @@ func RegisterRequestHandler(user data.UserRegister) (*data.KafkaUser, error) {
 	}
 
 	// handle success
-	if kafkaMessage.Data.Code == fiber.StatusCreated {
+	if kafkaMessage.Code == fiber.StatusCreated {
 		return data.UnmarshalUserResponse(rawMessage)
 	}
 
 	// If http code contained in the kafka message is not handled
-	return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, fmt.Sprintf("unmanaged code: %d", kafkaMessage.Data.Code))
+	return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, fmt.Sprintf("unmanaged code: %d", kafkaMessage.Code))
 }
 
 // produceRegisterMessage produce a register message to the `register` topic.

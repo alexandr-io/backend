@@ -14,9 +14,9 @@ import (
 func Register(key string, message data.KafkaUserRegisterRequest) error {
 	// Insert the new data to the collection
 	insertedResult, err := database.InsertUserRegister(data.User{
-		Username: message.Data.Username,
-		Email:    message.Data.Email,
-		Password: message.Data.Password,
+		Username: message.Username,
+		Email:    message.Email,
+		Password: message.Password,
 	})
 	if err != nil {
 		var badInput *data.BadInput

@@ -9,18 +9,14 @@ import (
 
 // KafkaResponseMessage is used to get the Code from a kafka message.
 type KafkaResponseMessage struct {
-	Data struct {
-		Code    int         `json:"code"`
-		Content interface{} `json:"content"`
-	} `json:"data"`
+	Code    int         `json:"code"`
+	Content interface{} `json:"content"`
 }
 
 // KafkaResponseMessageBadRequest is used to get the Content of a kafka message.
 type KafkaResponseMessageBadRequest struct {
-	Data struct {
-		Code    int              `json:"code"`
-		Content berrors.BadInput `json:"content"`
-	} `json:"data"`
+	Code    int              `json:"code"`
+	Content berrors.BadInput `json:"content"`
 }
 
 // GetBadInputJSON return a marshal JSON of berrors.BadInput from a kafka message.
@@ -30,7 +26,7 @@ func GetBadInputJSON(rawMessage []byte) ([]byte, error) {
 		log.Println(err)
 		return nil, err
 	}
-	badRequestJSON, err := json.Marshal(badRequest.Data.Content)
+	badRequestJSON, err := json.Marshal(badRequest.Content)
 	if err != nil {
 		log.Println(err)
 		return nil, err
