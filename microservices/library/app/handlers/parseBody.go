@@ -3,13 +3,14 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
+	"log"
+	"reflect"
+	"strings"
+
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/fatih/structtag"
 	"github.com/gofiber/fiber/v2"
 	"gopkg.in/go-playground/validator.v9"
-	"log"
-	"reflect"
-	"strings"
 )
 
 // getJSONFieldName is used to get the json tag of a given field in a struct

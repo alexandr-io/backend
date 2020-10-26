@@ -1,13 +1,14 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/alexandr-io/backend/library/handlers"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/valyala/fasthttp/fasthttpadaptor"
-	"net/http"
 )
 
 func createRoute(app *fiber.App) {

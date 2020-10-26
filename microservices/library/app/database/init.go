@@ -2,10 +2,11 @@ package database
 
 import (
 	"context"
+	"log"
+
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/x/bsonx"
-	"log"
 )
 
 // createLibraryUniqueIndexes init the library collection. It add a unique index to the username field.

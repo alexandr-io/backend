@@ -2,8 +2,9 @@ package data
 
 import (
 	"encoding/json"
-	"github.com/gofiber/fiber/v2"
 	"runtime"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 // ErrorInfo is used to return error that contain info about where it happened

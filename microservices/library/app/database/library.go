@@ -3,12 +3,13 @@ package database
 import (
 	"context"
 	"errors"
+	"log"
+	"time"
+
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/berrors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"log"
-	"time"
 )
 
 // CollectionLibrary is the name of the library collection in mongodb
