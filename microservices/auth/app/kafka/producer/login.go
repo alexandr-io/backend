@@ -1,9 +1,8 @@
-package kafka
+package producer
 
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"sync"
 	"time"
 
@@ -14,7 +13,7 @@ import (
 	"github.com/google/uuid"
 )
 
-var loginRequestChannels sync.Map
+var LoginRequestChannels sync.Map
 
 // LoginRequestHandler is the entry point of a new login message to the user MS using kafka.
 // The function produce a new message to kafka,
@@ -30,7 +29,7 @@ func LoginRequestHandler(user data.UserLogin) (*data.KafkaUser, error) {
 	// Create a channel to manage error in goroutines
 	errorChannel := make(chan error)
 	// Store request channel to the channel map
-	loginRequestChannels.Store(id.String(), requestChannel)
+	LoginRequestChannels.Store(id.String(), requestChannel)
 	// Produce the message to kafka
 	go produceLoginMessage(id.String(), user, errorChannel)
 	// Watch for a response in the request channel
@@ -88,41 +87,6 @@ func produceLoginMessage(id string, user data.UserLogin, errorChannel chan error
 	return
 }
 
-// consumeLoginResponseMessages consume all the messages coming to the `login-response` topic.
-// Once a message is consumed, the UUID is extracted from the key to store the message to the correct loginRequestChannels channel.
-func consumeLoginResponseMessages() {
-	// Create new consumer
-	consumer, err := newConsumer(loginResponse)
-	if err != nil {
-		return
-	}
-	defer consumer.Close()
-
-	// Subscribe consumer to topic login-response
-	if err := consumer.SubscribeTopics([]string{loginResponse}, nil); err != nil {
-		log.Println(err)
-		return
-	}
-
-	for {
-		msg, err := consumer.ReadMessage(-1)
-		if err == nil {
-			fmt.Printf("[KAFKA]: Message on %s: %s:%s\n", msg.TopicPartition, string(msg.Key), string(msg.Value))
-
-			requestChannelInterface, ok := loginRequestChannels.Load(string(msg.Key))
-			if !ok {
-				log.Printf("Can't load channel %s from requestChannels", msg.Key)
-				continue
-			}
-			requestChannel := requestChannelInterface.(chan string)
-			requestChannel <- string(msg.Value)
-		} else {
-			// The client will automatically try to recover from all errors.
-			log.Printf("Consumer error: %v (%v)\n", err, msg)
-		}
-	}
-}
-
 // loginResponseWatcher is waiting for an update in the given channel. The message will be set in the channel by
 // consumeLoginResponseMessages once the user MS has answered to the request.
 // The channel is then deleted from the map and the kafka message is returned.
@@ -132,7 +96,7 @@ func loginResponseWatcher(id string, requestChannel chan string, errorChannel ch
 		select {
 		case <-timeout:
 			// In case of time out, we delete the channel and return an error
-			loginRequestChannels.Delete(id)
+			LoginRequestChannels.Delete(id)
 			return nil, nil, data.NewHTTPErrorInfo(fiber.StatusGatewayTimeout, "Kafka login response timed out")
 		case err := <-errorChannel:
 			return nil, nil, err
@@ -141,7 +105,7 @@ func loginResponseWatcher(id string, requestChannel chan string, errorChannel ch
 			if err := json.Unmarshal([]byte(message), &kafkaMessage); err != nil {
 				return nil, nil, err
 			}
-			loginRequestChannels.Delete(id)
+			LoginRequestChannels.Delete(id)
 			return &kafkaMessage, []byte(message), nil
 		}
 	}

@@ -1,4 +1,4 @@
-package kafka
+package producer
 
 import (
 	"github.com/alexandr-io/backend/auth/data"

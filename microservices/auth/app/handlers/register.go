@@ -3,7 +3,7 @@ package handlers
 import (
 	"github.com/alexandr-io/backend/auth/data"
 	authJWT "github.com/alexandr-io/backend/auth/jwt"
-	"github.com/alexandr-io/backend/auth/kafka"
+	"github.com/alexandr-io/backend/auth/kafka/producer"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -35,7 +35,7 @@ func Register(ctx *fiber.Ctx) error {
 
 	userRegister.Password = hashAndSalt(userRegister.Password)
 
-	kafkaUser, err := kafka.RegisterRequestHandler(*userRegister)
+	kafkaUser, err := producer.RegisterRequestHandler(*userRegister)
 	if err != nil {
 		return err
 	}

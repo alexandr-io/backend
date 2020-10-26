@@ -2,7 +2,7 @@ package jwt
 
 import (
 	"github.com/alexandr-io/backend/auth/data"
-	"github.com/alexandr-io/backend/auth/kafka"
+	"github.com/alexandr-io/backend/auth/kafka/producer"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -16,7 +16,7 @@ func GetUserFromContextJWT(ctx *fiber.Ctx) (*data.User, error) {
 	}
 
 	// Get the user from user MS using kafka
-	kafkaUser, err := kafka.UserRequestHandler(userID)
+	kafkaUser, err := producer.UserRequestHandler(userID)
 	if err != nil {
 		return nil, err
 	}

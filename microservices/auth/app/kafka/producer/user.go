@@ -1,9 +1,8 @@
-package kafka
+package producer
 
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"sync"
 	"time"
 
@@ -14,7 +13,7 @@ import (
 	"github.com/google/uuid"
 )
 
-var userRequestChannels sync.Map
+var UserRequestChannels sync.Map
 
 // UserRequestHandler is the entry point of a new user message to the user MS using kafka.
 // The function produce a new message to kafka,
@@ -30,7 +29,7 @@ func UserRequestHandler(userID string) (*data.KafkaUser, error) {
 	// Create a channel to manage error in goroutines
 	errorChannel := make(chan error)
 	// Store request channel to the channel map
-	userRequestChannels.Store(id.String(), requestChannel)
+	UserRequestChannels.Store(id.String(), requestChannel)
 	// Produce the message to kafka
 	go produceUserMessage(id.String(), userID, errorChannel)
 	// Watch for a response in the request channel
@@ -82,41 +81,6 @@ func produceUserMessage(id string, userID string, errorChannel chan error) {
 	return
 }
 
-// consumeUserResponseMessages consume all the messages coming to the `user-response` topic.
-// Once a message is consumed, the UUID is extracted from the key to store the message to the correct userRequestChannels channel.
-func consumeUserResponseMessages() {
-	// Create new consumer
-	consumer, err := newConsumer(userResponse)
-	if err != nil {
-		return
-	}
-	defer consumer.Close()
-
-	// Subscribe consumer to topic user-response
-	if err := consumer.SubscribeTopics([]string{userResponse}, nil); err != nil {
-		log.Println(err)
-		return
-	}
-
-	for {
-		msg, err := consumer.ReadMessage(-1)
-		if err == nil {
-			fmt.Printf("[KAFKA]: Message on %s: %s:%s\n", msg.TopicPartition, string(msg.Key), string(msg.Value))
-
-			requestChannelInterface, ok := userRequestChannels.Load(string(msg.Key))
-			if !ok {
-				log.Printf("Can't load channel %s from requestChannels", msg.Key)
-				continue
-			}
-			requestChannel := requestChannelInterface.(chan string)
-			requestChannel <- string(msg.Value)
-		} else {
-			// The client will automatically try to recover from all errors.
-			log.Printf("Consumer error: %v (%v)\n", err, msg)
-		}
-	}
-}
-
 // userResponseWatcher is waiting for an update in the given channel. The message will be set in the channel by
 // consumeUserResponseMessages once the user MS has answered to the request.
 // The channel is then deleted from the map and the kafka message is returned.
@@ -126,7 +90,7 @@ func userResponseWatcher(id string, requestChannel chan string, errorChannel cha
 		select {
 		case <-timeout:
 			// In case of time out, we delete the channel and return an error
-			userRequestChannels.Delete(id)
+			UserRequestChannels.Delete(id)
 			return nil, nil, data.NewHTTPErrorInfo(fiber.StatusGatewayTimeout, "Kafka user response timed out")
 		case err := <-errorChannel:
 			return nil, nil, err
@@ -135,7 +99,7 @@ func userResponseWatcher(id string, requestChannel chan string, errorChannel cha
 			if err := json.Unmarshal([]byte(message), &kafkaMessage); err != nil {
 				return nil, nil, err
 			}
-			userRequestChannels.Delete(id)
+			UserRequestChannels.Delete(id)
 			return &kafkaMessage, []byte(message), nil
 		}
 	}
