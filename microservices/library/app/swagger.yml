@@ -1,0 +1,70 @@
+definitions:
+  BookInfo:
+    description: BookInfo defines the structure of the information on a book
+    properties:
+      author:
+        description: The author of the book
+        example: Jane Austen
+        type: string
+        x-go-name: Author
+      cover_url:
+        description: The url of the cover on the media server
+        example: https://media.alexandrio.cloud/ef45f[...]feUEgE7.png
+        type: string
+        x-go-name: CoverUrl
+      description:
+        description: The description of the book
+        example: Pride and Prejudice is set in rural England in the early 19th century [...] and by prejudice against Darcy’s snobbery.
+        type: string
+        x-go-name: Description
+      publisher:
+        description: The publisher of the book
+        example: Public domain
+        type: string
+        x-go-name: Publisher
+      title:
+        description: The title of the book
+        example: Pride and Prejudice
+        type: string
+        x-go-name: Title
+    required:
+    - title
+    - author
+    - publisher
+    - description
+    - cover_url
+    type: object
+    x-go-package: github.com/alexandr-io/backend/library/data
+  Library:
+    description: Library defines the structure for an API library
+    properties:
+      books:
+        description: The lists containing the information on the books in the library
+        items:
+          $ref: '#/definitions/BookInfo'
+        type: array
+        x-go-name: Books
+      username:
+        description: The username of the library owner
+        example: john
+        type: string
+        x-go-name: Username
+    required:
+    - username
+    - books
+    type: object
+    x-go-package: github.com/alexandr-io/backend/library/data
+  LibraryOwner:
+    description: LibraryCreation is the body parameter given to create a new  library
+    properties:
+      username:
+        description: The username of the library owner
+        example: john
+        type: string
+        x-go-name: Username
+    required:
+    - username
+    type: object
+    x-go-package: github.com/alexandr-io/backend/library/data
+paths: {}
+swagger: "2.0"
