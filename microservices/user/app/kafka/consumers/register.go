@@ -12,7 +12,7 @@ import (
 // Once a message is consumed, it is sent to the register internal logic.
 func consumeRegisterRequestMessages() {
 	// Create new consumer
-	consumer, err := newConsumer()
+	consumer, err := newConsumer(registerRequest)
 	if err != nil {
 		log.Println(err)
 		return

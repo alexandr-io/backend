@@ -94,7 +94,7 @@ func produceRegisterMessage(id string, user data.UserRegister, errorChannel chan
 // Once a message is consumed, the UUID is extracted from the key to store the message to the correct registerRequestChannels channel.
 func consumeRegisterResponseMessages() {
 	// Create new consumer
-	consumer, err := newConsumer()
+	consumer, err := newConsumer(registerResponse)
 	if err != nil {
 		return
 	}

@@ -12,7 +12,7 @@ import (
 // Once a message is consumed, it is sent to the login internal logic.
 func consumeLoginRequestMessages() {
 	// Create new consumer
-	consumer, err := newConsumer()
+	consumer, err := newConsumer(loginRequest)
 	if err != nil {
 		log.Println(err)
 		return

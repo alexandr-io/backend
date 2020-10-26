@@ -86,7 +86,7 @@ func produceUserMessage(id string, userID string, errorChannel chan error) {
 // Once a message is consumed, the UUID is extracted from the key to store the message to the correct userRequestChannels channel.
 func consumeUserResponseMessages() {
 	// Create new consumer
-	consumer, err := newConsumer()
+	consumer, err := newConsumer(userResponse)
 	if err != nil {
 		return
 	}
