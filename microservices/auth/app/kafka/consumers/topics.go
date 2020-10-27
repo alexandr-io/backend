@@ -1,10 +1,8 @@
-package kafka
+package consumers
 
 var (
-	registerRequest  = "register"
 	registerResponse = "register-response"
-	loginRequest     = "login"
 	loginResponse    = "login-response"
-	userRequest      = "user"
 	userResponse     = "user-response"
+	authRequest      = "auth"
 )

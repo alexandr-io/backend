@@ -1,9 +1,8 @@
-package kafka
+package producers
 
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"sync"
 	"time"
 
@@ -14,7 +13,9 @@ import (
 	"github.com/google/uuid"
 )
 
-var registerRequestChannels sync.Map
+// RegisterRequestChannels is the map of channel used to store uuid of kafka message.
+// This is made to retrieve the response message corresponding to the request.
+var RegisterRequestChannels sync.Map
 
 // RegisterRequestHandler is the entry point of a new register message to the user MS using kafka.
 // The function produce a new message to kafka,
@@ -30,7 +31,7 @@ func RegisterRequestHandler(user data.UserRegister) (*data.KafkaUser, error) {
 	// Create a channel to manage error in goroutines
 	errorChannel := make(chan error)
 	// Store request channel to the channel map
-	registerRequestChannels.Store(id.String(), requestChannel)
+	RegisterRequestChannels.Store(id.String(), requestChannel)
 	// Produce the message to kafka
 	go produceRegisterMessage(id.String(), user, errorChannel)
 	// Watch for a response in the request channel
@@ -45,12 +46,12 @@ func RegisterRequestHandler(user data.UserRegister) (*data.KafkaUser, error) {
 	}
 
 	// handle success
-	if kafkaMessage.Data.Code == fiber.StatusCreated {
+	if kafkaMessage.Code == fiber.StatusCreated {
 		return data.UnmarshalUserResponse(rawMessage)
 	}
 
 	// If http code contained in the kafka message is not handled
-	return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, fmt.Sprintf("unmanaged code: %d", kafkaMessage.Data.Code))
+	return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, fmt.Sprintf("unmanaged code: %d", kafkaMessage.Code))
 }
 
 // produceRegisterMessage produce a register message to the `register` topic.
@@ -90,41 +91,6 @@ func produceRegisterMessage(id string, user data.UserRegister, errorChannel chan
 	return
 }
 
-// consumeRegisterResponseMessages consume all the messages coming to the `register-response` topic.
-// Once a message is consumed, the UUID is extracted from the key to store the message to the correct registerRequestChannels channel.
-func consumeRegisterResponseMessages() {
-	// Create new consumer
-	consumer, err := newConsumer(registerResponse)
-	if err != nil {
-		return
-	}
-	defer consumer.Close()
-
-	// Subscribe consumer to topic register-
-	if err := consumer.SubscribeTopics([]string{registerResponse}, nil); err != nil {
-		log.Println(err)
-		return
-	}
-
-	for {
-		msg, err := consumer.ReadMessage(-1)
-		if err == nil {
-			fmt.Printf("[KAFKA]: Message on %s: %s:%s\n", msg.TopicPartition, string(msg.Key), string(msg.Value))
-
-			requestChannelInterface, ok := registerRequestChannels.Load(string(msg.Key))
-			if !ok {
-				log.Printf("Can't load channel %s from requestChannels", msg.Key)
-				continue
-			}
-			requestChannel := requestChannelInterface.(chan string)
-			requestChannel <- string(msg.Value)
-		} else {
-			// The client will automatically try to recover from all errors.
-			log.Printf("Consumer error: %v (%v)\n", err, msg)
-		}
-	}
-}
-
 // registerResponseWatcher is waiting for an update in the given channel. The message will be set in the channel by
 // consumeRegisterResponseMessages once the user MS has answered to the request.
 // The channel is then deleted from the map and the kafka message is returned.
@@ -134,7 +100,7 @@ func registerResponseWatcher(id string, requestChannel chan string, errorChannel
 		select {
 		case <-timeout:
 			// In case of time out, we delete the channel and return an error
-			registerRequestChannels.Delete(id)
+			RegisterRequestChannels.Delete(id)
 			return nil, nil, data.NewHTTPErrorInfo(fiber.StatusGatewayTimeout, "Kafka register response timed out")
 		case err := <-errorChannel:
 			return nil, nil, err
@@ -143,7 +109,7 @@ func registerResponseWatcher(id string, requestChannel chan string, errorChannel
 			if err := json.Unmarshal([]byte(message), &kafkaMessage); err != nil {
 				return nil, nil, err
 			}
-			registerRequestChannels.Delete(id)
+			RegisterRequestChannels.Delete(id)
 			return &kafkaMessage, []byte(message), nil
 		}
 	}

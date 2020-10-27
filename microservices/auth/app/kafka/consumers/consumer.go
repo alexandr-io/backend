@@ -1,4 +1,4 @@
-package kafka
+package consumers
 
 import (
 	"log"
@@ -9,6 +9,10 @@ import (
 
 // StartConsumers starts all the kafka consumers in goroutines.
 func StartConsumers() {
+	// consumers for outside communication
+	go consumeAuthRequestMessages()
+
+	// consumers for backward communication
 	go consumeRegisterResponseMessages()
 	go consumeLoginResponseMessages()
 	go consumeUserResponseMessages()

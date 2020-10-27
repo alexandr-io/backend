@@ -9,11 +9,6 @@ import (
 
 // KafkaUserLoginRequest is the struct JSON data sent by the auth MS using kafka to login an user.
 type KafkaUserLoginRequest struct {
-	Data KafkaUserLoginRequestData `json:"data"`
-}
-
-// KafkaUserLoginRequestData is the information about the user to login sent by the auth MS.
-type KafkaUserLoginRequestData struct {
 	Login    string `json:"login"`
 	Password string `json:"password"`
 }
