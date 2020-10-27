@@ -3,7 +3,7 @@ package handlers
 import (
 	"github.com/alexandr-io/backend/auth/data"
 	authJWT "github.com/alexandr-io/backend/auth/jwt"
-	"github.com/alexandr-io/backend/auth/kafka/producer"
+	"github.com/alexandr-io/backend/auth/kafka/producers"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -26,7 +26,7 @@ func Login(ctx *fiber.Ctx) error {
 	}
 
 	// Kafka request to user
-	kafkaUser, err := producer.LoginRequestHandler(*userLogin)
+	kafkaUser, err := producers.LoginRequestHandler(*userLogin)
 	if err != nil {
 		return err
 	}

@@ -21,7 +21,6 @@ func errorHandler(ctx *fiber.Ctx, err error) error {
 	// Log the error
 	errorInfo, infoErr := data.ErrorInfoUnmarshal(err.Error())
 	if infoErr == nil {
-		ctx.Request().RequestURI()
 		fmt.Printf("[HTTP ERROR]: %d %s -> [%s:%d] %s\n", code, ctx.Request().RequestURI(), errorInfo.File, errorInfo.Line, errorInfo.Message)
 	} else {
 		fmt.Printf("[HTTP ERROR]: %d %s -> %s\n", code, ctx.Request().RequestURI(), err.Error())

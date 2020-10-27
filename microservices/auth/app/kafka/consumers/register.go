@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/alexandr-io/backend/auth/kafka/producer"
+	"github.com/alexandr-io/backend/auth/kafka/producers"
 )
 
 // consumeRegisterResponseMessages consume all the messages coming to the `register-response` topic.
@@ -28,7 +28,7 @@ func consumeRegisterResponseMessages() {
 		if err == nil {
 			fmt.Printf("[KAFKA]: Message on %s: %s:%s\n", msg.TopicPartition, string(msg.Key), string(msg.Value))
 
-			requestChannelInterface, ok := producer.RegisterRequestChannels.Load(string(msg.Key))
+			requestChannelInterface, ok := producers.RegisterRequestChannels.Load(string(msg.Key))
 			if !ok {
 				log.Printf("Can't load channel %s from requestChannels", msg.Key)
 				continue

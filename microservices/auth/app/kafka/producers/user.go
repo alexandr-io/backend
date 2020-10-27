@@ -1,4 +1,4 @@
-package producer
+package producers
 
 import (
 	"encoding/json"
@@ -13,6 +13,8 @@ import (
 	"github.com/google/uuid"
 )
 
+// UserRequestChannels is the map of channel used to store uuid of kafka message.
+// This is made to retrieve the response message corresponding to the request.
 var UserRequestChannels sync.Map
 
 // UserRequestHandler is the entry point of a new user message to the user MS using kafka.
