@@ -53,7 +53,18 @@ info:
   description: Documentation for the User microservice REST API
   title: Documentation of User API
   version: 1.0.0
-paths: {}
+paths:
+  /me:
+    get:
+      description: Get the information about a user
+      operationId: me
+      responses:
+        "200":
+          $ref: '#/responses/userResponse'
+      security:
+      - Bearer: []
+      tags:
+      - USER
 produces:
 - application/json
 responses:
@@ -73,6 +84,10 @@ responses:
       required:
       - error
       type: object
+  userResponse:
+    description: User data with auth and refresh token
+    schema:
+      $ref: '#/definitions/User'
 schemes:
 - http
 swagger: "2.0"
