@@ -25,8 +25,11 @@ func main() {
 
 	consumers.StartConsumers()
 
-	// Fiber
-	app := fiber.New()
+	// Create a new fiber instance with custom config
+	app := fiber.New(fiber.Config{
+		// Override default error handler
+		ErrorHandler: errorHandler,
+	})
 	createRoute(app)
 	log.Fatal(app.Listen(":3000"))
 }

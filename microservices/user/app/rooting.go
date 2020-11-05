@@ -3,6 +3,9 @@ package main
 import (
 	"net/http"
 
+	"github.com/alexandr-io/backend/user/handlers"
+	userMiddleware "github.com/alexandr-io/backend/user/middleware"
+
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -30,6 +33,8 @@ func createRoute(app *fiber.App) {
 	app.Get("/dashboard", monitor.New())
 	app.Get("/docs", wrapDocHandler())
 	app.Get("/swagger.yml", wrapFileServer())
+
+	app.Get("/me", userMiddleware.Protected(), handlers.Me)
 
 	app.Get("/ping", func(c *fiber.Ctx) error {
 		return c.SendString("pong")
