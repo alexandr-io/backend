@@ -6,10 +6,12 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// swagger:route GET /me User me
-// Get the information about a user.
+// swagger:route GET /me USER me
+// Get the information about a user
+// security:
+//	Bearer:
 // responses:
-//	200: meResponse
+//	200: userResponse
 
 // Me return the data of the connected user.
 func Me(ctx *fiber.Ctx) error {

@@ -16,8 +16,21 @@
 package handlers
 
 import (
+	"github.com/alexandr-io/backend/user/data"
 	"github.com/alexandr-io/berrors"
 )
+
+// Output
+
+// User data with auth and refresh token
+// swagger:response userResponse
+type userResponseWrapper struct {
+	// A single user
+	// in: body
+	Body data.User
+}
+
+// Error
 
 // A bad request error response
 // swagger:response badRequestErrorResponse

@@ -7,7 +7,7 @@ on:
 
 jobs:
   fmt:
-    name: Run code checks
+    name: Run fmt
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout code
@@ -20,6 +20,13 @@ jobs:
           run: fmt
           token: ${{ secrets.GITHUB_TOKEN }}
 
+  import:
+    name: Run go imports
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       # Check imports
       # Using https://godoc.org/golang.org/x/tools/cmd/goimports
       - name: Check imports
@@ -27,6 +34,13 @@ jobs:
         with:
           run: imports
           token: ${{ secrets.GITHUB_TOKEN }}
+
+  lint:
+    name: Run linter
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       # Lint
       # Using https://github.com/golang/lint
