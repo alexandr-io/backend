@@ -34,7 +34,8 @@ func consumeAuthRequestMessages() {
 				continue
 			}
 			// Send to logic
-			_ = internal.Auth(string(msg.Key), messageData)
+			err = internal.Auth(string(msg.Key), messageData)
+			fmt.Printf("Error in Auth internal logic: %s\n", err.Error())
 		} else {
 			log.Printf("Topic: %s -> consumer error: %s", msg.TopicPartition, err)
 		}
