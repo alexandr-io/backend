@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: zookeeper
-        image: wurstmeister/zookeeper
+        image: confluentinc/cp-zookeeper:5.4.3
         imagePullPolicy: Always
 ---
 apiVersion: v1
