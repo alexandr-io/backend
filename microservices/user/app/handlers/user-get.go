@@ -6,8 +6,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// Me return the data of the connected user.
-func Me(ctx *fiber.Ctx) error {
+// GetUser return the data of the connected user.
+func GetUser(ctx *fiber.Ctx) error {
 	// Set Content-Type: application/json
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 

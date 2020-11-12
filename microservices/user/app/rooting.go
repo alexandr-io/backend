@@ -28,7 +28,8 @@ func createRoute(app *fiber.App) {
 	}))
 	app.Get("/dashboard", monitor.New())
 
-	app.Get("/me", userMiddleware.Protected(), handlers.Me)
+	app.Get("/", userMiddleware.Protected(), handlers.GetUser)
+	app.Put("/", userMiddleware.Protected(), handlers.UpdateUser)
 
 	app.Get("/ping", func(c *fiber.Ctx) error {
 		return c.SendString("pong")
