@@ -18,6 +18,7 @@ require (
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/valyala/fasthttp v1.18.0
+	go.mongodb.org/mongo-driver v1.4.4 // indirect
 	go.opentelemetry.io/otel v0.15.0 // indirect
 	golang.org/x/crypto v0.0.0-20201208171446-5f87f3452ae9
 	golang.org/x/sys v0.0.0-20201214210602-f9fddec55a1e // indirect

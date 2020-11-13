@@ -71,7 +71,7 @@ func GetUserByLogin(login string) (*data.User, error) {
 	// Return a login error if the user is not found
 	if err := filteredByEmailSingleResult.Decode(object); err != nil {
 		log.Println(err)
-		return nil, &data.BadInput{
+		return nil, &data.BadInputError{
 			JSONError: berrors.BadInputJSONFromType("login", string(berrors.Login)),
 			Err:       errors.New("can't find user with login " + login),
 		}
@@ -136,7 +136,7 @@ func checkRegisterFieldDuplication(user data.User) error {
 	}
 
 	if len(errorsFields) != 0 {
-		return &data.BadInput{
+		return &data.BadInputError{
 			JSONError: berrors.BadInputsJSON(errorsFields),
 			Err:       errors.New("register duplication error"),
 		}

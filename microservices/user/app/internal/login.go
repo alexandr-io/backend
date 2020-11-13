@@ -19,7 +19,7 @@ func Login(key string, message data.KafkaUserLoginRequest) error {
 	// Get the user from it's login
 	user, err := database.GetUserByLogin(message.Login)
 	if err != nil {
-		var badInput *data.BadInput
+		var badInput *data.BadInputError
 		if errors.As(err, &badInput) {
 			return producers.SendBadRequestLoginMessage(key, badInput.JSONError)
 		}

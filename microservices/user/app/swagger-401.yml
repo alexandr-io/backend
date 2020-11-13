@@ -1,0 +1,5 @@
+responses:
+  unauthorizedErrorResponse:
+    description: An unauthorized error response
+    examples:
+      text/plain: Unauthorized

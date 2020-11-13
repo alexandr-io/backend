@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/alexandr-io/backend/auth/data"
+	"github.com/alexandr-io/backend/user/data"
 
 	"github.com/fatih/structtag"
 	"github.com/gofiber/fiber/v2"

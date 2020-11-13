@@ -7,6 +7,7 @@ require (
 	github.com/andybalholm/brotli v1.0.1 // indirect
 	github.com/aws/aws-sdk-go v1.35.35 // indirect
 	github.com/confluentinc/confluent-kafka-go v1.5.2
+	github.com/fatih/structtag v1.2.0
 	github.com/gofiber/fiber/v2 v2.2.1
 	github.com/golang/snappy v0.0.2 // indirect
 	github.com/google/uuid v1.1.2
@@ -20,6 +21,7 @@ require (
 	golang.org/x/text v0.3.4 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
+	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/yaml.v2 v2.3.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 // indirect
 )
