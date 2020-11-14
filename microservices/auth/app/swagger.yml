@@ -96,7 +96,7 @@ definitions:
         x-go-name: RefreshToken
     required:
     - refresh_token
-    title: authRefresh is the body parameter given to /auth/refresh call.
+    title: authRefresh is the body parameter given to /refresh call.
     type: object
     x-go-package: github.com/alexandr-io/backend/auth/handlers
   field:
@@ -114,7 +114,7 @@ info:
   title: Documentation of Auth API
   version: 1.0.0
 paths:
-  /auth:
+  /:
     get:
       description: Try a simple connection with the given auth token
       operationId: auth
@@ -125,25 +125,6 @@ paths:
           $ref: '#/responses/unauthorizedErrorResponse'
       security:
       - Bearer: []
-      tags:
-      - AUTH
-  /auth/refresh:
-    post:
-      description: Get a new auth and refresh token from a valid refresh token
-      operationId: refresh_token
-      parameters:
-      - description: The information to refresh an auth and refresh token
-        in: body
-        name: Body
-        schema:
-          $ref: '#/definitions/authRefresh'
-      responses:
-        "201":
-          $ref: '#/responses/userResponse'
-        "400":
-          $ref: '#/responses/badRequestErrorResponse'
-        "401":
-          $ref: '#/responses/unauthorizedErrorResponse'
       tags:
       - AUTH
   /login:
@@ -161,6 +142,25 @@ paths:
           $ref: '#/responses/userResponse'
         "400":
           $ref: '#/responses/badRequestErrorResponse'
+      tags:
+      - AUTH
+  /refresh:
+    post:
+      description: Get a new auth and refresh token from a valid refresh token
+      operationId: refresh_token
+      parameters:
+      - description: The information to refresh an auth and refresh token
+        in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/authRefresh'
+      responses:
+        "201":
+          $ref: '#/responses/userResponse'
+        "400":
+          $ref: '#/responses/badRequestErrorResponse'
+        "401":
+          $ref: '#/responses/unauthorizedErrorResponse'
       tags:
       - AUTH
   /register:
@@ -219,7 +219,7 @@ schemes:
 - http
 securityDefinitions:
   Bearer:
-    description: "Alexandrio backend is using both auth token and refresh token.\n\nThe auth token is used to access resources as an authenticated user. This token is only valid for 15 minutes for security purposes.  \nThe auth token is given by the [`/register`](#operation/register), [`/login`](#operation/login) and [`/auth/refresh`](#operation/refresh_token) routes.  \nYou need to send the auth token as a Bearer authentication token in the header of the request to access protected routes.\n\nThe refresh token is used to get a new auth token. When the auth token is expired, you need to send this refresh token to [`/auth/refresh`](#operation/refresh_token) to get a new auth and refresh token.  \nThe refresh token is valid for 30 days and can be used only once. The [`/auth/refresh`](#operation/refresh_token) route return a new refresh token.\n\n<div align=\"center\">\n  <img alt=\"Workflow\" src=\"https://drive.google.com/uc?export=view&id=1h40WfIqjMcUmcJp-vSoKtr1RTUgpLqTH\" />\n</div>\n<center><p style=\"font-size:11px\">Schema of the authentication workflow</p></center>\n"
+    description: "Alexandrio backend is using both auth token and refresh token.\n\nThe auth token is used to access resources as an authenticated user. This token is only valid for 15 minutes for security purposes.  \nThe auth token is given by the [`/register`](#operation/register), [`/login`](#operation/login) and [`/refresh`](#operation/refresh_token) routes.  \nYou need to send the auth token as a Bearer authentication token in the header of the request to access protected routes.\n\nThe refresh token is used to get a new auth token. When the auth token is expired, you need to send this refresh token to [`/refresh`](#operation/refresh_token) to get a new auth and refresh token.  \nThe refresh token is valid for 30 days and can be used only once. The [`/refresh`](#operation/refresh_token) route return a new refresh token.\n\n<div align=\"center\">\n  <img alt=\"Workflow\" src=\"https://drive.google.com/uc?export=view&id=1h40WfIqjMcUmcJp-vSoKtr1RTUgpLqTH\" />\n</div>\n<center><p style=\"font-size:11px\">Schema of the authentication workflow</p></center>\n"
     in: header
     name: Bearer
     type: Bearer
