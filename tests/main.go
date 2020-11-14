@@ -1,11 +1,10 @@
 package main
 
 import (
-	"fmt"
-	authTests "github.com/alexandr-io/backend/auth/tests"
 	"log"
 	"os"
 
+	authTests "github.com/alexandr-io/backend/auth/tests"
 	"github.com/urfave/cli/v2"
 )
 
@@ -80,12 +79,10 @@ func parseAndExecTests(c *cli.Context, environment string) error {
 }
 
 func execUser(environment string) error {
-	fmt.Println("user")
 	return nil
 }
 
 func execAuth(environment string) error {
-	fmt.Println("auth")
 	if err := authTests.ExecAuthTests(environment); err != nil {
 		return err
 	}

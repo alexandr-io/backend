@@ -11,12 +11,12 @@ func ExecAuthTests(environment string) error {
 	rand.Seed(time.Now().UnixNano())
 	var errorHappened = false
 
-	baseUrl, err := getBaseURL(environment)
+	baseURL, err := getBaseURL(environment)
 	if err != nil {
 		return err
 	}
 
-	err = workingTestSuit(baseUrl)
+	err = workingTestSuit(baseURL)
 	if err != nil {
 		errorHappened = true
 	}
