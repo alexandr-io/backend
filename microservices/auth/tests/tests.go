@@ -16,8 +16,13 @@ func ExecAuthTests(environment string) error {
 		return err
 	}
 
-	err = workingTestSuit(baseURL)
-	if err != nil {
+	if err = workingTestSuit(baseURL); err != nil {
+		errorHappened = true
+	}
+	if err = badRequestTests(baseURL); err != nil {
+		errorHappened = true
+	}
+	if err = incorrectTests(baseURL); err != nil {
 		errorHappened = true
 	}
 
@@ -65,5 +70,31 @@ func workingTestSuit(baseURL string) error {
 		return err
 	}
 
+	return nil
+}
+
+func badRequestTests(baseURL string) error {
+	if err := testRegisterBadRequest(baseURL); err != nil {
+		return err
+	}
+	if err := testLoginBadRequest(baseURL); err != nil {
+		return err
+	}
+	return nil
+}
+
+func incorrectTests(baseURL string) error {
+	if err := testRegisterDuplicate(baseURL); err != nil {
+		return err
+	}
+	if err := testLoginNoMatch(baseURL); err != nil {
+		return err
+	}
+	if err := testAuthInvalidToken(baseURL); err != nil {
+		return err
+	}
+	if err := testRefreshInvalidToken(baseURL); err != nil {
+		return err
+	}
 	return nil
 }

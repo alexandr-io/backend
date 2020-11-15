@@ -21,12 +21,12 @@ func testAuthWorking(baseURL string, userData *user) error {
 	// Exec request
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		fmt.Println("[AUTH]: GET\t/\t\t-> Fail\tCan't call " + baseURL)
+		fmt.Println("[AUTH]: GET\t/\t\tWorking Suit\t✗\tCan't call " + baseURL)
 		return err
 	}
 	// Check returned http code
 	if res.StatusCode != http.StatusOK {
-		errorString := fmt.Sprintf("[AUTH]: GET\t/\t\t-> Fail\t[Expected: %d,\tGot: %d]", http.StatusOK, res.StatusCode)
+		errorString := fmt.Sprintf("[AUTH]: GET\t/\t\tWorking Suit\t✗\t[Expected: %d,\tGot: %d]", http.StatusOK, res.StatusCode)
 		fmt.Println(errorString)
 		return errors.New(errorString)
 	}
@@ -38,10 +38,35 @@ func testAuthWorking(baseURL string, userData *user) error {
 	}
 	// Compare body with expected result
 	if string(body) != expectedResult {
-		errorString := fmt.Sprintf("[AUTH]: GET\t/\t\t-> Fail\t[Expected: %s,\tGot: %s]", expectedResult, string(body))
+		errorString := fmt.Sprintf("[AUTH]: GET\t/\t\tWorking Suit\t✗\t[Expected: %s,\tGot: %s]", expectedResult, string(body))
 		fmt.Println(errorString)
 		return errors.New(errorString)
 	}
-	fmt.Println("[AUTH]: GET\t/\t\t-> Success")
+	fmt.Println("[AUTH]: GET\t/\t\tWorking Suit\t✓")
+	return nil
+}
+
+func testAuthInvalidToken(baseURL string) error {
+	// Create a new request to auth route
+	req, err := http.NewRequest(http.MethodGet, baseURL, nil)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	req.Header.Set("Authorization", "Bearer randomString")
+	// Exec request
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		fmt.Println("[AUTH]: GET\t/\t\tInvalid Token\t✗\tCan't call " + baseURL)
+		return err
+	}
+	// Check returned http code
+	if res.StatusCode != http.StatusUnauthorized {
+		errorString := fmt.Sprintf("[AUTH]: GET\t/\t\tInvalid Token\t✗\t[Expected: %d,\tGot: %d]", http.StatusUnauthorized, res.StatusCode)
+		fmt.Println(errorString)
+		return errors.New(errorString)
+	}
+
+	fmt.Println("[AUTH]: GET\t/\t\tInvalid Token\t✓")
 	return nil
 }
