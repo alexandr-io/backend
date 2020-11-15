@@ -20,7 +20,7 @@ func randStringRunes(length int) string {
 	for i := range b {
 		b[i] = letterRunes[rand.Intn(len(letterRunes))]
 	}
-	return string(b)
+	return "test-" + string(b)
 }
 
 func testRegisterWorking(baseURL string) (*user, error) {
