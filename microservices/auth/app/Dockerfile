@@ -25,6 +25,5 @@ RUN go build -a -tags musl -installsuffix cgo -ldflags '-extldflags "-static"' -
 FROM scratch
 
 COPY --from=builder /app/alexandrio-backend-auth ./
-COPY --from=builder /app/swagger.yml ./
 
 ENTRYPOINT ["./alexandrio-backend-auth"]

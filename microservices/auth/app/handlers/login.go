@@ -8,12 +8,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// swagger:route POST /login AUTH login
-// Login a user and return it's information, auth token and refresh token
-// responses:
-//	200: userResponse
-//	400: badRequestErrorResponse
-
 // Login take a userLogin in the body to login a user to the backend.
 // The login route return a data.User.
 func Login(ctx *fiber.Ctx) error {
