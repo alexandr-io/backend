@@ -8,7 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// authRefresh is the body parameter given to /auth/refresh call.
+// authRefresh is the body parameter given to /refresh call.
 // swagger:model
 type authRefresh struct {
 	// The refresh token of the user
@@ -17,7 +17,7 @@ type authRefresh struct {
 	RefreshToken string `json:"refresh_token" validate:"required"`
 }
 
-// swagger:route POST /auth/refresh AUTH refresh_token
+// swagger:route POST /refresh AUTH refresh_token
 // Get a new auth and refresh token from a valid refresh token
 // responses:
 //	201: userResponse

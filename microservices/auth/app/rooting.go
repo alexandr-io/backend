@@ -34,7 +34,7 @@ func createRoute(app *fiber.App) {
 
 	app.Post("/register", handlers.Register)
 	app.Post("/login", handlers.Login)
-	app.Post("/auth/refresh", handlers.RefreshAuthToken)
+	app.Post("/refresh", handlers.RefreshAuthToken)
 	app.Get("/auth", authMiddleware.Protected(), handlers.Auth)
 
 	app.Get("/docs", wrapDocHandler())
