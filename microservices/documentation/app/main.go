@@ -17,11 +17,11 @@ func init() {
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	log.Println("Auth Service started")
+	log.Println("Documentation Service started")
 
 	// Create a new fiber instance with custom config
 	app := fiber.New()
 	createRoute(app)
 
-	log.Fatal(app.Listen(":2999"))
+	log.Fatal(app.Listen(":3000"))
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/go-openapi/runtime/middleware"
@@ -30,7 +29,6 @@ func createRoute(app *fiber.App) {
 }
 
 func wrapDocHandler() func(ctx *fiber.Ctx) error {
-	fmt.Println("redoc")
 	options := middleware.RedocOpts{SpecURL: "/swagger.yml"}
 	swaggerHandler := middleware.Redoc(options, nil)
 

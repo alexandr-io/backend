@@ -113,7 +113,7 @@ services:
       dockerfile: Dockerfile-dev
     env_file: .env-dev
     ports:
-      - "2999:2999"
+      - "4000:3000"
     volumes:
       - "./microservices/documentation/app:/app"
 
