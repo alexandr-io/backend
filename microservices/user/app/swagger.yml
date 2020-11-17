@@ -1,6 +1,6 @@
 basePath: /
 consumes:
-- application/json
+  - application/json
 definitions:
   BadInput:
     properties:
@@ -35,8 +35,8 @@ definitions:
         type: string
         x-go-name: Username
     required:
-    - username
-    - email
+      - username
+      - email
     type: object
     x-go-package: github.com/alexandr-io/backend/user/data
   field:
@@ -52,21 +52,43 @@ definitions:
 info:
   description: Documentation for the User microservice REST API
   title: Documentation of User API
-  version: 1.0.0
 paths:
-  /me:
+  /:
     get:
       description: Get the information about a user
-      operationId: me
+      operationId: get_user
       responses:
         "200":
           $ref: '#/responses/userResponse'
+        "401":
+          $ref: '#/responses/unauthorizedErrorResponse'
       security:
-      - Bearer: []
+        - Bearer: []
       tags:
-      - USER
+        - USER
+    put:
+      description: Get the information about a user
+      operationId: update_user
+      parameters:
+        - description: The information to update a user
+          in: body
+          name: Body
+          schema:
+            $ref: '#/definitions/User'
+      produces:
+        - application/json
+        - text/plain
+      responses:
+        "200":
+          $ref: '#/responses/userResponse'
+        "401":
+          $ref: '#/responses/unauthorizedErrorResponse'
+      security:
+        - Bearer: []
+      tags:
+        - USER
 produces:
-- application/json
+  - application/json
 responses:
   badRequestErrorResponse:
     description: A bad request error response
@@ -74,20 +96,19 @@ responses:
       $ref: '#/definitions/BadInput'
   unauthorizedErrorResponse:
     description: An unauthorized error response
-    schema:
-      properties:
-        error:
-          description: The error message
-          example: Invalid or expired JWT
-          type: string
-          x-go-name: Error
-      required:
-      - error
-      type: object
+    examples:
+      text/plain: Unauthorized
   userResponse:
     description: User data with auth and refresh token
     schema:
       $ref: '#/definitions/User'
 schemes:
-- http
+  - http
+securityDefinitions:
+  Bearer:
+    description: |
+      The documentation of authentification Bearer token can be found in the <a href="http://auth.preprod.alexandrio.cloud/docs" target="_blank">auth microservice doc page</a>.
+    in: header
+    name: Bearer
+    type: Bearer
 swagger: "2.0"

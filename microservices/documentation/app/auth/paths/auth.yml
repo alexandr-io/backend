@@ -1,0 +1,18 @@
+---
+paths:
+  /auth:
+    get:
+      description: Try a simple connection with the given auth token
+      summary: Test Authentication
+      responses:
+        "200":
+          $ref: '#/components/schemas/AuthResponse'
+        "401":
+          $ref: '#/components/schemas/UnauthorizedErrorResponse'
+      security:
+        - Bearer Auth: []
+      servers:
+        - url: //auth.alexandrio.cloud
+          description: Production server
+      tags:
+        - AUTH

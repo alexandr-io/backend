@@ -1,0 +1,16 @@
+---
+components:
+  schemas:
+    AuthResponse:
+      description: A simple response from a simple route
+      content:
+        application/json:
+          schema:
+            properties:
+              username:
+                description: The connected user's username
+                example: john
+                type: string
+            required:
+              - username
+            type: object

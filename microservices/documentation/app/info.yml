@@ -1,0 +1,12 @@
+---
+openapi: 3.0.2
+info:
+  description: Documentation for the Alexandrio's REST API
+  title: REST API Documentation
+schemes:
+  - http
+tags:
+  - name: AUTH
+    description: Micro service auth. Everything about the authentication
+  - name: USER
+    description: Micro service user. Everything about the users

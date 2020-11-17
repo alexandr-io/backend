@@ -1,0 +1,9 @@
+---
+components:
+  schemas:
+    BadRequestErrorResponse:
+      description: A bad request error response
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BadInput"

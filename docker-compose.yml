@@ -105,5 +105,18 @@ services:
     volumes:
       - "./microservices/auth/app:/app"
 
+  # Documentation service
+  documentation:
+    container_name: documentation
+    build:
+      context: microservices/documentation/app
+      dockerfile: Dockerfile-dev
+    env_file: .env-dev
+    ports:
+      - "2999:2999"
+    volumes:
+      - "./microservices/documentation/app:/app"
+
+
 volumes:
   mongodb_data_container:

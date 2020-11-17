@@ -1,0 +1,29 @@
+---
+components:
+  schemas:
+    UserRegister:
+      properties:
+        username:
+          description: The username of the user
+          example: john
+          type: string
+        email:
+          description: The email of the user
+          example: john@provider.net
+          type: string
+        password:
+          description: The password of the user
+          example: leHAiOjE1OTgzNz
+          type: string
+        confirm_password:
+          description: The confirmation password of the user
+          example: leHAiOjE1OTgzNz
+          type: string
+      required:
+        - email
+        - username
+        - password
+        - confirm_password
+      title: UserRegister is the body parameter given to register a new user to the
+        database.
+      type: object
