@@ -1,12 +1,13 @@
 package main
 
 import (
-	"github.com/gofiber/fiber/v2"
-	"github.com/miracl/conflate"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/miracl/conflate"
 )
 
 func getAllFilesToMerge(thisDir string) ([]string, error) {
