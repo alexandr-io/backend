@@ -41,7 +41,7 @@ type Library struct {
 	Books []BookInfo `json:"books" bson:"books"`
 }
 
-// Library defines the structure for an API libraries
+// Libraries defines the structure for an API libraries
 type Libraries struct {
 	UserID    string   `bson:"user_id,omitempty"`
 	Libraries []string `bson:"libraries"`
@@ -56,7 +56,7 @@ type LibrariesNames struct {
 	Names []string `json:"names" bson:"name"`
 }
 
-// Library defines the structure for an API library name
+// LibraryName defines the structure for an API library name
 type LibraryName struct {
 	// The name of a library
 	// required: true
