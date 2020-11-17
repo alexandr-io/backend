@@ -1,4 +1,24 @@
+basePath: /
+consumes:
+- application/json
 definitions:
+  BadInput:
+    properties:
+      fields:
+        items:
+          $ref: '#/definitions/field'
+        type: array
+        x-go-name: Fields
+    type: object
+    x-go-package: github.com/alexandr-io/berrors
+  Book:
+    description: Book define the structure for an API book
+    properties:
+      LastPage:
+        format: uint64
+        type: integer
+    type: object
+    x-go-package: github.com/alexandr-io/backend/library/data
   BookInfo:
     description: BookInfo defines the structure of the information on a book
     properties:
@@ -11,7 +31,7 @@ definitions:
         description: The url of the cover on the media server
         example: https://media.alexandrio.cloud/ef45f[...]feUEgE7.png
         type: string
-        x-go-name: CoverUrl
+        x-go-name: CoverURL
       description:
         description: The description of the book
         example: Pride and Prejudice is set in rural England in the early 19th century [...] and by prejudice against Darcy’s snobbery.
@@ -35,36 +55,117 @@ definitions:
     - cover_url
     type: object
     x-go-package: github.com/alexandr-io/backend/library/data
+  Libraries:
+    description: Libraries defines the structure for API libraries
+    properties:
+      libraries:
+        description: The lists containing the libraries IDs (the list can be empty `[]`)
+        items:
+          type: string
+        type: array
+        x-go-name: Libraries
+      user_id:
+        description: The username of the library owner
+        example: john
+        type: string
+        x-go-name: UserID
+    required:
+    - user_id
+    - libraries
+    type: object
+    x-go-package: github.com/alexandr-io/backend/library/data
+  LibrariesNames:
+    properties:
+      names:
+        description: The names of the libraries of a user
+        example:
+        - general
+        - action
+        - adventure
+        items:
+          type: string
+        type: array
+        x-go-name: Names
+    required:
+    - names
+    title: LibrariesNames is the format of the data return when fetching libraries names.
+    type: object
+    x-go-package: github.com/alexandr-io/backend/library/data
   Library:
-    description: Library defines the structure for an API library
     properties:
       books:
-        description: The lists containing the information on the books in the library
+        description: The lists containing the information on the books of this library  (the list can be empty `[]`)
         items:
           $ref: '#/definitions/BookInfo'
         type: array
         x-go-name: Books
-      username:
-        description: The username of the library owner
-        example: john
+      description:
+        description: A brief description of the library
+        example: General library with every unsorted books
         type: string
-        x-go-name: Username
+        x-go-name: Description
+      name:
+        description: The name of the library
+        example: Cartoons
+        type: string
+        x-go-name: Name
     required:
-    - username
+    - name
     - books
     type: object
     x-go-package: github.com/alexandr-io/backend/library/data
-  LibraryOwner:
-    description: LibraryCreation is the body parameter given to create a new  library
+  field:
     properties:
-      username:
-        description: The username of the library owner
-        example: john
+      name:
         type: string
-        x-go-name: Username
-    required:
-    - username
+        x-go-name: Name
+      reason:
+        type: string
+        x-go-name: Reason
     type: object
-    x-go-package: github.com/alexandr-io/backend/library/data
-paths: {}
+    x-go-package: github.com/alexandr-io/berrors
+info:
+  description: Documentation for the Library microservice REST API
+  title: Documentation of Library API
+  version: 1.0.0
+paths:
+  /libraries:
+    get:
+      description: Retrieve the libraries names of the connected user
+      operationId: libraries_list
+      responses:
+        "200":
+          $ref: '#/responses/librariesNamesResponse'
+        "400":
+          $ref: '#/responses/badRequestErrorResponse'
+      tags:
+      - LIBRARY
+  /library:
+    post:
+      description: Create a library for the connected user
+      operationId: library_creation
+      responses:
+        "200":
+          $ref: '#/responses/librariesNamesResponse'
+        "400":
+          $ref: '#/responses/badRequestErrorResponse'
+      tags:
+      - LIBRARY
+produces:
+- application/json
+responses:
+  badRequestErrorResponse:
+    description: A bad request error response
+    schema:
+      $ref: '#/definitions/BadInput'
+  librariesNamesResponse:
+    description: A list of the user libraries names
+    schema:
+      $ref: '#/definitions/LibrariesNames'
+  libraryResponse:
+    description: A library
+    schema:
+      $ref: '#/definitions/Library'
+schemes:
+- http
 swagger: "2.0"

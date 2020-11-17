@@ -1,6 +1,7 @@
 package data
 
 // BookInfo defines the structure of the information on a book
+// swagger:model
 type BookInfo struct {
 	// The title of the book
 	// required: true
@@ -18,20 +19,44 @@ type BookInfo struct {
 	// required: true
 	// example: Pride and Prejudice is set in rural England in the early 19th century [...] and by prejudice against Darcy’s snobbery.
 	Description string `json:"description,omitempty" bson:"description,omitempty"`
-	// The url of the cover on the media server
+	// The id of the cover on the media server
 	// required: true
-	// example: https://media.alexandrio.cloud/ef45f[...]feUEgE7.png
-	CoverUrl string `json:"cover_url,omitempty" bson:"cover_url,omitempty"`
+	// example: ef45f[...]feUEgE7
+	CoverID string `json:"cover_id,omitempty" bson:"cover_id,omitempty"`
 }
 
-// Library defines the structure for an API library
-// swagger:model
 type Library struct {
-	// The username of the library owner
+	ID string `json:"-" bson:"_id,omitempty"`
+	// The name of the library
 	// required: true
-	// example: john
-	Username string `json:"username,omitempty" bson:"username,omitempty"`
-	// The lists containing the information on the books in the library
+	// example: Cartoons
+	Name string `json:"name,omitempty" bson:"name,omitempty"`
+	// A brief description of the library
+	// required: false
+	// example: General library with every unsorted books
+	Description string `json:"description" bson:"description"`
+	// The lists containing the information on the books of this library  (the list can be empty `[]`)
 	// required: true
-	Books []BookInfo `json:"books,omitempty" bson:"books"`
+	Books []BookInfo `json:"books" bson:"books"`
+}
+
+type Libraries struct {
+	UserID    string   `bson:"user_id,omitempty"`
+	Libraries []string `bson:"libraries"`
+}
+
+// LibrariesNames is the format of the data return when fetching libraries names.
+// swagger:model
+type LibrariesNames struct {
+	// The names of the libraries of a user
+	// required: true
+	// example: ["general", "action", "adventure"]
+	Names []string `json:"names" bson:"name"`
+}
+
+type LibraryName struct {
+	// The name of a library
+	// required: true
+	// example: general
+	Name string `json:"name" bson:"name"`
 }

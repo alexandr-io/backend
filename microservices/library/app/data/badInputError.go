@@ -1,6 +1,6 @@
 package data
 
-// BadInput is the error type for the BadRequest error.
+// BadInputError is the error type for the BadRequest error.
 type BadInputError struct {
 	JSONError []byte
 	Err       error

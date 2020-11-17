@@ -9,11 +9,11 @@ import (
 	"go.mongodb.org/mongo-driver/x/bsonx"
 )
 
-// createLibraryUniqueIndexes init the library collection. It add a unique index to the username field.
-func createLibraryUniqueIndexes() {
-	libraryCollection := Instance.Db.Collection(CollectionLibrary)
+// createLibrariesUniqueIndexes init the library collection. It add a unique index to the username field.
+func createLibrariesUniqueIndexes() {
+	librariesCollection := Instance.Db.Collection(CollectionLibraries)
 
-	_, err := libraryCollection.Indexes().CreateOne(
+	_, err := librariesCollection.Indexes().CreateOne(
 		context.Background(),
 		mongo.IndexModel{
 			Keys:    bsonx.Doc{{"username", bsonx.Int32(1)}},

@@ -7,3 +7,7 @@ type UserRegister struct {
 	Password        string `json:"password" validate:"required"`
 	ConfirmPassword string `json:"confirm_password" validate:"required"`
 }
+
+type UserRegisterLibraries struct {
+	UserID string `json:"user_id"`
+}

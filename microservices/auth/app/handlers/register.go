@@ -34,6 +34,13 @@ func Register(ctx *fiber.Ctx) error {
 		return err
 	}
 
+	// Create the libraries of the user on the library MS
+	userRegisterLibraries := new(data.UserRegisterLibraries)
+	userRegisterLibraries.UserID = kafkaUser.ID
+	if err := producers.CreateUserLibrariesRequestHandler(*userRegisterLibraries); err != nil {
+		return err
+	}
+
 	// Create auth and refresh token
 	refreshToken, authToken, err := authJWT.GenerateNewRefreshTokenAndAuthToken(ctx, kafkaUser.ID)
 	if err != nil {

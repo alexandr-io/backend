@@ -4,6 +4,8 @@ import (
 	"net/http"
 
 	"github.com/alexandr-io/backend/library/handlers"
+	userMiddleware "github.com/alexandr-io/backend/library/middleware"
+
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -28,8 +30,11 @@ func createRoute(app *fiber.App) {
 		},
 	}))
 
-	app.Post("/library", handlers.LibraryCreation)
-	app.Get("/library", handlers.LibraryRetrieve)
+	app.Post("/library", userMiddleware.Protected(), handlers.LibraryCreation)
+	app.Get("/library", userMiddleware.Protected(), handlers.LibraryRetrieve)
+	app.Delete("/library", userMiddleware.Protected(), handlers.LibraryDelete)
+
+	app.Get("/libraries", userMiddleware.Protected(), handlers.LibrariesRetrieve)
 
 	app.Get("/docs", wrapDocHandler())
 	app.Get("/swagger.yml", wrapFileServer())
