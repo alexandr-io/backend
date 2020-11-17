@@ -19,7 +19,6 @@ RUN go build -a -installsuffix cgo -ldflags '-extldflags "-static"' -o alexandri
 # Run stage
 FROM scratch
 
-COPY --from=builder /app/alexandrio-backend-documentation ./
-COPY --from=builder /app/**/*.yml ./
+COPY --from=builder /app/ ./
 
-ENTRYPOINT ["./alexandrio-backend-auth"]
+ENTRYPOINT ["./alexandrio-backend-documentation"]

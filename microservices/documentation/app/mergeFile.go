@@ -1,16 +1,12 @@
 package main
 
 import (
-	"fmt"
+	"github.com/gofiber/fiber/v2"
+	"github.com/miracl/conflate"
 	"io/ioutil"
 	"log"
 	"os"
-	"path"
 	"path/filepath"
-	"runtime"
-
-	"github.com/gofiber/fiber/v2"
-	"github.com/miracl/conflate"
 )
 
 func getAllFilesToMerge(thisDir string) ([]string, error) {
@@ -28,9 +24,11 @@ func getAllFilesToMerge(thisDir string) ([]string, error) {
 }
 
 func mergeDocsFiles(ctx *fiber.Ctx) error {
-
-	_, thisFile, _, _ := runtime.Caller(0)
-	thisDir := path.Dir(thisFile)
+	thisDir, err := os.Getwd()
+	if err != nil {
+		log.Println(err)
+		return err
+	}
 
 	matches, err := getAllFilesToMerge(thisDir)
 	if err != nil {
@@ -53,6 +51,5 @@ func mergeDocsFiles(ctx *fiber.Ctx) error {
 		log.Println(err)
 		return err
 	}
-	fmt.Println("Wrote swagger.yml")
 	return ctx.Next()
 }
