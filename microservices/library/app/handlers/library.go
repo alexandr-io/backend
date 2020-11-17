@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"errors"
+
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
 	"github.com/gofiber/fiber/v2"
@@ -114,6 +115,7 @@ func LibraryCreation(ctx *fiber.Ctx) error {
 	return nil
 }
 
+// LibraryDelete delete a library of the connected user.
 func LibraryDelete(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 

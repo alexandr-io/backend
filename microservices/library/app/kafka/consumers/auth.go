@@ -2,8 +2,9 @@ package consumers
 
 import (
 	"fmt"
-	"github.com/alexandr-io/backend/library/kafka/producers"
 	"log"
+
+	"github.com/alexandr-io/backend/library/kafka/producers"
 )
 
 // consumeAuthResponseMessages consume all the messages coming to the `auth-response` topic.

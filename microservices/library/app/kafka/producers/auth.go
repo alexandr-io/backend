@@ -3,12 +3,13 @@ package producers
 import (
 	"encoding/json"
 	"fmt"
+	"sync"
+	"time"
+
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"sync"
-	"time"
 )
 
 // AuthRequestChannels is the map of channel used to store uuid of kafka message.

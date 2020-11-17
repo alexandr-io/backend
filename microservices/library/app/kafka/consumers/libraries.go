@@ -2,9 +2,10 @@ package consumers
 
 import (
 	"fmt"
+	"log"
+
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/internal"
-	"log"
 )
 
 // consumeLibrariesCreationMessages consume all the kafka message from the `login` topic.

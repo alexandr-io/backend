@@ -2,8 +2,9 @@ package main
 
 import (
 	"context"
-	"github.com/alexandr-io/backend/library/kafka/consumers"
 	"log"
+
+	"github.com/alexandr-io/backend/library/kafka/consumers"
 
 	"github.com/alexandr-io/backend/library/database"
 

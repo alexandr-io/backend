@@ -1,12 +1,14 @@
 package producers
 
 import (
+	"time"
+
 	"github.com/alexandr-io/backend/auth/data"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/google/uuid"
-	"time"
 )
 
+// CreateUserLibrariesRequestHandler produce a message to the `libraries-creation-request` topic.
 func CreateUserLibrariesRequestHandler(user data.UserRegisterLibraries) error {
 	// Generate UUID
 	id := uuid.New()

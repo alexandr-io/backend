@@ -2,8 +2,9 @@ package data
 
 import (
 	"encoding/json"
-	"github.com/alexandr-io/berrors"
 	"log"
+
+	"github.com/alexandr-io/berrors"
 )
 
 // KafkaResponseMessage is used to get the Code from a kafka message.

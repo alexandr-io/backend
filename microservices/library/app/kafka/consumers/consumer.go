@@ -1,9 +1,10 @@
 package consumers
 
 import (
-	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"log"
 	"os"
+
+	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
 // StartConsumers starts all the kafka consumers in goroutines.

@@ -2,9 +2,10 @@ package producers
 
 import (
 	"fmt"
-	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"log"
 	"os"
+
+	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
 // newProducer create a new kafka producers.

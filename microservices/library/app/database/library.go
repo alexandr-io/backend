@@ -3,19 +3,22 @@ package database
 import (
 	"context"
 	"errors"
+	"log"
+	"time"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"log"
-	"time"
 
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/berrors"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-// CollectionLibrary is the name of the library collection in mongodb
+// CollectionLibraries is the name of the libraries collection in mongodb
 const CollectionLibraries = "libraries"
+
+// CollectionLibrary is the name of the library collection in mongodb
 const CollectionLibrary = "library"
 
 //
@@ -32,6 +35,7 @@ func FindOneWithFilter(collectionName string, object interface{}, filters interf
 	return filteredSingleResult.Decode(object)
 }
 
+// GetLibraryByUserIDAndName retrieve a library from a user and the name of a library.
 func GetLibraryByUserIDAndName(user data.LibrariesOwner, library data.LibraryName) (*data.Library, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -206,6 +210,7 @@ func InsertLibrary(user data.LibrariesOwner, library data.Library) (*data.Librar
 	return object, nil
 }
 
+// DeleteLibrary delete the library for a user and the name of the library.
 func DeleteLibrary(user data.LibrariesOwner, libraryName data.LibraryName) error {
 	library, err := GetLibraryByUserIDAndName(user, libraryName)
 	if err != nil {

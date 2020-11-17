@@ -7,6 +7,8 @@ import (
 	"github.com/alexandr-io/backend/library/database"
 )
 
+// CreateLibraries is triggered by a kafka topic.
+// Create a libraries for a user.
 func CreateLibraries(_ string, message data.KafkaLibrariesCreationRequest) error {
 
 	libraries := data.Libraries{
