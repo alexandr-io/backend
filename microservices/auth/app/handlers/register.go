@@ -8,12 +8,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// swagger:route POST /register AUTH register
-// Register a new user and return it's information, auth token and refresh token
-// responses:
-//	201: userResponse
-//	400: badRequestErrorResponse
-
 // Register take a data.UserRegister in the body to create a new user in the database.
 // The register route return a data.User.
 func Register(ctx *fiber.Ctx) error {
