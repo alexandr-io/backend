@@ -2,8 +2,19 @@ package tests
 
 import (
 	"errors"
+	"fmt"
 	"math/rand"
 	"time"
+
+	"github.com/fatih/color"
+)
+
+var (
+	green    = color.New(color.FgGreen).SprintFunc()
+	red      = color.New(color.FgRed).SprintFunc()
+	cyan     = color.New(color.FgCyan).SprintfFunc()
+	magenta  = color.New(color.FgHiMagenta).SprintfFunc()
+	backCyan = color.New(color.BgCyan).Add(color.FgBlack).SprintfFunc()
 )
 
 // ExecAuthTests execute integration tests of auth MS routes
@@ -39,7 +50,7 @@ func getBaseURL(environment string) (string, error) {
 	case "preprod":
 		return "http://auth.preprod.alexandrio.cloud/", nil
 	case "prod":
-		return "http://auth.alexandrio.cloud", nil
+		return "http://auth.alexandrio.cloud/", nil
 	default:
 		return "", errors.New("provided environment unknown")
 	}
@@ -97,4 +108,44 @@ func incorrectTests(baseURL string) error {
 		return err
 	}
 	return nil
+}
+
+func newSuccessMessage(verb string, route string, test string) {
+	coloredVerb := verb
+	switch verb {
+	case "GET":
+		coloredVerb = green(verb)
+		break
+	case "POST":
+		coloredVerb = cyan(verb)
+		break
+	case "PUT":
+		coloredVerb = magenta(verb)
+		break
+	case "DELETE":
+		coloredVerb = red(verb)
+		break
+	}
+
+	fmt.Printf("%s\t %s\t%-20s%-14s%-5s\n", backCyan("[AUTH]"), coloredVerb, route, test, green("✓"))
+}
+
+func newFailureMessage(verb string, route string, test string, message string) {
+	coloredVerb := verb
+	switch verb {
+	case "GET":
+		coloredVerb = green(verb)
+		break
+	case "POST":
+		coloredVerb = cyan(verb)
+		break
+	case "PUT":
+		coloredVerb = magenta(verb)
+		break
+	case "DELETE":
+		coloredVerb = red(verb)
+		break
+	}
+
+	fmt.Printf("%s\t %s\t%-20s%-14s%-5s\t%s\n", backCyan("[AUTH]"), coloredVerb, route, test, red("✗"), message)
 }

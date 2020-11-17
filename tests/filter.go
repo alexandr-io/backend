@@ -44,6 +44,10 @@ func filters(c *cli.Context) ([]microservicesFunc, error) {
 		for _, element := range excludeMap {
 			includeFuncs = append(includeFuncs, element)
 		}
+	} else {
+		for _, element := range microservicesIncludeMap {
+			includeFuncs = append(includeFuncs, element)
+		}
 	}
 	return includeFuncs, nil
 }

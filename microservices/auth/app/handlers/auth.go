@@ -7,7 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// swagger:route GET / AUTH auth
+// swagger:route GET /auth AUTH auth
 // Try a simple connection with the given auth token
 // security:
 //	Bearer:

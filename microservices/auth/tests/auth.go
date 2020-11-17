@@ -12,7 +12,7 @@ func testAuthWorking(baseURL string, userData *user) error {
 	// Describe expected result
 	expectedResult := fmt.Sprintf("{\"username\":\"%s\"}", userData.Username)
 	// Create a new request to auth route
-	req, err := http.NewRequest(http.MethodGet, baseURL, nil)
+	req, err := http.NewRequest(http.MethodGet, baseURL+"auth", nil)
 	if err != nil {
 		log.Println(err)
 		return err
@@ -21,14 +21,13 @@ func testAuthWorking(baseURL string, userData *user) error {
 	// Exec request
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		fmt.Println("[AUTH]: GET\t/\t\tWorking Suit\t✗\tCan't call " + baseURL)
+		newFailureMessage("GET", "/auth", "Working Suit", "Can't call "+baseURL+"auth")
 		return err
 	}
 	// Check returned http code
 	if res.StatusCode != http.StatusOK {
-		errorString := fmt.Sprintf("[AUTH]: GET\t/\t\tWorking Suit\t✗\t[Expected: %d,\tGot: %d]", http.StatusOK, res.StatusCode)
-		fmt.Println(errorString)
-		return errors.New(errorString)
+		newFailureMessage("GET", "/auth", "Working Suit", fmt.Sprintf("[Expected: %d,\tGot: %d]", http.StatusOK, res.StatusCode))
+		return errors.New("")
 	}
 	// Read returned body
 	body, err := ioutil.ReadAll(res.Body)
@@ -38,17 +37,16 @@ func testAuthWorking(baseURL string, userData *user) error {
 	}
 	// Compare body with expected result
 	if string(body) != expectedResult {
-		errorString := fmt.Sprintf("[AUTH]: GET\t/\t\tWorking Suit\t✗\t[Expected: %s,\tGot: %s]", expectedResult, string(body))
-		fmt.Println(errorString)
-		return errors.New(errorString)
+		newFailureMessage("GET", "/auth", "Working Suit", fmt.Sprintf("[Expected: %s,\tGot: %s]", expectedResult, string(body)))
+		return errors.New("")
 	}
-	fmt.Println("[AUTH]: GET\t/\t\tWorking Suit\t✓")
+	newSuccessMessage("GET", "/auth", "Working Suit")
 	return nil
 }
 
 func testAuthInvalidToken(baseURL string) error {
 	// Create a new request to auth route
-	req, err := http.NewRequest(http.MethodGet, baseURL, nil)
+	req, err := http.NewRequest(http.MethodGet, baseURL+"auth", nil)
 	if err != nil {
 		log.Println(err)
 		return err
@@ -57,16 +55,15 @@ func testAuthInvalidToken(baseURL string) error {
 	// Exec request
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		fmt.Println("[AUTH]: GET\t/\t\tInvalid Token\t✗\tCan't call " + baseURL)
+		newFailureMessage("GET", "/auth", "Invalid Token", "Can't call "+baseURL+"auth")
 		return err
 	}
 	// Check returned http code
 	if res.StatusCode != http.StatusUnauthorized {
-		errorString := fmt.Sprintf("[AUTH]: GET\t/\t\tInvalid Token\t✗\t[Expected: %d,\tGot: %d]", http.StatusUnauthorized, res.StatusCode)
-		fmt.Println(errorString)
-		return errors.New(errorString)
+		newFailureMessage("GET", "/auth", "Invalid Token", fmt.Sprintf("[Expected: %d,\tGot: %d]", http.StatusUnauthorized, res.StatusCode))
+		return errors.New("")
 	}
 
-	fmt.Println("[AUTH]: GET\t/\t\tInvalid Token\t✓")
+	newSuccessMessage("GET", "/auth", "Invalid Token")
 	return nil
 }

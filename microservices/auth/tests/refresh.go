@@ -23,14 +23,13 @@ func testRefreshWorking(baseURL string, userData *user) (*user, error) {
 	// Exec request
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		fmt.Println("[AUTH]: POST\t/refresh\tWorking Suit\t✗\tCan't call " + baseURL + "refresh")
+		newFailureMessage("POST", "/refresh", "Working Suit", "Can't call "+baseURL+"refresh")
 		return nil, err
 	}
 	// Check returned http code
 	if res.StatusCode != http.StatusOK {
-		errorString := fmt.Sprintf("[AUTH]: POST\t/refresh\tWorking Suit\t✗\t[Expected: %d,\tGot: %d]", http.StatusOK, res.StatusCode)
-		fmt.Println(errorString)
-		return nil, errors.New(errorString)
+		newFailureMessage("POST", "/refresh", "Working Suit", fmt.Sprintf("[Expected: %d,\tGot: %d]", http.StatusOK, res.StatusCode))
+		return nil, errors.New("")
 	}
 	// Read returned body
 	body, err := ioutil.ReadAll(res.Body)
@@ -44,7 +43,7 @@ func testRefreshWorking(baseURL string, userData *user) (*user, error) {
 		log.Println(err)
 		return nil, err
 	}
-	fmt.Println("[AUTH]: POST\t/refresh\tWorking Suit\t✓")
+	newSuccessMessage("POST", "/refresh", "Working Suit")
 	return &bodyData, nil
 }
 
@@ -61,15 +60,14 @@ func testRefreshInvalidToken(baseURL string) error {
 	// Exec request
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		fmt.Println("[AUTH]: POST\t/refresh\tInvalid Token\t✗\tCan't call " + baseURL + "refresh")
+		newFailureMessage("POST", "/refresh", "Invalid Token", "Can't call "+baseURL+"refresh")
 		return err
 	}
 	// Check returned http code
 	if res.StatusCode != http.StatusUnauthorized {
-		errorString := fmt.Sprintf("[AUTH]: POST\t/refresh\tInvalid Token\t✗\t[Expected: %d,\tGot: %d]", http.StatusUnauthorized, res.StatusCode)
-		fmt.Println(errorString)
-		return errors.New(errorString)
+		newFailureMessage("POST", "/refresh", "Invalid Token", fmt.Sprintf("[Expected: %d,\tGot: %d]", http.StatusUnauthorized, res.StatusCode))
+		return errors.New("")
 	}
-	fmt.Println("[AUTH]: POST\t/refresh\tInvalid Token\t✓")
+	newSuccessMessage("POST", "/refresh", "Invalid Token")
 	return nil
 }

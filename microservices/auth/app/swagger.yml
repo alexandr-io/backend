@@ -114,7 +114,7 @@ info:
   title: Documentation of Auth API
   version: 1.0.0
 paths:
-  /:
+  /auth:
     get:
       description: Try a simple connection with the given auth token
       operationId: auth

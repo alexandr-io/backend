@@ -23,14 +23,13 @@ func testLoginWorking(baseURL string, userData *user) (*user, error) {
 	// Exec request
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		fmt.Println("[AUTH]: POST\t/login\t\tWorking Suit\t✗\tCan't call " + baseURL + "login")
+		newFailureMessage("POST", "/login", "Working Suit", "Can't call "+baseURL+"login")
 		return nil, err
 	}
 	// Check returned http code
 	if res.StatusCode != http.StatusOK {
-		errorString := fmt.Sprintf("[AUTH]: POST\t/login\t\tWorking Suit\t✗\t[Expected: %d,\tGot: %d]", http.StatusOK, res.StatusCode)
-		fmt.Println(errorString)
-		return nil, errors.New(errorString)
+		newFailureMessage("POST", "/login", "Working Suit", fmt.Sprintf("[Expected: %d,\tGot: %d]", http.StatusOK, res.StatusCode))
+		return nil, errors.New("")
 	}
 	// Read returned body
 	body, err := ioutil.ReadAll(res.Body)
@@ -44,7 +43,7 @@ func testLoginWorking(baseURL string, userData *user) (*user, error) {
 		log.Println(err)
 		return nil, err
 	}
-	fmt.Println("[AUTH]: POST\t/login\t\tWorking Suit\t✓")
+	newSuccessMessage("POST", "/login", "Working Suit")
 	return &bodyData, nil
 }
 
@@ -61,16 +60,15 @@ func testLoginBadRequest(baseURL string) error {
 	// Exec request
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		fmt.Println("[AUTH]: POST\t/login\t\tBad Request\t✗\tCan't call " + baseURL + "login")
+		newFailureMessage("POST", "/login", "Bad Request", "Can't call "+baseURL+"login")
 		return err
 	}
 	// Check returned http code
 	if res.StatusCode != http.StatusBadRequest {
-		errorString := fmt.Sprintf("[AUTH]: POST\t/login\t\tBad Request\t✗\t[Expected: %d,\tGot: %d]", http.StatusBadRequest, res.StatusCode)
-		fmt.Println(errorString)
-		return errors.New(errorString)
+		newFailureMessage("POST", "/login", "Bad Request", fmt.Sprintf("[Expected: %d,\tGot: %d]", http.StatusBadRequest, res.StatusCode))
+		return errors.New("")
 	}
-	fmt.Println("[AUTH]: POST\t/login\t\tBad Request\t✓")
+	newSuccessMessage("POST", "/login", "Bad Request")
 	return nil
 }
 
@@ -89,15 +87,14 @@ func testLoginNoMatch(baseURL string) error {
 	// Exec request
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		fmt.Println("[AUTH]: POST\t/login\t\tNo Match\t✗\tCan't call " + baseURL + "login")
+		newFailureMessage("POST", "/login", "No Match", "Can't call "+baseURL+"login")
 		return err
 	}
 	// Check returned http code
 	if res.StatusCode != http.StatusBadRequest {
-		errorString := fmt.Sprintf("[AUTH]: POST\t/login\t\tNo Match\t✗\t[Expected: %d,\tGot: %d]", http.StatusBadRequest, res.StatusCode)
-		fmt.Println(errorString)
-		return errors.New(errorString)
+		newFailureMessage("POST", "/login", "No Match", fmt.Sprintf("[Expected: %d,\tGot: %d]", http.StatusBadRequest, res.StatusCode))
+		return errors.New("")
 	}
-	fmt.Println("[AUTH]: POST\t/login\t\tNo Match\t✓")
+	newSuccessMessage("POST", "/login", "No Match")
 	return nil
 }

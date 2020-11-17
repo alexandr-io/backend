@@ -38,14 +38,13 @@ func testRegisterWorking(baseURL string) (*user, error) {
 	// Exec request
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		fmt.Println("[AUTH]: POST\t/register\tWorking Suit\t✗\tCan't call " + baseURL + "register")
+		newFailureMessage("POST", "/register", "Working Suit", "Can't call "+baseURL+"register")
 		return nil, err
 	}
 	// Check returned http code
 	if res.StatusCode != http.StatusCreated {
-		errorString := fmt.Sprintf("[AUTH]: POST\t/register\tWorking Suit\t✗\t[Expected: %d,\tGot: %d]", http.StatusCreated, res.StatusCode)
-		fmt.Println(errorString)
-		return nil, errors.New(errorString)
+		newFailureMessage("POST", "/register", "Working Suit", fmt.Sprintf("[Expected: %d,\tGot: %d]", http.StatusCreated, res.StatusCode))
+		return nil, errors.New("")
 	}
 	// Read returned body
 	body, err := ioutil.ReadAll(res.Body)
@@ -59,7 +58,7 @@ func testRegisterWorking(baseURL string) (*user, error) {
 		log.Println(err)
 		return nil, err
 	}
-	fmt.Println("[AUTH]: POST\t/register\tWorking Suit\t✓")
+	newSuccessMessage("POST", "/register", "Working Suit")
 	return &bodyData, nil
 }
 
@@ -76,16 +75,15 @@ func testRegisterBadRequest(baseURL string) error {
 	// Exec request
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		fmt.Println("[AUTH]: POST\t/register\tBad Request\t✗\tCan't call " + baseURL + "register")
+		newFailureMessage("POST", "/register", "Bad Request", "Can't call "+baseURL+"register")
 		return err
 	}
 	// Check returned http code
 	if res.StatusCode != http.StatusBadRequest {
-		errorString := fmt.Sprintf("[AUTH]: POST\t/register\tBad Request\t✗\t[Expected: %d,\tGot: %d]", http.StatusBadRequest, res.StatusCode)
-		fmt.Println(errorString)
-		return errors.New(errorString)
+		newFailureMessage("POST", "/register", "Bad Request", fmt.Sprintf("[Expected: %d,\tGot: %d]", http.StatusBadRequest, res.StatusCode))
+		return errors.New("")
 	}
-	fmt.Println("[AUTH]: POST\t/register\tBad Request\t✓")
+	newSuccessMessage("POST", "/register", "Bad Request")
 	return nil
 }
 
@@ -110,25 +108,23 @@ func testRegisterDuplicate(baseURL string) error {
 	// Exec request
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		fmt.Println("[AUTH]: POST\t/register\tDuplicate\t✗\tCan't call " + baseURL + "register")
+		newFailureMessage("POST", "/register", "Duplicate", "Can't call "+baseURL+"register")
 		return err
 	}
 	cloneRes, err := http.DefaultClient.Do(clone)
 	if err != nil {
-		fmt.Println("[AUTH]: POST\t/register\tDuplicate\t✗\tCan't call " + baseURL + "register")
+		newFailureMessage("POST", "/register", "Duplicate", "Can't call "+baseURL+"register")
 		return err
 	}
 	// Check returned http code
 	if res.StatusCode != http.StatusCreated {
-		errorString := fmt.Sprintf("[AUTH]: POST\t/register\tDuplicate\t✗\t[Expected: %d,\tGot: %d]", http.StatusBadRequest, res.StatusCode)
-		fmt.Println(errorString)
-		return errors.New(errorString)
+		newFailureMessage("POST", "/register", "Duplicate", fmt.Sprintf("[Expected: %d,\tGot: %d]", http.StatusCreated, res.StatusCode))
+		return errors.New("")
 	}
 	if cloneRes.StatusCode != http.StatusBadRequest {
-		errorString := fmt.Sprintf("[AUTH]: POST\t/register\tDuplicate\t✗\t[Expected: %d,\tGot: %d]", http.StatusBadRequest, cloneRes.StatusCode)
-		fmt.Println(errorString)
-		return errors.New(errorString)
+		newFailureMessage("POST", "/register", "Duplicate", fmt.Sprintf("[Expected: %d,\tGot: %d]", http.StatusBadRequest, res.StatusCode))
+		return errors.New("")
 	}
-	fmt.Println("[AUTH]: POST\t/register\tDuplicate\t✓")
+	newSuccessMessage("POST", "/register", "Duplicate")
 	return nil
 }
