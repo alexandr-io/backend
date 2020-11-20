@@ -105,6 +105,28 @@ services:
     volumes:
       - "./microservices/auth/app:/app"
 
+  # Media service
+  media:
+    container_name: media
+    build:
+      context: microservices/media/app
+      dockerfile: Dockerfile-dev
+    depends_on:
+      - mongodb
+      - broker
+    env_file: .env-dev
+    environment:
+      KAFKA_URL: 'broker:29092'
+      MEDIA_PATH: '/media/'
+      MEDIA_URI: 'file'
+      MONGO_URL: mongodb
+    ports:
+      - "4001:3000"
+    volumes:
+      - "./microservices/media/app:/app"
+      - "/tmp/alexandrio-media:/media"
+
+
   # Documentation service
   documentation:
     container_name: documentation
