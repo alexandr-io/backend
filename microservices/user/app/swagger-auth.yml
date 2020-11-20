@@ -1,7 +1,0 @@
-securityDefinitions:
-  Bearer:
-    description: |
-      The documentation of authentification Bearer token can be found in the <a href="http://auth.preprod.alexandrio.cloud/docs" target="_blank">auth microservice doc page</a>.
-    type: Bearer
-    name: Bearer
-    in: header
