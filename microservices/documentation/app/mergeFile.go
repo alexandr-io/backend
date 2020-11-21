@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/miracl/conflate"
 	"io/ioutil"
 	"log"
 	"os"
