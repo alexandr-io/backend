@@ -16,14 +16,14 @@ type BookCreation struct {
 	UploaderID  string   `json:"-"`
 }
 
-// BookCreation defines the structure for an API book for retrieval
+// BookRetrieve defines the structure for an API book for retrieval
 type BookRetrieve struct {
 	ID         string `json:"book_id,omitempty"`
 	LibraryID  string `json:"library_id,omitempty"`
 	UploaderID string `json:"-"`
 }
 
-// BookCreation defines the structure for an API book
+// Book defines the structure for an API book
 type Book struct {
 	ID primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
 	// The title of the book
