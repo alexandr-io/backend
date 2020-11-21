@@ -4,6 +4,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// BookCreation defines the structure for an API book for creation
 type BookCreation struct {
 	ID          string   `json:"book_id,omitempty"`
 	Title       string   `json:"title,omitempty"`
@@ -15,12 +16,14 @@ type BookCreation struct {
 	UploaderID  string   `json:"-"`
 }
 
+// BookCreation defines the structure for an API book for retrieval
 type BookRetrieve struct {
 	ID         string `json:"book_id,omitempty"`
 	LibraryID  string `json:"library_id,omitempty"`
 	UploaderID string `json:"-"`
 }
 
+// BookCreation defines the structure for an API book
 type Book struct {
 	ID primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
 	// The title of the book
