@@ -138,7 +138,10 @@ func GetLibrariesNamesByUserID(user data.LibrariesOwner) (*data.LibrariesNames, 
 		if err := filteredByLibraryIDSingleResult.Decode(library); err != nil {
 			return librariesNames, err
 		}
-		librariesNames.Names = append(librariesNames.Names, library.Name)
+		librariesNames.Libraries = append(librariesNames.Libraries, data.LibraryName{
+			ID:   libraryID,
+			Name: library.Name,
+		})
 	}
 
 	// Return the library object
@@ -289,8 +292,8 @@ func checkLibraryFieldDuplication(user data.LibrariesOwner, library data.Library
 	// Check if the duplication is for the username field
 	foundLibraries, err := GetLibrariesNamesByUserID(user)
 	if err == nil {
-		for _, name := range foundLibraries.Names {
-			if name == library.Name {
+		for _, currentLibrary := range foundLibraries.Libraries {
+			if currentLibrary.Name == library.Name {
 				errorsFields["name"] = "You already have a library with this name."
 				break
 			}

@@ -84,7 +84,7 @@ func LibraryCreation(ctx *fiber.Ctx) error {
 	if err := ParseBodyJSON(ctx, library); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
-	library.Books = []data.BookInfo{}
+	library.Books = []data.Book{}
 
 	libraryOwner := &data.LibrariesOwner{
 		UserID: userID,

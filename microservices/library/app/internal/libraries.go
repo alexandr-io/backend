@@ -22,3 +22,19 @@ func CreateLibraries(_ string, message data.KafkaLibrariesCreationRequest) error
 	}
 	return nil
 }
+
+// HasUserAccessToLibraryFromID check if a user has access to a library.
+func HasUserAccessToLibraryFromID(userID string, libraryID string) (bool, error) {
+	libraries, err := database.GetLibrariesByUsername(data.LibrariesOwner{UserID: userID})
+	if err != nil {
+		return false, err
+	}
+
+	for _, library := range libraries.Libraries {
+		if library == libraryID {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}

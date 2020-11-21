@@ -36,6 +36,10 @@ func createRoute(app *fiber.App) {
 
 	app.Get("/libraries", userMiddleware.Protected(), handlers.LibrariesRetrieve)
 
+	app.Get("/book", userMiddleware.Protected(), handlers.BookRetrieve)
+	app.Post("/book", userMiddleware.Protected(), handlers.BookCreation)
+	app.Delete("/book", userMiddleware.Protected(), handlers.BookDelete)
+
 	app.Get("/docs", wrapDocHandler())
 	app.Get("/swagger.yml", wrapFileServer())
 
