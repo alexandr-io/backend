@@ -7,8 +7,3 @@ type UserRegister struct {
 	Password        string `json:"password" validate:"required"`
 	ConfirmPassword string `json:"confirm_password" validate:"required"`
 }
-
-// UserRegisterLibraries are the parameters send to kafka to create a libraries for the user.
-type UserRegisterLibraries struct {
-	UserID string `json:"user_id"`
-}

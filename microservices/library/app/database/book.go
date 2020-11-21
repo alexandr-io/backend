@@ -75,7 +75,7 @@ func BookCreate(c context.Context, bookCreation data.BookCreation) (data.Book, e
 
 	id, err := primitive.ObjectIDFromHex(bookCreation.LibraryID)
 	if err != nil {
-		return book, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return data.Book{}, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	library := &data.Library{}
 	libraryFilter := bson.D{{Key: "_id", Value: id}}
@@ -83,7 +83,7 @@ func BookCreate(c context.Context, bookCreation data.BookCreation) (data.Book, e
 	filterOptions := options.FindOne().SetProjection(bson.D{{"books", true}})
 	filteredByLibraryIDSingleResult := collection.FindOne(ctx, libraryFilter, filterOptions)
 	if err := filteredByLibraryIDSingleResult.Decode(library); err != nil {
-		return book, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return data.Book{}, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
 	library.Books = append(library.Books, book)
@@ -91,7 +91,7 @@ func BookCreate(c context.Context, bookCreation data.BookCreation) (data.Book, e
 	updateValues := bson.D{{Key: "$set", Value: bson.D{{Key: "books", Value: library.Books}}}}
 	updateResult := collection.FindOneAndUpdate(ctx, libraryFilter, updateValues)
 	if updateResult.Err() != nil {
-		return book, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, updateResult.Err().Error())
+		return data.Book{}, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, updateResult.Err().Error())
 	}
 	return book, nil
 }

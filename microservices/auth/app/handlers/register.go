@@ -35,9 +35,10 @@ func Register(ctx *fiber.Ctx) error {
 	}
 
 	// Create the libraries of the user on the library MS
-	userRegisterLibraries := new(data.UserRegisterLibraries)
-	userRegisterLibraries.UserID = kafkaUser.ID
-	if err := producers.CreateUserLibrariesRequestHandler(*userRegisterLibraries); err != nil {
+	userRegisterLibraries := data.KafkaLibrariesCreationMessage{
+		UserID: kafkaUser.ID,
+	}
+	if err := producers.CreateUserLibrariesRequestHandler(userRegisterLibraries); err != nil {
 		return err
 	}
 

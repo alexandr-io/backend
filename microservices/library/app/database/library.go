@@ -6,13 +6,13 @@ import (
 	"log"
 	"time"
 
+	"github.com/alexandr-io/backend/library/data"
+	"github.com/alexandr-io/berrors"
+
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-
-	"github.com/alexandr-io/backend/library/data"
-	"github.com/alexandr-io/berrors"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 // CollectionLibraries is the name of the libraries collection in mongodb

@@ -4,9 +4,8 @@ import (
 	"context"
 	"log"
 
-	"github.com/alexandr-io/backend/library/kafka/consumers"
-
 	"github.com/alexandr-io/backend/library/database"
+	"github.com/alexandr-io/backend/library/kafka/consumers"
 
 	"github.com/gofiber/fiber/v2"
 )

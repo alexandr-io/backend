@@ -1,5 +1,5 @@
 name: Build and push preprod library's images CI
-# This workflow is triggered on tag push finishing with '-preprod'
+# This workflow is triggered on tags e.g.: v.1.4.0
 on:
   push:
     tags-ignore:

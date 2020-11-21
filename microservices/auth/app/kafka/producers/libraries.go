@@ -9,7 +9,7 @@ import (
 )
 
 // CreateUserLibrariesRequestHandler produce a message to the `libraries-creation-request` topic.
-func CreateUserLibrariesRequestHandler(user data.UserRegisterLibraries) error {
+func CreateUserLibrariesRequestHandler(user data.KafkaLibrariesCreationMessage) error {
 	// Generate UUID
 	id := uuid.New()
 
@@ -17,7 +17,7 @@ func CreateUserLibrariesRequestHandler(user data.UserRegisterLibraries) error {
 
 }
 
-func produceCreateLibraryMessage(id string, user data.UserRegisterLibraries) error {
+func produceCreateLibraryMessage(id string, user data.KafkaLibrariesCreationMessage) error {
 	message, err := data.CreateLibrariesCreationMessage(user)
 	if err != nil {
 		return err

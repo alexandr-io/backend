@@ -34,7 +34,7 @@ func consumeLibrariesCreationMessages() {
 				continue
 			}
 			// Send to logic
-			_ = internal.CreateLibraries(string(msg.Key), messageData)
+			_ = internal.CreateLibraries(messageData)
 		} else {
 			log.Printf("Topic: %s -> consumer error: %s", msg.TopicPartition, err)
 		}
