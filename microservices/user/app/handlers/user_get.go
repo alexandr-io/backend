@@ -17,7 +17,7 @@ func GetUser(ctx *fiber.Ctx) error {
 	}
 
 	// Return the user data to the user
-	if err := ctx.Status(201).JSON(user); err != nil {
+	if err := ctx.Status(fiber.StatusOK).JSON(user); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil

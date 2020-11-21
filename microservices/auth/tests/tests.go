@@ -18,16 +18,17 @@ var (
 )
 
 // ExecAuthTests execute integration tests of auth MS routes
-func ExecAuthTests(environment string) error {
+func ExecAuthTests(environment string) (string, error) {
 	rand.Seed(time.Now().UnixNano())
 	var errorHappened = false
 
 	baseURL, err := getBaseURL(environment)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	if err = workingTestSuit(baseURL); err != nil {
+	jwt, err := workingTestSuit(baseURL)
+	if err != nil {
 		errorHappened = true
 	}
 	if err = badRequestTests(baseURL); err != nil {
@@ -38,9 +39,9 @@ func ExecAuthTests(environment string) error {
 	}
 
 	if errorHappened {
-		return errors.New("error in auth tests")
+		return "", errors.New("error in auth tests")
 	}
-	return nil
+	return jwt, nil
 }
 
 func getBaseURL(environment string) (string, error) {
@@ -56,32 +57,32 @@ func getBaseURL(environment string) (string, error) {
 	}
 }
 
-func workingTestSuit(baseURL string) error {
+func workingTestSuit(baseURL string) (string, error) {
 	userData, err := testRegisterWorking(baseURL)
 	if err != nil {
-		return err
+		return "", err
 	}
 	if err := testAuthWorking(baseURL, userData); err != nil {
-		return err
+		return "", err
 	}
 
 	userDataLogin, err := testLoginWorking(baseURL, userData)
 	if err != nil {
-		return err
+		return "", err
 	}
 	if err := testAuthWorking(baseURL, userDataLogin); err != nil {
-		return err
+		return "", err
 	}
 
 	userDataRefresh, err := testRefreshWorking(baseURL, userDataLogin)
 	if err != nil {
-		return err
+		return "", err
 	}
 	if err := testAuthWorking(baseURL, userDataRefresh); err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return userData.AuthToken, nil
 }
 
 func badRequestTests(baseURL string) error {
