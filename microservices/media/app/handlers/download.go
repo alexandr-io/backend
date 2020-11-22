@@ -1,14 +1,16 @@
 package handlers
 
 import (
-	"github.com/alexandr-io/backend/media/database"
 	"path"
 
 	"github.com/alexandr-io/backend/media/data"
+	"github.com/alexandr-io/backend/media/database"
 	"github.com/alexandr-io/backend/media/internal"
+
 	"github.com/gofiber/fiber/v2"
 )
 
+// DownloadBook download a book from a book ID
 func DownloadBook(ctx *fiber.Ctx) error {
 
 	book := new(data.Book)

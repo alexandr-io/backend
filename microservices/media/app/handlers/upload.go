@@ -1,16 +1,18 @@
 package handlers
 
 import (
-	"github.com/alexandr-io/backend/media/database"
-	"github.com/alexandr-io/backend/media/internal"
 	"io/ioutil"
 	"os"
 	"path"
 
 	"github.com/alexandr-io/backend/media/data"
+	"github.com/alexandr-io/backend/media/database"
+	"github.com/alexandr-io/backend/media/internal"
+
 	"github.com/gofiber/fiber/v2"
 )
 
+// UploadBook upload the book from the request to the media folder and create a database document
 func UploadBook(ctx *fiber.Ctx) error {
 
 	// Parse the book data from the body
@@ -47,7 +49,7 @@ func UploadBook(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
-	err = database.InsertBook(ctx.Context(), *book)
+	err = database.InsertBook(*book)
 	if err != nil {
 		err2 := internal.DeleteFile(ctx.Context(), book.Path)
 		if err2 != nil {

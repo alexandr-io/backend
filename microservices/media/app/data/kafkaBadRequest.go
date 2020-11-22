@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/alexandr-io/berrors"
+
 	"github.com/gofiber/fiber/v2"
 )
 

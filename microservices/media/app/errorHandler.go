@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/alexandr-io/backend/media/data"
 
 	"github.com/gofiber/fiber/v2"

@@ -2,17 +2,20 @@ package internal
 
 import (
 	"context"
-	"github.com/alexandr-io/backend/media/data"
-	"github.com/gofiber/fiber/v2"
-	"gocloud.dev/blob"
-	_ "gocloud.dev/blob/fileblob"
 	"io/ioutil"
 	"os"
+
+	"github.com/alexandr-io/backend/media/data"
+
+	"github.com/gofiber/fiber/v2"
+	"gocloud.dev/blob"
+	_ "gocloud.dev/blob/fileblob" // Used to open a Bucket for file storage
 )
 
 var mediaPath = os.Getenv("MEDIA_PATH")
 var mediaURI = os.Getenv("MEDIA_URI")
 
+// UploadFile upload a file on the storage server
 func UploadFile(ctx context.Context, file []byte, path string) error {
 
 	// Open a connection to the bucket.
@@ -37,6 +40,7 @@ func UploadFile(ctx context.Context, file []byte, path string) error {
 	return nil
 }
 
+// DownloadFile download a file from the storage  server
 func DownloadFile(ctx context.Context, path string) (*data.File, error) {
 
 	fileObject := new(data.File)
@@ -63,6 +67,7 @@ func DownloadFile(ctx context.Context, path string) (*data.File, error) {
 	return fileObject, err
 }
 
+// DeleteFile delete a file from the storage server
 func DeleteFile(ctx context.Context, path string) error {
 
 	// Open a connection to the bucket.

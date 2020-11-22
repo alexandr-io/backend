@@ -6,9 +6,10 @@ package main
 
 import (
 	"context"
+	"log"
+
 	"github.com/alexandr-io/backend/media/database"
 	consumers "github.com/alexandr-io/backend/media/kafka/comsumers"
-	"log"
 
 	"github.com/gofiber/fiber/v2"
 )

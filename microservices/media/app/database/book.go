@@ -2,13 +2,15 @@ package database
 
 import (
 	"context"
+	"time"
+
 	"github.com/alexandr-io/backend/media/data"
+
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
-	"time"
 )
 
-// CollectionUser is the name of the user collection in mongodb
+// CollectionBook is the name of the book collection in mongodb
 const CollectionBook = "book"
 
 //
@@ -40,7 +42,8 @@ func GetBookByID(book *data.Book) (*data.Book, error) {
 // Setters
 //
 
-func InsertBook(c context.Context, book data.Book) error {
+// InsertBook create a book on the database
+func InsertBook(book data.Book) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
