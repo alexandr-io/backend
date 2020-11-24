@@ -9,7 +9,10 @@ import (
 	"github.com/alexandr-io/backend/user/data"
 	"github.com/alexandr-io/berrors"
 
+	"github.com/gofiber/fiber/v2"
+
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -140,6 +143,27 @@ func checkRegisterFieldDuplication(user data.User) error {
 			JSONError: berrors.BadInputsJSON(errorsFields),
 			Err:       errors.New("register duplication error"),
 		}
+	}
+	return nil
+}
+
+// DeleteUser user delete a user corresponding to the given user id
+func DeleteUser(id string) error {
+	userCollection := Instance.Db.Collection(CollectionUser)
+	objectID, err := primitive.ObjectIDFromHex(id)
+
+	result, err := userCollection.DeleteOne(
+		context.Background(),
+		bson.D{
+			{Key: "_id", Value: objectID},
+		},
+	)
+	if err != nil {
+		log.Println(err)
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+	if result.DeletedCount == 0 {
+		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "can't find user to delete")
 	}
 	return nil
 }
