@@ -1,0 +1,10 @@
+---
+components:
+  schemas:
+    DownloadResponse:
+      description: File
+      content:
+        application/pdf:
+          schema:
+            type: string
+            format: binary

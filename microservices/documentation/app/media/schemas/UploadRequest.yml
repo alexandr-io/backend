@@ -1,0 +1,22 @@
+---
+components:
+  schemas:
+    UploadRequest:
+      properties:
+        book:
+          description: The book to upload
+          type: string
+        book_id:
+          description: The ID of the book on the Library MS
+          example: tsDFYEf[...]deyFEY
+          type: string
+        library_id:
+          description: The ID of the library where the metadata are located on the library MS
+          example: nvrFIyH[...]KLkgj
+          type: string
+      required:
+        - book
+        - book_id
+        - library_id
+      title: UploadRequest is the body parameter given to upload a new book.
+      type: object

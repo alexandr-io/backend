@@ -1,0 +1,13 @@
+---
+components:
+  schemas:
+    DownloadRequest:
+      properties:
+        book_id:
+          description: The ID of the book on the Library MS
+          example: tsDFYEf[...]deyFEY
+          type: string
+      required:
+        - book_id
+      title: DownloadRequest is the body parameter given to download a book.
+      type: object

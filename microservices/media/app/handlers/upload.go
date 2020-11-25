@@ -16,12 +16,14 @@ import (
 func UploadBook(ctx *fiber.Ctx) error {
 
 	// Parse the book data from the body
-	book := new(data.Book)
-	book.ID = ctx.FormValue("book_id", "")
-	book.LibraryID = ctx.FormValue("library_id", "")
+	book := data.Book{
+		ID:        ctx.FormValue("book_id", ""),
+		LibraryID: ctx.FormValue("library_id", ""),
+	}
 
-	if book.ID == "" || book.LibraryID == "" {
-		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, "Missing field: book_id or library_id")
+	err := checkBookUploadBadInputs(book)
+	if err != nil {
+		return err
 	}
 
 	// Get the book in from the context
@@ -49,7 +51,7 @@ func UploadBook(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
-	err = database.InsertBook(*book)
+	err = database.InsertBook(book)
 	if err != nil {
 		err2 := internal.DeleteFile(ctx.Context(), book.Path)
 		if err2 != nil {
@@ -58,5 +60,24 @@ func UploadBook(ctx *fiber.Ctx) error {
 		return err
 	}
 
+	return nil
+}
+
+func checkBookUploadBadInputs(book data.Book) error {
+	errorList := make(map[string]string)
+
+	if book.ID == "" {
+		errorList["book_id"] = "The field is required"
+	}
+
+	if book.LibraryID == "" {
+		errorList["library_id"] = "The field is required"
+	}
+
+	if len(errorList) != 0 {
+		errorInfo := data.NewErrorInfo(string(badInputsJSON(errorList)), 0)
+		errorInfo.ContentType = fiber.MIMEApplicationJSON
+		return fiber.NewError(fiber.StatusBadRequest, errorInfo.MarshalErrorInfo())
+	}
 	return nil
 }

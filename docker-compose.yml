@@ -124,7 +124,7 @@ services:
       - "4001:3000"
     volumes:
       - "./microservices/media/app:/app"
-      - "/tmp/alexandrio-media:/media"
+      - "./microservices/media/.media:/media"
 
 
   # Documentation service
