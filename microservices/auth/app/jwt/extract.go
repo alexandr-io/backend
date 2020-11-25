@@ -7,6 +7,17 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// ExtractJWTFromHeader extract a jwt from the header.
+func ExtractJWTFromHeader(ctx *fiber.Ctx) (string, error) {
+	auth := string(ctx.Request().Header.Peek("Authorization"))
+
+	l := len("Bearer")
+	if len(auth) > l+1 && auth[:l] == "Bearer" {
+		return auth[l+1:], nil
+	}
+	return "", data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "Missing or malformed JWT")
+}
+
 // ExtractJWTFromContext extract a jwt from the context.
 func ExtractJWTFromContext(ctx *fiber.Ctx) (*jwt.Token, error) {
 	token, ok := ctx.Locals("jwt").(*jwt.Token)
