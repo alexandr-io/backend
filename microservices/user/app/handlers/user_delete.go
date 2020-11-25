@@ -17,7 +17,7 @@ func DeleteUser(ctx *fiber.Ctx) error {
 	}
 
 	// Return the user data to the user
-	if err := ctx.Status(fiber.StatusNoContent).JSON(user); err != nil {
+	if err := ctx.SendStatus(fiber.StatusNoContent); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil
