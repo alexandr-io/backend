@@ -151,6 +151,8 @@ components:
                 type: string
             type: object
       description: A book object
+    NoContentResponse:
+      description: Success No Content
     UnauthorizedErrorResponse:
       description: Unauthorized
     UploadRequest:
@@ -365,6 +367,27 @@ paths:
       - description: Production server
         url: //auth.alexandrio.cloud
       summary: Login User
+      tags:
+      - AUTH
+  /logout:
+    post:
+      description: |-
+        Logout a connected user.
+
+        Invalidate the jwt auth token.
+
+        Must be called before forgetting the auth jwt in front.
+      responses:
+        "204":
+          $ref: '#/components/schemas/NoContentResponse'
+        "401":
+          $ref: '#/components/schemas/UnauthorizedErrorResponse'
+      security:
+      - Bearer Auth: []
+      servers:
+      - description: Production server
+        url: //auth.alexandrio.cloud
+      summary: Logout User
       tags:
       - AUTH
   /refresh:
