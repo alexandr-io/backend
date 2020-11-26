@@ -1,0 +1,17 @@
+---
+components:
+  schemas:
+    LibraryCreateRequest:
+      properties:
+        name:
+          description: The name of the library to create
+          example: My Library
+          type: string
+        description:
+          description: The description of the library
+          example: A library with some books
+          type: string
+
+      required:
+        - name
+      type: object

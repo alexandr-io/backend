@@ -17,7 +17,7 @@ type Libraries struct {
 
 // LibraryName defines the structure for an API library name
 type LibraryName struct {
-	Name string `json:"name" bson:"name"`
+	Name string `json:"name" bson:"name" validate:"required"`
 	ID   string `json:"id" bson:"-"`
 }
 

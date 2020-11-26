@@ -23,7 +23,7 @@ func LibraryRetrieve(ctx *fiber.Ctx) error {
 
 	library, err := database.GetLibraryByUserIDAndName(libraryOwner, *libraryName)
 	if err != nil {
-		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return err
 	}
 
 	if err := ctx.Status(fiber.StatusOK).JSON(library); err != nil {

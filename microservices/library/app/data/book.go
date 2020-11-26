@@ -7,12 +7,12 @@ import (
 // BookCreation defines the structure for an API book for creation
 type BookCreation struct {
 	ID          string   `json:"book_id,omitempty"`
-	Title       string   `json:"title,omitempty"`
+	Title       string   `json:"title,omitempty" validate:"required"`
 	Author      string   `json:"author,omitempty"`
 	Publisher   string   `json:"publisher,omitempty"`
 	Description string   `json:"description,omitempty"`
 	Tags        []string `json:"tags,omitempty"`
-	LibraryID   string   `json:"library_id,omitempty"`
+	LibraryID   string   `json:"library_id,omitempty" validate:"required"`
 	UploaderID  string   `json:"-"`
 }
 
@@ -32,5 +32,5 @@ type Book struct {
 	Description string             `json:"description,omitempty" bson:"description,omitempty"`
 	CoverID     string             `json:"cover_id,omitempty" bson:"cover_id,omitempty"`
 	Tags        []string           `json:"tags,omitempty" bson:"tags,omitempty"`
-	UploaderID  string             `json:"uploader_id,omitempty" bson:"uploader_id,omitempty"`
+	UploaderID  string             `json:"-" bson:"uploader_id,omitempty"`
 }

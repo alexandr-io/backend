@@ -18,12 +18,12 @@ func LibraryDelete(ctx *fiber.Ctx) error {
 	if err := ParseBodyJSON(ctx, libraryName); err != nil {
 		return err
 	}
-	libraryOwner := &data.LibrariesOwner{
+	libraryOwner := data.LibrariesOwner{
 		UserID: userID,
 	}
-	err := database.DeleteLibrary(*libraryOwner, *libraryName)
+	err := database.DeleteLibrary(libraryOwner, *libraryName)
 	if err != nil {
-		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return err
 	}
 	return nil
 }

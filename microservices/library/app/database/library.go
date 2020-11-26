@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"errors"
+	"github.com/gofiber/fiber/v2"
 	"log"
 	"time"
 
@@ -53,7 +54,7 @@ func GetLibraryByUserIDAndName(user data.LibrariesOwner, library data.LibraryNam
 	libraries := &data.Libraries{}
 	// Return the library object if library is found
 	if err := filteredByUsernameSingleResult.Decode(libraries); err != nil {
-		return object, err
+		return object, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
 	collection = Instance.Db.Collection(CollectionLibrary)
@@ -63,21 +64,20 @@ func GetLibraryByUserIDAndName(user data.LibrariesOwner, library data.LibraryNam
 
 		id, err := primitive.ObjectIDFromHex(libraryID)
 		if err != nil {
-			return object, err
+			return object, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 		}
-		println(id.Hex())
 		libraryFilter := bson.D{{Key: "_id", Value: id}}
 
 		filteredByLibraryIDSingleResult := collection.FindOne(ctx, libraryFilter)
 		if err := filteredByLibraryIDSingleResult.Decode(currentLibrary); err != nil {
-			return object, err
+			return object, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 		}
 		if currentLibrary.Name == library.Name {
 			return currentLibrary, nil
 		}
 	}
 
-	return object, errors.New("library matching query does not exist")
+	return object, data.NewHTTPErrorInfo(fiber.StatusNotFound, "Library does not exist")
 }
 
 // GetLibrariesByUsername get the libraries the current user has access to.
@@ -230,9 +230,11 @@ func DeleteLibrary(user data.LibrariesOwner, libraryName data.LibraryName) error
 		return err
 	}
 	libraryFilter := bson.D{{Key: "_id", Value: id}}
-	_, err = collection.DeleteOne(ctx, libraryFilter)
+	deleteResult, err := collection.DeleteOne(ctx, libraryFilter)
 	if err != nil {
 		return err
+	} else if deleteResult.DeletedCount == 0 {
+		return errors.New("library does not exist")
 	}
 
 	libraries, err := GetLibrariesByUsername(user)
@@ -245,7 +247,6 @@ func DeleteLibrary(user data.LibrariesOwner, libraryName data.LibraryName) error
 			break
 		}
 	}
-	log.Println(libraries.Libraries)
 
 	collection = Instance.Db.Collection(CollectionLibraries)
 

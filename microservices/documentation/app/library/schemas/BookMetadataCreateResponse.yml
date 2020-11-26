@@ -1,0 +1,34 @@
+---
+components:
+  schemas:
+    BookMetadataCreateResponse:
+      description: A book object
+      content:
+        application/json:
+          schema:
+            properties:
+              id:
+                description: The ID of the newly created metadata object
+                example: 5fbfe5[...]7076844
+                type: string
+              title:
+                description: The title of the book
+                example: Harry Potter
+                type: string
+              author:
+                description: The author of the book
+                example: J.K. Rowling
+                type: string
+              publisher:
+                description: The publisher of the book
+                example: Bloomsbury
+                type: string
+              description:
+                description: The description of the book
+                example: A wizard to his new school.
+                type: string
+              tags:
+                description: The tags of the book
+                example: [ "Fantasy", "Action" ]
+                type: array
+            type: object

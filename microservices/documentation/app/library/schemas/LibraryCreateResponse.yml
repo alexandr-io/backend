@@ -1,0 +1,22 @@
+---
+components:
+  schemas:
+    LibraryCreateResponse:
+      description: A book object
+      content:
+        application/json:
+          schema:
+            properties:
+              name:
+                description: The name of the newly created library
+                example: My Library
+                type: string
+              description:
+                description: The description of the newly create library
+                example: A library with some books
+                type: string
+              books:
+                description: The list of books in the library
+                example: []
+
+            type: object

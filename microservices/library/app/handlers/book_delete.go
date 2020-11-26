@@ -31,7 +31,7 @@ func BookDelete(ctx *fiber.Ctx) error {
 
 	err = database.BookDelete(ctx.Context(), *bookData)
 	if err != nil {
-		return err
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil
 }
