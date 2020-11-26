@@ -3,13 +3,13 @@ package database
 import (
 	"context"
 	"errors"
-	"github.com/gofiber/fiber/v2"
 	"log"
 	"time"
 
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/berrors"
 
+	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
