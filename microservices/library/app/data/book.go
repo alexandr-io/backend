@@ -18,8 +18,8 @@ type BookCreation struct {
 
 // BookRetrieve defines the structure for an API book for retrieval
 type BookRetrieve struct {
-	ID         string `json:"book_id,omitempty"`
-	LibraryID  string `json:"library_id,omitempty"`
+	ID         string `json:"book_id,omitempty" validate:"required"`
+	LibraryID  string `json:"library_id,omitempty" validate:"required"`
 	UploaderID string `json:"-"`
 }
 

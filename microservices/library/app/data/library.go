@@ -3,7 +3,7 @@ package data
 // Library defines the structure for an API library
 type Library struct {
 	ID          string `json:"-" bson:"_id,omitempty"`
-	Name        string `json:"name,omitempty" bson:"name,omitempty"`
+	Name        string `json:"name,omitempty" bson:"name,omitempty" validate:"required"`
 	Description string `json:"description" bson:"description"`
 	// The lists containing the information on the books of this library (the list can be empty `[]`)
 	Books []Book `json:"books" bson:"books"`
