@@ -1,0 +1,50 @@
+name: Build and push preprod library's images CI
+# This workflow is triggered on tags e.g.: v.1.4.0
+on:
+  push:
+    tags-ignore:
+      - 'v*-*'
+
+jobs:
+  build-and-push-library:
+    name: Docker Build Library and push image
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build and push Library Docker image with tag number
+        # Official docker action: https://github.com/docker/build-push-action
+        uses: docker/build-push-action@v1.1.0
+        with:
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+          registry: docker.pkg.github.com
+          # github.repository -> alexandr-io/backend
+          # https://github.com/docker/build-push-action/pull/14/files/d1c5c2f87bcd65b263d72ea6b1861bb25cbbcda5#r429877166
+          repository: ${{github.repository}}/library
+          tag_with_ref: true
+          path: microservices/library/app
+          push: true
+
+      - name: Build and push Library Docker image with tag latest-preprod
+        # Official docker action: https://github.com/docker/build-push-action
+        uses: docker/build-push-action@v1.1.0
+        with:
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+          registry: docker.pkg.github.com
+          # github.repository -> alexandr-io/backend
+          # https://github.com/docker/build-push-action/pull/14/files/d1c5c2f87bcd65b263d72ea6b1861bb25cbbcda5#r429877166
+          repository: ${{github.repository}}/library
+          tags: latest
+          path: microservices/library/app
+          push: true
+
+      - name: Deploy or redeploy library app
+        uses: cross-the-world/ssh-pipeline@master
+        with:
+          host: ${{ secrets.HOST_PROD }}
+          user: ${{ secrets.HOST_PROD_USERNAME }}
+          pass: ${{ secrets.HOST_PROD_PASSWORD }}
+          script: /kubernetes/app-deployment.sh library

@@ -1,0 +1,18 @@
+---
+paths:
+  /libraries:
+    get:
+      description: Retrieve a list of the current user's libraries
+      summary: Libraries Retrieve
+      responses:
+        "200":
+          $ref: '#/components/schemas/LibrariesNamesRetrieveResponse'
+        "401":
+          $ref: '#/components/schemas/UnauthorizedErrorResponse'
+      security:
+        - Bearer Auth: []
+      servers:
+        - url: //library.alexandrio.cloud
+          description: Production server
+      tags:
+        - LIBRARY

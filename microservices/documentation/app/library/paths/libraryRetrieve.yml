@@ -1,0 +1,24 @@
+---
+paths:
+  /library:
+    get:
+      description: Retrieve a library
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LibraryRetrieveRequest"
+      responses:
+        "200":
+          $ref: '#/components/schemas/LibraryRetrieveResponse'
+        "400":
+          $ref: '#/components/schemas/BadRequestErrorResponse'
+        "401":
+          $ref: '#/components/schemas/UnauthorizedErrorResponse'
+      security:
+        - Bearer Auth: []
+      servers:
+        - url: //library.alexandrio.cloud
+          description: Production server
+      tags:
+        - LIBRARY

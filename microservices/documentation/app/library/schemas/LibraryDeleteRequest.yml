@@ -1,0 +1,13 @@
+---
+components:
+  schemas:
+    LibraryDeleteRequest:
+      properties:
+        name:
+          description: The name of the library to create
+          example: My Library
+          type: string
+
+      required:
+        - name
+      type: object
