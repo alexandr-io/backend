@@ -19,6 +19,36 @@ spec:
         - name: api
           image: docker.pkg.github.com/alexandr-io/backend/media:latest-preprod
           imagePullPolicy: Always
+          env:
+            - name: MONGO_URL
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: url
+
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: username
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: password
+            - name: KAFKA_ADVERTISED_HOST_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: kafka
+                  key: ADVERTISED_HOST_NAME
+            - name: KAFKA_ADVERTISED_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: kafka
+                  key: KAFKA_ADVERTISED_PORT
+            - name: KAFKA_URL
+              value: "$(KAFKA_ADVERTISED_HOST_NAME):$(KAFKA_ADVERTISED_PORT)"
+
           volumeMounts:
             - name: data
               mountPath: /media
