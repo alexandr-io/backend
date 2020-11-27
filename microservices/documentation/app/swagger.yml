@@ -36,134 +36,23 @@ components:
           schema:
             $ref: '#/components/schemas/BadInput'
       description: A bad request error response
-    BookMetadataCreateRequest:
-      properties:
-        author:
-          description: The author of the book
-          example: J.K. Rowling
-          type: string
-        description:
-          description: The description of the book
-          example: A wizard to his new school.
-          type: string
-        library_id:
-          description: The ID of the library to store the book
-          example: My Library
-          type: string
-        publisher:
-          description: The publisher of the book
-          example: Bloomsbury
-          type: string
-        tags:
-          description: The tags of the book
-          example:
-          - Fantasy
-          - Action
-          type: array
-        title:
-          description: The title of the book
-          example: Harry Potter
-          type: string
-      required:
-      - title
-      - library_id
-      type: object
-    BookMetadataCreateResponse:
-      content:
-        application/json:
-          schema:
-            properties:
-              author:
-                description: The author of the book
-                example: J.K. Rowling
-                type: string
-              description:
-                description: The description of the book
-                example: A wizard to his new school.
-                type: string
-              id:
-                description: The ID of the newly created metadata object
-                example: 5fbfe5[...]7076844
-                type: string
-              publisher:
-                description: The publisher of the book
-                example: Bloomsbury
-                type: string
-              tags:
-                description: The tags of the book
-                example:
-                - Fantasy
-                - Action
-                type: array
-              title:
-                description: The title of the book
-                example: Harry Potter
-                type: string
-            type: object
-      description: A book object
-    BookMetadataDeleteRequest:
+    DownloadRequest:
       properties:
         book_id:
-          description: The ID of the book
-          example: Harry Potter
-          type: string
-        library_id:
-          description: The ID of the library of the book
-          example: My Library
+          description: The ID of the book on the Library MS
+          example: tsDFYEf[...]deyFEY
           type: string
       required:
       - book_id
-      - library_id
+      title: DownloadRequest is the body parameter given to download a book.
       type: object
-    BookMetadataDeleteResponse:
-      type: object
-    BookMetadataRetrieveRequest:
-      properties:
-        book_id:
-          description: The ID of the book
-          example: Harry Potter
-          type: string
-        library_id:
-          description: The ID of the library of the book
-          example: My Library
-          type: string
-      required:
-      - book_id
-      - library_id
-      type: object
-    BookMetadataRetrieveResponse:
+    DownloadResponse:
       content:
-        application/json:
+        application/pdf:
           schema:
-            properties:
-              author:
-                description: The author of the book
-                example: J.K. Rowling
-                type: string
-              description:
-                description: The description of the book
-                example: A wizard to his new school.
-                type: string
-              id:
-                description: The ID of the newly created metadata object
-                example: 5fbfe5[...]7076844
-                type: string
-              publisher:
-                description: The publisher of the book
-                example: Bloomsbury
-                type: string
-              tags:
-                description: The tags of the book
-                example:
-                - Fantasy
-                - Action
-                type: array
-              title:
-                description: The title of the book
-                example: Harry Potter
-                type: string
-            type: object
-      description: A book object
+            format: binary
+            type: string
+      description: File
     Field:
       properties:
         name:
@@ -264,6 +153,27 @@ components:
       description: A book object
     UnauthorizedErrorResponse:
       description: Unauthorized
+    UploadRequest:
+      properties:
+        book:
+          description: The book to upload
+          type: string
+        book_id:
+          description: The ID of the book on the Library MS
+          example: tsDFYEf[...]deyFEY
+          type: string
+        library_id:
+          description: The ID of the library where the metadata are located on the library MS
+          example: nvrFIyH[...]KLkgj
+          type: string
+      required:
+      - book
+      - book_id
+      - library_id
+      title: UploadRequest is the body parameter given to upload a new book.
+      type: object
+    UploadResponse:
+      description: A simple response from a simple route
     User:
       description: User defines the structure for an API user
       properties:
@@ -391,39 +301,17 @@ paths:
       summary: Test Authentication
       tags:
       - AUTH
-  /book:
-    delete:
-      description: Delete the metadata of a book
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BookMetadataDeleteRequest'
-      responses:
-        "200":
-          $ref: '#/components/schemas/BookMetadataDeleteResponse'
-        "400":
-          $ref: '#/components/schemas/BadRequestErrorResponse'
-        "401":
-          $ref: '#/components/schemas/UnauthorizedErrorResponse'
-      security:
-      - Bearer Auth: []
-      servers:
-      - description: Production server
-        url: //library.alexandrio.cloud
-      summary: Book Delete (metadata)
-      tags:
-      - LIBRARY
+  /book/download:
     get:
-      description: Retrieve the metadata of a book
+      description: Download a book from the server
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BookMetadataRetrieveRequest'
+              $ref: '#/components/schemas/DownloadRequest'
       responses:
         "200":
-          $ref: '#/components/schemas/BookMetadataRetrieveResponse'
+          $ref: '#/components/schemas/DownloadResponse'
         "400":
           $ref: '#/components/schemas/BadRequestErrorResponse'
         "401":
@@ -432,20 +320,21 @@ paths:
       - Bearer Auth: []
       servers:
       - description: Production server
-        url: //library.alexandrio.cloud
-      summary: Book Retrieve (metadata)
+        url: //media.alexandrio.cloud
+      summary: Download a book
       tags:
-      - LIBRARY
+      - MEDIA
+  /book/upload:
     post:
-      description: Create the metadata of a book
+      description: Upload a book to the server and link it to its metadata on the library MS
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              $ref: '#/components/schemas/BookMetadataCreateRequest'
+              $ref: '#/components/schemas/UploadRequest'
       responses:
         "200":
-          $ref: '#/components/schemas/BookMetadataCreateResponse'
+          $ref: '#/components/schemas/UploadResponse'
         "400":
           $ref: '#/components/schemas/BadRequestErrorResponse'
         "401":
@@ -454,90 +343,10 @@ paths:
       - Bearer Auth: []
       servers:
       - description: Production server
-        url: //library.alexandrio.cloud
-      summary: Book Create (metadata)
+        url: //media.alexandrio.cloud
+      summary: Upload a book
       tags:
-      - LIBRARY
-  /libraries:
-    get:
-      description: Retrieve a list of the current user's libraries
-      responses:
-        "200":
-          $ref: '#/components/schemas/LibrariesNamesRetrieveResponse'
-        "401":
-          $ref: '#/components/schemas/UnauthorizedErrorResponse'
-      security:
-      - Bearer Auth: []
-      servers:
-      - description: Production server
-        url: //library.alexandrio.cloud
-      summary: Libraries Retrieve
-      tags:
-      - LIBRARY
-  /library:
-    delete:
-      description: Delete a library
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LibraryDeleteRequest'
-      responses:
-        "200":
-          $ref: '#/components/schemas/LibraryDeleteResponse'
-        "400":
-          $ref: '#/components/schemas/BadRequestErrorResponse'
-        "401":
-          $ref: '#/components/schemas/UnauthorizedErrorResponse'
-      security:
-      - Bearer Auth: []
-      servers:
-      - description: Production server
-        url: //library.alexandrio.cloud
-      tags:
-      - LIBRARY
-    get:
-      description: Retrieve a library
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LibraryRetrieveRequest'
-      responses:
-        "200":
-          $ref: '#/components/schemas/LibraryRetrieveResponse'
-        "400":
-          $ref: '#/components/schemas/BadRequestErrorResponse'
-        "401":
-          $ref: '#/components/schemas/UnauthorizedErrorResponse'
-      security:
-      - Bearer Auth: []
-      servers:
-      - description: Production server
-        url: //library.alexandrio.cloud
-      tags:
-      - LIBRARY
-    post:
-      description: Create a library
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LibraryCreateRequest'
-      responses:
-        "200":
-          $ref: '#/components/schemas/LibraryCreateResponse'
-        "400":
-          $ref: '#/components/schemas/BadRequestErrorResponse'
-        "401":
-          $ref: '#/components/schemas/UnauthorizedErrorResponse'
-      security:
-      - Bearer Auth: []
-      servers:
-      - description: Production server
-        url: //library.alexandrio.cloud
-      tags:
-      - LIBRARY
+      - MEDIA
   /login:
     post:
       description: Login a user and return it's information, auth token and refresh token
