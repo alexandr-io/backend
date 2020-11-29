@@ -36,7 +36,7 @@ func consumeLoginRequestMessages() {
 			// Send to logic
 			_ = internal.Login(string(msg.Key), messageData)
 		} else {
-			log.Printf("Topic: %s -> consumer error: %s", msg.TopicPartition, err)
+			log.Printf("Consumer error: %s", err)
 		}
 	}
 }
