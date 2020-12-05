@@ -35,7 +35,7 @@ func produceCreateLibraryMessage(id string, user data.KafkaLibrariesCreationMess
 
 	// Produce message to topic (asynchronously)
 	if err := producer.Produce(&kafka.Message{
-		TopicPartition: kafka.TopicPartition{Topic: &librariesRequest, Partition: kafka.PartitionAny},
+		TopicPartition: kafka.TopicPartition{Topic: &librariesRequest.Name, Partition: kafka.PartitionAny},
 		Key:            []byte(id),
 		Value:          message,
 	}, nil); err != nil {

@@ -23,7 +23,7 @@ func produceAuthResponse(key string, message []byte) error {
 
 	// Produce message to topic (asynchronously)
 	if err := producer.Produce(&kafka.Message{
-		TopicPartition: kafka.TopicPartition{Topic: &authResponse, Partition: kafka.PartitionAny},
+		TopicPartition: kafka.TopicPartition{Topic: &authResponse.Name, Partition: kafka.PartitionAny},
 		Key:            []byte(key),
 		Value:          message,
 	}, nil); err != nil {

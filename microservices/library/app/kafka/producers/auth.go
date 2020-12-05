@@ -75,7 +75,7 @@ func produceAuthMessage(id string, jwt string, errorChannel chan error) {
 
 	// Produce message to topic (asynchronously)
 	if err := producer.Produce(&kafka.Message{
-		TopicPartition: kafka.TopicPartition{Topic: &authRequest, Partition: kafka.PartitionAny},
+		TopicPartition: kafka.TopicPartition{Topic: &authRequest.Name, Partition: kafka.PartitionAny},
 		Key:            []byte(id),
 		Value:          message,
 	}, nil); err != nil {
