@@ -26,7 +26,7 @@ type Topic struct {
 var (
 	// OLD: authRequest = "auth"
 	authRequest = Topic{
-		Name:              "auth",
+		Name:              "auth.token",
 		RetentionMS:       1000 * 5,
 		NumPartitions:     1,
 		ReplicationFactor: 1,

@@ -1,8 +1,10 @@
 package consumers
 
 var (
-	registerResponse = "register-response"
-	loginResponse    = "login-response"
+	microserviceName = "auth"
+
+	registerResponse = "user.register.response"
+	loginResponse    = "user.login.response"
 	userResponse     = "user-response"
-	authRequest      = "auth"
+	authRequest      = microserviceName + ".token"
 )

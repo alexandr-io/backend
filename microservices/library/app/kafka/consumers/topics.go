@@ -1,7 +1,7 @@
 package consumers
 
 var (
-	authResponse     = "auth-response"
+	authResponse     = "auth.token.response"
 	authGroup        = "auth-response-library"
-	librariesRequest = "libraries-creation-request"
+	librariesRequest = "library.libraries.create"
 )

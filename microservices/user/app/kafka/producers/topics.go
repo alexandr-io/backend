@@ -26,28 +26,28 @@ type Topic struct {
 var (
 	// OLD: registerResponse = "register-response"
 	registerResponse = Topic{
-		Name:              "register-response",
+		Name:              "user.register.response",
 		RetentionMS:       1000 * 5,
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
 	// OLD: loginResponse    = "login-response"
 	loginResponse = Topic{
-		Name:              "login-response",
+		Name:              "user.login.response",
 		RetentionMS:       1000 * 5,
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
 	// OLD: userResponse     = "user-response"
 	userResponse = Topic{
-		Name:              "user-response",
+		Name:              "user.retrieve.response",
 		RetentionMS:       0,
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
 	// OLD: authRequest      = "auth"
 	authRequest = Topic{
-		Name:              "auth",
+		Name:              "auth.token",
 		RetentionMS:       1000 * 5,
 		NumPartitions:     1,
 		ReplicationFactor: 1,

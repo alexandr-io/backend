@@ -26,7 +26,7 @@ type Topic struct {
 var (
 	// OLD: registerRequest  = "register"
 	registerRequest = Topic{
-		Name:              "register",
+		Name:              "user.register",
 		RetentionMS:       1000 * 5, // Topic kept for 5 seconds before deletion
 		NumPartitions:     1,
 		ReplicationFactor: 1,
@@ -34,7 +34,7 @@ var (
 
 	// OLD: loginRequest     = "login"
 	loginRequest = Topic{
-		Name:              "login",
+		Name:              "user.login",
 		RetentionMS:       1000 * 5, // Topic kept for 5 seconds before deletion
 		NumPartitions:     1,
 		ReplicationFactor: 1,
@@ -42,7 +42,7 @@ var (
 
 	// OLD: userRequest      = "user"
 	userRequest = Topic{
-		Name:              "user",
+		Name:              "user.retrieve",
 		RetentionMS:       1000 * 5, // Topic kept for 5 seconds before deletion
 		NumPartitions:     1,
 		ReplicationFactor: 1,
@@ -51,7 +51,7 @@ var (
 	// librariesRequest is the topic send to the library MS to create a user libraries object
 	// OLD: librariesRequest = "libraries-creation-request"
 	librariesRequest = Topic{
-		Name:              "libraries-creation-request",
+		Name:              "library.libraries.create",
 		RetentionMS:       -1,
 		NumPartitions:     1,
 		ReplicationFactor: 1,
@@ -59,7 +59,7 @@ var (
 
 	// OLD: authResponse     = "auth-response"
 	authResponse = Topic{
-		Name:              "auth-response",
+		Name:              "auth.token.response",
 		RetentionMS:       1000 * 5, // Topic kept for 5 seconds before deletion
 		NumPartitions:     1,
 		ReplicationFactor: 1,
