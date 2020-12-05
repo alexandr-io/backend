@@ -12,8 +12,6 @@ func Auth(ctx *fiber.Ctx) error {
 	// Set Content-Type: application/json
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
-	println(ctx.Request().Header.String())
-
 	user, err := authJWT.GetUserFromContextJWT(ctx)
 	if err != nil {
 		return err
