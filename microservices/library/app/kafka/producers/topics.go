@@ -2,12 +2,14 @@ package producers
 
 import (
 	"context"
-	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"log"
 	"os"
 	"time"
+
+	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
+// Topic define the structure used to define a kafka's topic
 type Topic struct {
 	// Name of the topic created in the kafka broker
 	Name string
