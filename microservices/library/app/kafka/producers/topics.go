@@ -37,7 +37,7 @@ var (
 func CreateTopics() error {
 	client, err := kafka.NewAdminClient(&kafka.ConfigMap{"bootstrap.servers": os.Getenv("KAFKA_URL")})
 	if err != nil {
-		log.Println("Error in CreateTopics" + err.Error())
+		log.Println("Error while creating topics: " + err.Error())
 		return err
 	}
 
@@ -46,7 +46,7 @@ func CreateTopics() error {
 
 	durationBeforeTimeout, err := time.ParseDuration("60s")
 	if err != nil {
-		log.Println("Error in CreateTopics" + err.Error())
+		log.Println("Error while creating topics: " + err.Error())
 		return err
 	}
 	results, err := client.CreateTopics(
@@ -60,7 +60,7 @@ func CreateTopics() error {
 		},
 		kafka.SetAdminOperationTimeout(durationBeforeTimeout))
 	if err != nil {
-		log.Println("Error in CreateTopics" + err.Error())
+		log.Println("Error while creating topics: " + err.Error())
 		return err
 	}
 

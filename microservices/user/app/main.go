@@ -25,9 +25,7 @@ func main() {
 	database.InitCollections()
 
 	consumers.StartConsumers()
-	err := producers.CreateTopics()
-	for err != nil {
-		err = producers.CreateTopics()
+	for producers.CreateTopics() != nil {
 	}
 
 	// Create a new fiber instance with custom config

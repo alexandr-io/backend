@@ -31,9 +31,7 @@ func main() {
 	createRoute(app)
 
 	consumers.StartConsumers()
-	err := producers.CreateTopics()
-	for err != nil {
-		err = producers.CreateTopics()
+	for producers.CreateTopics() != nil {
 	}
 
 	log.Fatal(app.Listen(":3000"))
