@@ -7,18 +7,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// swagger:route PUT / USER update_user
-// Get the information about a user
-// produces:
-//  - application/json
-//  - text/plain
-//
-// security:
-//	Bearer:
-// responses:
-//	200: userResponse
-//	401: unauthorizedErrorResponse
-
 // UpdateUser update the data of the connected user and return the updated data.
 func UpdateUser(ctx *fiber.Ctx) error {
 	// Set Content-Type: application/json
