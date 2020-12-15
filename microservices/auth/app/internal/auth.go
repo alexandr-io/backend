@@ -1,8 +1,6 @@
 package internal
 
 import (
-	"os"
-
 	"github.com/alexandr-io/backend/auth/data"
 	authJWT "github.com/alexandr-io/backend/auth/jwt"
 	"github.com/alexandr-io/backend/auth/kafka/producers"
@@ -13,9 +11,7 @@ import (
 
 // Auth is the internal logic function used to check if a JWT is valid and if the user exist.
 func Auth(key string, message data.KafkaAuthRequest) error {
-
-	// Parse jwt with retrieved secret
-	tokenObject, err := authJWT.ParseJWT(message.JWT, os.Getenv("JWT_SECRET"))
+	tokenObject, err := authJWT.Validate(message.JWT)
 	if err != nil {
 		return producers.SendErrorAuthMessage(key, err)
 	}
