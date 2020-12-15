@@ -10,6 +10,7 @@ import (
 
 	"github.com/alexandr-io/backend/media/database"
 	consumers "github.com/alexandr-io/backend/media/kafka/comsumers"
+	"github.com/alexandr-io/backend/media/kafka/producers"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -24,6 +25,8 @@ func main() {
 	database.InitCollections()
 
 	consumers.StartConsumers()
+	for producers.CreateTopics() != nil {
+	}
 
 	// Create a new fiber instance with custom config
 	app := fiber.New(fiber.Config{

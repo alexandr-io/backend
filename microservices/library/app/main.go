@@ -10,6 +10,7 @@ import (
 
 	"github.com/alexandr-io/backend/library/database"
 	"github.com/alexandr-io/backend/library/kafka/consumers"
+	"github.com/alexandr-io/backend/library/kafka/producers"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -30,6 +31,8 @@ func main() {
 	createRoute(app)
 
 	consumers.StartConsumers()
+	for producers.CreateTopics() != nil {
+	}
 
 	log.Fatal(app.Listen(":3000"))
 }

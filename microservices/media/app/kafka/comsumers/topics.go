@@ -1,6 +1,6 @@
 package consumers
 
 var (
-	authResponse = "auth-response"
-	authGroup    = "auth-response-media"
+	authResponse = "auth.token.response"
+	authGroup    = "auth.token.response.media"
 )

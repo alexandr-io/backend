@@ -32,7 +32,7 @@ func consumeUserRequestMessages() {
 			// Send to logic
 			_ = internal.User(string(msg.Key), string(msg.Value))
 		} else {
-			log.Printf("Topic: %s -> consumer error: %s", msg.TopicPartition, err)
+			log.Printf("Consumer error: %s", err)
 		}
 	}
 }
