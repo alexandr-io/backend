@@ -19,7 +19,7 @@ func Register(key string, message data.KafkaUserRegisterRequest) error {
 		Password: message.Password,
 	})
 	if err != nil {
-		var badInput *data.BadInput
+		var badInput *data.BadInputError
 		if errors.As(err, &badInput) {
 			return producers.SendBadRequestRegisterMessage(key, badInput.JSONError)
 		}

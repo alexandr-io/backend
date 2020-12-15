@@ -16,7 +16,7 @@ func User(key string, message string) error {
 		return producers.SendInternalErrorUserMessage(key, err.Error())
 	}
 
-	// Get the user from it's userID
+	// Get the user from it's user ID
 	user, err := database.GetUserByID(userObjectID)
 	if err != nil {
 		if database.IsMongoNoDocument(err) {
