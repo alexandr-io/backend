@@ -27,8 +27,11 @@ func ExecAuthTests(environment string) (string, error) {
 		return "", err
 	}
 
-	jwt, err := workingTestSuit(baseURL)
+	userData, err := workingTestSuit(baseURL)
 	if err != nil {
+		errorHappened = true
+	}
+	if err := logoutTests(baseURL, userData); err != nil {
 		errorHappened = true
 	}
 	if err = badRequestTests(baseURL); err != nil {
@@ -41,7 +44,7 @@ func ExecAuthTests(environment string) (string, error) {
 	if errorHappened {
 		return "", errors.New("error in auth tests")
 	}
-	return jwt, nil
+	return userData.AuthToken, nil
 }
 
 func getBaseURL(environment string) (string, error) {
@@ -57,32 +60,49 @@ func getBaseURL(environment string) (string, error) {
 	}
 }
 
-func workingTestSuit(baseURL string) (string, error) {
+func workingTestSuit(baseURL string) (*user, error) {
 	userData, err := testRegisterWorking(baseURL)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	if err := testAuthWorking(baseURL, userData); err != nil {
-		return "", err
+		return nil, err
 	}
 
 	userDataLogin, err := testLoginWorking(baseURL, userData)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	if err := testAuthWorking(baseURL, userDataLogin); err != nil {
-		return "", err
+		return nil, err
 	}
 
 	userDataRefresh, err := testRefreshWorking(baseURL, userDataLogin)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	if err := testAuthWorking(baseURL, userDataRefresh); err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return userData.AuthToken, nil
+	return userData, nil
+}
+
+func logoutTests(baseURL string, userData *user) error {
+	userDataLoginForLogout, err := testLoginWorking(baseURL, userData)
+	if err != nil {
+		return err
+	}
+	if err := testLogoutWorking(baseURL, userDataLoginForLogout); err != nil {
+		return err
+	}
+	if err := testAlreadyLogout(baseURL, userDataLoginForLogout); err != nil {
+		return err
+	}
+	if err := testAuthLogoutToken(baseURL, userDataLoginForLogout); err != nil {
+		return err
+	}
+	return nil
 }
 
 func badRequestTests(baseURL string) error {
