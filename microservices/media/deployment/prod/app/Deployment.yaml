@@ -20,6 +20,11 @@ spec:
           image: docker.pkg.github.com/alexandr-io/backend/media:latest
           imagePullPolicy: Always
           env:
+            - name: MEDIA_PATH
+              value: "/media/"
+            - name: MEDIA_URI
+              value: "file"
+
             - name: MONGO_URL
               valueFrom:
                 secretKeyRef:
