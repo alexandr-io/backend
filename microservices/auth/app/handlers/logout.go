@@ -25,7 +25,6 @@ func Logout(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, "Error casting claims[\"exp\"] to int64")
 	}
 	exp := time.Until(time.Unix(int64(expInt), 0))
-	fmt.Println(exp.Minutes())
 	// get jwt to store in redis
 	jwt, err := authJWT.ExtractJWTFromContext(ctx)
 	if err != nil {

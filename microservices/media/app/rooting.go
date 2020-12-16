@@ -18,9 +18,7 @@ func createRoute(app *fiber.App) {
 		TimeFormat: "2 Jan 15:04:05 MST",
 		TimeZone:   "Europe/Paris",
 		Next: func(ctx *fiber.Ctx) bool {
-			if string(ctx.Request().RequestURI()) == "/dashboard" ||
-				string(ctx.Request().RequestURI()) == "/docs" ||
-				string(ctx.Request().RequestURI()) == "/swagger.yml" {
+			if string(ctx.Request().RequestURI()) == "/dashboard" {
 				return true
 			}
 			return false

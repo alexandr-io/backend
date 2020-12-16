@@ -31,13 +31,14 @@ func ExecAuthTests(environment string) (string, error) {
 	if err != nil {
 		errorHappened = true
 	}
-	if err := logoutTests(baseURL, userData); err != nil {
-		errorHappened = true
-	}
 	if err = badRequestTests(baseURL); err != nil {
 		errorHappened = true
 	}
-	if err = incorrectTests(baseURL); err != nil {
+	if err = incorrectTests(baseURL, *userData); err != nil {
+		errorHappened = true
+	}
+	userData, err = logoutTests(baseURL, userData)
+	if err != nil {
 		errorHappened = true
 	}
 
@@ -69,14 +70,13 @@ func workingTestSuit(baseURL string) (*user, error) {
 		return nil, err
 	}
 
-	userDataLogin, err := testLoginWorking(baseURL, userData)
+	userDataLogin, err := testLoginWorking(baseURL, *userData)
 	if err != nil {
 		return nil, err
 	}
 	if err := testAuthWorking(baseURL, userDataLogin); err != nil {
 		return nil, err
 	}
-
 	userDataRefresh, err := testRefreshWorking(baseURL, userDataLogin)
 	if err != nil {
 		return nil, err
@@ -88,21 +88,21 @@ func workingTestSuit(baseURL string) (*user, error) {
 	return userData, nil
 }
 
-func logoutTests(baseURL string, userData *user) error {
-	userDataLoginForLogout, err := testLoginWorking(baseURL, userData)
+func logoutTests(baseURL string, userData *user) (*user, error) {
+	if err := testLogoutWorking(baseURL, userData.AuthToken); err != nil {
+		return nil, err
+	}
+	if err := testAlreadyLogout(baseURL, userData.AuthToken); err != nil {
+		return nil, err
+	}
+	if err := testAuthLogoutToken(baseURL, userData.AuthToken); err != nil {
+		return nil, err
+	}
+	userData, err := testLoginWorking(baseURL, *userData)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	if err := testLogoutWorking(baseURL, userDataLoginForLogout); err != nil {
-		return err
-	}
-	if err := testAlreadyLogout(baseURL, userDataLoginForLogout); err != nil {
-		return err
-	}
-	if err := testAuthLogoutToken(baseURL, userDataLoginForLogout); err != nil {
-		return err
-	}
-	return nil
+	return userData, nil
 }
 
 func badRequestTests(baseURL string) error {
@@ -115,8 +115,8 @@ func badRequestTests(baseURL string) error {
 	return nil
 }
 
-func incorrectTests(baseURL string) error {
-	if err := testRegisterDuplicate(baseURL); err != nil {
+func incorrectTests(baseURL string, userData user) error {
+	if err := testRegisterDuplicate(baseURL, userData); err != nil {
 		return err
 	}
 	if err := testLoginNoMatch(baseURL); err != nil {
