@@ -5,8 +5,11 @@ import (
 	"os"
 
 	authTests "github.com/alexandr-io/backend/auth/tests"
+	userTests "github.com/alexandr-io/backend/user/tests"
 	"github.com/urfave/cli/v2"
 )
+
+var authToken string
 
 var flags = []cli.Flag{
 	&cli.StringSliceFlag{
@@ -79,12 +82,17 @@ func parseAndExecTests(c *cli.Context, environment string) error {
 }
 
 func execUser(environment string) error {
+	if err := userTests.ExecUserTests(environment, authToken); err != nil {
+		return err
+	}
 	return nil
 }
 
 func execAuth(environment string) error {
-	if err := authTests.ExecAuthTests(environment); err != nil {
+	jwt, err := authTests.ExecAuthTests(environment)
+	if err != nil {
 		return err
 	}
+	authToken = jwt
 	return nil
 }

@@ -17,7 +17,7 @@ func consumeRegisterResponseMessages() {
 	}
 	defer consumer.Close()
 
-	// Subscribe consumer to topic register-
+	// Subscribe consumer to topic register-response
 	if err := consumer.SubscribeTopics([]string{registerResponse}, nil); err != nil {
 		log.Println(err)
 		return

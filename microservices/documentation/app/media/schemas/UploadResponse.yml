@@ -1,0 +1,5 @@
+---
+components:
+  schemas:
+    UploadResponse:
+      description: A simple response from a simple route

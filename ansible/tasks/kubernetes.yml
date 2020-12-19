@@ -72,9 +72,9 @@
     become_method: su
     become_user: alexandrio
 
-  - name: Sleep for 30
+  - name: Sleep for 60
     wait_for:
-      timeout: 30
+      timeout: 60
 
   - name: Taint node
     shell: "kubectl taint nodes --all node-role.kubernetes.io/master-"

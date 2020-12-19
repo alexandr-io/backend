@@ -70,7 +70,7 @@ func produceUserMessage(id string, userID string, errorChannel chan error) {
 
 	// Produce message to topic (asynchronously)
 	if err := producer.Produce(&kafka.Message{
-		TopicPartition: kafka.TopicPartition{Topic: &userRequest, Partition: kafka.PartitionAny},
+		TopicPartition: kafka.TopicPartition{Topic: &userRequest.Name, Partition: kafka.PartitionAny},
 		Key:            []byte(id),
 		Value:          []byte(userID),
 	}, nil); err != nil {

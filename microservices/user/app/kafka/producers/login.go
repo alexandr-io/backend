@@ -25,7 +25,7 @@ func produceLoginResponse(key string, message []byte) error {
 
 	// Produce message to topic (asynchronously)
 	if err := producer.Produce(&kafka.Message{
-		TopicPartition: kafka.TopicPartition{Topic: &loginResponse, Partition: kafka.PartitionAny},
+		TopicPartition: kafka.TopicPartition{Topic: &loginResponse.Name, Partition: kafka.PartitionAny},
 		Key:            []byte(key),
 		Value:          message,
 	}, nil); err != nil {

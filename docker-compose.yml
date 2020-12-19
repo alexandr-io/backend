@@ -7,15 +7,15 @@ services:
     container_name: mongodb
     env_file: .env-dev
     ports:
-      - 27017:27017
+      - "27017:27017"
     volumes:
-      - mongodb_data_container:/data/db
+      - "mongodb_data_container:/data/db"
 
   redis:
     image: redis:6.0.6
     container_name: redis
     ports:
-      - 6379:6379
+      - "6379:6379"
 
   zookeeper: # needed for kafka
     image: confluentinc/cp-zookeeper:5.4.3
@@ -105,6 +105,28 @@ services:
     volumes:
       - "./microservices/auth/app:/app"
 
+  # Media service
+  media:
+    container_name: media
+    build:
+      context: microservices/media/app
+      dockerfile: Dockerfile-dev
+    depends_on:
+      - mongodb
+      - broker
+    env_file: .env-dev
+    environment:
+      KAFKA_URL: 'broker:29092'
+      MEDIA_PATH: '/media/'
+      MEDIA_URI: 'file'
+      MONGO_URL: mongodb
+    ports:
+      - "4001:3000"
+    volumes:
+      - "./microservices/media/app:/app"
+      - "./microservices/media/.media:/media"
+
+
   # Documentation service
   documentation:
     container_name: documentation
@@ -117,6 +139,23 @@ services:
     volumes:
       - "./microservices/documentation/app:/app"
 
+  # Library service
+  library:
+    container_name: library
+    build:
+      context: microservices/library/app
+      dockerfile: Dockerfile-dev
+    depends_on:
+      - mongodb
+      - broker
+    env_file: .env-dev
+    environment:
+      MONGO_URL: mongodb
+      KAFKA_URL: 'broker:29092'
+    ports:
+      - "3002:3000"
+    volumes:
+    - "./microservices/library/app:/app"
 
 volumes:
   mongodb_data_container:

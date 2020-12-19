@@ -1,0 +1,18 @@
+---
+components:
+  schemas:
+    BookMetadataDeleteRequest:
+      properties:
+        book_id:
+          description: The ID of the book
+          example: Harry Potter
+          type: string
+        library_id:
+          description: The ID of the library of the book
+          example: My Library
+          type: string
+
+      required:
+        - book_id
+        - library_id
+      type: object

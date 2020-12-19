@@ -1,0 +1,5 @@
+---
+components:
+  schemas:
+    BookMetadataDeleteResponse:
+      type: object

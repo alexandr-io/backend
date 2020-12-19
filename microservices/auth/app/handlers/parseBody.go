@@ -65,7 +65,7 @@ func ParseBodyJSON(ctx *fiber.Ctx, object interface{}) error {
 	return nil
 }
 
-// badInputsJSON creates the error JSON using the struct BadInput.
+// badInputsJSON creates the error JSON using the struct BadInputError.
 // The key of the map given correspond to the Name and the value to the Reason.
 // It returns the JSON in []byte.
 func badInputsJSON(fields map[string]string) []byte {
@@ -82,12 +82,12 @@ func badInputsJSON(fields map[string]string) []byte {
 }
 
 // badInputJSON is simply a call to BadInputsJSON to create a single bad input error.
-// It returns the JSON of the struct BadInput in []byte.
+// It returns the JSON of the struct BadInputError in []byte.
 func badInputJSON(name string, reason string) []byte {
 	return badInputsJSON(map[string]string{name: reason})
 }
 
-// badInputsJSONFromType create a BadInput JSON from a key and a value corresponding to an ErrorType.
+// badInputsJSONFromType create a BadInputError JSON from a key and a value corresponding to an ErrorType.
 // It replace the Value with the defined string corresponding to the ErrorType.
 // It returns the JSON in []byte.
 func badInputsJSONFromType(fields map[string]string) []byte {

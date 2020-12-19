@@ -1,9 +1,11 @@
 package middleware
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/alexandr-io/backend/auth/data"
+	authJWT "github.com/alexandr-io/backend/auth/jwt"
 
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v2"
@@ -14,7 +16,21 @@ func Protected() func(*fiber.Ctx) error {
 	return jwtware.New(jwtware.Config{
 		SigningKey:   []byte(os.Getenv("JWT_SECRET")),
 		ErrorHandler: jwtError,
-		ContextKey:   "jwt",
+		Filter: func(ctx *fiber.Ctx) bool {
+			jwt, err := authJWT.ExtractJWTFromHeader(ctx)
+			if err != nil {
+				errorInfo, _ := data.ErrorInfoUnmarshal(err.Error())
+				fmt.Println("Middleware:", errorInfo.Message)
+				return true
+			}
+			if _, err := authJWT.Validate(jwt); err != nil {
+				errorInfo, _ := data.ErrorInfoUnmarshal(err.Error())
+				fmt.Println("Middleware:", errorInfo.Message)
+				return true
+			}
+			return false
+		},
+		ContextKey: "jwt",
 	})
 }
 
