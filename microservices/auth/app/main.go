@@ -7,7 +7,7 @@ package main
 import (
 	"log"
 
-	"github.com/alexandr-io/backend/auth/kafka"
+	"github.com/alexandr-io/backend/auth/kafka/consumers"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -23,7 +23,7 @@ func main() {
 	})
 	createRoute(app)
 
-	kafka.StartConsumers()
+	consumers.StartConsumers()
 
 	log.Fatal(app.Listen(":3000"))
 }

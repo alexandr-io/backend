@@ -9,10 +9,8 @@ import (
 
 // KafkaUserResponseMessage is the success answer expected from the register-response and login-response topic.
 type KafkaUserResponseMessage struct {
-	Data struct {
-		Code    int       `json:"code"`
-		Content KafkaUser `json:"content"`
-	} `json:"data"`
+	Code    int       `json:"code"`
+	Content KafkaUser `json:"content"`
 }
 
 // KafkaUser is the data send by kafka for user info.
@@ -30,5 +28,5 @@ func UnmarshalUserResponse(message []byte) (*KafkaUser, error) {
 		log.Println(err)
 		return nil, NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
-	return &messageStruct.Data.Content, nil
+	return &messageStruct.Content, nil
 }

@@ -9,20 +9,9 @@ import (
 )
 
 // authRefresh is the body parameter given to /auth/refresh call.
-// swagger:model
 type authRefresh struct {
-	// The refresh token of the user
-	// required: true
-	// example: eyJhb[...]FYqf4
 	RefreshToken string `json:"refresh_token" validate:"required"`
 }
-
-// swagger:route POST /auth/refresh AUTH refresh_token
-// Get a new auth and refresh token from a valid refresh token
-// responses:
-//	201: userResponse
-//	400: badRequestErrorResponse
-//  401: unauthorizedErrorResponse
 
 // RefreshAuthToken generate a new auth and refresh token from a given valid refresh token.
 func RefreshAuthToken(ctx *fiber.Ctx) error {

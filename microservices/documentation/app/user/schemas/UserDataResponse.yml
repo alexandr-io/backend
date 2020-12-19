@@ -1,0 +1,22 @@
+---
+components:
+  schemas:
+    UserDataResponse:
+      description: User's data response
+      content:
+        application/json:
+          schema:
+            description: User's data
+            properties:
+              email:
+                description: The email address of this user
+                example: john@provider.net
+                type: string
+              username:
+                description: The username of this user
+                example: john
+                type: string
+            required:
+              - username
+              - email
+            type: object

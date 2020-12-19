@@ -7,11 +7,6 @@ import (
 
 // KafkaUserResponse is the data used for a success response in kafka for a registration.
 type KafkaUserResponse struct {
-	Data KafkaUserResponseData `json:"data"`
-}
-
-// KafkaUserResponseData contain the http code of the answer to a registration.
-type KafkaUserResponseData struct {
 	Code    int                      `json:"code"`
 	Content KafkaUserResponseContent `json:"content"`
 }
@@ -27,10 +22,8 @@ type KafkaUserResponseContent struct {
 // a http code and a KafkaUserResponseContent.
 func CreateUserResponseMessage(code int, content KafkaUserResponseContent) ([]byte, error) {
 	message := KafkaUserResponse{
-		Data: KafkaUserResponseData{
-			Code:    code,
-			Content: content,
-		},
+		Code:    code,
+		Content: content,
 	}
 
 	messageJSON, err := json.Marshal(message)

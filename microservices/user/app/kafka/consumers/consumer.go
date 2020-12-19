@@ -12,13 +12,15 @@ func StartConsumers() {
 	go consumeRegisterRequestMessages()
 	go consumeLoginRequestMessages()
 	go consumeUserRequestMessages()
+
+	go consumeAuthResponseMessages()
 }
 
 // newConsumer create a new kafka consumer.
-func newConsumer() (*kafka.Consumer, error) {
+func newConsumer(consumerGroup string) (*kafka.Consumer, error) {
 	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": os.Getenv("KAFKA_URL"),
-		"group.id":          "group",
+		"group.id":          consumerGroup,
 		"auto.offset.reset": "earliest",
 	})
 

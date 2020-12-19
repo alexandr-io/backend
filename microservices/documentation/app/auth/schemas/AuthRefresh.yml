@@ -1,0 +1,13 @@
+---
+components:
+  schemas:
+    AuthRefresh:
+      properties:
+        refresh_token:
+          description: The refresh token of the user
+          example: eyJhb[...]FYqf4
+          type: string
+      required:
+        - refresh_token
+      title: authRefresh is the body parameter given to /auth/refresh call.
+      type: object

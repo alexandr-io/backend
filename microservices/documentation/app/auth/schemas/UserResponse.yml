@@ -1,0 +1,9 @@
+---
+components:
+  schemas:
+    UserResponse:
+      description: User data with auth and refresh token
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/User"

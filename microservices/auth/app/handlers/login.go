@@ -3,16 +3,10 @@ package handlers
 import (
 	"github.com/alexandr-io/backend/auth/data"
 	authJWT "github.com/alexandr-io/backend/auth/jwt"
-	"github.com/alexandr-io/backend/auth/kafka"
+	"github.com/alexandr-io/backend/auth/kafka/producers"
 
 	"github.com/gofiber/fiber/v2"
 )
-
-// swagger:route POST /login AUTH login
-// Login a user and return it's information, auth token and refresh token
-// responses:
-//	200: userResponse
-//	400: badRequestErrorResponse
 
 // Login take a userLogin in the body to login a user to the backend.
 // The login route return a data.User.
@@ -26,7 +20,7 @@ func Login(ctx *fiber.Ctx) error {
 	}
 
 	// Kafka request to user
-	kafkaUser, err := kafka.LoginRequestHandler(*userLogin)
+	kafkaUser, err := producers.LoginRequestHandler(*userLogin)
 	if err != nil {
 		return err
 	}

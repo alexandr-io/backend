@@ -1,0 +1,41 @@
+---
+paths:
+  /user:
+    get:
+      description: Get the information about the user corresponding to the Bearer token
+      summary: Get User
+      responses:
+        "200":
+          $ref: "#/components/schemas/UserResponse"
+        "401":
+          $ref: "#/components/schemas/UnauthorizedErrorResponse"
+      security:
+        - Bearer Auth: []
+      servers:
+        - url: //user.alexandrio.cloud
+          description: Production server
+      tags:
+        - USER
+
+    put:
+      description: Update the information of the user corresponding to the Bearer token
+      summary: Update User
+      operationId: user_update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserData"
+        description: "The informations to update a user  \nOnly sent fields will be updated"
+      responses:
+        "200":
+          $ref: "#/components/schemas/UserDataResponse"
+        "401":
+          $ref: "#/components/schemas/UnauthorizedErrorResponse"
+      security:
+        - Bearer Auth: []
+      servers:
+        - url: //user.alexandrio.cloud
+          description: Production server
+      tags:
+        - USER

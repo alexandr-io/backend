@@ -1,0 +1,15 @@
+---
+components:
+  schemas:
+    UserData:
+      description: User's data
+      properties:
+        email:
+          description: The email address of this user
+          example: john@provider.net
+          type: string
+        username:
+          description: The username of this user
+          example: john
+          type: string
+      type: object
