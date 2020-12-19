@@ -2,7 +2,6 @@ package tests
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -87,11 +86,9 @@ func testRegisterBadRequest(baseURL string) error {
 	return nil
 }
 
-func testRegisterDuplicate(baseURL string) error {
-	// Generate random string for username and email usage
-	randomName := randStringRunes(12)
+func testRegisterDuplicate(baseURL string, userData user) error {
 	// Create payload to send to the route
-	payload := bytes.NewBuffer([]byte("{\"username\": \"" + randomName + "\", \"email\": \"" + randomName + "@test.com\", \"password\": \"test\", \"confirm_password\": \"test\"}"))
+	payload := bytes.NewBuffer([]byte("{\"username\": \"" + userData.Username + "\", \"email\": \"" + userData.Email + "\", \"password\": \"test\", \"confirm_password\": \"test\"}"))
 	// Create a new request to register route
 	req, err := http.NewRequest(http.MethodPost, baseURL+"register", payload)
 	if err != nil {
@@ -99,29 +96,14 @@ func testRegisterDuplicate(baseURL string) error {
 		return err
 	}
 	req.Header.Set("Content-Type", "application/json")
-	clone := req.Clone(context.TODO())
-	clone.Body, err = req.GetBody()
-	if err != nil {
-		log.Println(err)
-		return err
-	}
 	// Exec request
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		newFailureMessage("POST", "/register", "Duplicate", "Can't call "+baseURL+"register")
 		return err
 	}
-	cloneRes, err := http.DefaultClient.Do(clone)
-	if err != nil {
-		newFailureMessage("POST", "/register", "Duplicate", "Can't call "+baseURL+"register")
-		return err
-	}
 	// Check returned http code
-	if res.StatusCode != http.StatusCreated {
-		newFailureMessage("POST", "/register", "Duplicate", fmt.Sprintf("[Expected: %d,\tGot: %d]", http.StatusCreated, res.StatusCode))
-		return errors.New("")
-	}
-	if cloneRes.StatusCode != http.StatusBadRequest {
+	if res.StatusCode != http.StatusBadRequest {
 		newFailureMessage("POST", "/register", "Duplicate", fmt.Sprintf("[Expected: %d,\tGot: %d]", http.StatusBadRequest, res.StatusCode))
 		return errors.New("")
 	}

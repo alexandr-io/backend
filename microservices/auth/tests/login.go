@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-func testLoginWorking(baseURL string, userData *user) (*user, error) {
+func testLoginWorking(baseURL string, userData user) (*user, error) {
 	// Create payload to send to the route
 	payload := bytes.NewBuffer([]byte("{\"login\": \"" + userData.Email + "\", \"password\": \"test\"}"))
 	// Create a new request to login route
