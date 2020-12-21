@@ -34,8 +34,8 @@ func IsAuthTokenInBlackList(authToken string) bool {
 		DB:       1,
 	})
 
-	result := rdb.Get(context.Background(), authToken)
-	if result.Val() == "" {
+	_, err := rdb.Get(context.Background(), authToken).Result()
+	if err != nil {
 		return false
 	}
 	return true
