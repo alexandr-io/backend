@@ -2,6 +2,7 @@ package redis
 
 import (
 	"context"
+	"log"
 	"os"
 	"time"
 
@@ -34,9 +35,12 @@ func IsAuthTokenInBlackList(authToken string) bool {
 		DB:       1,
 	})
 
-	result := rdb.Get(context.Background(), authToken)
-	if result.Val() == "" {
+	_, err := rdb.Get(context.Background(), authToken).Result()
+	if err == redis.Nil {
 		return false
+	} else if err != nil {
+		log.Println(err)
+		return true
 	}
 	return true
 }
