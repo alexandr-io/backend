@@ -157,5 +157,15 @@ services:
     volumes:
     - "./microservices/library/app:/app"
 
+  # Documentation service
+  mail:
+    container_name: mail
+    build:
+      context: microservices/mail/app
+      dockerfile: Dockerfile-dev
+    env_file: .env-dev
+    volumes:
+      - "./microservices/mail/app:/app"
+
 volumes:
   mongodb_data_container:
