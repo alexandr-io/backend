@@ -12,6 +12,7 @@ func StartConsumers() {
 	go consumeAuthResponseMessages()
 
 	go consumeLibrariesCreationMessages()
+	go consumeLibraryUploadAuthorizationMessage()
 }
 
 // newConsumer create a new kafka consumer.

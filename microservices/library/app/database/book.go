@@ -43,7 +43,7 @@ func BookRetrieve(c context.Context, bookRetrieve data.BookRetrieve) (data.Book,
 		}
 	}
 
-	return data.Book{}, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, "Book matching query does not exist")
+	return data.Book{}, data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "Book matching query does not exist")
 }
 
 //
