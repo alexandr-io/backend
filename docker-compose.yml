@@ -163,7 +163,11 @@ services:
     build:
       context: microservices/mail/app
       dockerfile: Dockerfile-dev
+    depends_on:
+      - broker
     env_file: .env-dev
+    environment:
+      KAFKA_URL: 'broker:29092'
     volumes:
       - "./microservices/mail/app:/app"
 

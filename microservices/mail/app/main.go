@@ -5,30 +5,28 @@
 package main
 
 import (
-	"fmt"
-	"github.com/sendgrid/sendgrid-go"
-	"github.com/sendgrid/sendgrid-go/helpers/mail"
 	"log"
-	"os"
+
+	"github.com/alexandr-io/backend/mail/internal"
+	"github.com/alexandr-io/backend/mail/kafka/consumers"
+
+	"github.com/matcornic/hermes/v2"
 )
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.Println("Mail Service started")
 
-	from := mail.NewEmail("Alexandrio", "no-reply@alexandrio.cloud")
-	subject := "Reset password"
-	to := mail.NewEmail("Alexandrio", "alexandriocloud@gmail.com")
-	plainTextContent := "Reset your password by clicking this link"
-	htmlContent := "Reset your password by clicking this link"
-	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
-	client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
-	response, err := client.Send(message)
-	if err != nil {
-		log.Println(err)
-	} else {
-		fmt.Println(response.StatusCode)
-		fmt.Println(response.Body)
-		fmt.Println(response.Headers)
+	// Configure hermes by setting a theme and your product info
+	internal.HMS = hermes.Hermes{
+		Product: hermes.Product{
+			// Appears in header & footer of e-mails
+			Name:      "Alexandrio",
+			Link:      "http://alexandrio.cloud",
+			Copyright: "Copyright © 2021 Alexandrio. All rights reserved.",
+		},
 	}
+	for consumers.CreateTopics() != nil {
+	}
+	consumers.ConsumeMailRequestMessages()
 }
