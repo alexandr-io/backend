@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/alexandr-io/backend/media/data"
+	"go.mongodb.org/mongo-driver/mongo"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
@@ -32,7 +33,7 @@ func GetBookByID(book *data.Book) (*data.Book, error) {
 	filter := bson.D{{Key: "book_id", Value: book.ID}}
 	err := FindOneWithFilter(book, filter)
 	if err != nil {
-		return book, err
+		return book, data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You do not have access to this book.")
 	}
 
 	return book, nil
@@ -43,15 +44,15 @@ func GetBookByID(book *data.Book) (*data.Book, error) {
 //
 
 // InsertBook create a book on the database
-func InsertBook(book data.Book) error {
+func InsertBook(book data.Book) (*mongo.InsertOneResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	bookCollection := Instance.Db.Collection(CollectionBook)
-	_, err := bookCollection.InsertOne(ctx, book)
+	insertedResult, err := bookCollection.InsertOne(ctx, book)
 	if err != nil {
-		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
-	return nil
+	return insertedResult, nil
 }
