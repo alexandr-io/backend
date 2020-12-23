@@ -42,7 +42,7 @@ func SendResetPasswordEmail(ctx *fiber.Ctx) error {
 	}
 
 	// Return the new user to the user
-	if err := ctx.SendStatus(fiber.StatusCreated); err != nil {
+	if err := ctx.SendStatus(fiber.StatusNoContent); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil
