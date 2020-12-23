@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
+	"path"
+	"strings"
 	"time"
 
 	"github.com/fatih/color"
@@ -84,6 +86,9 @@ func workingTestSuit(baseURL string) (*user, error) {
 	if err := testAuthWorking(baseURL, userDataRefresh); err != nil {
 		return nil, err
 	}
+	if err := testResetPasswordWorking(baseURL, *userData); err != nil {
+		return nil, err
+	}
 
 	return userData, nil
 }
@@ -112,6 +117,9 @@ func badRequestTests(baseURL string) error {
 	if err := testLoginBadRequest(baseURL); err != nil {
 		return err
 	}
+	if err := testResetPasswordBadRequest(baseURL); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -120,6 +128,9 @@ func incorrectTests(baseURL string, userData user) error {
 		return err
 	}
 	if err := testLoginNoMatch(baseURL); err != nil {
+		return err
+	}
+	if err := testResetPasswordNoMatch(baseURL); err != nil {
 		return err
 	}
 	if err := testAuthInvalidToken(baseURL); err != nil {
@@ -169,4 +180,9 @@ func newFailureMessage(verb string, route string, test string, message string) {
 	}
 
 	fmt.Printf("%s\t %s\t%-20s%-14s%-5s\t%s\n", backCyan("[AUTH]"), coloredVerb, route, test, red("✗"), message)
+}
+
+func JoinURL(base string, paths ...string) string {
+	p := path.Join(paths...)
+	return fmt.Sprintf("%s/%s", strings.TrimRight(base, "/"), strings.TrimLeft(p, "/"))
 }

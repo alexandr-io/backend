@@ -3,6 +3,7 @@ package internal
 import (
 	"log"
 	"os"
+	"strings"
 
 	"github.com/alexandr-io/backend/mail/data"
 
@@ -25,10 +26,13 @@ func ResetPasswordMail(mailData data.KafkaEmail) error {
 	// Send email
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
 	client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
-	_, err = client.Send(message)
-	if err != nil {
-		log.Println(err)
-		return err
+	// Don't send email in test cases
+	if !strings.Contains(mailData.Email, "@test.test") {
+		_, err = client.Send(message)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
 	}
 	log.Printf("[MAIL] email sent to %s for %s", mailData.Email, mailData.Type)
 	return nil

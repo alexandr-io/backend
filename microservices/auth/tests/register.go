@@ -26,7 +26,7 @@ func testRegisterWorking(baseURL string) (*user, error) {
 	// Generate random string for username and email usage
 	randomName := randStringRunes(12)
 	// Create payload to send to the route
-	payload := bytes.NewBuffer([]byte("{\"username\": \"" + randomName + "\", \"email\": \"" + randomName + "@test.com\", \"password\": \"test\", \"confirm_password\": \"test\"}"))
+	payload := bytes.NewBuffer([]byte("{\"username\": \"" + randomName + "\", \"email\": \"" + randomName + "@test.test\", \"password\": \"test\", \"confirm_password\": \"test\"}"))
 	// Create a new request to register route
 	req, err := http.NewRequest(http.MethodPost, baseURL+"register", payload)
 	if err != nil {
