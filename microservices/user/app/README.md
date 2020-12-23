@@ -23,4 +23,4 @@ swagger generate spec -o ./swagger.yaml --scan-models
 ### Accessing The Documentation
 
 Run the microservices using the instructions in the [README](../../../README.md) at the root of the project.  
-Once the user service is up and running, the swagger documentation can be viewed using the ReDoc UI in your browser at [http://localhost:9090/docs](http://localhost:9090/docs).
+Once the user service is up and running, the swagger documentation can be viewed using the ReDoc UI in your browser at [http://localhost:4000](http://localhost:4000).

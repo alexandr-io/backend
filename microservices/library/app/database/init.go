@@ -16,7 +16,7 @@ func createLibrariesUniqueIndexes() {
 	_, err := librariesCollection.Indexes().CreateOne(
 		context.Background(),
 		mongo.IndexModel{
-			Keys:    bsonx.Doc{{"username", bsonx.Int32(1)}},
+			Keys:    bsonx.Doc{{"user_id", bsonx.Int32(1)}},
 			Options: options.Index().SetUnique(true),
 		},
 	)

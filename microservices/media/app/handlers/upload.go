@@ -8,6 +8,7 @@ import (
 	"github.com/alexandr-io/backend/media/data"
 	"github.com/alexandr-io/backend/media/database"
 	"github.com/alexandr-io/backend/media/internal"
+	"github.com/alexandr-io/backend/media/kafka/producers"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -19,6 +20,12 @@ func UploadBook(ctx *fiber.Ctx) error {
 	book := data.Book{
 		ID:        ctx.FormValue("book_id", ""),
 		LibraryID: ctx.FormValue("library_id", ""),
+	}
+
+	if isAllowed, err := producers.LibraryUploadAuthorizationRequestHandler(&book, string(ctx.Request().Header.Peek("ID"))); err != nil {
+		return err
+	} else if !isAllowed {
+		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "Not authorized")
 	}
 
 	err := checkBookUploadBadInputs(book)
@@ -51,7 +58,7 @@ func UploadBook(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
-	err = database.InsertBook(book)
+	_, err = database.InsertBook(book)
 	if err != nil {
 		err2 := internal.DeleteFile(ctx.Context(), book.Path)
 		if err2 != nil {

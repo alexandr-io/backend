@@ -33,6 +33,9 @@ func ExecUserTests(environment string, jwt string) error {
 	if err = badInputTestSuit(baseURL, jwt); err != nil {
 		errorHappened = true
 	}
+	if err = deleteUser(baseURL, jwt); err != nil {
+		errorHappened = true
+	}
 
 	if errorHappened {
 		return errors.New("error in user tests")
@@ -67,6 +70,16 @@ func workingTestSuit(baseURL string, jwt string) error {
 
 func badInputTestSuit(baseURL string, jwt string) error {
 	if err := testUserUpdateBadRequest(baseURL, jwt); err != nil {
+		return err
+	}
+	return nil
+}
+
+func deleteUser(baseURL string, jwt string) error {
+	if err := testUserDeleteWorking(baseURL, jwt); err != nil {
+		return err
+	}
+	if err := testUserAlreadyDelete(baseURL, jwt); err != nil {
 		return err
 	}
 	return nil

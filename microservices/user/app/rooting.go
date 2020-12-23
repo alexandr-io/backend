@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/alexandr-io/backend/user/handlers"
 	userMiddleware "github.com/alexandr-io/backend/user/middleware"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -13,14 +14,13 @@ import (
 // createRoute creates all the routes of the service.
 func createRoute(app *fiber.App) {
 	// Recover middleware in case of panic
+	app.Use(cors.New())
 	app.Use(recover.New())
 	app.Use(logger.New(logger.Config{
 		TimeFormat: "2 Jan 15:04:05 MST",
 		TimeZone:   "Europe/Paris",
 		Next: func(ctx *fiber.Ctx) bool {
-			if string(ctx.Request().RequestURI()) == "/dashboard" ||
-				string(ctx.Request().RequestURI()) == "/docs" ||
-				string(ctx.Request().RequestURI()) == "/swagger.yml" {
+			if string(ctx.Request().RequestURI()) == "/dashboard" {
 				return true
 			}
 			return false
@@ -30,6 +30,7 @@ func createRoute(app *fiber.App) {
 
 	app.Get("/user", userMiddleware.Protected(), handlers.GetUser)
 	app.Put("/user", userMiddleware.Protected(), handlers.UpdateUser)
+	app.Delete("/user", userMiddleware.Protected(), handlers.DeleteUser)
 
 	app.Get("/ping", func(c *fiber.Ctx) error {
 		return c.SendString("pong")

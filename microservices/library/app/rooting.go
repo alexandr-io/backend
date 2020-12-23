@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/alexandr-io/backend/library/handlers"
 	userMiddleware "github.com/alexandr-io/backend/library/middleware"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -11,6 +12,7 @@ import (
 
 func createRoute(app *fiber.App) {
 	// Recover middleware in case of panic
+	app.Use(cors.New())
 	app.Use(recover.New())
 	app.Use(logger.New(logger.Config{
 		TimeFormat: "2 Jan 15:04:05 MST",

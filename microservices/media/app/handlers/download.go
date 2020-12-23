@@ -6,6 +6,7 @@ import (
 	"github.com/alexandr-io/backend/media/data"
 	"github.com/alexandr-io/backend/media/database"
 	"github.com/alexandr-io/backend/media/internal"
+	"github.com/alexandr-io/backend/media/kafka/producers"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -21,6 +22,12 @@ func DownloadBook(ctx *fiber.Ctx) error {
 	book, err := database.GetBookByID(book)
 	if err != nil {
 		return err
+	}
+
+	if isAllowed, err := producers.LibraryUploadAuthorizationRequestHandler(book, string(ctx.Request().Header.Peek("ID"))); err != nil {
+		return err
+	} else if !isAllowed {
+		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "Not authorized")
 	}
 
 	file, err := internal.DownloadFile(ctx.Context(), path.Join(book.Path))

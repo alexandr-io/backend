@@ -31,6 +31,13 @@ var (
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
+
+	libraryUploadAllowed = Topic{
+		Name:              "library.upload.allowed.response",
+		RetentionMS:       1000 * 5,
+		NumPartitions:     1,
+		ReplicationFactor: 1,
+	}
 )
 
 // CreateTopics wait for the kafka broker to be running and create the topics
@@ -56,6 +63,11 @@ func CreateTopics() error {
 				Topic:             authRequest.Name,
 				NumPartitions:     authRequest.NumPartitions,
 				ReplicationFactor: authRequest.ReplicationFactor,
+			},
+			{
+				Topic:             libraryUploadAllowed.Name,
+				NumPartitions:     libraryUploadAllowed.NumPartitions,
+				ReplicationFactor: libraryUploadAllowed.ReplicationFactor,
 			},
 		},
 		kafka.SetAdminOperationTimeout(durationBeforeTimeout))

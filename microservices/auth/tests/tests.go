@@ -27,21 +27,25 @@ func ExecAuthTests(environment string) (string, error) {
 		return "", err
 	}
 
-	jwt, err := workingTestSuit(baseURL)
+	userData, err := workingTestSuit(baseURL)
 	if err != nil {
 		errorHappened = true
 	}
 	if err = badRequestTests(baseURL); err != nil {
 		errorHappened = true
 	}
-	if err = incorrectTests(baseURL); err != nil {
+	if err = incorrectTests(baseURL, *userData); err != nil {
+		errorHappened = true
+	}
+	userData, err = logoutTests(baseURL, userData)
+	if err != nil {
 		errorHappened = true
 	}
 
 	if errorHappened {
 		return "", errors.New("error in auth tests")
 	}
-	return jwt, nil
+	return userData.AuthToken, nil
 }
 
 func getBaseURL(environment string) (string, error) {
@@ -57,32 +61,48 @@ func getBaseURL(environment string) (string, error) {
 	}
 }
 
-func workingTestSuit(baseURL string) (string, error) {
+func workingTestSuit(baseURL string) (*user, error) {
 	userData, err := testRegisterWorking(baseURL)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	if err := testAuthWorking(baseURL, userData); err != nil {
-		return "", err
+		return nil, err
 	}
 
-	userDataLogin, err := testLoginWorking(baseURL, userData)
+	userDataLogin, err := testLoginWorking(baseURL, *userData)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	if err := testAuthWorking(baseURL, userDataLogin); err != nil {
-		return "", err
+		return nil, err
 	}
-
 	userDataRefresh, err := testRefreshWorking(baseURL, userDataLogin)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	if err := testAuthWorking(baseURL, userDataRefresh); err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return userData.AuthToken, nil
+	return userData, nil
+}
+
+func logoutTests(baseURL string, userData *user) (*user, error) {
+	if err := testLogoutWorking(baseURL, userData.AuthToken); err != nil {
+		return nil, err
+	}
+	if err := testAlreadyLogout(baseURL, userData.AuthToken); err != nil {
+		return nil, err
+	}
+	if err := testAuthLogoutToken(baseURL, userData.AuthToken); err != nil {
+		return nil, err
+	}
+	userData, err := testLoginWorking(baseURL, *userData)
+	if err != nil {
+		return nil, err
+	}
+	return userData, nil
 }
 
 func badRequestTests(baseURL string) error {
@@ -95,8 +115,8 @@ func badRequestTests(baseURL string) error {
 	return nil
 }
 
-func incorrectTests(baseURL string) error {
-	if err := testRegisterDuplicate(baseURL); err != nil {
+func incorrectTests(baseURL string, userData user) error {
+	if err := testRegisterDuplicate(baseURL, userData); err != nil {
 		return err
 	}
 	if err := testLoginNoMatch(baseURL); err != nil {
