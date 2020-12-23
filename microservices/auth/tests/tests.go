@@ -182,6 +182,7 @@ func newFailureMessage(verb string, route string, test string, message string) {
 	fmt.Printf("%s\t %s\t%-20s%-14s%-5s\t%s\n", backCyan("[AUTH]"), coloredVerb, route, test, red("✗"), message)
 }
 
+// JoinURL Join a base url with a route path
 func JoinURL(base string, paths ...string) string {
 	p := path.Join(paths...)
 	return fmt.Sprintf("%s/%s", strings.TrimRight(base, "/"), strings.TrimLeft(p, "/"))

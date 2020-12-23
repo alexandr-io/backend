@@ -1,11 +1,13 @@
 package redis
 
 import (
-	"github.com/alexandr-io/backend/auth/data"
-	"github.com/go-redis/redis/v8"
-	"github.com/gofiber/fiber/v2"
 	"os"
 	"time"
+
+	"github.com/alexandr-io/backend/auth/data"
+
+	"github.com/go-redis/redis/v8"
+	"github.com/gofiber/fiber/v2"
 )
 
 // StoreResetPasswordToken store a given reset password token to redis.

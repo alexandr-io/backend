@@ -2,8 +2,9 @@ package data
 
 import (
 	"encoding/json"
-	"github.com/gofiber/fiber/v2"
 	"log"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 // KafkaUserResponse is the data used for a success response in kafka for a registration.
