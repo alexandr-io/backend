@@ -38,7 +38,7 @@ func produceUserResponse(key string, message []byte) error {
 // SendSuccessUserMessage create a success user response and send it the the topic.
 func SendSuccessUserMessage(key string, code int, user data.User) error {
 	message, err := data.CreateUserResponseMessage(code,
-		data.KafkaUserResponseContent{
+		data.KafkaUser{
 			ID:       user.ID,
 			Email:    user.Email,
 			Username: user.Username,

@@ -64,6 +64,11 @@ var (
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
+
+	// Created in email MS
+	emailNew = Topic{
+		Name: "email.new",
+	}
 )
 
 // CreateTopics wait for the kafka broker to be running and create the topics

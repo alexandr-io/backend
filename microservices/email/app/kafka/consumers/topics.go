@@ -25,7 +25,7 @@ type Topic struct {
 
 var (
 	mailRequest = Topic{
-		Name:              "mail.new",
+		Name:              "email.new",
 		RetentionMS:       0,
 		NumPartitions:     1,
 		ReplicationFactor: 1,

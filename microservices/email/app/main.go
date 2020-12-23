@@ -28,5 +28,5 @@ func main() {
 	}
 	for consumers.CreateTopics() != nil {
 	}
-	consumers.ConsumeMailRequestMessages()
+	consumers.ConsumeEmailRequestMessages()
 }

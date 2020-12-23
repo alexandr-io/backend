@@ -41,7 +41,7 @@ func produceRegisterResponse(key string, message []byte) error {
 // SendSuccessRegisterMessage create a success register response and send it the the topic.
 func SendSuccessRegisterMessage(key string, code int, user data.User) error {
 	message, err := data.CreateUserResponseMessage(code,
-		data.KafkaUserResponseContent{
+		data.KafkaUser{
 			ID:       user.ID,
 			Email:    user.Email,
 			Username: user.Username,

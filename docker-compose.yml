@@ -158,10 +158,10 @@ services:
     - "./microservices/library/app:/app"
 
   # Documentation service
-  mail:
-    container_name: mail
+  email:
+    container_name: email
     build:
-      context: microservices/mail/app
+      context: microservices/email/app
       dockerfile: Dockerfile-dev
     depends_on:
       - broker
@@ -169,7 +169,7 @@ services:
     environment:
       KAFKA_URL: 'broker:29092'
     volumes:
-      - "./microservices/mail/app:/app"
+      - "./microservices/email/app:/app"
 
 volumes:
   mongodb_data_container:

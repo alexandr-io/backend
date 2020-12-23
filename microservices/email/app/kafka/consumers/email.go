@@ -9,9 +9,9 @@ import (
 	"github.com/alexandr-io/backend/mail/internal"
 )
 
-// ConsumeMailRequestMessages consume all the messages coming to the `mail.new` topic.
+// ConsumeEmailRequestMessages consume all the messages coming to the `mail.new` topic.
 // Once a message is consumed, the content is sent to the internal logic who will create and send to mail.
-func ConsumeMailRequestMessages() {
+func ConsumeEmailRequestMessages() {
 	// Create new consumer
 	consumer, err := newConsumer(mailRequest.Name)
 	if err != nil {
@@ -30,7 +30,7 @@ func ConsumeMailRequestMessages() {
 		if err == nil {
 			fmt.Printf("[KAFKA]: Message on %s: %s:%s\n", msg.TopicPartition, string(msg.Key), string(msg.Value))
 
-			var mailData data.KafkaMail
+			var mailData data.KafkaEmail
 			if err := json.Unmarshal(msg.Value, &mailData); err != nil {
 				log.Println(err)
 			}

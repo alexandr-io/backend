@@ -11,8 +11,8 @@ import (
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
-// ResetPasswordMail create an email with the data.KafkaMail
-func ResetPasswordMail(mailData data.KafkaMail) error {
+// ResetPasswordMail create an email with the data.KafkaEmail
+func ResetPasswordMail(mailData data.KafkaEmail) error {
 	// Create email object sender and receiver
 	from := mail.NewEmail(os.Getenv("MAIL_USERNAME"), os.Getenv("MAIL_EMAIL"))
 	subject := "Modify your password"
@@ -35,7 +35,7 @@ func ResetPasswordMail(mailData data.KafkaMail) error {
 }
 
 // createResetPasswordBody create the html and text body of the email
-func createResetPasswordBody(mailData data.KafkaMail) (string, string, error) {
+func createResetPasswordBody(mailData data.KafkaEmail) (string, string, error) {
 	email := hermes.Email{
 		Body: hermes.Body{
 			Name: mailData.Username,

@@ -9,12 +9,12 @@ import (
 
 // KafkaAuthResponse is the data sent by the auth MS to inform of the validity of a jwt.
 type KafkaAuthResponse struct {
-	Code    int                      `json:"code"`
-	Content KafkaUserResponseContent `json:"content"`
+	Code    int       `json:"code"`
+	Content KafkaUser `json:"content"`
 }
 
-// UnmarshalAuthResponse unmarshal the kafka message into a KafkaUserResponseContent.
-func UnmarshalAuthResponse(message []byte) (*KafkaUserResponseContent, error) {
+// UnmarshalAuthResponse unmarshal the kafka message into a KafkaUser.
+func UnmarshalAuthResponse(message []byte) (*KafkaUser, error) {
 	var messageStruct KafkaAuthResponse
 	if err := json.Unmarshal(message, &messageStruct); err != nil {
 		log.Println(err)

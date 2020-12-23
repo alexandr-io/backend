@@ -30,3 +30,12 @@ func UnmarshalUserResponse(message []byte) (*KafkaUser, error) {
 	}
 	return &messageStruct.Content, nil
 }
+
+// MarshalKafkaUser return a JSON of KafkaUser.
+func (user *KafkaUser) MarshalKafkaUser() ([]byte, error) {
+	messageJSON, err := json.Marshal(user)
+	if err != nil {
+		log.Println(err)
+	}
+	return messageJSON, err
+}
