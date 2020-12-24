@@ -9,3 +9,9 @@ type UserSendResetPasswordEmail struct {
 type UserResetPasswordToken struct {
 	Token string `json:"token" validate:"required,len=6"`
 }
+
+// UserResetPassword is the data sent to the /password/reset PUT route
+type UserResetPassword struct {
+	Token       string `json:"token" validate:"required,len=6"`
+	NewPassword string `json:"new_password" validate:"required"`
+}

@@ -69,6 +69,13 @@ var (
 	emailNew = Topic{
 		Name: "email.new",
 	}
+
+	updatePasswordRequest = Topic{
+		Name:              "user.password.update",
+		RetentionMS:       1000 * 5,
+		NumPartitions:     1,
+		ReplicationFactor: 1,
+	}
 )
 
 // CreateTopics wait for the kafka broker to be running and create the topics
@@ -115,6 +122,11 @@ func CreateTopics() error {
 				Topic:             authResponse.Name,
 				NumPartitions:     authResponse.NumPartitions,
 				ReplicationFactor: authResponse.ReplicationFactor,
+			},
+			{
+				Topic:             updatePasswordRequest.Name,
+				NumPartitions:     updatePasswordRequest.NumPartitions,
+				ReplicationFactor: updatePasswordRequest.ReplicationFactor,
 			},
 		},
 		kafka.SetAdminOperationTimeout(durationBeforeTimeout))

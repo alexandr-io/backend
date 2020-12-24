@@ -2,9 +2,9 @@ package handlers
 
 import (
 	"github.com/alexandr-io/backend/auth/data"
+	authJWT "github.com/alexandr-io/backend/auth/jwt"
 	"github.com/alexandr-io/backend/auth/kafka/producers"
 	"github.com/alexandr-io/backend/auth/redis"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
@@ -75,6 +75,54 @@ func ResetPasswordInfoFromToken(ctx *fiber.Ctx) error {
 		Username: kafkaUser.Username,
 		Email:    kafkaUser.Email,
 	}); err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+	return nil
+}
+
+// ResetPassword take a reset password token and a new password to change an account password
+func ResetPassword(ctx *fiber.Ctx) error {
+	// Set Content-Type: application/json
+	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
+
+	resetData := new(data.UserResetPassword)
+	if err := ParseBodyJSON(ctx, resetData); err != nil {
+		return err
+	}
+
+	// Get the userID from redis using the reset password token as key
+	userID, err := redis.GetResetPasswordTokenUserID(ctx, resetData.Token)
+	if err != nil {
+		return err
+	}
+
+	if err := redis.DeleteResetPasswordToken(ctx, resetData.Token); err != nil {
+		return err
+	}
+
+	// Hash new password
+	password := hashAndSalt(resetData.NewPassword)
+
+	// Kafka update user password
+	kafkaUser, err := producers.UpdatePasswordRequestHandler(data.KafkaUpdatePassword{ID: userID, Password: password})
+	if err != nil {
+		return err
+	}
+
+	// Create auth and refresh token
+	refreshToken, authToken, err := authJWT.GenerateNewRefreshTokenAndAuthToken(ctx, userID)
+	if err != nil {
+		return err
+	}
+	user := data.User{
+		Username:     kafkaUser.Username,
+		Email:        kafkaUser.Email,
+		AuthToken:    authToken,
+		RefreshToken: refreshToken,
+	}
+
+	// Return the new user to the user
+	if err := ctx.Status(fiber.StatusOK).JSON(user); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil

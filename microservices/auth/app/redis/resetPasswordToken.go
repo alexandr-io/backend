@@ -39,3 +39,24 @@ func GetResetPasswordTokenUserID(ctx *fiber.Ctx, resetPasswordToken string) (str
 	}
 	return userID, nil
 }
+
+// DeleteResetPasswordToken delete the given reset password token from redis.
+func DeleteResetPasswordToken(ctx *fiber.Ctx, resetPasswordToken string) error {
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     os.Getenv("REDIS_URL") + ":" + os.Getenv("REDIS_PORT"),
+		Password: "",
+		DB:       2,
+	})
+
+	iter := rdb.Scan(ctx.Context(), 0, resetPasswordToken, 0).Iterator()
+	for iter.Next(ctx.Context()) {
+		err := rdb.Del(ctx.Context(), iter.Val()).Err()
+		if err != nil {
+			return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		}
+	}
+	if err := iter.Err(); err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+	return nil
+}
