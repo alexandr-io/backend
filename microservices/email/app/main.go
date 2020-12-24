@@ -6,6 +6,8 @@ package main
 
 import (
 	"log"
+	"strconv"
+	"time"
 
 	"github.com/alexandr-io/backend/mail/internal"
 	"github.com/alexandr-io/backend/mail/kafka/consumers"
@@ -23,7 +25,7 @@ func main() {
 			// Appears in header & footer of e-mails
 			Name:      "Alexandrio",
 			Link:      "http://alexandrio.cloud",
-			Copyright: "Copyright © 2021 Alexandrio. All rights reserved.",
+			Copyright: "Copyright © " + strconv.Itoa(time.Now().Year()) + " Alexandrio. All rights reserved.",
 		},
 	}
 	for consumers.CreateTopics() != nil {

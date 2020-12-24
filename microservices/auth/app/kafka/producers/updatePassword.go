@@ -22,7 +22,7 @@ var UpdatePasswordRequestChannels sync.Map
 // create a channel for the answer,
 // call a watcher to wait for the proper answer from the user.update.password.response topic,
 // interpret the answer (possible errors or success) and return and error with the proper http code
-// In case of success, a data.User is returned containing the username and email of the user.
+// In case of success, a data.KafkaUser is returned containing the username and email of the user.
 func UpdatePasswordRequestHandler(userUpdate data.KafkaUpdatePassword) (*data.KafkaUser, error) {
 	// Generate UUID
 	id := uuid.New()

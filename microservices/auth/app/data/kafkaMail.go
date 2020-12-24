@@ -13,8 +13,8 @@ type KafkaEmail struct {
 	Data     string `json:"data"`
 }
 
-// MarshalKafkaEmail return a JSON of KafkaEmail.
-func (dataEmail *KafkaEmail) MarshalKafkaEmail() ([]byte, error) {
+// Marshal return a JSON of KafkaEmail.
+func (dataEmail *KafkaEmail) Marshal() ([]byte, error) {
 	messageJSON, err := json.Marshal(dataEmail)
 	if err != nil {
 		log.Println(err)

@@ -5,8 +5,8 @@ import (
 	authJWT "github.com/alexandr-io/backend/auth/jwt"
 	"github.com/alexandr-io/backend/auth/kafka/producers"
 	"github.com/alexandr-io/backend/auth/redis"
+
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
 
 // SendResetPasswordEmail take an email in the body to send an email to change password.
@@ -26,7 +26,7 @@ func SendResetPasswordEmail(ctx *fiber.Ctx) error {
 	}
 
 	// Generate UUID
-	resetPasswordToken := uuid.New().String()[0:6]
+	resetPasswordToken := authJWT.RandomStringNoSpecialChar(6)
 
 	if err := redis.StoreResetPasswordToken(ctx, resetPasswordToken, kafkaUser.ID); err != nil {
 		return err
@@ -35,13 +35,12 @@ func SendResetPasswordEmail(ctx *fiber.Ctx) error {
 	if err := producers.EmailRequestHandler(data.KafkaEmail{
 		Email:    kafkaUser.Email,
 		Username: kafkaUser.Username,
-		Type:     "password-reset",
+		Type:     data.ResetPassword,
 		Data:     resetPasswordToken,
 	}); err != nil {
 		return err
 	}
 
-	// Return the new user to the user
 	if err := ctx.SendStatus(fiber.StatusNoContent); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}

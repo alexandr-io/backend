@@ -17,7 +17,7 @@ func consumeUpdatePasswordResponseMessages() {
 	}
 	defer consumer.Close()
 
-	// Subscribe consumer to topic updatePassword-response
+	// Subscribe consumer to topic user.password.update.response
 	if err := consumer.SubscribeTopics([]string{updatePasswordResponse}, nil); err != nil {
 		log.Println(err)
 		return

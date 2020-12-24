@@ -157,7 +157,7 @@ services:
     volumes:
     - "./microservices/library/app:/app"
 
-  # Documentation service
+  # Email service
   email:
     container_name: email
     build:

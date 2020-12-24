@@ -15,7 +15,7 @@ func EmailRequestHandler(emailData data.KafkaEmail) error {
 	// Generate UUID
 	id := uuid.New()
 	// Produce the message to kafka
-	message, err := emailData.MarshalKafkaEmail()
+	message, err := emailData.Marshal()
 	if err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
