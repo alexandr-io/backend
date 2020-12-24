@@ -47,3 +47,35 @@ func SendResetPasswordEmail(ctx *fiber.Ctx) error {
 	}
 	return nil
 }
+
+// ResetPasswordInfoFromToken take a reset password token and return the user info if correct.
+func ResetPasswordInfoFromToken(ctx *fiber.Ctx) error {
+	// Set Content-Type: application/json
+	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
+
+	token := new(data.UserResetPasswordToken)
+	if err := ParseBodyJSON(ctx, token); err != nil {
+		return err
+	}
+
+	// Get the userID from redis using the reset password token as key
+	userID, err := redis.GetResetPasswordTokenUserID(ctx, token.Token)
+	if err != nil {
+		return err
+	}
+
+	// Kafka request to user
+	kafkaUser, err := producers.UserRequestHandler(data.KafkaUser{ID: userID})
+	if err != nil {
+		return err
+	}
+
+	// Return the new user to the user
+	if err := ctx.Status(fiber.StatusOK).JSON(data.User{
+		Username: kafkaUser.Username,
+		Email:    kafkaUser.Email,
+	}); err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+	return nil
+}
