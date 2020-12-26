@@ -27,7 +27,7 @@ jobs:
           path: microservices/email/app
           push: true
 
-      - name: Build and push Email Docker image with tag latest-preprod
+      - name: Build and push Email Docker image with tag latest
         # Official docker action: https://github.com/docker/build-push-action
         uses: docker/build-push-action@v1.1.0
         with:
