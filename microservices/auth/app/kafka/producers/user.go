@@ -23,7 +23,7 @@ var UserRequestChannels sync.Map
 // call a watcher to wait for the proper answer from the user-response topic,
 // interpret the answer (possible errors or success) and return and error with the proper http code
 // In case of success, a data.User is returned containing the username and email of the user.
-func UserRequestHandler(userID string) (*data.KafkaUser, error) {
+func UserRequestHandler(user data.KafkaUser) (*data.KafkaUser, error) {
 	// Generate UUID
 	id := uuid.New()
 	// Create a channel for the request
@@ -33,7 +33,11 @@ func UserRequestHandler(userID string) (*data.KafkaUser, error) {
 	// Store request channel to the channel map
 	UserRequestChannels.Store(id.String(), requestChannel)
 	// Produce the message to kafka
-	go produceUserMessage(id.String(), userID, errorChannel)
+	message, err := user.MarshalKafkaUser()
+	if err != nil {
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+	go produceUserMessage(id.String(), string(message), errorChannel)
 	// Watch for a response in the request channel
 	kafkaMessage, rawMessage, err := userResponseWatcher(id.String(), requestChannel, errorChannel)
 	if err != nil {
@@ -56,7 +60,7 @@ func UserRequestHandler(userID string) (*data.KafkaUser, error) {
 
 // produceUserMessage produce a user message to the `user` topic.
 // The message sent is the userID.
-func produceUserMessage(id string, userID string, errorChannel chan error) {
+func produceUserMessage(id string, user string, errorChannel chan error) {
 	// Create a new producer
 	producer, err := newProducer()
 	if err != nil {
@@ -72,7 +76,7 @@ func produceUserMessage(id string, userID string, errorChannel chan error) {
 	if err := producer.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &userRequest.Name, Partition: kafka.PartitionAny},
 		Key:            []byte(id),
-		Value:          []byte(userID),
+		Value:          []byte(user),
 	}, nil); err != nil {
 		errorChannel <- data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 		return
