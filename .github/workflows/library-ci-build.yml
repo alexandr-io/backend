@@ -7,8 +7,7 @@ on:
     paths:
       - 'microservices/library/app/**'
     branches-ignore:
-      - main
-      - pre-prod
+      - master
 
 jobs:
   build:
