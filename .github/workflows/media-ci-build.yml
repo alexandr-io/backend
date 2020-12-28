@@ -6,8 +6,7 @@ on:
     paths:
       - 'microservices/media/app/**'
     branches-ignore:
-      - main
-      - pre-prod
+      - master
 
 jobs:
   build:
