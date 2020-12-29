@@ -29,7 +29,7 @@ func createRoute(app *fiber.App) {
 	app.Get("/dashboard", monitor.New())
 
 	app.Post("/book/upload", mediaMiddleware.Protected(), handlers.UploadBook)
-	app.Get("/book/download", mediaMiddleware.Protected(), handlers.DownloadBook)
+	app.Put("/book/download", mediaMiddleware.Protected(), handlers.DownloadBook)
 
 	// Ping route used for testing that the service is up and running
 	app.Get("/ping", func(c *fiber.Ctx) error {
