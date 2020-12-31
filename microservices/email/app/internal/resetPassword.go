@@ -2,6 +2,7 @@ package internal
 
 import (
 	"log"
+	"net/http"
 	"os"
 	"strings"
 
@@ -28,9 +29,9 @@ func ResetPasswordMail(mailData data.KafkaEmail) error {
 	client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
 	// Don't send email in test cases
 	if !strings.Contains(mailData.Email, "@test.test") {
-		_, err = client.Send(message)
-		if err != nil {
-			log.Println(err)
+		resp, err := client.Send(message)
+		if err != nil || resp.StatusCode != http.StatusAccepted {
+			log.Printf("%v: %+v\n", err, resp)
 			return err
 		}
 	}
