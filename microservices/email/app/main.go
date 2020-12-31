@@ -5,7 +5,9 @@
 package main
 
 import (
+	"crypto/tls"
 	"log"
+	"net/http"
 	"strconv"
 	"time"
 
@@ -13,12 +15,18 @@ import (
 	"github.com/alexandr-io/backend/mail/kafka/consumers"
 
 	"github.com/matcornic/hermes/v2"
+	"github.com/sendgrid/rest"
+	"github.com/sendgrid/sendgrid-go"
 )
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.Println("Mail Service started")
 
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	sendgrid.DefaultClient = &rest.Client{HTTPClient: &http.Client{Transport: tr}}
 	// Configure hermes by setting a theme and your product info
 	internal.HMS = hermes.Hermes{
 		Product: hermes.Product{

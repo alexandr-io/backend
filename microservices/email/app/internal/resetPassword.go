@@ -1,16 +1,13 @@
 package internal
 
 import (
-	"crypto/tls"
 	"log"
-	"net/http"
 	"os"
 	"strings"
 
 	"github.com/alexandr-io/backend/mail/data"
 
 	"github.com/matcornic/hermes/v2"
-	"github.com/sendgrid/rest"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
@@ -29,10 +26,6 @@ func ResetPasswordMail(mailData data.KafkaEmail) error {
 	// Send email
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
 	client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-	}
-	sendgrid.DefaultClient = &rest.Client{HTTPClient: &http.Client{Transport: tr}}
 	// Don't send email in test cases
 	if !strings.Contains(mailData.Email, "@test.test") {
 		_, err = client.Send(message)
