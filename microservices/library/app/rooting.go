@@ -26,7 +26,7 @@ func createRoute(app *fiber.App) {
 	}))
 
 	app.Post("/library", userMiddleware.Protected(), handlers.LibraryCreation)
-	app.Get("/library", userMiddleware.Protected(), handlers.LibraryRetrieve)
+	app.Put("/library", userMiddleware.Protected(), handlers.LibraryRetrieve)
 	app.Delete("/library", userMiddleware.Protected(), handlers.LibraryDelete)
 
 	app.Get("/libraries", userMiddleware.Protected(), handlers.LibrariesRetrieve)

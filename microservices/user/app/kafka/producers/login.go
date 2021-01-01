@@ -41,7 +41,7 @@ func produceLoginResponse(key string, message []byte) error {
 // SendSuccessLoginMessage create a success login response and send it the the topic.
 func SendSuccessLoginMessage(key string, code int, user data.User) error {
 	message, err := data.CreateUserResponseMessage(code,
-		data.KafkaUserResponseContent{
+		data.KafkaUser{
 			ID:       user.ID,
 			Email:    user.Email,
 			Username: user.Username,

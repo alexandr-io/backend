@@ -16,6 +16,7 @@ func StartConsumers() {
 	go consumeRegisterResponseMessages()
 	go consumeLoginResponseMessages()
 	go consumeUserResponseMessages()
+	go consumeUpdatePasswordResponseMessages()
 }
 
 // newConsumer create a new kafka consumer.

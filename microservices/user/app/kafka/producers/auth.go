@@ -22,8 +22,8 @@ var AuthRequestChannels sync.Map
 // create a channel for the answer,
 // call a watcher to wait for the proper answer from the auth-response topic,
 // interpret the answer (possible errors or success) and return and error with the proper http code
-// In case of success, a data.KafkaUserResponseContent is returned containing the id, username and email of the user.
-func AuthRequestHandler(jwt string) (*data.KafkaUserResponseContent, error) {
+// In case of success, a data.KafkaUser is returned containing the id, username and email of the user.
+func AuthRequestHandler(jwt string) (*data.KafkaUser, error) {
 	// Generate UUID
 	id := uuid.New()
 	// Create a channel for the request
