@@ -4,7 +4,7 @@ import (
 	"github.com/alexandr-io/backend/auth/data"
 	"github.com/alexandr-io/backend/auth/database"
 	authJWT "github.com/alexandr-io/backend/auth/jwt"
-	
+
 	"github.com/gofiber/fiber/v2"
 )
 

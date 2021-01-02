@@ -7,9 +7,9 @@ import (
 	"github.com/alexandr-io/backend/auth/database"
 	authJWT "github.com/alexandr-io/backend/auth/jwt"
 	"github.com/alexandr-io/backend/auth/kafka/producers"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // Register take a data.UserRegister in the body to create a new user in the database.
