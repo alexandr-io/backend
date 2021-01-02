@@ -94,10 +94,12 @@ services:
       context: microservices/auth/app
       dockerfile: Dockerfile-dev
     depends_on:
+      - mongodb
       - redis
       - broker
     env_file: .env-dev
     environment:
+      MONGO_URL: mongodb
       REDIS_URL: redis
       KAFKA_URL: 'broker:29092'
     ports:
