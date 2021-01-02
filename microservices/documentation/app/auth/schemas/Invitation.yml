@@ -1,0 +1,16 @@
+---
+components:
+  schemas:
+    Invitation:
+      description: The invitation body
+      content:
+        application/json:
+          schema:
+            properties:
+              invitation_token:
+                description: The invitation token
+                example: 8r0AH61nCF
+                type: string
+            required:
+              - invitation_token
+            type: object

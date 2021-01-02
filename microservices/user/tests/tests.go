@@ -102,7 +102,7 @@ func newSuccessMessage(verb string, route string, test string) {
 		break
 	}
 
-	fmt.Printf("%s\t %s\t%-20s%-14s%-5s\n", backBlue("[USER]"), coloredVerb, route, test, green("✓"))
+	fmt.Printf("%s\t %s\t%-35s%-14s%-5s\n", backBlue("[USER]"), coloredVerb, route, test, green("✓"))
 }
 
 func newFailureMessage(verb string, route string, test string, message string) {
@@ -122,5 +122,5 @@ func newFailureMessage(verb string, route string, test string, message string) {
 		break
 	}
 
-	fmt.Printf("%s\t %s\t%-20s%-14s%-5s\t%s\n", backBlue("[USER]"), coloredVerb, route, test, red("✗"), message)
+	fmt.Printf("%s\t %s\t%-35s%-14s%-5s\t%s\n", backBlue("[USER]"), coloredVerb, route, test, red("✗"), message)
 }

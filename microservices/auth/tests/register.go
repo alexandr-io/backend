@@ -22,11 +22,11 @@ func randStringRunes(length int) string {
 	return "test-" + string(b)
 }
 
-func testRegisterWorking(baseURL string) (*user, error) {
+func testRegisterWorking(baseURL string, inv invitation) (*user, error) {
 	// Generate random string for username and email usage
 	randomName := randStringRunes(12)
 	// Create payload to send to the route
-	payload := bytes.NewBuffer([]byte("{\"username\": \"" + randomName + "\", \"email\": \"" + randomName + "@test.test\", \"password\": \"test\", \"confirm_password\": \"test\"}"))
+	payload := bytes.NewBuffer([]byte("{\"username\": \"" + randomName + "\", \"email\": \"" + randomName + "@test.test\", \"password\": \"test\", \"confirm_password\": \"test\", \"invitation_token\": \"" + inv.Token + "\"}"))
 	// Create a new request to register route
 	req, err := http.NewRequest(http.MethodPost, baseURL+"register", payload)
 	if err != nil {
@@ -86,9 +86,9 @@ func testRegisterBadRequest(baseURL string) error {
 	return nil
 }
 
-func testRegisterDuplicate(baseURL string, userData user) error {
+func testRegisterDuplicate(baseURL string, userData user, inv invitation) error {
 	// Create payload to send to the route
-	payload := bytes.NewBuffer([]byte("{\"username\": \"" + userData.Username + "\", \"email\": \"" + userData.Email + "\", \"password\": \"test\", \"confirm_password\": \"test\"}"))
+	payload := bytes.NewBuffer([]byte("{\"username\": \"" + userData.Username + "\", \"email\": \"" + userData.Email + "\", \"password\": \"test\", \"confirm_password\": \"test\", \"invitation_token\": \"" + inv.Token + "\"}"))
 	// Create a new request to register route
 	req, err := http.NewRequest(http.MethodPost, baseURL+"register", payload)
 	if err != nil {

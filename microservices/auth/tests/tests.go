@@ -64,8 +64,15 @@ func getBaseURL(environment string) (string, error) {
 }
 
 func workingTestSuit(baseURL string) (*user, error) {
-	userData, err := testRegisterWorking(baseURL)
+	inv, err := testInvitationWorking(baseURL, "Working Suit")
 	if err != nil {
+		return nil, err
+	}
+	userData, err := testRegisterWorking(baseURL, *inv)
+	if err != nil {
+		return nil, err
+	}
+	if err := testDeleteInvitationWorking(baseURL, userData, *inv, "Working Suit"); err != nil {
 		return nil, err
 	}
 	if err := testAuthWorking(baseURL, userData); err != nil {
@@ -124,7 +131,14 @@ func badRequestTests(baseURL string) error {
 }
 
 func incorrectTests(baseURL string, userData user) error {
-	if err := testRegisterDuplicate(baseURL, userData); err != nil {
+	inv, err := testInvitationWorking(baseURL, "Duplicate")
+	if err != nil {
+		return err
+	}
+	if err := testRegisterDuplicate(baseURL, userData, *inv); err != nil {
+		return err
+	}
+	if err := testDeleteInvitationWorking(baseURL, &userData, *inv, "Duplicate"); err != nil {
 		return err
 	}
 	if err := testLoginNoMatch(baseURL); err != nil {
@@ -159,7 +173,7 @@ func newSuccessMessage(verb string, route string, test string) {
 		break
 	}
 
-	fmt.Printf("%s\t %s\t%-20s%-14s%-5s\n", backCyan("[AUTH]"), coloredVerb, route, test, green("✓"))
+	fmt.Printf("%s\t %s\t%-35s%-14s%-5s\n", backCyan("[AUTH]"), coloredVerb, route, test, green("✓"))
 }
 
 func newFailureMessage(verb string, route string, test string, message string) {
@@ -179,7 +193,7 @@ func newFailureMessage(verb string, route string, test string, message string) {
 		break
 	}
 
-	fmt.Printf("%s\t %s\t%-20s%-14s%-5s\t%s\n", backCyan("[AUTH]"), coloredVerb, route, test, red("✗"), message)
+	fmt.Printf("%s\t %s\t%-35s%-14s%-5s\t%s\n", backCyan("[AUTH]"), coloredVerb, route, test, red("✗"), message)
 }
 
 // JoinURL Join a base url with a route path
