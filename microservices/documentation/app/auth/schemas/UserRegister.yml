@@ -19,11 +19,16 @@ components:
           description: The confirmation password of the user
           example: leHAiOjE1OTgzNz
           type: string
+        invitation_token:
+          description: The invitation token
+          example: 8r0AH61nCF
+          type: string
       required:
         - email
         - username
         - password
         - confirm_password
+        - invitation_token
       title: UserRegister is the body parameter given to register a new user to the
         database.
       type: object

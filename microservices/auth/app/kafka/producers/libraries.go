@@ -43,6 +43,6 @@ func produceCreateLibraryMessage(id string, user data.KafkaLibrariesCreationMess
 	}
 
 	// Wait for message deliveries before shutting down
-	producer.Flush(int((15 * time.Microsecond).Microseconds()))
+	producer.Flush(int((time.Microsecond * 50).Microseconds()))
 	return nil
 }

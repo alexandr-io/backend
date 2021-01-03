@@ -21,5 +21,7 @@ paths:
       servers:
         - url: //media.alexandrio.cloud
           description: Production server
+        - url: //auth.preprod.alexandrio.cloud
+          description: Preprod server
       tags:
         - MEDIA

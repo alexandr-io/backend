@@ -83,7 +83,7 @@ func produceUserMessage(id string, user string, errorChannel chan error) {
 	}
 
 	// Wait for message deliveries before shutting down
-	producer.Flush(int((15 * time.Microsecond).Microseconds()))
+	producer.Flush(int((time.Microsecond * 50).Microseconds()))
 	return
 }
 
@@ -91,7 +91,7 @@ func produceUserMessage(id string, user string, errorChannel chan error) {
 // consumeUserResponseMessages once the user MS has answered to the request.
 // The channel is then deleted from the map and the kafka message is returned.
 func userResponseWatcher(id string, requestChannel chan string, errorChannel chan error) (*data.KafkaResponseMessage, []byte, error) {
-	timeout := time.After(5 * time.Second)
+	timeout := time.After(15 * time.Second)
 	for {
 		select {
 		case <-timeout:

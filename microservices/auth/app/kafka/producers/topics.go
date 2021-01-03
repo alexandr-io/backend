@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
@@ -23,11 +24,21 @@ type Topic struct {
 	ReplicationFactor int
 }
 
+// ToTopicSpecification transform a Topic to a kafka.TopicSpecification
+func (topic *Topic) ToTopicSpecification() kafka.TopicSpecification {
+	return kafka.TopicSpecification{
+		Topic:             topic.Name,
+		NumPartitions:     topic.NumPartitions,
+		ReplicationFactor: topic.ReplicationFactor,
+		Config:            map[string]string{"retention.ms": strconv.Itoa(topic.RetentionMS)},
+	}
+}
+
 var (
 	// OLD: registerRequest  = "register"
 	registerRequest = Topic{
 		Name:              "user.register",
-		RetentionMS:       1000 * 5, // Topic kept for 5 seconds before deletion
+		RetentionMS:       1000 * 15, // Topic kept for 5 seconds before deletion
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
@@ -35,7 +46,7 @@ var (
 	// OLD: loginRequest     = "login"
 	loginRequest = Topic{
 		Name:              "user.login",
-		RetentionMS:       1000 * 5, // Topic kept for 5 seconds before deletion
+		RetentionMS:       1000 * 15, // Topic kept for 5 seconds before deletion
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
@@ -43,7 +54,7 @@ var (
 	// OLD: userRequest      = "user"
 	userRequest = Topic{
 		Name:              "user.retrieve",
-		RetentionMS:       1000 * 5, // Topic kept for 5 seconds before deletion
+		RetentionMS:       1000 * 15, // Topic kept for 5 seconds before deletion
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
@@ -52,7 +63,7 @@ var (
 	// OLD: librariesRequest = "libraries-creation-request"
 	librariesRequest = Topic{
 		Name:              "library.libraries.create",
-		RetentionMS:       -1,
+		RetentionMS:       604800000, // 7d
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
@@ -60,7 +71,7 @@ var (
 	// OLD: authResponse     = "auth-response"
 	authResponse = Topic{
 		Name:              "auth.token.response",
-		RetentionMS:       1000 * 5, // Topic kept for 5 seconds before deletion
+		RetentionMS:       1000 * 15, // Topic kept for 5 seconds before deletion
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
@@ -72,7 +83,7 @@ var (
 
 	updatePasswordRequest = Topic{
 		Name:              "user.password.update",
-		RetentionMS:       1000 * 5,
+		RetentionMS:       1000 * 15,
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
@@ -98,36 +109,12 @@ func CreateTopics() error {
 	results, err := client.CreateTopics(
 		ctx,
 		[]kafka.TopicSpecification{
-			{
-				Topic:             registerRequest.Name,
-				NumPartitions:     registerRequest.NumPartitions,
-				ReplicationFactor: registerRequest.ReplicationFactor,
-			},
-			{
-				Topic:             loginRequest.Name,
-				NumPartitions:     loginRequest.NumPartitions,
-				ReplicationFactor: loginRequest.ReplicationFactor,
-			},
-			{
-				Topic:             userRequest.Name,
-				NumPartitions:     userRequest.NumPartitions,
-				ReplicationFactor: userRequest.ReplicationFactor,
-			},
-			{
-				Topic:             librariesRequest.Name,
-				NumPartitions:     librariesRequest.NumPartitions,
-				ReplicationFactor: librariesRequest.ReplicationFactor,
-			},
-			{
-				Topic:             authResponse.Name,
-				NumPartitions:     authResponse.NumPartitions,
-				ReplicationFactor: authResponse.ReplicationFactor,
-			},
-			{
-				Topic:             updatePasswordRequest.Name,
-				NumPartitions:     updatePasswordRequest.NumPartitions,
-				ReplicationFactor: updatePasswordRequest.ReplicationFactor,
-			},
+			registerRequest.ToTopicSpecification(),
+			loginRequest.ToTopicSpecification(),
+			userRequest.ToTopicSpecification(),
+			librariesRequest.ToTopicSpecification(),
+			authResponse.ToTopicSpecification(),
+			updatePasswordRequest.ToTopicSpecification(),
 		},
 		kafka.SetAdminOperationTimeout(durationBeforeTimeout))
 	if err != nil {

@@ -36,6 +36,8 @@ func createRoute(app *fiber.App) {
 	app.Post("/password/reset", handlers.SendResetPasswordEmail)
 	app.Get("/password/reset", handlers.ResetPasswordInfoFromToken)
 	app.Put("/password/reset", handlers.ResetPassword)
+	app.Get("/invitation/new", handlers.NewInvitation)
+	app.Delete("/invitation/:token", authMiddleware.Protected(), handlers.DeleteInvitation)
 
 	// Ping route used for testing that the service is up and running
 	app.Get("/ping", func(c *fiber.Ctx) error {

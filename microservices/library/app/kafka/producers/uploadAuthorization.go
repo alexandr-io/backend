@@ -31,7 +31,7 @@ func produceLibraryUploadAuthorizationResponse(key string, message []byte) error
 	}
 
 	// Wait for message deliveries before shutting down
-	producer.Flush(int((5 * time.Microsecond).Microseconds()))
+	producer.Flush(int((time.Microsecond * 50).Microseconds()))
 	return nil
 }
 

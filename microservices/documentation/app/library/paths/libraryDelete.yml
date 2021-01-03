@@ -20,5 +20,7 @@ paths:
       servers:
         - url: //library.alexandrio.cloud
           description: Production server
+        - url: //auth.preprod.alexandrio.cloud
+          description: Preprod server
       tags:
         - LIBRARY
