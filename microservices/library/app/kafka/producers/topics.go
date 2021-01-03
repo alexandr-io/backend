@@ -23,6 +23,14 @@ type Topic struct {
 	ReplicationFactor int
 }
 
+func (topic *Topic) ToTopicSpecification() kafka.TopicSpecification {
+	return kafka.TopicSpecification{
+		Topic:             topic.Name,
+		NumPartitions:     topic.NumPartitions,
+		ReplicationFactor: topic.ReplicationFactor,
+	}
+}
+
 var (
 	// OLD: authRequest = "auth"
 	authRequest = Topic{
@@ -59,16 +67,8 @@ func CreateTopics() error {
 	results, err := client.CreateTopics(
 		ctx,
 		[]kafka.TopicSpecification{
-			{
-				Topic:             authRequest.Name,
-				NumPartitions:     authRequest.NumPartitions,
-				ReplicationFactor: authRequest.ReplicationFactor,
-			},
-			{
-				Topic:             libraryUploadAllowed.Name,
-				NumPartitions:     libraryUploadAllowed.NumPartitions,
-				ReplicationFactor: libraryUploadAllowed.ReplicationFactor,
-			},
+			authRequest.ToTopicSpecification(),
+			libraryUploadAllowed.ToTopicSpecification(),
 		},
 		kafka.SetAdminOperationTimeout(durationBeforeTimeout))
 	if err != nil {

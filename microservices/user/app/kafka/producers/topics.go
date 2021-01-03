@@ -23,6 +23,14 @@ type Topic struct {
 	ReplicationFactor int
 }
 
+func (topic *Topic) ToTopicSpecification() kafka.TopicSpecification {
+	return kafka.TopicSpecification{
+		Topic:             topic.Name,
+		NumPartitions:     topic.NumPartitions,
+		ReplicationFactor: topic.ReplicationFactor,
+	}
+}
+
 var (
 	// OLD: registerResponse = "register-response"
 	registerResponse = Topic{
@@ -80,31 +88,11 @@ func CreateTopics() error {
 	results, err := client.CreateTopics(
 		ctx,
 		[]kafka.TopicSpecification{
-			{
-				Topic:             registerResponse.Name,
-				NumPartitions:     registerResponse.NumPartitions,
-				ReplicationFactor: registerResponse.ReplicationFactor,
-			},
-			{
-				Topic:             loginResponse.Name,
-				NumPartitions:     loginResponse.NumPartitions,
-				ReplicationFactor: loginResponse.ReplicationFactor,
-			},
-			{
-				Topic:             userResponse.Name,
-				NumPartitions:     userResponse.NumPartitions,
-				ReplicationFactor: userResponse.ReplicationFactor,
-			},
-			{
-				Topic:             authRequest.Name,
-				NumPartitions:     authRequest.NumPartitions,
-				ReplicationFactor: authRequest.ReplicationFactor,
-			},
-			{
-				Topic:             updatePasswordResponse.Name,
-				NumPartitions:     updatePasswordResponse.NumPartitions,
-				ReplicationFactor: updatePasswordResponse.ReplicationFactor,
-			},
+			registerResponse.ToTopicSpecification(),
+			loginResponse.ToTopicSpecification(),
+			userResponse.ToTopicSpecification(),
+			authRequest.ToTopicSpecification(),
+			updatePasswordResponse.ToTopicSpecification(),
 		},
 		kafka.SetAdminOperationTimeout(durationBeforeTimeout))
 	if err != nil {

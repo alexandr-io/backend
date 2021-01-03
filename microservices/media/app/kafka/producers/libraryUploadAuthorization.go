@@ -97,7 +97,7 @@ func produceLibraryUploadAuthorizationMessage(id string, book *data.Book, userID
 // consumeAuthResponseMessages once the library MS has answered to the request.
 // The channel is then deleted from the map and the kafka message is returned.
 func libraryUploadAuthorizationResponseWatcher(id string, requestChannel chan string, errorChannel chan error) (*data.KafkaResponseMessage, []byte, error) {
-	timeout := time.After(5 * time.Second)
+	timeout := time.After(15 * time.Second)
 	for {
 		select {
 		case <-timeout:
