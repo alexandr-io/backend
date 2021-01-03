@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
@@ -23,25 +24,35 @@ type Topic struct {
 	ReplicationFactor int
 }
 
+// ToTopicSpecification transform a Topic to a kafka.TopicSpecification
+func (topic *Topic) ToTopicSpecification() kafka.TopicSpecification {
+	return kafka.TopicSpecification{
+		Topic:             topic.Name,
+		NumPartitions:     topic.NumPartitions,
+		ReplicationFactor: topic.ReplicationFactor,
+		Config:            map[string]string{"retention.ms": strconv.Itoa(topic.RetentionMS)},
+	}
+}
+
 var (
 	// OLD: authRequest = "auth"
 	authRequest = Topic{
 		Name:              "auth.token",
-		RetentionMS:       1000 * 5,
+		RetentionMS:       1000 * 15,
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
 
 	libraryCanUpload = Topic{
 		Name:              "library.upload.allowed",
-		RetentionMS:       1000 * 5,
+		RetentionMS:       1000 * 15,
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
 
 	libraryBookLink = Topic{
 		Name:              "library.book.link",
-		RetentionMS:       -1,
+		RetentionMS:       604800000, // 7d
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
@@ -66,21 +77,9 @@ func CreateTopics() error {
 	results, err := client.CreateTopics(
 		ctx,
 		[]kafka.TopicSpecification{
-			{
-				Topic:             authRequest.Name,
-				NumPartitions:     authRequest.NumPartitions,
-				ReplicationFactor: authRequest.ReplicationFactor,
-			},
-			{
-				Topic:             libraryCanUpload.Name,
-				NumPartitions:     libraryCanUpload.NumPartitions,
-				ReplicationFactor: libraryCanUpload.ReplicationFactor,
-			},
-			{
-				Topic:             libraryBookLink.Name,
-				NumPartitions:     libraryBookLink.NumPartitions,
-				ReplicationFactor: libraryBookLink.ReplicationFactor,
-			},
+			authRequest.ToTopicSpecification(),
+			libraryCanUpload.ToTopicSpecification(),
+			libraryBookLink.ToTopicSpecification(),
 		},
 		kafka.SetAdminOperationTimeout(durationBeforeTimeout))
 	if err != nil {

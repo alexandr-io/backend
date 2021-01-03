@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
@@ -23,39 +24,49 @@ type Topic struct {
 	ReplicationFactor int
 }
 
+// ToTopicSpecification transform a Topic to a kafka.TopicSpecification
+func (topic *Topic) ToTopicSpecification() kafka.TopicSpecification {
+	return kafka.TopicSpecification{
+		Topic:             topic.Name,
+		NumPartitions:     topic.NumPartitions,
+		ReplicationFactor: topic.ReplicationFactor,
+		Config:            map[string]string{"retention.ms": strconv.Itoa(topic.RetentionMS)},
+	}
+}
+
 var (
 	// OLD: registerResponse = "register-response"
 	registerResponse = Topic{
 		Name:              "user.register.response",
-		RetentionMS:       1000 * 5,
+		RetentionMS:       1000 * 15,
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
 	// OLD: loginResponse    = "login-response"
 	loginResponse = Topic{
 		Name:              "user.login.response",
-		RetentionMS:       1000 * 5,
+		RetentionMS:       1000 * 15,
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
 	// OLD: userResponse     = "user-response"
 	userResponse = Topic{
 		Name:              "user.retrieve.response",
-		RetentionMS:       0,
+		RetentionMS:       900000, // 15min
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
 	// OLD: authRequest      = "auth"
 	authRequest = Topic{
 		Name:              "auth.token",
-		RetentionMS:       1000 * 5,
+		RetentionMS:       1000 * 15,
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
 
 	updatePasswordResponse = Topic{
 		Name:              "user.password.update.response",
-		RetentionMS:       1000 * 5,
+		RetentionMS:       1000 * 15,
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
@@ -80,31 +91,11 @@ func CreateTopics() error {
 	results, err := client.CreateTopics(
 		ctx,
 		[]kafka.TopicSpecification{
-			{
-				Topic:             registerResponse.Name,
-				NumPartitions:     registerResponse.NumPartitions,
-				ReplicationFactor: registerResponse.ReplicationFactor,
-			},
-			{
-				Topic:             loginResponse.Name,
-				NumPartitions:     loginResponse.NumPartitions,
-				ReplicationFactor: loginResponse.ReplicationFactor,
-			},
-			{
-				Topic:             userResponse.Name,
-				NumPartitions:     userResponse.NumPartitions,
-				ReplicationFactor: userResponse.ReplicationFactor,
-			},
-			{
-				Topic:             authRequest.Name,
-				NumPartitions:     authRequest.NumPartitions,
-				ReplicationFactor: authRequest.ReplicationFactor,
-			},
-			{
-				Topic:             updatePasswordResponse.Name,
-				NumPartitions:     updatePasswordResponse.NumPartitions,
-				ReplicationFactor: updatePasswordResponse.ReplicationFactor,
-			},
+			registerResponse.ToTopicSpecification(),
+			loginResponse.ToTopicSpecification(),
+			userResponse.ToTopicSpecification(),
+			authRequest.ToTopicSpecification(),
+			updatePasswordResponse.ToTopicSpecification(),
 		},
 		kafka.SetAdminOperationTimeout(durationBeforeTimeout))
 	if err != nil {

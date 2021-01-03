@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
@@ -23,18 +24,28 @@ type Topic struct {
 	ReplicationFactor int
 }
 
+// ToTopicSpecification transform a Topic to a kafka.TopicSpecification
+func (topic *Topic) ToTopicSpecification() kafka.TopicSpecification {
+	return kafka.TopicSpecification{
+		Topic:             topic.Name,
+		NumPartitions:     topic.NumPartitions,
+		ReplicationFactor: topic.ReplicationFactor,
+		Config:            map[string]string{"retention.ms": strconv.Itoa(topic.RetentionMS)},
+	}
+}
+
 var (
 	// OLD: authRequest = "auth"
 	authRequest = Topic{
 		Name:              "auth.token",
-		RetentionMS:       1000 * 5,
+		RetentionMS:       1000 * 15,
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
 
 	libraryUploadAllowed = Topic{
 		Name:              "library.upload.allowed.response",
-		RetentionMS:       1000 * 5,
+		RetentionMS:       1000 * 15,
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
@@ -59,16 +70,8 @@ func CreateTopics() error {
 	results, err := client.CreateTopics(
 		ctx,
 		[]kafka.TopicSpecification{
-			{
-				Topic:             authRequest.Name,
-				NumPartitions:     authRequest.NumPartitions,
-				ReplicationFactor: authRequest.ReplicationFactor,
-			},
-			{
-				Topic:             libraryUploadAllowed.Name,
-				NumPartitions:     libraryUploadAllowed.NumPartitions,
-				ReplicationFactor: libraryUploadAllowed.ReplicationFactor,
-			},
+			authRequest.ToTopicSpecification(),
+			libraryUploadAllowed.ToTopicSpecification(),
 		},
 		kafka.SetAdminOperationTimeout(durationBeforeTimeout))
 	if err != nil {

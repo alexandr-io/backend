@@ -93,7 +93,7 @@ func produceLoginMessage(id string, user data.UserLogin, errorChannel chan error
 // consumeLoginResponseMessages once the user MS has answered to the request.
 // The channel is then deleted from the map and the kafka message is returned.
 func loginResponseWatcher(id string, requestChannel chan string, errorChannel chan error) (*data.KafkaResponseMessage, []byte, error) {
-	timeout := time.After(5 * time.Second)
+	timeout := time.After(15 * time.Second)
 	for {
 		select {
 		case <-timeout:
