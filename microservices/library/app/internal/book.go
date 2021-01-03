@@ -7,6 +7,7 @@ import (
 	"github.com/alexandr-io/backend/library/database"
 )
 
+// CanUserModifyBook verify if the user has the book.update permission
 func CanUserModifyBook(userID string, libraryID string, bookID string) (bool, error) {
 	if ok, err := HasUserAccessToLibraryFromID(userID, libraryID); err != nil {
 		return false, err

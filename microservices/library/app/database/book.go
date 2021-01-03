@@ -96,6 +96,7 @@ func BookCreate(c context.Context, bookCreation data.BookCreation) (data.Book, e
 	return book, nil
 }
 
+// BookUpdate update the metadata of a book
 func BookUpdate(c context.Context, libraryIDStr string, book data.Book) error {
 	ctx, cancel := context.WithTimeout(c, 10*time.Second)
 	defer cancel()
