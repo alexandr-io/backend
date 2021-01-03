@@ -31,7 +31,7 @@ func produceUserResponse(key string, message []byte) error {
 	}
 
 	// Wait for message deliveries before shutting down
-	producer.Flush(int((time.Second).Microseconds()))
+	producer.Flush(int((time.Microsecond * 50).Microseconds()))
 	return nil
 }
 
