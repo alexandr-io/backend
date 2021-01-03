@@ -136,6 +136,7 @@ services:
     environment:
       KAFKA_URL: 'broker:29092'
     env_file: .env-dev
+    restart: unless-stopped
 
   # Documentation service
   documentation:
