@@ -23,6 +23,7 @@ type Topic struct {
 	ReplicationFactor int
 }
 
+// ToTopicSpecification transform a Topic to a kafka.TopicSpecification
 func (topic *Topic) ToTopicSpecification() kafka.TopicSpecification {
 	return kafka.TopicSpecification{
 		Topic:             topic.Name,
