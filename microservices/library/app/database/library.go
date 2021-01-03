@@ -36,6 +36,48 @@ func FindOneWithFilter(collectionName string, object interface{}, filters interf
 	return filteredSingleResult.Decode(object)
 }
 
+// GetLibraryByID retrieve a library from its ID
+func GetLibraryByID(libraryID string) (*data.Library, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	collection := Instance.Db.Collection(CollectionLibrary)
+
+	library := &data.Library{}
+
+	id, err := primitive.ObjectIDFromHex(libraryID)
+	if err != nil {
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+	libraryFilter := bson.D{{Key: "_id", Value: id}}
+
+	filteredByLibraryIDSingleResult := collection.FindOne(ctx, libraryFilter)
+	if err := filteredByLibraryIDSingleResult.Decode(library); err != nil {
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+	return library, err
+}
+
+// GetLibraryByUserIDAndLibraryID retrieve a library from a data.LibraryOwner and a library ID if the user have access to the library
+func GetLibraryByUserIDAndLibraryID(user data.LibrariesOwner, libraryID string) (*data.Library, error) {
+	libraries, err := GetLibrariesNamesByUserID(user)
+	if err != nil {
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+	found := false
+	for _, library := range libraries.Libraries {
+		if library.ID == libraryID {
+			found = true
+			break
+		}
+	}
+	if !found {
+		return nil, data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You do not have access to this library")
+	}
+
+	return GetLibraryByID(libraryID)
+}
+
 // GetLibraryByUserIDAndName retrieve a library from a user and the name of a library.
 func GetLibraryByUserIDAndName(user data.LibrariesOwner, library data.LibraryName) (*data.Library, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -214,10 +256,21 @@ func InsertLibrary(user data.LibrariesOwner, library data.Library) (*data.Librar
 }
 
 // DeleteLibrary delete the library for a user and the name of the library.
-func DeleteLibrary(user data.LibrariesOwner, libraryName data.LibraryName) error {
-	library, err := GetLibraryByUserIDAndName(user, libraryName)
+func DeleteLibrary(user data.LibrariesOwner, libraryID string) error {
+	libraries, err := GetLibrariesByUsername(data.LibrariesOwner{UserID: user.UserID})
 	if err != nil {
-		return err
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+
+	found := false
+	for _, library := range libraries.Libraries {
+		if library == libraryID {
+			found = true
+			break
+		}
+	}
+	if !found {
+		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You do not have access to this library")
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -225,7 +278,7 @@ func DeleteLibrary(user data.LibrariesOwner, libraryName data.LibraryName) error
 
 	collection := Instance.Db.Collection(CollectionLibrary)
 
-	id, err := primitive.ObjectIDFromHex(library.ID)
+	id, err := primitive.ObjectIDFromHex(libraryID)
 	if err != nil {
 		return err
 	}
@@ -237,12 +290,8 @@ func DeleteLibrary(user data.LibrariesOwner, libraryName data.LibraryName) error
 		return errors.New("library does not exist")
 	}
 
-	libraries, err := GetLibrariesByUsername(user)
-	if err != nil {
-		return err
-	}
-	for i, libraryID := range libraries.Libraries {
-		if libraryID == library.ID {
+	for i, libraryElemID := range libraries.Libraries {
+		if libraryElemID == libraryID {
 			libraries.Libraries = append(libraries.Libraries[:i], libraries.Libraries[i+1:]...)
 			break
 		}
