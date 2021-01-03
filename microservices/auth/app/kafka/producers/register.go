@@ -87,7 +87,7 @@ func produceRegisterMessage(id string, user data.UserRegister, errorChannel chan
 	}
 
 	// Wait for message deliveries before shutting down
-	producer.Flush(int((15 * time.Microsecond).Microseconds()))
+	producer.Flush(int((time.Second).Microseconds()))
 	return
 }
 

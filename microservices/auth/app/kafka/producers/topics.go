@@ -38,7 +38,7 @@ var (
 	// OLD: registerRequest  = "register"
 	registerRequest = Topic{
 		Name:              "user.register",
-		RetentionMS:       1000 * 5, // Topic kept for 5 seconds before deletion
+		RetentionMS:       1000 * 15, // Topic kept for 5 seconds before deletion
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
@@ -46,7 +46,7 @@ var (
 	// OLD: loginRequest     = "login"
 	loginRequest = Topic{
 		Name:              "user.login",
-		RetentionMS:       1000 * 5, // Topic kept for 5 seconds before deletion
+		RetentionMS:       1000 * 15, // Topic kept for 5 seconds before deletion
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
@@ -54,7 +54,7 @@ var (
 	// OLD: userRequest      = "user"
 	userRequest = Topic{
 		Name:              "user.retrieve",
-		RetentionMS:       1000 * 5, // Topic kept for 5 seconds before deletion
+		RetentionMS:       1000 * 15, // Topic kept for 5 seconds before deletion
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
@@ -71,7 +71,7 @@ var (
 	// OLD: authResponse     = "auth-response"
 	authResponse = Topic{
 		Name:              "auth.token.response",
-		RetentionMS:       1000 * 5, // Topic kept for 5 seconds before deletion
+		RetentionMS:       1000 * 15, // Topic kept for 5 seconds before deletion
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
@@ -83,7 +83,7 @@ var (
 
 	updatePasswordRequest = Topic{
 		Name:              "user.password.update",
-		RetentionMS:       1000 * 5,
+		RetentionMS:       1000 * 15,
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}

@@ -85,7 +85,7 @@ func produceLoginMessage(id string, user data.UserLogin, errorChannel chan error
 	}
 
 	// Wait for message deliveries before shutting down
-	producer.Flush(int((15 * time.Microsecond).Microseconds()))
+	producer.Flush(int((time.Second).Microseconds()))
 	return
 }
 

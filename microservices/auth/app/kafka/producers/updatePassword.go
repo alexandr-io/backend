@@ -85,7 +85,7 @@ func produceUpdatePasswordMessage(id string, userUpdate data.KafkaUpdatePassword
 	}
 
 	// Wait for message deliveries before shutting down
-	producer.Flush(int((15 * time.Microsecond).Microseconds()))
+	producer.Flush(int((time.Second).Microseconds()))
 	return
 }
 

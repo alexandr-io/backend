@@ -89,7 +89,7 @@ func produceLibraryUploadAuthorizationMessage(id string, book *data.Book, userID
 	}
 
 	// Wait for message deliveries before shutting down
-	producer.Flush(int((15 * time.Microsecond).Microseconds()))
+	producer.Flush(int((time.Second).Microseconds()))
 	return
 }
 
