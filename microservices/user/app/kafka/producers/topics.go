@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
@@ -29,6 +30,7 @@ func (topic *Topic) ToTopicSpecification() kafka.TopicSpecification {
 		Topic:             topic.Name,
 		NumPartitions:     topic.NumPartitions,
 		ReplicationFactor: topic.ReplicationFactor,
+		Config:            map[string]string{"retention.ms": strconv.Itoa(topic.RetentionMS)},
 	}
 }
 
@@ -36,35 +38,35 @@ var (
 	// OLD: registerResponse = "register-response"
 	registerResponse = Topic{
 		Name:              "user.register.response",
-		RetentionMS:       1000 * 5,
+		RetentionMS:       1000 * 15,
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
 	// OLD: loginResponse    = "login-response"
 	loginResponse = Topic{
 		Name:              "user.login.response",
-		RetentionMS:       1000 * 5,
+		RetentionMS:       1000 * 15,
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
 	// OLD: userResponse     = "user-response"
 	userResponse = Topic{
 		Name:              "user.retrieve.response",
-		RetentionMS:       0,
+		RetentionMS:       900000, // 15min
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
 	// OLD: authRequest      = "auth"
 	authRequest = Topic{
 		Name:              "auth.token",
-		RetentionMS:       1000 * 5,
+		RetentionMS:       1000 * 15,
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
 
 	updatePasswordResponse = Topic{
 		Name:              "user.password.update.response",
-		RetentionMS:       1000 * 5,
+		RetentionMS:       1000 * 15,
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}

@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
@@ -23,10 +24,20 @@ type Topic struct {
 	ReplicationFactor int
 }
 
+// ToTopicSpecification transform a Topic to a kafka.TopicSpecification
+func (topic *Topic) ToTopicSpecification() kafka.TopicSpecification {
+	return kafka.TopicSpecification{
+		Topic:             topic.Name,
+		NumPartitions:     topic.NumPartitions,
+		ReplicationFactor: topic.ReplicationFactor,
+		Config:            map[string]string{"retention.ms": strconv.Itoa(topic.RetentionMS)},
+	}
+}
+
 var (
 	mailRequest = Topic{
 		Name:              "email.new",
-		RetentionMS:       0,
+		RetentionMS:       300000, // 5min
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
@@ -51,11 +62,7 @@ func CreateTopics() error {
 	results, err := client.CreateTopics(
 		ctx,
 		[]kafka.TopicSpecification{
-			{
-				Topic:             mailRequest.Name,
-				NumPartitions:     mailRequest.NumPartitions,
-				ReplicationFactor: mailRequest.ReplicationFactor,
-			},
+			mailRequest.ToTopicSpecification(),
 		},
 		kafka.SetAdminOperationTimeout(durationBeforeTimeout))
 	if err != nil {

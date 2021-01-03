@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
@@ -29,6 +30,7 @@ func (topic *Topic) ToTopicSpecification() kafka.TopicSpecification {
 		Topic:             topic.Name,
 		NumPartitions:     topic.NumPartitions,
 		ReplicationFactor: topic.ReplicationFactor,
+		Config:            map[string]string{"retention.ms": strconv.Itoa(topic.RetentionMS)},
 	}
 }
 
@@ -61,7 +63,7 @@ var (
 	// OLD: librariesRequest = "libraries-creation-request"
 	librariesRequest = Topic{
 		Name:              "library.libraries.create",
-		RetentionMS:       -1,
+		RetentionMS:       604800000, // 7d
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
