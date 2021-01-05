@@ -2,7 +2,7 @@
 components:
   schemas:
     LibraryCreateResponse:
-      description: A book object
+      description: A library object
       content:
         application/json:
           schema:
