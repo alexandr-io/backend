@@ -33,5 +33,8 @@ func BookDelete(ctx *fiber.Ctx) error {
 	if err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
+	if err := ctx.SendStatus(fiber.StatusNoContent); err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
 	return nil
 }

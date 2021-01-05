@@ -29,7 +29,7 @@ func testLibraryCreateWorking(baseURL string, jwt string) (*library, error) {
 	}
 	// Check returned http code
 	if res.StatusCode != http.StatusCreated {
-		newFailureMessage("POST", "/library", "Working Suit", fmt.Sprintf("[Expected: %d,\tGot: %d]", http.StatusOK, res.StatusCode))
+		newFailureMessage("POST", "/library", "Working Suit", fmt.Sprintf("[Expected: %d,\tGot: %d]", http.StatusCreated, res.StatusCode))
 		return nil, errors.New("")
 	}
 	// Read returned body
@@ -48,4 +48,30 @@ func testLibraryCreateWorking(baseURL string, jwt string) (*library, error) {
 	}
 	newSuccessMessage("POST", "/library", "Working Suit")
 	return &bodyData, nil
+}
+
+func testLibraryCreateBadRequest(baseURL string, jwt string) error {
+	// Create payload to send to the route
+	payload := bytes.NewBuffer([]byte("{\"name\": 42}"))
+	// Create a new request to user update route
+	req, err := http.NewRequest(http.MethodPost, baseURL+"library", payload)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+jwt)
+	// Exec request
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		newFailureMessage("PUT", "/library", "Bad Request", "Can't call "+baseURL+"user")
+		return err
+	}
+	// Check returned http code
+	if res.StatusCode != http.StatusBadRequest {
+		newFailureMessage("PUT", "/library", "Bad Request", fmt.Sprintf("[Expected: %d,\tGot: %d]", http.StatusBadRequest, res.StatusCode))
+		return errors.New("")
+	}
+	newSuccessMessage("PUT", "/library", "Bad Request")
+	return nil
 }

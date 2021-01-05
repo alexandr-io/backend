@@ -30,6 +30,9 @@ func ExecLibraryTests(environment string, jwt string) error {
 	if err = workingTestSuit(baseURL, jwt); err != nil {
 		errorHappened = true
 	}
+	if err = badInputTestSuit(baseURL, jwt); err != nil {
+		errorHappened = true
+	}
 
 	if errorHappened {
 		return errors.New("error in library tests")
@@ -69,6 +72,40 @@ func workingTestSuit(baseURL string, jwt string) error {
 	}
 	_, err = testBookGetWorking(baseURL, jwt, libraries.Libraries[0], book)
 	if err != nil {
+		return err
+	}
+	_, err = testBookUpdateWorking(baseURL, jwt, libraries.Libraries[0], book)
+	if err != nil {
+		return err
+	}
+	err = testBookDeleteWorking(baseURL, jwt, libraries.Libraries[0], book)
+	if err != nil {
+		return err
+	}
+	err = testLibraryDeleteWorking(baseURL, jwt, libraries.Libraries[0])
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func badInputTestSuit(baseURL string, jwt string) error {
+	if err := testLibraryCreateBadRequest(baseURL, jwt); err != nil {
+		return err
+	}
+	if err := testLibraryRetrieveBadRequest(baseURL, jwt); err != nil {
+		return err
+	}
+	if err := testLibraryDeleteBadRequest(baseURL, jwt); err != nil {
+		return err
+	}
+	if err := testBookCreateBadRequest(baseURL, jwt); err != nil {
+		return err
+	}
+	if err := testBookGetBadRequest(baseURL, jwt); err != nil {
+		return err
+	}
+	if err := testBookDeleteBadRequest(baseURL, jwt); err != nil {
 		return err
 	}
 	return nil
