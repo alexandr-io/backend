@@ -47,7 +47,7 @@ func testLibraryDeleteBadRequest(baseURL string, jwt string) error {
 	// Exec request
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		newFailureMessage("DELETE", "/library", "Bad Request", "Can't call "+baseURL+"user")
+		newFailureMessage("DELETE", "/library", "Bad Request", "Can't call "+baseURL+"library")
 		return err
 	}
 	// Check returned http code

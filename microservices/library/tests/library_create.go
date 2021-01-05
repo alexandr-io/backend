@@ -24,7 +24,7 @@ func testLibraryCreateWorking(baseURL string, jwt string) (*library, error) {
 	// Exec request
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		newFailureMessage("POST", "/library", "Working Suit", "Can't call "+baseURL+"user")
+		newFailureMessage("POST", "/library", "Working Suit", "Can't call "+baseURL+"library")
 		return nil, err
 	}
 	// Check returned http code
@@ -64,7 +64,7 @@ func testLibraryCreateBadRequest(baseURL string, jwt string) error {
 	// Exec request
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		newFailureMessage("PUT", "/library", "Bad Request", "Can't call "+baseURL+"user")
+		newFailureMessage("PUT", "/library", "Bad Request", "Can't call "+baseURL+"library")
 		return err
 	}
 	// Check returned http code

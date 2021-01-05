@@ -20,7 +20,7 @@ func testLibrariesGetWorking(baseURL string, jwt string) (*libraries, error) {
 	// Exec request
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		newFailureMessage("GET", "/libraries", "Working Suit", "Can't call "+baseURL+"user")
+		newFailureMessage("GET", "/libraries", "Working Suit", "Can't call "+baseURL+"libraries")
 		return nil, err
 	}
 	// Check returned http code

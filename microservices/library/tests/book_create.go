@@ -23,7 +23,7 @@ func testBookCreateWorking(baseURL string, jwt string, libraryResponse libraryLi
 	// Exec request
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		newFailureMessage("POST", "/book", "Working Suit", "Can't call "+baseURL+"user")
+		newFailureMessage("POST", "/book", "Working Suit", "Can't call "+baseURL+"book")
 		return nil, err
 	}
 	// Check returned http code
