@@ -6,8 +6,9 @@ type microservices string
 type microservicesFunc func(string) error
 
 const (
-	auth microservices = "auth"
-	user microservices = "user"
+	auth    microservices = "auth"
+	library microservices = "library"
+	user    microservices = "user"
 )
 
 func (ms microservices) string() string {
@@ -15,8 +16,9 @@ func (ms microservices) string() string {
 }
 
 var microservicesIncludeMap = map[microservices]microservicesFunc{
-	auth: execAuth,
-	user: execUser,
+	auth:    execAuth,
+	library: execLibrary,
+	user:    execUser,
 }
 
 func filters(c *cli.Context) ([]microservicesFunc, error) {

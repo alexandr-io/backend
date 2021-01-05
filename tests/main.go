@@ -5,7 +5,9 @@ import (
 	"os"
 
 	authTests "github.com/alexandr-io/backend/auth/tests"
+	libraryTests "github.com/alexandr-io/backend/library/tests"
 	userTests "github.com/alexandr-io/backend/user/tests"
+
 	"github.com/urfave/cli/v2"
 )
 
@@ -77,6 +79,13 @@ func parseAndExecTests(c *cli.Context, environment string) error {
 		if err := elem(environment); err != nil {
 			return cli.Exit("", 1)
 		}
+	}
+	return nil
+}
+
+func execLibrary(environment string) error {
+	if err := libraryTests.ExecLibraryTests(environment, authToken); err != nil {
+		return err
 	}
 	return nil
 }

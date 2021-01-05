@@ -38,5 +38,8 @@ func BookUpdate(ctx *fiber.Ctx) error {
 	if err := database.BookUpdate(ctx.Context(), libraryID, *book); err != nil {
 		return err
 	}
+	if err := ctx.Status(fiber.StatusOK).JSON(book); err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
 	return nil
 }

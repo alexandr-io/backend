@@ -9,7 +9,7 @@ paths:
             schema:
               $ref: "#/components/schemas/LibraryCreateRequest"
       responses:
-        "200":
+        "201":
           $ref: '#/components/schemas/LibraryCreateResponse'
         "400":
           $ref: '#/components/schemas/BadRequestErrorResponse'

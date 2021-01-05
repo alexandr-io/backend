@@ -25,5 +25,8 @@ func LibraryDelete(ctx *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
+	if err := ctx.SendStatus(fiber.StatusNoContent); err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
 	return nil
 }
