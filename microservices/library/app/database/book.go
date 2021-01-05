@@ -96,6 +96,46 @@ func BookCreate(c context.Context, bookCreation data.BookCreation) (data.Book, e
 	return book, nil
 }
 
+// BookUpdate update the metadata of a book
+func BookUpdate(c context.Context, libraryIDStr string, book data.Book) error {
+	ctx, cancel := context.WithTimeout(c, 10*time.Second)
+	defer cancel()
+
+	libraryID, err := primitive.ObjectIDFromHex(libraryIDStr)
+	if err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+	bookFilter := bson.D{
+		{"_id", libraryID},
+		{"books._id", book.ID},
+	}
+
+	collection := Instance.Db.Collection(CollectionLibrary)
+	_, err = collection.UpdateOne(ctx, bookFilter, bson.D{{"$set", bson.D{{"books.$", book}}}})
+	if err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+	return nil
+
+	/*
+		cursor, err := collection.Aggregate(ctx, mongo.Pipeline{
+			bson.D{{"$match", bookFilter}},
+			bson.D{{"$replaceRoot", bson.D{{"newRoot", bson.D{{"$first", "$books"}}}}}},
+		})
+		if err != nil {
+			return err
+		}
+		var showsLoaded data.Book
+
+		if !cursor.Next(ctx) {
+			return data.NewHTTPErrorInfo(fiber.StatusNotFound, "The resource you requested does not exist.")
+		}
+		if err = cursor.Decode(&showsLoaded); err != nil {
+			return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		}
+	*/
+}
+
 // BookDelete delete the metadata of a book on the mongo database
 func BookDelete(c context.Context, bookRetrieve data.BookRetrieve) error {
 	ctx, cancel := context.WithTimeout(c, 10*time.Second)
