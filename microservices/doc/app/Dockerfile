@@ -13,7 +13,7 @@ RUN go mod download
 
 COPY . ./
 
-RUN go build -a -installsuffix cgo -ldflags '-extldflags "-static"' -o alexandrio-backend-documentation .
+RUN go build -a -installsuffix cgo -ldflags '-extldflags "-static"' -o alexandrio-backend-doc .
 
 
 # Run stage
@@ -21,4 +21,4 @@ FROM scratch
 
 COPY --from=builder /app/ ./
 
-ENTRYPOINT ["./alexandrio-backend-documentation"]
+ENTRYPOINT ["./alexandrio-backend-doc"]

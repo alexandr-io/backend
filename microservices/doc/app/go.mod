@@ -1,4 +1,4 @@
-module github.com/alexandr-io/backend/documentation
+module github.com/alexandr-io/backend/doc
 
 go 1.15
 

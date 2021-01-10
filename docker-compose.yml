@@ -138,17 +138,17 @@ services:
     env_file: .env-dev
     restart: unless-stopped
 
-  # Documentation service
-  documentation:
-    container_name: documentation
+  # Doc service
+  doc:
+    container_name: doc
     build:
-      context: microservices/documentation/app
+      context: microservices/doc/app
       dockerfile: Dockerfile-dev
     env_file: .env-dev
     ports:
       - "4000:3000"
     volumes:
-      - "./microservices/documentation/app:/app"
+      - "./microservices/doc/app:/app"
 
   # Library service
   library:
