@@ -21,4 +21,4 @@ paths:
         - url: //auth.preprod.alexandrio.cloud
           description: Preprod server
       tags:
-        - AUTH
+        - AUTHENTICATION

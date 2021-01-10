@@ -1,0 +1,129 @@
+components:
+  schemas:
+    BadInput:
+      properties:
+        fields:
+          items:
+            $ref: '#/components/schemas/Field'
+          type: array
+      type: object
+    BadRequestErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadInput'
+      description: Bad Request
+    DownloadRequest:
+      properties:
+        book_id:
+          description: The ID of the book on the Library MS
+          example: tsDFYEf[...]deyFEY
+          type: string
+      required:
+      - book_id
+      title: DownloadRequest is the body parameter given to download a book.
+      type: object
+    DownloadResponse:
+      content:
+        application/pdf:
+          schema:
+            format: binary
+            type: string
+      description: File
+    Field:
+      properties:
+        name:
+          type: string
+        reason:
+          type: string
+      type: object
+    UnauthorizedErrorResponse:
+      description: Unauthorized
+    UploadRequest:
+      properties:
+        book:
+          description: The book to upload
+          type: string
+        book_id:
+          description: The ID of the book on the Library MS
+          example: tsDFYEf[...]deyFEY
+          type: string
+        library_id:
+          description: The ID of the library where the metadata are located on the library MS
+          example: nvrFIyH[...]KLkgj
+          type: string
+      required:
+      - book
+      - book_id
+      - library_id
+      title: UploadRequest is the body parameter given to upload a new book.
+      type: object
+    UploadResponse:
+      description: A simple response from a simple route
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: JWT
+      description: Go to <a href="http://localhost:4000/auth#section/Authentication">/auth</a> to see more documentation.
+      scheme: bearer
+      type: http
+info:
+  description: |-
+    Documentation for the Alexandrio's MEDIA microsecervice REST API
+
+     <b>You can find the documentation of the others MS in these pages:</b>
+
+     <a href="http://localhost:4000/auth" class="sc-fzooss hmVskR">Auth</a> <a href="http://localhost:4000/user" class="sc-fzooss hmVskR">User</a> <a href="http://localhost:4000/library" class="sc-fzooss hmVskR">Library</a> <a href="http://localhost:4000/media" class="sc-fzooss hmVskR">Media</a>
+  title: MEDIA Documentation
+  version: v1
+openapi: 3.0.2
+paths:
+  /book/download:
+    get:
+      description: Download a book from the server
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DownloadRequest'
+      responses:
+        "200":
+          $ref: '#/components/schemas/DownloadResponse'
+        "400":
+          $ref: '#/components/schemas/BadRequestErrorResponse'
+        "401":
+          $ref: '#/components/schemas/UnauthorizedErrorResponse'
+      security:
+      - bearerAuth: []
+      servers:
+      - description: Production server
+        url: //media.alexandrio.cloud
+      - description: Preprod server
+        url: //media.preprod.alexandrio.cloud
+      summary: Download a book
+      tags:
+      - MEDIA
+  /book/upload:
+    post:
+      description: Upload a book to the server and link it to its metadata on the library MS
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UploadRequest'
+      responses:
+        "200":
+          $ref: '#/components/schemas/UploadResponse'
+        "400":
+          $ref: '#/components/schemas/BadRequestErrorResponse'
+        "401":
+          $ref: '#/components/schemas/UnauthorizedErrorResponse'
+      security:
+      - bearerAuth: []
+      servers:
+      - description: Production server
+        url: //media.alexandrio.cloud
+      - description: Preprod server
+        url: //media.preprod.alexandrio.cloud
+      summary: Upload a book
+      tags:
+      - MEDIA

@@ -1,0 +1,9 @@
+---
+components:
+  securitySchemes:
+    bearerAuth:
+      description: "Go to <a href=\"{{ .Auth }}\">/auth</a> to see more documentation."
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+

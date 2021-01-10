@@ -17,11 +17,11 @@ paths:
         "400":
           $ref: '#/components/schemas/BadRequestErrorResponse'
       security:
-        - Bearer Auth: []
+        - bearerAuth: []
       servers:
         - url: //media.alexandrio.cloud
           description: Production server
-        - url: //auth.preprod.alexandrio.cloud
+        - url: //media.preprod.alexandrio.cloud
           description: Preprod server
       tags:
         - MEDIA
