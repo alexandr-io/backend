@@ -13,14 +13,14 @@ paths:
         - url: //auth.preprod.alexandrio.cloud
           description: Preprod server
       tags:
-        - AUTH
+        - INVITATION
 
   /invitation/{token}:
     delete:
       description: Delete an invitation corresponding to the given `token`. For test purpose only.
       summary: Delete Invitation
       security:
-        - Bearer Auth: []
+        - bearerAuth: []
       responses:
         "204":
           $ref: '#/components/schemas/NoContentResponse'
@@ -32,4 +32,4 @@ paths:
         - url: //auth.preprod.alexandrio.cloud
           description: Preprod server
       tags:
-        - AUTH
+        - INVITATION

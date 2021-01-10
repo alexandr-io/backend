@@ -1,0 +1,158 @@
+components:
+  schemas:
+    BadInput:
+      properties:
+        fields:
+          items:
+            $ref: '#/components/schemas/Field'
+          type: array
+      type: object
+    BadRequestErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadInput'
+      description: Bad Request
+    Field:
+      properties:
+        name:
+          type: string
+        reason:
+          type: string
+      type: object
+    NoContentResponse:
+      description: Success No Content
+    UnauthorizedErrorResponse:
+      description: Unauthorized
+    User:
+      description: User defines the structure for an API user
+      properties:
+        auth_token:
+          description: The authentication token of this user. Valid for 15 minutes.
+          example: eyJhb[...]FYqf4
+          type: string
+        email:
+          description: The email address of this user
+          example: john@provider.net
+          type: string
+        refresh_token:
+          description: The refresh token of this user. Valid for 30 days. Used to get a new auth token.
+          example: eyJhb[...]FYqf4
+          type: string
+        username:
+          description: The username of this user
+          example: john
+          type: string
+      required:
+      - username
+      - email
+      type: object
+    UserData:
+      description: User's data
+      properties:
+        email:
+          description: The email address of this user
+          example: john@provider.net
+          type: string
+        username:
+          description: The username of this user
+          example: john
+          type: string
+      type: object
+    UserDataResponse:
+      content:
+        application/json:
+          schema:
+            description: User's data
+            properties:
+              email:
+                description: The email address of this user
+                example: john@provider.net
+                type: string
+              username:
+                description: The username of this user
+                example: john
+                type: string
+            required:
+            - username
+            - email
+            type: object
+      description: User's data response
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: JWT
+      description: Go to <a href="http://localhost:4000/auth#section/Authentication">/auth</a> to see more documentation.
+      scheme: bearer
+      type: http
+info:
+  description: |-
+    Documentation for the Alexandrio's USER microsecervice REST API
+
+     <b>You can find the documentation of the others MS in these pages:</b>
+
+     <a href="http://localhost:4000/auth" class="sc-fzooss hmVskR">Auth</a> <a href="http://localhost:4000/user" class="sc-fzooss hmVskR">User</a> <a href="http://localhost:4000/library" class="sc-fzooss hmVskR">Library</a> <a href="http://localhost:4000/media" class="sc-fzooss hmVskR">Media</a>
+  title: USER Documentation
+  version: v1
+openapi: 3.0.2
+paths:
+  /user:
+    delete:
+      description: Delete the user corresponding to the Bearer token
+      responses:
+        "204":
+          $ref: '#/components/schemas/NoContentResponse'
+        "401":
+          $ref: '#/components/schemas/UnauthorizedErrorResponse'
+      security:
+      - bearerAuth: []
+      servers:
+      - description: Production server
+        url: //user.alexandrio.cloud
+      - description: Preprod server
+        url: //user.preprod.alexandrio.cloud
+      summary: Delete User
+      tags:
+      - USER
+    get:
+      description: Get the information about the user corresponding to the Bearer token
+      responses:
+        "200":
+          $ref: '#/components/schemas/UserDataResponse'
+        "401":
+          $ref: '#/components/schemas/UnauthorizedErrorResponse'
+      security:
+      - bearerAuth: []
+      servers:
+      - description: Production server
+        url: //user.alexandrio.cloud
+      - description: Preprod server
+        url: //user.preprod.alexandrio.cloud
+      summary: Get User
+      tags:
+      - USER
+    put:
+      description: Update the information of the user corresponding to the Bearer token
+      operationId: user_update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserData'
+        description: "The informations to update a user  \nOnly sent fields will be updated"
+      responses:
+        "200":
+          $ref: '#/components/schemas/UserDataResponse'
+        "400":
+          $ref: '#/components/schemas/BadRequestErrorResponse'
+        "401":
+          $ref: '#/components/schemas/UnauthorizedErrorResponse'
+      security:
+      - bearerAuth: []
+      servers:
+      - description: Production server
+        url: //user.alexandrio.cloud
+      - description: Preprod server
+        url: //user.preprod.alexandrio.cloud
+      summary: Update User
+      tags:
+      - USER
