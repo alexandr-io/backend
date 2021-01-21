@@ -32,7 +32,7 @@
   tasks:
     - name: Set env variable HOST_TYPE
       shell: "echo 'HOST_TYPE=PROD' >> /etc/environment"
-      
+
 - hosts: all
 
   tasks:
