@@ -2,7 +2,7 @@ module github.com/alexandr-io/backend/tests/integration
 
 go 1.15
 
-replace github.com/alexandr-io/backend/tests/integrationMethods => ./../integration_methods
+replace github.com/alexandr-io/backend/tests/itgmtod => ./../itgmtod
 
 replace github.com/alexandr-io/backend/auth/tests => ../../microservices/auth/tests
 

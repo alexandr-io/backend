@@ -1,4 +1,4 @@
-package integration_methods
+package itgmtod
 
 import (
 	"fmt"

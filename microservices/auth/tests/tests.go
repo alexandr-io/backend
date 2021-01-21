@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/alexandr-io/backend/tests/integrationMethods"
+	"github.com/alexandr-io/backend/tests/itgmtod"
 )
 
 type test struct {
@@ -22,15 +22,15 @@ type test struct {
 
 func execTestSuit(baseURL string, testSuite []test) error {
 	for _, currentTest := range testSuite {
-		url := integration_methods.JoinURL(baseURL, currentTest.URL())
-		body, err := integration_methods.MarshallBody(currentTest.Body)
+		url := itgmtod.JoinURL(baseURL, currentTest.URL())
+		body, err := itgmtod.MarshallBody(currentTest.Body)
 		if err != nil {
 			newFailureMessage(currentTest.HTTPMethod, url, currentTest.TestSuit, err.Error())
 			return fmt.Errorf("error in " + currentTest.TestSuit + " test suit")
 		}
 
 		// Test the route
-		res, err := integration_methods.TestRoute(
+		res, err := itgmtod.TestRoute(
 			currentTest.HTTPMethod,
 			url,
 			currentTest.AuthJWT,
@@ -42,7 +42,7 @@ func execTestSuit(baseURL string, testSuite []test) error {
 		}
 		// Check expected response Body
 		if currentTest.ExpectedResponse != nil {
-			if err := integration_methods.CheckExpectedResponse(res, currentTest.ExpectedResponse); err != nil {
+			if err := itgmtod.CheckExpectedResponse(res, currentTest.ExpectedResponse); err != nil {
 				newFailureMessage(currentTest.HTTPMethod, currentTest.URL(), currentTest.TestSuit, err.Error())
 				return fmt.Errorf("error in " + currentTest.TestSuit + " test suit")
 			}
@@ -73,9 +73,9 @@ func getBaseURL(environment string) (string, error) {
 }
 
 func newSuccessMessage(verb string, route string, test string) {
-	integration_methods.NewSuccessMessage(integration_methods.BackCyan("[AUTH]"), verb, route, test)
+	itgmtod.NewSuccessMessage(itgmtod.BackCyan("[AUTH]"), verb, route, test)
 }
 
 func newFailureMessage(verb string, route string, test string, message string) {
-	integration_methods.NewFailureMessage(integration_methods.BackCyan("[AUTH]"), verb, route, test, message)
+	itgmtod.NewFailureMessage(itgmtod.BackCyan("[AUTH]"), verb, route, test, message)
 }

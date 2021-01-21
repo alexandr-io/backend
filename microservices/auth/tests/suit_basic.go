@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/alexandr-io/backend/tests/integrationMethods"
+	"github.com/alexandr-io/backend/tests/itgmtod"
 )
 
 const basicSuit = "Basic"
@@ -79,7 +79,7 @@ func ExecAuthBasicTests(environment string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	randomName = integration_methods.RandStringRunes(12)
+	randomName = itgmtod.RandStringRunes(12)
 	randomEmail = randomName + "@test.test"
 	if err := execTestSuit(baseURL, basicTests); err != nil {
 		return "", err
