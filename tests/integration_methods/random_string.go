@@ -1,4 +1,4 @@
-package integrationMethods
+package integration_methods
 
 import "math/rand"
 

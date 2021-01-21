@@ -2,7 +2,7 @@ module github.com/alexandr-io/backend/auth/tests
 
 go 1.15
 
-replace github.com/alexandr-io/backend/tests/integrationMethods => ./../../../tests/integrationMethods
+replace github.com/alexandr-io/backend/tests/integrationMethods => ./../../../tests/integration_methods
 
 replace github.com/alexandr-io/backend/auth/data => ../app/data
 

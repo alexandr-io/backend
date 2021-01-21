@@ -1,10 +1,11 @@
 package tests
 
 import (
-	"github.com/alexandr-io/backend/tests/integrationMethods"
 	"math/rand"
 	"net/http"
 	"time"
+
+	"github.com/alexandr-io/backend/tests/integrationMethods"
 )
 
 const basicSuit = "Basic"
@@ -78,7 +79,7 @@ func ExecAuthBasicTests(environment string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	randomName = integrationMethods.RandStringRunes(12)
+	randomName = integration_methods.RandStringRunes(12)
 	randomEmail = randomName + "@test.test"
 	if err := execTestSuit(baseURL, basicTests); err != nil {
 		return "", err

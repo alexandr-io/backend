@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"os"
+
 	authTests "github.com/alexandr-io/backend/auth/tests"
 	libraryTests "github.com/alexandr-io/backend/library/tests"
 	userTests "github.com/alexandr-io/backend/user/tests"
 	"github.com/urfave/cli/v2"
-	"log"
-	"os"
 )
 
 var authToken string

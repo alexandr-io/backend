@@ -2,9 +2,10 @@ package tests
 
 import (
 	"encoding/json"
-	"github.com/alexandr-io/backend/auth/data"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/alexandr-io/backend/auth/data"
 )
 
 func invitationEndFunction(res *http.Response) error {
