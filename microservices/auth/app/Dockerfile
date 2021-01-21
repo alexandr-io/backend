@@ -14,6 +14,7 @@ ENV GO111MODULE=on \
 WORKDIR /app
 
 COPY go.mod go.sum ./
+COPY data/go.mod data/go.sum ./
 RUN go mod download
 
 COPY . ./
@@ -23,6 +24,8 @@ RUN go build -a -tags musl -installsuffix cgo -ldflags '-extldflags "-static"' -
 
 # Run stage
 FROM scratch
+
+WORKDIR /app
 
 COPY --from=builder /app/alexandrio-backend-auth ./
 
