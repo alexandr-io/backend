@@ -1,8 +1,9 @@
 package tests
 
 import (
-	"github.com/alexandr-io/backend/library/data"
 	"net/http"
+
+	"github.com/alexandr-io/backend/library/data"
 )
 
 const badRequestSuit = "Bad Request"

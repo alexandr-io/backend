@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/alexandr-io/backend/tests/itgmtod"
 	"net/http"
+
+	"github.com/alexandr-io/backend/tests/itgmtod"
 )
 
 var authToken string

@@ -3,11 +3,13 @@ package tests
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/alexandr-io/backend/library/data"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/alexandr-io/backend/library/data"
 )
 
+// LibrariesGetEndFunction is a function called at the end of a library get test
 func LibrariesGetEndFunction(res *http.Response) error {
 	// Read response Body
 	resBody, err := ioutil.ReadAll(res.Body)

@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	userTests "github.com/alexandr-io/backend/user/tests"
 	"log"
 	"os"
 
 	authTests "github.com/alexandr-io/backend/auth/tests"
+	userTests "github.com/alexandr-io/backend/user/tests"
+
 	"github.com/urfave/cli/v2"
 )
 

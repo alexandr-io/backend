@@ -2,9 +2,10 @@ package tests
 
 import (
 	"encoding/json"
-	"github.com/alexandr-io/backend/library/data"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/alexandr-io/backend/library/data"
 )
 
 // bookCreation defines the structure of an API book for creation. copy for test
@@ -17,6 +18,7 @@ type bookCreation struct {
 	LibraryID   *string  `json:"library_id,omitempty"`
 }
 
+// BookCreateEndFunction is a function called at the end of a book creation test
 func BookCreateEndFunction(res *http.Response) error {
 	// Read response Body
 	resBody, err := ioutil.ReadAll(res.Body)

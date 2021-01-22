@@ -1,8 +1,9 @@
 package tests
 
 import (
-	"github.com/alexandr-io/backend/tests/itgmtod"
 	"net/http"
+
+	"github.com/alexandr-io/backend/tests/itgmtod"
 )
 
 const deleteSuit = "Delete"
