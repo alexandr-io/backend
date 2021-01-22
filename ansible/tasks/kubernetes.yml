@@ -34,14 +34,14 @@
   tasks:
 
   - name: kubeadm init (preprod/dev)
-    shell: "kubeadm init --pod-network-cidr=192.168.0.0/16 --node-name=preprod"
+    shell: "kubeadm init --pod-network-cidr=192.168.0.0/16 --node-name=preprod --apiserver-cert-extra-sans={{ ansible_host }}"
 
 - hosts: production
 
   tasks:
 
   - name: kubeadm init (prod)
-    shell: "kubeadm init --pod-network-cidr=192.168.0.0/16 --node-name=prod"
+    shell: "kubeadm init --pod-network-cidr=192.168.0.0/16 --node-name=prod --apiserver-cert-extra-sans={{ ansible_host }}"
 
 - hosts: all
 
