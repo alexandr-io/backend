@@ -51,11 +51,12 @@ var badRequestTests = []test{
 }
 
 // ExecAuthBadRequestTests execute bad request auth tests.
-func ExecAuthBadRequestTests(environment string) error {
+func ExecAuthBadRequestTests(environment string, jwt string) error {
 	baseURL, err := getBaseURL(environment)
 	if err != nil {
 		return err
 	}
+	authToken = jwt
 
 	if err := execTestSuit(baseURL, badRequestTests); err != nil {
 		return err

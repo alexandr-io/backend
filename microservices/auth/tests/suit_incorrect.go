@@ -101,11 +101,12 @@ var incorrectTests = []test{
 }
 
 // ExecAuthIncorrectTests execute incorrect auth tests.
-func ExecAuthIncorrectTests(environment string) error {
+func ExecAuthIncorrectTests(environment string, jwt string) error {
 	baseURL, err := getBaseURL(environment)
 	if err != nil {
 		return err
 	}
+	authToken = jwt
 
 	if err := execTestSuit(baseURL, incorrectTests); err != nil {
 		return err

@@ -56,11 +56,12 @@ var logoutTests = []test{
 }
 
 // ExecAuthLogoutTests execute logout auth tests.
-func ExecAuthLogoutTests(environment string) error {
+func ExecAuthLogoutTests(environment string, jwt string) error {
 	baseURL, err := getBaseURL(environment)
 	if err != nil {
 		return err
 	}
+	authToken = jwt
 
 	if err := execTestSuit(baseURL, logoutTests); err != nil {
 		return err

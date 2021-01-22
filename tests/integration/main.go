@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
+	userTests "github.com/alexandr-io/backend/user/tests"
 	"log"
 	"os"
 
 	authTests "github.com/alexandr-io/backend/auth/tests"
 	libraryTests "github.com/alexandr-io/backend/library/tests"
-	userTests "github.com/alexandr-io/backend/user/tests"
 	"github.com/urfave/cli/v2"
 )
 
@@ -93,13 +93,13 @@ func parseAndExecTests(c *cli.Context, environment string) error {
 		value := value
 		if asynchronous {
 			go func() {
-				if err := value.Func(environment); err != nil {
+				if err := value.Func(environment, authToken); err != nil {
 					errorHappened = true
 				}
 				value.Channel <- true
 			}()
 		} else {
-			if err := value.Func(environment); err != nil {
+			if err := value.Func(environment, authToken); err != nil {
 				errorHappened = true
 			}
 		}
@@ -110,6 +110,13 @@ func parseAndExecTests(c *cli.Context, environment string) error {
 		for _, value := range testsToExec {
 			<-value.Channel
 		}
+	}
+
+	if err := userTests.ExecUserWorkingTests(environment, authToken); err != nil {
+		return cli.Exit("", 1)
+	}
+	if err := userTests.ExecUserDeleteTests(environment, authToken); err != nil {
+		return cli.Exit("", 1)
 	}
 
 	if errorHappened {
@@ -130,15 +137,8 @@ func printTestSuits() {
 	}
 }
 
-func execLibrary(environment string) error {
-	if err := libraryTests.ExecLibraryTests(environment, authToken); err != nil {
-		return err
-	}
-	return nil
-}
-
-func execUser(environment string) error {
-	if err := userTests.ExecUserTests(environment, authToken); err != nil {
+func execLibrary(environment string, jwt string) error {
+	if err := libraryTests.ExecLibraryTests(environment, jwt); err != nil {
 		return err
 	}
 	return nil

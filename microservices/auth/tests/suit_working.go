@@ -89,11 +89,12 @@ var workingTests = []test{
 }
 
 // ExecAuthWorkingTests execute working auth tests.
-func ExecAuthWorkingTests(environment string) error {
+func ExecAuthWorkingTests(environment string, jwt string) error {
 	baseURL, err := getBaseURL(environment)
 	if err != nil {
 		return err
 	}
+	authToken = jwt
 
 	if err := execTestSuit(baseURL, workingTests); err != nil {
 		return err

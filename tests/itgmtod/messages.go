@@ -11,8 +11,10 @@ var (
 	red     = color.New(color.FgRed).SprintFunc()
 	cyan    = color.New(color.FgCyan).SprintfFunc()
 	magenta = color.New(color.FgHiMagenta).SprintfFunc()
-	// BackCyan is Used by AUTH
+	// BackCyan is used by AUTH
 	BackCyan = color.New(color.BgCyan).Add(color.FgBlack).SprintfFunc()
+	// BackBlue is used by USER
+	BackBlue = color.New(color.BgBlue).Add(color.FgWhite).SprintfFunc()
 )
 
 func getHTTPVerbColor(verb string) string {

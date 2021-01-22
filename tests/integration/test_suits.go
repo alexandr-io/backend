@@ -1,8 +1,11 @@
 package main
 
-import authTests "github.com/alexandr-io/backend/auth/tests"
+import (
+	authTests "github.com/alexandr-io/backend/auth/tests"
+	userTests "github.com/alexandr-io/backend/user/tests"
+)
 
-type testFunc func(string) error
+type testFunc func(string, string) error
 
 type funcChannel struct {
 	Func    testFunc
@@ -69,9 +72,9 @@ var testSuits = []testSuitsStruct{
 		Microservice: "USER",
 		Suits: []suitStruct{
 			{
-				Name: "USER_ALL",
+				Name: "USER_BAD_REQUEST",
 				FuncChan: funcChannel{
-					Func:    execUser,
+					Func:    userTests.ExecUserBadRequestTests,
 					Channel: make(chan bool, 1),
 				},
 			},
