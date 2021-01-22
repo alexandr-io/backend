@@ -15,6 +15,8 @@ var (
 	BackCyan = color.New(color.BgCyan).Add(color.FgBlack).SprintfFunc()
 	// BackBlue is used by USER
 	BackBlue = color.New(color.BgBlue).Add(color.FgWhite).SprintfFunc()
+	// BackMagenta is used by LIBRARY
+	BackMagenta = color.New(color.BgMagenta).Add(color.FgWhite).SprintfFunc()
 )
 
 func getHTTPVerbColor(verb string) string {

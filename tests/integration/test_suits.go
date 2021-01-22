@@ -2,6 +2,7 @@ package main
 
 import (
 	authTests "github.com/alexandr-io/backend/auth/tests"
+	libraryTests "github.com/alexandr-io/backend/library/tests"
 	userTests "github.com/alexandr-io/backend/user/tests"
 )
 
@@ -60,9 +61,16 @@ var testSuits = []testSuitsStruct{
 		Microservice: "LIBRARY",
 		Suits: []suitStruct{
 			{
-				Name: "LIBRARY_ALL",
+				Name: "LIBRARY_WORKING",
 				FuncChan: funcChannel{
-					Func:    execLibrary,
+					Func:    libraryTests.ExecLibraryWorkingTests,
+					Channel: make(chan bool, 1),
+				},
+			},
+			{
+				Name: "LIBRARY_BAD_REQUEST",
+				FuncChan: funcChannel{
+					Func:    libraryTests.ExecLibraryBadRequestTests,
 					Channel: make(chan bool, 1),
 				},
 			},

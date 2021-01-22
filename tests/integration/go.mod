@@ -12,6 +12,8 @@ replace github.com/alexandr-io/backend/library/tests => ../../microservices/libr
 
 replace github.com/alexandr-io/backend/auth/data => ../../microservices/auth/app/data
 
+replace github.com/alexandr-io/backend/library/data => ../../microservices/library/app/data
+
 require (
 	github.com/alexandr-io/backend/auth/tests v0.0.0-00010101000000-000000000000
 	github.com/alexandr-io/backend/library/tests v0.0.0-00010101000000-000000000000

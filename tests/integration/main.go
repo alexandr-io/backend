@@ -7,7 +7,6 @@ import (
 	"os"
 
 	authTests "github.com/alexandr-io/backend/auth/tests"
-	libraryTests "github.com/alexandr-io/backend/library/tests"
 	"github.com/urfave/cli/v2"
 )
 
@@ -112,9 +111,6 @@ func parseAndExecTests(c *cli.Context, environment string) error {
 		}
 	}
 
-	if err := userTests.ExecUserWorkingTests(environment, authToken); err != nil {
-		return cli.Exit("", 1)
-	}
 	if err := userTests.ExecUserDeleteTests(environment, authToken); err != nil {
 		return cli.Exit("", 1)
 	}
@@ -135,13 +131,6 @@ func printTestSuits() {
 			fmt.Printf("     · %s\n", suit.Name)
 		}
 	}
-}
-
-func execLibrary(environment string, jwt string) error {
-	if err := libraryTests.ExecLibraryTests(environment, jwt); err != nil {
-		return err
-	}
-	return nil
 }
 
 func execBasicAuth(environment string) error {
