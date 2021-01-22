@@ -30,12 +30,10 @@ spec:
                 name: kafka
                 key: ADVERTISED_HOST_NAME
           - name: KAFKA_ADVERTISED_PORT
-            value: "30001"
-          - name: KAFKA_CREATE_TOPICS
-            valueFrom:
-              configMapKeyRef:
-                name: kafka
-                key: KAFKA_ADVERTISED_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: kafka
+                  key: KAFKA_ADVERTISED_PORT
 ---
 apiVersion: v1
 kind: Service
