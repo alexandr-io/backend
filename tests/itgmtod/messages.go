@@ -39,11 +39,11 @@ func getHTTPVerbColor(verb string) string {
 }
 
 // NewSuccessMessage print a success message for an integration Test
-func NewSuccessMessage(MS string, verb string, route string, testSuit string) {
-	fmt.Printf("%-25s%-20s%-55s%-15s%5s\n", MS, getHTTPVerbColor(verb), route, testSuit, green("✓"))
+func NewSuccessMessage(MS string, verb string, route string, testSuite string) {
+	fmt.Printf("%-25s%-20s%-55s%-15s%5s\n", MS, getHTTPVerbColor(verb), route, testSuite, green("✓"))
 }
 
 // NewFailureMessage print a failure message for an integration Test
-func NewFailureMessage(MS string, verb string, route string, testSuit string, errMessage string) {
-	fmt.Printf("%-25s%-20s%-55s%-15s%5s\t%s\n", MS, getHTTPVerbColor(verb), route, testSuit, red("✗"), errMessage)
+func NewFailureMessage(MS string, verb string, route string, testSuite string, errMessage string) {
+	fmt.Printf("%-25s%-20s%-55s%-15s%5s\t%s\n", MS, getHTTPVerbColor(verb), route, testSuite, red("✗"), errMessage)
 }

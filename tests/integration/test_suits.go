@@ -13,20 +13,20 @@ type funcChannel struct {
 	Channel chan bool
 }
 
-type suitStruct struct {
+type suiteStruct struct {
 	Name     string
 	FuncChan funcChannel
 }
 
-type testSuitsStruct struct {
+type testSuitesStruct struct {
 	Microservice string
-	Suits        []suitStruct
+	Suites       []suiteStruct
 }
 
-var testSuits = []testSuitsStruct{
+var testSuites = []testSuitesStruct{
 	{
 		Microservice: "AUTH",
-		Suits: []suitStruct{
+		Suites: []suiteStruct{
 			{
 				Name: "AUTH_WORKING",
 				FuncChan: funcChannel{
@@ -59,7 +59,7 @@ var testSuits = []testSuitsStruct{
 	},
 	{
 		Microservice: "LIBRARY",
-		Suits: []suitStruct{
+		Suites: []suiteStruct{
 			{
 				Name: "LIBRARY_WORKING",
 				FuncChan: funcChannel{
@@ -78,7 +78,7 @@ var testSuits = []testSuitsStruct{
 	},
 	{
 		Microservice: "USER",
-		Suits: []suitStruct{
+		Suites: []suiteStruct{
 			{
 				Name: "USER_BAD_REQUEST",
 				FuncChan: funcChannel{

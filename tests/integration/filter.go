@@ -8,29 +8,29 @@ import (
 
 func getTestsByName(name string) map[string]funcChannel {
 	var m = make(map[string]funcChannel)
-	for _, ms := range testSuits {
+	for _, ms := range testSuites {
 		if ms.Microservice == name {
-			for _, suit := range ms.Suits {
-				m[suit.Name] = suit.FuncChan
+			for _, suite := range ms.Suites {
+				m[suite.Name] = suite.FuncChan
 			}
 			return m
 		}
-		for _, suit := range ms.Suits {
-			if suit.Name == name {
-				m[suit.Name] = suit.FuncChan
+		for _, suite := range ms.Suites {
+			if suite.Name == name {
+				m[suite.Name] = suite.FuncChan
 				return m
 			}
 		}
 	}
-	fmt.Println(name + " not found. Run tests to see the list of test suits and microservices")
+	fmt.Println(name + " not found. Run tests to see the list of test suites and microservices")
 	return m
 }
 
 func allTests() map[string]funcChannel {
 	var m = make(map[string]funcChannel)
-	for _, ms := range testSuits {
-		for _, suit := range ms.Suits {
-			m[suit.Name] = suit.FuncChan
+	for _, ms := range testSuites {
+		for _, suite := range ms.Suites {
+			m[suite.Name] = suite.FuncChan
 		}
 	}
 	return m

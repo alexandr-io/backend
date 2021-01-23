@@ -4,7 +4,7 @@ import (
 	"net/http"
 )
 
-const workingSuit = "Working"
+const workingSuite = "Working"
 
 var (
 	authTokenLogin    string
@@ -14,7 +14,7 @@ var (
 
 var workingTests = []test{
 	{
-		TestSuit:   workingSuit,
+		TestSuite:  workingSuite,
 		HTTPMethod: http.MethodPost,
 		URL:        func() string { return "/login" },
 		AuthJWT:    nil,
@@ -30,7 +30,7 @@ var workingTests = []test{
 		CustomEndFunc: loginEndFunction,
 	},
 	{
-		TestSuit:         workingSuit,
+		TestSuite:        workingSuite,
 		HTTPMethod:       http.MethodGet,
 		URL:              func() string { return "/auth" },
 		AuthJWT:          &authTokenLogin,
@@ -42,7 +42,7 @@ var workingTests = []test{
 		CustomEndFunc: nil,
 	},
 	{
-		TestSuit:   workingSuit,
+		TestSuite:  workingSuite,
 		HTTPMethod: http.MethodPost,
 		URL:        func() string { return "/refresh" },
 		AuthJWT:    &authTokenLogin,
@@ -59,7 +59,7 @@ var workingTests = []test{
 		CustomEndFunc: refreshEndFunction,
 	},
 	{
-		TestSuit:         workingSuit,
+		TestSuite:        workingSuite,
 		HTTPMethod:       http.MethodGet,
 		URL:              func() string { return "/auth" },
 		AuthJWT:          &authTokenRefresh,
@@ -73,7 +73,7 @@ var workingTests = []test{
 		CustomEndFunc: nil,
 	},
 	{
-		TestSuit:   workingSuit,
+		TestSuite:  workingSuite,
 		HTTPMethod: http.MethodPost,
 		URL:        func() string { return "/password/reset" },
 		AuthJWT:    &authToken,
@@ -96,7 +96,7 @@ func ExecAuthWorkingTests(environment string, jwt string) error {
 	}
 	authToken = jwt
 
-	if err := execTestSuit(baseURL, workingTests); err != nil {
+	if err := execTestSuite(baseURL, workingTests); err != nil {
 		return err
 	}
 	return nil

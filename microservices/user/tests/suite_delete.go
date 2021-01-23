@@ -6,7 +6,7 @@ import (
 	"github.com/alexandr-io/backend/tests/itgmtod"
 )
 
-const deleteSuit = "Delete"
+const deleteSuite = "Delete"
 
 var (
 	randomName  string
@@ -15,7 +15,7 @@ var (
 
 var deleteTests = []test{
 	{
-		TestSuit:         deleteSuit,
+		TestSuite:        deleteSuite,
 		HTTPMethod:       http.MethodGet,
 		URL:              func() string { return "/user" },
 		AuthJWT:          &authToken,
@@ -25,7 +25,7 @@ var deleteTests = []test{
 		CustomEndFunc:    nil,
 	},
 	{
-		TestSuit:   deleteSuit,
+		TestSuite:  deleteSuite,
 		HTTPMethod: http.MethodPut,
 		URL:        func() string { return "/user" },
 		AuthJWT:    &authToken,
@@ -41,7 +41,7 @@ var deleteTests = []test{
 		CustomEndFunc: nil,
 	},
 	{
-		TestSuit:         deleteSuit,
+		TestSuite:        deleteSuite,
 		HTTPMethod:       http.MethodDelete,
 		URL:              func() string { return "/user" },
 		AuthJWT:          &authToken,
@@ -51,7 +51,7 @@ var deleteTests = []test{
 		CustomEndFunc:    nil,
 	},
 	{
-		TestSuit:         deleteSuit,
+		TestSuite:        deleteSuite,
 		HTTPMethod:       http.MethodDelete,
 		URL:              func() string { return "/user" },
 		AuthJWT:          &authToken,
@@ -72,7 +72,7 @@ func ExecUserDeleteTests(environment string, jwt string) error {
 
 	randomName = itgmtod.RandStringRunes(12)
 	randomEmail = randomName + "@test.test"
-	if err := execTestSuit(baseURL, deleteTests); err != nil {
+	if err := execTestSuite(baseURL, deleteTests); err != nil {
 		return err
 	}
 	return nil

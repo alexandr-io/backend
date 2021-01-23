@@ -18,12 +18,12 @@ var flags = []cli.Flag{
 	&cli.StringSliceFlag{
 		Name:    "include",
 		Aliases: []string{"i"},
-		Usage:   "include tests for `TEST_SUIT`",
+		Usage:   "include tests for `TEST_SUITE`",
 	},
 	&cli.StringSliceFlag{
 		Name:    "exclude",
 		Aliases: []string{"e"},
-		Usage:   "exclude tests for `TEST_SUIT`",
+		Usage:   "exclude tests for `TEST_SUITE`",
 	},
 }
 
@@ -40,9 +40,9 @@ func main() {
 		Commands: []*cli.Command{
 			{
 				Name:  "tests",
-				Usage: "print all test suit names",
+				Usage: "print all test suite names",
 				Action: func(_ *cli.Context) error {
-					printTestSuits()
+					printTestSuites()
 					return nil
 				},
 			},
@@ -122,14 +122,14 @@ func parseAndExecTests(c *cli.Context, environment string) error {
 	return nil
 }
 
-func printTestSuits() {
-	fmt.Println("USAGE:\n   Using the MICROSERVICE_NAME will include or exclude all of the TEST_SUITS\n")
-	fmt.Println("FORMAT:\n   • MICROSERVICE_NAME\n     · TEST_SUITS\n")
-	fmt.Println("TEST SUITS LIST:")
-	for _, service := range testSuits {
+func printTestSuites() {
+	fmt.Println("USAGE:\n   Using the MICROSERVICE_NAME will include or exclude all of the TEST_SUITES\n")
+	fmt.Println("FORMAT:\n   • MICROSERVICE_NAME\n     · TEST_SUITES\n")
+	fmt.Println("TEST SUITES LIST:")
+	for _, service := range testSuites {
 		fmt.Printf("   • %s\n", service.Microservice)
-		for _, suit := range service.Suits {
-			fmt.Printf("     · %s\n", suit.Name)
+		for _, suite := range service.Suites {
+			fmt.Printf("     · %s\n", suite.Name)
 		}
 	}
 }

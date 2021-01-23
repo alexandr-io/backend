@@ -4,11 +4,11 @@ import (
 	"net/http"
 )
 
-const badRequestSuit = "Bad Request"
+const badRequestSuite = "Bad Request"
 
 var badRequestTests = []test{
 	{
-		TestSuit:   badRequestSuit,
+		TestSuite:  badRequestSuite,
 		HTTPMethod: http.MethodPut,
 		URL:        func() string { return "/user" },
 		AuthJWT:    &authToken,
@@ -31,7 +31,7 @@ func ExecUserBadRequestTests(environment string, jwt string) error {
 	}
 	authToken = jwt
 
-	if err := execTestSuit(baseURL, badRequestTests); err != nil {
+	if err := execTestSuite(baseURL, badRequestTests); err != nil {
 		return err
 	}
 	return nil

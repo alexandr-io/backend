@@ -10,7 +10,7 @@ import (
 )
 
 type test struct {
-	TestSuit         string
+	TestSuite        string
 	HTTPMethod       string
 	URL              func() string
 	AuthJWT          *string
@@ -20,13 +20,13 @@ type test struct {
 	CustomEndFunc    func(*http.Response) error
 }
 
-func execTestSuit(baseURL string, testSuite []test) error {
+func execTestSuite(baseURL string, testSuite []test) error {
 	for _, currentTest := range testSuite {
 		url := itgmtod.JoinURL(baseURL, currentTest.URL())
 		body, err := itgmtod.MarshallBody(currentTest.Body)
 		if err != nil {
-			newFailureMessage(currentTest.HTTPMethod, url, currentTest.TestSuit, err.Error())
-			return fmt.Errorf("error in " + currentTest.TestSuit + " test suit")
+			newFailureMessage(currentTest.HTTPMethod, url, currentTest.TestSuite, err.Error())
+			return fmt.Errorf("error in " + currentTest.TestSuite + " test suite")
 		}
 
 		// Test the route
@@ -37,24 +37,24 @@ func execTestSuit(baseURL string, testSuite []test) error {
 			bytes.NewReader(body),
 			currentTest.ExpectedHTTPCode)
 		if err != nil {
-			newFailureMessage(currentTest.HTTPMethod, currentTest.URL(), currentTest.TestSuit, err.Error())
-			return fmt.Errorf("error in " + currentTest.TestSuit + " test suit")
+			newFailureMessage(currentTest.HTTPMethod, currentTest.URL(), currentTest.TestSuite, err.Error())
+			return fmt.Errorf("error in " + currentTest.TestSuite + " test suite")
 		}
 		// Check expected response Body
 		if currentTest.ExpectedResponse != nil {
 			if err := itgmtod.CheckExpectedResponse(res, currentTest.ExpectedResponse); err != nil {
-				newFailureMessage(currentTest.HTTPMethod, currentTest.URL(), currentTest.TestSuit, err.Error())
-				return fmt.Errorf("error in " + currentTest.TestSuit + " test suit")
+				newFailureMessage(currentTest.HTTPMethod, currentTest.URL(), currentTest.TestSuite, err.Error())
+				return fmt.Errorf("error in " + currentTest.TestSuite + " test suite")
 			}
 		}
 		// Call end function
 		if currentTest.CustomEndFunc != nil {
 			if err := currentTest.CustomEndFunc(res); err != nil {
-				newFailureMessage(currentTest.HTTPMethod, currentTest.URL(), currentTest.TestSuit, err.Error())
-				return fmt.Errorf("error in " + currentTest.TestSuit + " test suit")
+				newFailureMessage(currentTest.HTTPMethod, currentTest.URL(), currentTest.TestSuite, err.Error())
+				return fmt.Errorf("error in " + currentTest.TestSuite + " test suite")
 			}
 		}
-		newSuccessMessage(currentTest.HTTPMethod, currentTest.URL(), currentTest.TestSuit)
+		newSuccessMessage(currentTest.HTTPMethod, currentTest.URL(), currentTest.TestSuite)
 	}
 	return nil
 }

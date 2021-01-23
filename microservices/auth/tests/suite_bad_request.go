@@ -6,11 +6,11 @@ import (
 	"github.com/alexandr-io/backend/auth/data"
 )
 
-const badRequestSuit = "Bad Request"
+const badRequestSuite = "Bad Request"
 
 var badRequestTests = []test{
 	{
-		TestSuit:   badRequestSuit,
+		TestSuite:  badRequestSuite,
 		HTTPMethod: http.MethodPost,
 		URL:        func() string { return "/register" },
 		AuthJWT:    nil,
@@ -23,7 +23,7 @@ var badRequestTests = []test{
 		CustomEndFunc:    nil,
 	},
 	{
-		TestSuit:   badRequestSuit,
+		TestSuite:  badRequestSuite,
 		HTTPMethod: http.MethodPost,
 		URL:        func() string { return "/login" },
 		AuthJWT:    nil,
@@ -37,7 +37,7 @@ var badRequestTests = []test{
 		CustomEndFunc:    nil,
 	},
 	{
-		TestSuit:   badRequestSuit,
+		TestSuite:  badRequestSuite,
 		HTTPMethod: http.MethodPost,
 		URL:        func() string { return "/password/reset" },
 		AuthJWT:    &authToken,
@@ -58,7 +58,7 @@ func ExecAuthBadRequestTests(environment string, jwt string) error {
 	}
 	authToken = jwt
 
-	if err := execTestSuit(baseURL, badRequestTests); err != nil {
+	if err := execTestSuite(baseURL, badRequestTests); err != nil {
 		return err
 	}
 	return nil

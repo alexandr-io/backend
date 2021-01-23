@@ -29,7 +29,7 @@ func loginEndFunction(res *http.Response) error {
 	return nil
 }
 
-func loginLogoutSuitEndFunction(res *http.Response) error {
+func loginLogoutSuiteEndFunction(res *http.Response) error {
 	// Read response Body
 	resBody, err := ioutil.ReadAll(res.Body)
 	if err != nil {

@@ -8,7 +8,7 @@ import (
 	"github.com/alexandr-io/backend/tests/itgmtod"
 )
 
-const basicSuit = "Basic"
+const basicSuite = "Basic"
 
 var (
 	randomName      string
@@ -19,7 +19,7 @@ var (
 
 var basicTests = []test{
 	{
-		TestSuit:         basicSuit,
+		TestSuite:        basicSuite,
 		HTTPMethod:       http.MethodGet,
 		URL:              func() string { return "/invitation/new" },
 		AuthJWT:          nil,
@@ -29,7 +29,7 @@ var basicTests = []test{
 		CustomEndFunc:    invitationEndFunction,
 	},
 	{
-		TestSuit:   basicSuit,
+		TestSuite:  basicSuite,
 		HTTPMethod: http.MethodPost,
 		URL:        func() string { return "/register" },
 		AuthJWT:    nil,
@@ -48,7 +48,7 @@ var basicTests = []test{
 		CustomEndFunc: registerEndFunction,
 	},
 	{
-		TestSuit:         basicSuit,
+		TestSuite:        basicSuite,
 		HTTPMethod:       http.MethodDelete,
 		URL:              func() string { return "/invitation/" + invitationToken },
 		AuthJWT:          &authToken,
@@ -58,7 +58,7 @@ var basicTests = []test{
 		CustomEndFunc:    nil,
 	},
 	{
-		TestSuit:         basicSuit,
+		TestSuite:        basicSuite,
 		HTTPMethod:       http.MethodGet,
 		URL:              func() string { return "/auth" },
 		AuthJWT:          &authToken,
@@ -81,7 +81,7 @@ func ExecAuthBasicTests(environment string) (string, error) {
 	}
 	randomName = itgmtod.RandStringRunes(12)
 	randomEmail = randomName + "@test.test"
-	if err := execTestSuit(baseURL, basicTests); err != nil {
+	if err := execTestSuite(baseURL, basicTests); err != nil {
 		return "", err
 	}
 	return authToken, nil

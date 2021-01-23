@@ -2,13 +2,13 @@ package tests
 
 import "net/http"
 
-const logoutSuit = "Logout"
+const logoutSuite = "Logout"
 
 var authTokenLogout string
 
 var logoutTests = []test{
 	{
-		TestSuit:   logoutSuit,
+		TestSuite:  logoutSuite,
 		HTTPMethod: http.MethodPost,
 		URL:        func() string { return "/login" },
 		AuthJWT:    nil,
@@ -21,10 +21,10 @@ var logoutTests = []test{
 			Username: &randomName,
 			Email:    &randomEmail,
 		},
-		CustomEndFunc: loginLogoutSuitEndFunction,
+		CustomEndFunc: loginLogoutSuiteEndFunction,
 	},
 	{
-		TestSuit:         logoutSuit,
+		TestSuite:        logoutSuite,
 		HTTPMethod:       http.MethodPost,
 		URL:              func() string { return "/logout" },
 		AuthJWT:          &authTokenLogout,
@@ -34,7 +34,7 @@ var logoutTests = []test{
 		CustomEndFunc:    nil,
 	},
 	{
-		TestSuit:         logoutSuit,
+		TestSuite:        logoutSuite,
 		HTTPMethod:       http.MethodPost,
 		URL:              func() string { return "/logout" },
 		AuthJWT:          &authTokenLogout,
@@ -44,7 +44,7 @@ var logoutTests = []test{
 		CustomEndFunc:    nil,
 	},
 	{
-		TestSuit:         logoutSuit,
+		TestSuite:        logoutSuite,
 		HTTPMethod:       http.MethodGet,
 		URL:              func() string { return "/auth" },
 		AuthJWT:          &authTokenLogout,
@@ -63,7 +63,7 @@ func ExecAuthLogoutTests(environment string, jwt string) error {
 	}
 	authToken = jwt
 
-	if err := execTestSuit(baseURL, logoutTests); err != nil {
+	if err := execTestSuite(baseURL, logoutTests); err != nil {
 		return err
 	}
 	return nil

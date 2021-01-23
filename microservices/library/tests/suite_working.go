@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	workingSuit            = "Working"
+	workingSuite           = "Working"
 	libraryName            = "Bookshelf"
 	libraryDescription     = "My bookshelf"
 	bookTitle              = "Memoirs of Napoleon Bonaparte"
@@ -25,7 +25,7 @@ var (
 
 var workingTests = []test{
 	{
-		TestSuit:   workingSuit,
+		TestSuite:  workingSuite,
 		HTTPMethod: http.MethodPost,
 		URL:        func() string { return "/library" },
 		AuthJWT:    &authToken,
@@ -41,7 +41,7 @@ var workingTests = []test{
 		CustomEndFunc: nil,
 	},
 	{
-		TestSuit:         workingSuit,
+		TestSuite:        workingSuite,
 		HTTPMethod:       http.MethodGet,
 		URL:              func() string { return "/libraries" },
 		AuthJWT:          &authToken,
@@ -51,7 +51,7 @@ var workingTests = []test{
 		CustomEndFunc:    LibrariesGetEndFunction,
 	},
 	{
-		TestSuit:   workingSuit,
+		TestSuite:  workingSuite,
 		HTTPMethod: http.MethodPut,
 		URL:        func() string { return "/library" },
 		AuthJWT:    &authToken,
@@ -66,7 +66,7 @@ var workingTests = []test{
 		CustomEndFunc: nil,
 	},
 	{
-		TestSuit:   workingSuit,
+		TestSuite:  workingSuite,
 		HTTPMethod: http.MethodPost,
 		URL:        func() string { return "/book" },
 		AuthJWT:    &authToken,
@@ -87,7 +87,7 @@ var workingTests = []test{
 		CustomEndFunc: BookCreateEndFunction,
 	},
 	{
-		TestSuit:   workingSuit,
+		TestSuite:  workingSuite,
 		HTTPMethod: http.MethodPut,
 		URL:        func() string { return "/book" },
 		AuthJWT:    &authToken,
@@ -105,7 +105,7 @@ var workingTests = []test{
 		CustomEndFunc: nil,
 	},
 	{
-		TestSuit:   workingSuit,
+		TestSuite:  workingSuite,
 		HTTPMethod: http.MethodPost,
 		URL:        func() string { return "/library/" + libraryID + "/book/" + bookID },
 		AuthJWT:    &authToken,
@@ -122,7 +122,7 @@ var workingTests = []test{
 		CustomEndFunc: nil,
 	},
 	{
-		TestSuit:   workingSuit,
+		TestSuite:  workingSuite,
 		HTTPMethod: http.MethodDelete,
 		URL:        func() string { return "/book" },
 		AuthJWT:    &authToken,
@@ -135,7 +135,7 @@ var workingTests = []test{
 		CustomEndFunc:    nil,
 	},
 	{
-		TestSuit:   workingSuit,
+		TestSuite:  workingSuite,
 		HTTPMethod: http.MethodDelete,
 		URL:        func() string { return "/library" },
 		AuthJWT:    &authToken,
@@ -156,7 +156,7 @@ func ExecLibraryWorkingTests(environment string, jwt string) error {
 	}
 	authToken = jwt
 
-	if err := execTestSuit(baseURL, workingTests); err != nil {
+	if err := execTestSuite(baseURL, workingTests); err != nil {
 		return err
 	}
 	return nil

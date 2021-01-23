@@ -3,16 +3,16 @@ package tests
 import "net/http"
 
 const (
-	duplicateSuit    = "Duplicate"
-	noMatchSuit      = "No Match"
-	invalidTokenSuit = "Invalid Token"
+	duplicateSuite    = "Duplicate"
+	noMatchSuite      = "No Match"
+	invalidTokenSuite = "Invalid Token"
 )
 
 var wrongToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
 
 var incorrectTests = []test{
 	{
-		TestSuit:         duplicateSuit,
+		TestSuite:        duplicateSuite,
 		HTTPMethod:       http.MethodGet,
 		URL:              func() string { return "/invitation/new" },
 		AuthJWT:          nil,
@@ -22,7 +22,7 @@ var incorrectTests = []test{
 		CustomEndFunc:    invitationEndFunction,
 	},
 	{
-		TestSuit:   duplicateSuit,
+		TestSuite:  duplicateSuite,
 		HTTPMethod: http.MethodPost,
 		URL:        func() string { return "/register" },
 		AuthJWT:    nil,
@@ -38,7 +38,7 @@ var incorrectTests = []test{
 		CustomEndFunc:    nil,
 	},
 	{
-		TestSuit:         duplicateSuit,
+		TestSuite:        duplicateSuite,
 		HTTPMethod:       http.MethodDelete,
 		URL:              func() string { return "/invitation/" + invitationToken },
 		AuthJWT:          &authToken,
@@ -48,7 +48,7 @@ var incorrectTests = []test{
 		CustomEndFunc:    nil,
 	},
 	{
-		TestSuit:   noMatchSuit,
+		TestSuite:  noMatchSuite,
 		HTTPMethod: http.MethodPost,
 		URL:        func() string { return "/login" },
 		AuthJWT:    nil,
@@ -61,7 +61,7 @@ var incorrectTests = []test{
 		CustomEndFunc:    nil,
 	},
 	{
-		TestSuit:   noMatchSuit,
+		TestSuite:  noMatchSuite,
 		HTTPMethod: http.MethodPost,
 		URL:        func() string { return "/password/reset" },
 		AuthJWT:    &authToken,
@@ -75,7 +75,7 @@ var incorrectTests = []test{
 		CustomEndFunc:    nil,
 	},
 	{
-		TestSuit:         invalidTokenSuit,
+		TestSuite:        invalidTokenSuite,
 		HTTPMethod:       http.MethodGet,
 		URL:              func() string { return "/auth" },
 		AuthJWT:          &wrongToken,
@@ -85,7 +85,7 @@ var incorrectTests = []test{
 		CustomEndFunc:    nil,
 	},
 	{
-		TestSuit:   invalidTokenSuit,
+		TestSuite:  invalidTokenSuite,
 		HTTPMethod: http.MethodPost,
 		URL:        func() string { return "/refresh" },
 		AuthJWT:    &wrongToken,
@@ -108,7 +108,7 @@ func ExecAuthIncorrectTests(environment string, jwt string) error {
 	}
 	authToken = jwt
 
-	if err := execTestSuit(baseURL, incorrectTests); err != nil {
+	if err := execTestSuite(baseURL, incorrectTests); err != nil {
 		return err
 	}
 	return nil
