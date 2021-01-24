@@ -1,8 +1,9 @@
 package data
 
 import (
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // BookCreation defines the structure for an API book for creation
