@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"github.com/alexandr-io/backend/library/data"
@@ -203,64 +202,4 @@ func UserDataCreate(c context.Context, userData data.UserData) (data.UserData, e
 	}
 
 	return userData, nil
-}
-
-// ProgressUpdate updates the user's progress in the mongo database
-func ProgressUpdate(c context.Context, progressData data.APIProgressData) (data.BookUserData, error) {
-	ctx, cancel := context.WithTimeout(c, 10*time.Second)
-	defer cancel()
-
-	collection := Instance.Db.Collection(CollectionBookUserData)
-	userFilter := bson.D{{"user_id", progressData.UserID}}
-	userDataRaw := collection.FindOne(ctx, userFilter)
-
-	if userDataRaw == nil {
-		return data.BookUserData{}, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, "Could not find user progress")
-	}
-
-	userData := data.UserData{}
-
-	if err := userDataRaw.Decode(&userData); err != nil {
-		return data.BookUserData{}, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
-	}
-
-	returnValue := data.BookUserData{}
-	updated := false
-	for i, bookData := range userData.BookData {
-		if bookData.BookID == progressData.BookID && bookData.LibraryID == progressData.LibraryID {
-			log.Println("Updating already existing data...")
-
-			userData.BookData[i].Progress = progressData.Progress
-			userData.BookData[i].LastReadDate = time.Now()
-
-			returnValue = userData.BookData[i]
-			updated = true
-			break
-		}
-	}
-	if !updated {
-		log.Println("Appending new data...")
-
-		newID, err := primitive.ObjectIDFromHex(bson2.NewObjectId().Hex())
-		if err != nil {
-			return returnValue, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
-		}
-
-		returnValue = data.BookUserData{
-			ID:           newID,
-			BookID:       progressData.BookID,
-			LibraryID:    progressData.LibraryID,
-			Progress:     progressData.Progress,
-			LastReadDate: time.Now(),
-		}
-		userData.BookData = append(userData.BookData, returnValue)
-	}
-	log.Println("OK")
-
-	_, err := collection.UpdateOne(ctx, userFilter, bson.D{{"$set", userData}})
-	if err != nil {
-		return returnValue, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
-	}
-
-	return returnValue, nil
 }
