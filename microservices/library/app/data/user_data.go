@@ -33,6 +33,7 @@ type APIProgressData struct {
 	LastReadDate time.Time `json:"last_read_date,omitempty"`
 }
 
+// APIProgressRetrieve defines the structure for an API call to retrieve an user's progress on a book
 type APIProgressRetrieve struct {
 	UserID    string `json:"user_id,omitempty"`
 	BookID    string `json:"book_id,omitempty" validate:"required"`

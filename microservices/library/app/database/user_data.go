@@ -11,6 +11,29 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// UserDataCreate creates an entry in mongodb for a user's book.
+func UserDataCreate(c context.Context, userData data.UserData) (data.UserData, error) {
+	ctx, cancel := context.WithTimeout(c, 10*time.Second)
+	defer cancel()
+
+	collection := Instance.Db.Collection(CollectionBookUserData)
+
+	// TODO: check if already exists
+	_, err := collection.InsertOne(ctx, data.UserData{UserID: userData.UserID, BookData: []data.BookUserData{}})
+	if err != nil {
+		return data.UserData{}, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+
+	filter := bson.D{{"user_id", userData.UserID}}
+	userDataRaw := collection.FindOne(ctx, filter)
+
+	if err := userDataRaw.Decode(&userData); err != nil {
+		return data.UserData{}, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return userData, nil
+}
+
 // ProgressRetrieve retrieves the user's progress from the mongo database
 func ProgressRetrieve(c context.Context, progressRetrieve data.APIProgressRetrieve) (data.APIProgressData, error) {
 	ctx, cancel := context.WithTimeout(c, 10*time.Second)
