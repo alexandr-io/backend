@@ -22,6 +22,9 @@ const CollectionLibraries = "libraries"
 // CollectionLibrary is the name of the library collection in mongodb
 const CollectionLibrary = "library"
 
+// CollectionBookUserData is the name of the user data collection in mongodb
+const CollectionBookUserData = "book_user_data"
+
 //
 // Getters
 //
