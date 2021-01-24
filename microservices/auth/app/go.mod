@@ -6,10 +6,8 @@ require (
 	github.com/alexandr-io/berrors v1.2.7
 	github.com/andybalholm/brotli v1.0.1 // indirect
 	github.com/confluentinc/confluent-kafka-go v1.5.2
-	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fatih/structtag v1.2.0
 	github.com/form3tech-oss/jwt-go v3.2.2+incompatible
-	github.com/globalsign/mgo v0.0.0-20181015135952-eeefdecb41b8
 	github.com/go-redis/redis/v8 v8.4.2
 	github.com/gofiber/fiber/v2 v2.1.0
 	github.com/gofiber/jwt/v2 v2.1.0
