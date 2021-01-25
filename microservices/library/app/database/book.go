@@ -18,7 +18,7 @@ import (
 
 // BookRetrieve search and return the metadata of a book on the mongo database
 func BookRetrieve(ctx context.Context, bookRetrieve data.BookRetrieve) (data.Book, error) {
-	ctx, cancel := context.WithTimeout(c, 10*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
 	collection := Instance.Db.Collection(CollectionLibrary)
@@ -52,7 +52,7 @@ func BookRetrieve(ctx context.Context, bookRetrieve data.BookRetrieve) (data.Boo
 
 // BookCreate create the metadata of a book on the mongo database
 func BookCreate(ctx context.Context, bookCreation data.BookCreation) (data.Book, error) {
-	ctx, cancel := context.WithTimeout(c, 10*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
 	collection := Instance.Db.Collection(CollectionLibrary)
@@ -104,7 +104,7 @@ func BookCreate(ctx context.Context, bookCreation data.BookCreation) (data.Book,
 
 // BookUpdate update the metadata of a book
 func BookUpdate(ctx context.Context, libraryIDStr string, book data.Book) error {
-	ctx, cancel := context.WithTimeout(c, 10*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
 	libraryID, err := primitive.ObjectIDFromHex(libraryIDStr)
@@ -144,7 +144,7 @@ func BookUpdate(ctx context.Context, libraryIDStr string, book data.Book) error 
 
 // BookDelete delete the metadata of a book on the mongo database
 func BookDelete(ctx context.Context, bookRetrieve data.BookRetrieve) error {
-	ctx, cancel := context.WithTimeout(c, 10*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
 	collection := Instance.Db.Collection(CollectionLibrary)
