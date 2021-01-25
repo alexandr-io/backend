@@ -10,6 +10,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // CollectionBookUserData is the name of the user data collection in mongodb
@@ -43,10 +44,10 @@ func ProgressRetrieve(ctx context.Context, progressRetrieve data.APIProgressRetr
 	userDataRaw := collection.FindOne(ctx, userFilter)
 	var userData data.UserData
 
-	if userDataRaw == nil {
-		return data.APIProgressData{}, data.NewHTTPErrorInfo(fiber.StatusNotFound, "Could not find user progress")
-	}
 	if err := userDataRaw.Decode(&userData); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return data.APIProgressData{}, data.NewHTTPErrorInfo(fiber.StatusNotFound, "Could not find user progress")
+		}
 		return data.APIProgressData{}, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
