@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/alexandr-io/backend/library/data"
-	
+
 	bson2 "github.com/globalsign/mgo/bson"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
@@ -13,8 +13,7 @@ import (
 )
 
 // UserDataCreate creates an entry in mongodb for a user's book.
-func UserDataCreate(c context.Context, userData data.UserData) (data.UserData, error) {
-
+func UserDataCreate(ctx context.Context, userData data.UserData) (data.UserData, error) {
 	collection := Instance.Db.Collection(CollectionBookUserData)
 
 	// TODO: check if already exists
