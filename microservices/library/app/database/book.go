@@ -94,7 +94,7 @@ func BookCreate(ctx context.Context, bookCreation data.BookCreation) (data.Book,
 		return data.Book{}, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, updateResult.Err().Error())
 	}
 
-	_, err = UserDataCreate(ctx, data.UserData{UserID: bookCreation.UploaderID})
+	_, err = userDataCreate(ctx, data.UserData{UserID: bookCreation.UploaderID})
 	if err != nil {
 		return book, data.NewHTTPErrorInfo(fiber.StatusPartialContent, "Failed to create user data")
 	}

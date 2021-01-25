@@ -12,8 +12,11 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// UserDataCreate creates an entry in mongodb for a user's book.
-func UserDataCreate(ctx context.Context, userData data.UserData) (data.UserData, error) {
+// CollectionBookUserData is the name of the user data collection in mongodb
+const CollectionBookUserData = "book_user_data"
+
+// userDataCreate creates an entry in mongodb for a user's book.
+func userDataCreate(ctx context.Context, userData data.UserData) (data.UserData, error) {
 	collection := Instance.Db.Collection(CollectionBookUserData)
 
 	// TODO: check if already exists
