@@ -23,7 +23,7 @@ func BookDelete(ctx *fiber.Ctx) error {
 
 	ok, err := internal.HasUserAccessToLibraryFromID(userID, bookData.LibraryID)
 	if err != nil {
-		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return err
 	}
 	if !ok {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "User does not have access to the specified library.")

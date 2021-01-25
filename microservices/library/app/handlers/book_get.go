@@ -22,7 +22,7 @@ func BookRetrieve(ctx *fiber.Ctx) error {
 
 	ok, err := internal.HasUserAccessToLibraryFromID(userID, bookData.LibraryID)
 	if err != nil {
-		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return err
 	}
 	if !ok {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "Invalid or expired JWT")
