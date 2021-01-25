@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/alexandr-io/backend/library/data"
+	
 	bson2 "github.com/globalsign/mgo/bson"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
@@ -13,13 +14,11 @@ import (
 
 // UserDataCreate creates an entry in mongodb for a user's book.
 func UserDataCreate(c context.Context, userData data.UserData) (data.UserData, error) {
-	ctx, cancel := context.WithTimeout(c, 10*time.Second)
-	defer cancel()
 
 	collection := Instance.Db.Collection(CollectionBookUserData)
 
 	// TODO: check if already exists
-	_, err := collection.InsertOne(ctx, data.UserData{UserID: userData.UserID, BookData: []data.BookUserData{}})
+	_, err := collection.InsertOne(ctx, userData)
 	if err != nil {
 		return data.UserData{}, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
@@ -35,14 +34,12 @@ func UserDataCreate(c context.Context, userData data.UserData) (data.UserData, e
 }
 
 // ProgressRetrieve retrieves the user's progress from the mongo database
-func ProgressRetrieve(c context.Context, progressRetrieve data.APIProgressRetrieve) (data.APIProgressData, error) {
-	ctx, cancel := context.WithTimeout(c, 10*time.Second)
-	defer cancel()
+func ProgressRetrieve(ctx context.Context, progressRetrieve data.APIProgressRetrieve) (data.APIProgressData, error) {
 
 	collection := Instance.Db.Collection(CollectionBookUserData)
 	userFilter := bson.D{{"user_id", progressRetrieve.UserID}}
 	userDataRaw := collection.FindOne(ctx, userFilter)
-	userData := data.UserData{}
+	var userData data.UserData
 
 	if userDataRaw == nil {
 		return data.APIProgressData{}, data.NewHTTPErrorInfo(fiber.StatusNotFound, "Could not find user progress")
@@ -65,14 +62,12 @@ func ProgressRetrieve(c context.Context, progressRetrieve data.APIProgressRetrie
 }
 
 // ProgressUpdate updates the user's progress in the mongo database
-func ProgressUpdate(c context.Context, progressData data.APIProgressData) (data.BookUserData, error) {
-	ctx, cancel := context.WithTimeout(c, 10*time.Second)
-	defer cancel()
+func ProgressUpdate(ctx context.Context, progressData data.APIProgressData) (data.BookUserData, error) {
 
 	collection := Instance.Db.Collection(CollectionBookUserData)
 	userFilter := bson.D{{"user_id", progressData.UserID}}
 	userDataRaw := collection.FindOne(ctx, userFilter)
-	userData := data.UserData{}
+	var userData data.UserData
 
 	if userDataRaw == nil {
 		return data.BookUserData{}, data.NewHTTPErrorInfo(fiber.StatusNotFound, "Could not find user progress")
@@ -81,7 +76,7 @@ func ProgressUpdate(c context.Context, progressData data.APIProgressData) (data.
 		return data.BookUserData{}, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
-	returnValue := data.BookUserData{}
+	var returnValue data.BookUserData
 	updated := false
 	for i, bookData := range userData.BookData {
 		if bookData.BookID == progressData.BookID && bookData.LibraryID == progressData.LibraryID {
