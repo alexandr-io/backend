@@ -14,14 +14,15 @@ import (
 // CollectionBookUserData is the name of the user data collection in mongodb
 const CollectionBookUserData = "book_user_data"
 
-// userDataCreate creates an entry in mongodb for a user's book.
+// userDataCreate creates an entry in mongodb for a user's book, if it doesn't exist.
 func userDataCreate(ctx context.Context, userData data.UserData) (data.UserData, error) {
 	collection := Instance.Db.Collection(CollectionBookUserData)
 
-	// TODO: check if already exists
 	_, err := collection.InsertOne(ctx, userData)
 	if err != nil {
-		return data.UserData{}, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		if !IsMongoDupKey(err) {
+			return data.UserData{}, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		}
 	}
 
 	filter := bson.D{{"user_id", userData.UserID}}
@@ -76,8 +77,10 @@ func ProgressUpdate(ctx context.Context, progressData data.APIProgressData) (*da
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
-	var returnValue data.BookUserData
 	updated := false
+	var returnValue data.BookUserData
+
+	// TODO: improve this
 	for i, bookData := range userData.BookData {
 		if bookData.BookID == progressData.BookID && bookData.LibraryID == progressData.LibraryID {
 			userData.BookData[i].Progress = progressData.Progress

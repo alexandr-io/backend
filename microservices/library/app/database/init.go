@@ -12,8 +12,19 @@ import (
 // createLibrariesUniqueIndexes init the library collection. It add a unique index to the username field.
 func createLibrariesUniqueIndexes() {
 	librariesCollection := Instance.Db.Collection(CollectionLibraries)
-
 	_, err := librariesCollection.Indexes().CreateOne(
+		context.Background(),
+		mongo.IndexModel{
+			Keys:    bsonx.Doc{{"user_id", bsonx.Int32(1)}},
+			Options: options.Index().SetUnique(true),
+		},
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	bookUserDataCollection := Instance.Db.Collection(CollectionBookUserData)
+	_, err = bookUserDataCollection.Indexes().CreateOne(
 		context.Background(),
 		mongo.IndexModel{
 			Keys:    bsonx.Doc{{"user_id", bsonx.Int32(1)}},
