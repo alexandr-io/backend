@@ -6,10 +6,8 @@ import (
 
 	"github.com/alexandr-io/backend/library/data"
 
-	bson2 "github.com/globalsign/mgo/bson"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -66,16 +64,15 @@ func ProgressRetrieve(ctx context.Context, progressRetrieve data.APIProgressRetr
 
 // ProgressUpdate updates the user's progress in the mongo database
 func ProgressUpdate(ctx context.Context, progressData data.APIProgressData) (*data.BookUserData, error) {
-
 	collection := Instance.Db.Collection(CollectionBookUserData)
 	userFilter := bson.D{{"user_id", progressData.UserID}}
 	userDataRaw := collection.FindOne(ctx, userFilter)
 	var userData data.UserData
 
-	if userDataRaw == nil {
-		return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, "Could not find user progress")
-	}
 	if err := userDataRaw.Decode(&userData); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, "Could not find user progress")
+		}
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -92,13 +89,7 @@ func ProgressUpdate(ctx context.Context, progressData data.APIProgressData) (*da
 		}
 	}
 	if !updated {
-		newID, err := primitive.ObjectIDFromHex(bson2.NewObjectId().Hex())
-		if err != nil {
-			return &returnValue, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
-		}
-
 		returnValue = data.BookUserData{
-			ID:           newID,
 			BookID:       progressData.BookID,
 			LibraryID:    progressData.LibraryID,
 			Progress:     progressData.Progress,
