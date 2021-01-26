@@ -4,7 +4,6 @@ import (
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
 	"github.com/alexandr-io/backend/library/internal"
-
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -12,13 +11,18 @@ import (
 func ProgressRetrieve(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
-	userID := string(ctx.Request().Header.Peek("ID"))
-	progressRetrieve := new(data.APIProgressRetrieve)
-	if err := ParseBodyJSON(ctx, progressRetrieve); err != nil {
-		return err
+	progressRetrieve := data.APIProgressRetrieve{
+		UserID:    string(ctx.Request().Header.Peek("ID")),
+		BookID:    ctx.Query("book_id"),
+		LibraryID: ctx.Query("library_id"),
 	}
 
-	progressRetrieve.UserID = userID
+	if progressRetrieve.BookID == "" {
+		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, "Missing mandatory parameter: book_id")
+	}
+	if progressRetrieve.LibraryID == "" {
+		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, "Missing mandatory parameter: library_id")
+	}
 
 	ok, err := internal.HasUserAccessToLibraryFromID(progressRetrieve.UserID, progressRetrieve.LibraryID)
 	if err != nil {
@@ -28,7 +32,7 @@ func ProgressRetrieve(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "User does not have access to the specified library.")
 	}
 
-	progress, err := database.ProgressRetrieve(ctx.Context(), *progressRetrieve)
+	progress, err := database.ProgressRetrieve(ctx.Context(), progressRetrieve)
 	if err != nil {
 		return err
 	}
