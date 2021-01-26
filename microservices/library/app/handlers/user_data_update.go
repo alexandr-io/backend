@@ -8,24 +8,24 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// ProgressUpdate updates the user's progression on a book
-func ProgressUpdate(ctx *fiber.Ctx) error {
+// DataUpdate updates the user's progression on a book
+func DataUpdate(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
-
-	userID := string(ctx.Request().Header.Peek("ID"))
 
 	progressData := new(data.APIProgressData)
 	if err := ParseBodyJSON(ctx, progressData); err != nil {
 		return err
 	}
 
-	progressData.UserID = userID
+	progressData.UserID = string(ctx.Request().Header.Peek("ID"))
+	progressData.BookID = ctx.Params("book_id")
+	progressData.LibraryID = ctx.Params("library_id")
 
 	if progressData.Progress < 0 || progressData.Progress > 1 {
 		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, "Progress is out of range: must be between 0 and 1")
 	}
 
-	ok, err := internal.HasUserAccessToLibraryFromID(userID, progressData.LibraryID)
+	ok, err := internal.HasUserAccessToLibraryFromID(progressData.UserID, progressData.LibraryID)
 	if err != nil {
 		return err
 	}

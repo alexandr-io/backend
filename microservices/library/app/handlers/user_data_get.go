@@ -7,14 +7,14 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// ProgressRetrieve returns the user's progression on a book
-func ProgressRetrieve(ctx *fiber.Ctx) error {
+// DataRetrieve returns the user's progression on a book
+func DataRetrieve(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
 	progressRetrieve := data.APIProgressRetrieve{
 		UserID:    string(ctx.Request().Header.Peek("ID")),
-		BookID:    ctx.Query("book_id"),
-		LibraryID: ctx.Query("library_id"),
+		BookID:    ctx.Params("book_id"),
+		LibraryID: ctx.Params("library_id"),
 	}
 
 	if progressRetrieve.BookID == "" {

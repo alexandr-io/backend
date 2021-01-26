@@ -27,8 +27,8 @@ type UserData struct {
 // APIProgressData defines the structure for an API call to update an user's progress
 type APIProgressData struct {
 	UserID       string    `json:"user_id,omitempty"`
-	BookID       string    `json:"book_id,omitempty" validate:"required"`
-	LibraryID    string    `json:"library_id,omitempty" validate:"required"`
+	BookID       string    `json:"book_id,omitempty"`
+	LibraryID    string    `json:"library_id,omitempty"`
 	Progress     float64   `json:"progress" validate:"required"`
 	LastReadDate time.Time `json:"last_read_date,omitempty"`
 }
