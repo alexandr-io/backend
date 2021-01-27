@@ -21,9 +21,9 @@ func LibrariesGetEndFunction(res *http.Response) error {
 	if err := json.Unmarshal(resBody, &librariesData); err != nil {
 		return err
 	}
-	if librariesData.Libraries[0].Name != libraryName {
+	if librariesData.Libraries[1].Name != libraryName {
 		return fmt.Errorf("expected: %s\t got: %s", libraryName, librariesData.Libraries[0].Name)
 	}
-	libraryID = librariesData.Libraries[0].ID
+	libraryID = librariesData.Libraries[1].ID
 	return nil
 }

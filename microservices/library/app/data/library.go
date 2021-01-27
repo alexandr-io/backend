@@ -1,5 +1,7 @@
 package data
 
+import "github.com/alexandr-io/backend/library/data/permissions"
+
 // Library defines the structure for an API library
 type Library struct {
 	ID          string `json:"id" bson:"_id,omitempty"`
@@ -9,10 +11,15 @@ type Library struct {
 	Books []BookData `json:"books" bson:"books"`
 }
 
+type LibraryData struct {
+	ID          string                   `bson:"id,omitempty"`
+	Permissions []permissions.Permission `bson:"permissions,omitempty"`
+}
+
 // Libraries defines the structure for an API libraries
 type Libraries struct {
-	UserID    string   `bson:"user_id,omitempty"`
-	Libraries []string `bson:"libraries"`
+	UserID    string        `bson:"user_id,omitempty"`
+	Libraries []LibraryData `bson:"libraries"`
 }
 
 // LibraryName defines the structure for an API library name
@@ -22,7 +29,6 @@ type LibraryName struct {
 }
 
 // LibrariesNames is the format of the data return when fetching libraries names.
-// swagger:model
 type LibrariesNames struct {
 	Libraries []LibraryName `json:"libraries" bson:"name"`
 }

@@ -3,8 +3,6 @@ package handlers
 import (
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
-	"github.com/alexandr-io/backend/library/internal"
-
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -21,10 +19,15 @@ func BookUpdate(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	if ok, err := internal.CanUserModifyBook(userID, libraryID, bookIDStr); err != nil {
+	var user = &data.User{ID: userID}
+	var library = &data.Library{ID: libraryID}
+	err := database.GetLibraryPermission(user, library)
+	if err != nil {
 		return err
-	} else if !ok {
-		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You do not have access to this library.")
+	}
+
+	if !user.CanUpdateBook() {
+		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You are not allowed to update books in this library")
 	}
 	book.ID = bookIDStr
 

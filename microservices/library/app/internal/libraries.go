@@ -13,28 +13,21 @@ func CreateLibraries(message data.KafkaLibrariesCreationRequest) error {
 
 	libraries := data.Libraries{
 		UserID:    message.UserID,
-		Libraries: []string{},
+		Libraries: []data.LibraryData{},
 	}
 	_, err := database.InsertLibraries(libraries)
 	if err != nil {
 		log.Println(err)
 		return err
 	}
-	return nil
-}
-
-// HasUserAccessToLibraryFromID check if a user has access to a library.
-func HasUserAccessToLibraryFromID(userID string, libraryID string) (bool, error) {
-	libraries, err := database.GetLibrariesByUsername(data.LibrariesOwner{UserID: userID})
+	library := data.Library{
+		Name:        "Bookshelf",
+		Description: "The default library",
+	}
+	_, err = database.InsertLibrary(data.LibrariesOwner{UserID: message.UserID}, library)
 	if err != nil {
-		return false, err
+		log.Println(err)
+		return err
 	}
-
-	for _, library := range libraries.Libraries {
-		if library == libraryID {
-			return true, nil
-		}
-	}
-
-	return false, nil
+	return nil
 }
