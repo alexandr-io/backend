@@ -1,0 +1,26 @@
+---
+paths:
+  /refresh:
+    post:
+      description: Get a new auth and refresh token from a valid refresh token
+      summary: Refresh Token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthRefresh"
+        description: The information to refresh an auth and refresh token
+      responses:
+        "201":
+          $ref: '#/components/schemas/UserResponse'
+        "400":
+          $ref: '#/components/schemas/BadRequestErrorResponse'
+        "401":
+          $ref: '#/components/schemas/UnauthorizedErrorResponse'
+      servers:
+        - url: //auth.alexandrio.cloud
+          description: Production server
+        - url: //auth.preprod.alexandrio.cloud
+          description: Preprod server
+      tags:
+        - AUTHENTICATION

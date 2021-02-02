@@ -1,0 +1,18 @@
+---
+openapi: 3.0.2
+info:
+  description: "Documentation for the Alexandrio's AUTH microsecervice REST API\n\n
+                <b>You can find the documentation of the others MS in these pages:</b>\n\n
+                <a href=\"{{ .Auth }}\" class=\"sc-fzooss bFAotz\">Auth</a>
+                <a href=\"{{ .User }}\" class=\"sc-fzooss bFAotz\">User</a>
+                <a href=\"{{ .Library }}\" class=\"sc-fzooss bFAotz\">Library</a>
+                <a href=\"{{ .Media }}\" class=\"sc-fzooss bFAotz\">Media</a>"
+  version: v1
+  title: AUTH Documentation
+tags:
+  - name: AUTHENTICATION
+  - name: INVITATION
+  - name: RESET PASSWORD
+    description: "Schema of reset password workflow: <img src=\"https://i.imgur.com/qrqkPtO.png\" />"
+paths:
+

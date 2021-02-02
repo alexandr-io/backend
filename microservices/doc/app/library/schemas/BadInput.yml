@@ -1,0 +1,10 @@
+---
+components:
+  schemas:
+    BadInput:
+      properties:
+        fields:
+          items:
+            $ref: "#/components/schemas/Field"
+          type: array
+      type: object
