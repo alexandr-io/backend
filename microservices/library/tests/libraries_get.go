@@ -2,46 +2,28 @@ package tests
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
+
+	"github.com/alexandr-io/backend/library/data"
 )
 
-func testLibrariesGetWorking(baseURL string, jwt string) (*libraries, error) {
-	// Create a new request to libraries get route
-	req, err := http.NewRequest(http.MethodGet, baseURL+"libraries", nil)
+// LibrariesGetEndFunction is a function called at the end of a library get test
+func LibrariesGetEndFunction(res *http.Response) error {
+	// Read response Body
+	resBody, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		log.Println(err)
-		return nil, err
+		return err
 	}
-	req.Header.Set("Authorization", "Bearer "+jwt)
-	// Exec request
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		newFailureMessage("GET", "/libraries", "Working Suit", "Can't call "+baseURL+"libraries")
-		return nil, err
+	// Parse response Body
+	var librariesData data.LibrariesNames
+	if err := json.Unmarshal(resBody, &librariesData); err != nil {
+		return err
 	}
-	// Check returned http code
-	if res.StatusCode != http.StatusOK {
-		newFailureMessage("GET", "/libraries", "Working Suit", fmt.Sprintf("[Expected: %d,\tGot: %d]", http.StatusOK, res.StatusCode))
-		return nil, errors.New("")
+	if librariesData.Libraries[0].Name != libraryName {
+		return fmt.Errorf("expected: %s\t got: %s", libraryName, librariesData.Libraries[0].Name)
 	}
-	// Read returned body
-	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		log.Println(err)
-		newFailureMessage("GET", "/libraries", "Working Suit", "Can't read response body")
-		return nil, err
-	}
-	// Parse body data
-	var bodyData libraries
-	if err := json.Unmarshal(body, &bodyData); err != nil {
-		log.Println(err)
-		newFailureMessage("GET", "/libraries", "Working Suit", "Can't unmarshal json")
-		return nil, err
-	}
-	newSuccessMessage("GET", "/libraries", "Working Suit")
-	return &bodyData, nil
+	libraryID = librariesData.Libraries[0].ID
+	return nil
 }

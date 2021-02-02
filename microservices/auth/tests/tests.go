@@ -1,53 +1,62 @@
 package tests
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
-	"math/rand"
-	"path"
-	"strings"
-	"time"
+	"net/http"
 
-	"github.com/fatih/color"
+	"github.com/alexandr-io/backend/tests/itgmtod"
 )
 
-var (
-	green    = color.New(color.FgGreen).SprintFunc()
-	red      = color.New(color.FgRed).SprintFunc()
-	cyan     = color.New(color.FgCyan).SprintfFunc()
-	magenta  = color.New(color.FgHiMagenta).SprintfFunc()
-	backCyan = color.New(color.BgCyan).Add(color.FgBlack).SprintfFunc()
-)
+type test struct {
+	TestSuite        string
+	HTTPMethod       string
+	URL              func() string
+	AuthJWT          *string
+	Body             interface{}
+	ExpectedHTTPCode int
+	ExpectedResponse interface{}
+	CustomEndFunc    func(*http.Response) error
+}
 
-// ExecAuthTests execute integration tests of auth MS routes
-func ExecAuthTests(environment string) (string, error) {
-	rand.Seed(time.Now().UnixNano())
-	var errorHappened = false
+func execTestSuite(baseURL string, testSuite []test) error {
+	for _, currentTest := range testSuite {
+		url := itgmtod.JoinURL(baseURL, currentTest.URL())
+		body, err := itgmtod.MarshallBody(currentTest.Body)
+		if err != nil {
+			newFailureMessage(currentTest.HTTPMethod, url, currentTest.TestSuite, err.Error())
+			return fmt.Errorf("error in " + currentTest.TestSuite + " test suite")
+		}
 
-	baseURL, err := getBaseURL(environment)
-	if err != nil {
-		return "", err
+		// Test the route
+		res, err := itgmtod.TestRoute(
+			currentTest.HTTPMethod,
+			url,
+			currentTest.AuthJWT,
+			bytes.NewReader(body),
+			currentTest.ExpectedHTTPCode)
+		if err != nil {
+			newFailureMessage(currentTest.HTTPMethod, currentTest.URL(), currentTest.TestSuite, err.Error())
+			return fmt.Errorf("error in " + currentTest.TestSuite + " test suite")
+		}
+		// Check expected response Body
+		if currentTest.ExpectedResponse != nil {
+			if err := itgmtod.CheckExpectedResponse(res, currentTest.ExpectedResponse); err != nil {
+				newFailureMessage(currentTest.HTTPMethod, currentTest.URL(), currentTest.TestSuite, err.Error())
+				return fmt.Errorf("error in " + currentTest.TestSuite + " test suite")
+			}
+		}
+		// Call end function
+		if currentTest.CustomEndFunc != nil {
+			if err := currentTest.CustomEndFunc(res); err != nil {
+				newFailureMessage(currentTest.HTTPMethod, currentTest.URL(), currentTest.TestSuite, err.Error())
+				return fmt.Errorf("error in " + currentTest.TestSuite + " test suite")
+			}
+		}
+		newSuccessMessage(currentTest.HTTPMethod, currentTest.URL(), currentTest.TestSuite)
 	}
-
-	userData, err := workingTestSuit(baseURL)
-	if err != nil {
-		errorHappened = true
-	}
-	if err = badRequestTests(baseURL); err != nil {
-		errorHappened = true
-	}
-	if err = incorrectTests(baseURL, *userData); err != nil {
-		errorHappened = true
-	}
-	userData, err = logoutTests(baseURL, userData)
-	if err != nil {
-		errorHappened = true
-	}
-
-	if errorHappened {
-		return "", errors.New("error in auth tests")
-	}
-	return userData.AuthToken, nil
+	return nil
 }
 
 func getBaseURL(environment string) (string, error) {
@@ -63,141 +72,10 @@ func getBaseURL(environment string) (string, error) {
 	}
 }
 
-func workingTestSuit(baseURL string) (*user, error) {
-	inv, err := testInvitationWorking(baseURL, "Working Suit")
-	if err != nil {
-		return nil, err
-	}
-	userData, err := testRegisterWorking(baseURL, *inv)
-	if err != nil {
-		return nil, err
-	}
-	if err := testDeleteInvitationWorking(baseURL, userData, *inv, "Working Suit"); err != nil {
-		return nil, err
-	}
-	if err := testAuthWorking(baseURL, userData); err != nil {
-		return nil, err
-	}
-
-	userDataLogin, err := testLoginWorking(baseURL, *userData)
-	if err != nil {
-		return nil, err
-	}
-	if err := testAuthWorking(baseURL, userDataLogin); err != nil {
-		return nil, err
-	}
-	userDataRefresh, err := testRefreshWorking(baseURL, userDataLogin)
-	if err != nil {
-		return nil, err
-	}
-	if err := testAuthWorking(baseURL, userDataRefresh); err != nil {
-		return nil, err
-	}
-	if err := testResetPasswordWorking(baseURL, *userData); err != nil {
-		return nil, err
-	}
-
-	return userData, nil
-}
-
-func logoutTests(baseURL string, userData *user) (*user, error) {
-	if err := testLogoutWorking(baseURL, userData.AuthToken); err != nil {
-		return nil, err
-	}
-	if err := testAlreadyLogout(baseURL, userData.AuthToken); err != nil {
-		return nil, err
-	}
-	if err := testAuthLogoutToken(baseURL, userData.AuthToken); err != nil {
-		return nil, err
-	}
-	userData, err := testLoginWorking(baseURL, *userData)
-	if err != nil {
-		return nil, err
-	}
-	return userData, nil
-}
-
-func badRequestTests(baseURL string) error {
-	if err := testRegisterBadRequest(baseURL); err != nil {
-		return err
-	}
-	if err := testLoginBadRequest(baseURL); err != nil {
-		return err
-	}
-	if err := testResetPasswordBadRequest(baseURL); err != nil {
-		return err
-	}
-	return nil
-}
-
-func incorrectTests(baseURL string, userData user) error {
-	inv, err := testInvitationWorking(baseURL, "Duplicate")
-	if err != nil {
-		return err
-	}
-	if err := testRegisterDuplicate(baseURL, userData, *inv); err != nil {
-		return err
-	}
-	if err := testDeleteInvitationWorking(baseURL, &userData, *inv, "Duplicate"); err != nil {
-		return err
-	}
-	if err := testLoginNoMatch(baseURL); err != nil {
-		return err
-	}
-	if err := testResetPasswordNoMatch(baseURL); err != nil {
-		return err
-	}
-	if err := testAuthInvalidToken(baseURL); err != nil {
-		return err
-	}
-	if err := testRefreshInvalidToken(baseURL); err != nil {
-		return err
-	}
-	return nil
-}
-
 func newSuccessMessage(verb string, route string, test string) {
-	coloredVerb := verb
-	switch verb {
-	case "GET":
-		coloredVerb = green(verb)
-		break
-	case "POST":
-		coloredVerb = cyan(verb)
-		break
-	case "PUT":
-		coloredVerb = magenta(verb)
-		break
-	case "DELETE":
-		coloredVerb = red(verb)
-		break
-	}
-
-	fmt.Printf("%-23s%-17s%-35s%-14s%-5s\n", backCyan("[AUTH]"), coloredVerb, route, test, green("✓"))
+	itgmtod.NewSuccessMessage(itgmtod.BackCyan("[AUTH]"), verb, route, test)
 }
 
 func newFailureMessage(verb string, route string, test string, message string) {
-	coloredVerb := verb
-	switch verb {
-	case "GET":
-		coloredVerb = green(verb)
-		break
-	case "POST":
-		coloredVerb = cyan(verb)
-		break
-	case "PUT":
-		coloredVerb = magenta(verb)
-		break
-	case "DELETE":
-		coloredVerb = red(verb)
-		break
-	}
-
-	fmt.Printf("%-23s%-17s%-35s%-14s%-5s\t%s\n", backCyan("[AUTH]"), coloredVerb, route, test, red("✗"), message)
-}
-
-// JoinURL Join a base url with a route path
-func JoinURL(base string, paths ...string) string {
-	p := path.Join(paths...)
-	return fmt.Sprintf("%s/%s", strings.TrimRight(base, "/"), strings.TrimLeft(p, "/"))
+	itgmtod.NewFailureMessage(itgmtod.BackCyan("[AUTH]"), verb, route, test, message)
 }
