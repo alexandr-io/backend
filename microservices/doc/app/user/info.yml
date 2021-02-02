@@ -3,10 +3,10 @@ openapi: 3.0.2
 info:
   description: "Documentation for the Alexandrio's USER microsecervice REST API\n\n
                 <b>You can find the documentation of the others MS in these pages:</b>\n\n
-                <a href=\"{{ .Auth }}\" class=\"sc-fzooss hmVskR\">Auth</a>
-                <a href=\"{{ .User }}\" class=\"sc-fzooss hmVskR\">User</a>
-                <a href=\"{{ .Library }}\" class=\"sc-fzooss hmVskR\">Library</a>
-                <a href=\"{{ .Media }}\" class=\"sc-fzooss hmVskR\">Media</a>"
+                <a href=\"{{ .Auth }}\" class=\"sc-fzooss bFAotz\">Auth</a>
+                <a href=\"{{ .User }}\" class=\"sc-fzooss bFAotz\">User</a>
+                <a href=\"{{ .Library }}\" class=\"sc-fzooss bFAotz\">Library</a>
+                <a href=\"{{ .Media }}\" class=\"sc-fzooss bFAotz\">Media</a>"
   version: v1
   title: USER Documentation
 paths:
