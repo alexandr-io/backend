@@ -8,7 +8,7 @@ import (
 
 const (
 	workingSuite           = "Working"
-	libraryName            = "Bookshelf"
+	libraryName            = "Library-test"
 	libraryDescription     = "My bookshelf"
 	bookTitle              = "Memoirs of Napoleon Bonaparte"
 	bookAuthor             = "Louis Antoine Fauvelet de Bourrienne"

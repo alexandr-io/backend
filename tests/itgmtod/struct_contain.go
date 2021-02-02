@@ -17,10 +17,7 @@ func StructContain(x, y interface{}) bool {
 	}
 	v1 := reflect.ValueOf(x)
 	v2 := reflect.ValueOf(y)
-	//if v1.Type() != v2.Type() { // Check that the 2 interfaces are the same struct
-	//	fmt.Printf("Expected type: %s != from response type: %s", v2.Type().Name(), v1.Type().Name())
-	//	return false
-	//}
+
 	if v1.Kind() == reflect.Ptr {
 		v1 = v1.Elem()
 	}
