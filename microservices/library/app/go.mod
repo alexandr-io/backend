@@ -2,6 +2,8 @@ module github.com/alexandr-io/backend/library
 
 go 1.15
 
+replace github.com/alexandr-io/backend/library/data => ./data
+
 require (
 	github.com/alexandr-io/berrors v1.2.7
 	github.com/confluentinc/confluent-kafka-go v1.5.2
