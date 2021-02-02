@@ -1,44 +1,62 @@
 package tests
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
-	"math/rand"
-	"time"
+	"net/http"
 
-	"github.com/fatih/color"
+	"github.com/alexandr-io/backend/tests/itgmtod"
 )
 
-var (
-	green    = color.New(color.FgGreen).SprintFunc()
-	red      = color.New(color.FgRed).SprintFunc()
-	cyan     = color.New(color.FgCyan).SprintfFunc()
-	magenta  = color.New(color.FgHiMagenta).SprintfFunc()
-	backBlue = color.New(color.BgBlue).Add(color.FgWhite).SprintfFunc()
-)
+var authToken string
 
-// ExecUserTests execute integration tests of user MS routes
-func ExecUserTests(environment string, jwt string) error {
-	rand.Seed(time.Now().UnixNano())
-	var errorHappened = false
+type test struct {
+	TestSuite        string
+	HTTPMethod       string
+	URL              func() string
+	AuthJWT          *string
+	Body             interface{}
+	ExpectedHTTPCode int
+	ExpectedResponse interface{}
+	CustomEndFunc    func(*http.Response) error
+}
 
-	baseURL, err := getBaseURL(environment)
-	if err != nil {
-		return err
-	}
+func execTestSuite(baseURL string, testSuite []test) error {
+	for _, currentTest := range testSuite {
+		url := itgmtod.JoinURL(baseURL, currentTest.URL())
+		body, err := itgmtod.MarshallBody(currentTest.Body)
+		if err != nil {
+			newFailureMessage(currentTest.HTTPMethod, url, currentTest.TestSuite, err.Error())
+			return fmt.Errorf("error in " + currentTest.TestSuite + " test suite")
+		}
 
-	if err = workingTestSuit(baseURL, jwt); err != nil {
-		errorHappened = true
-	}
-	if err = badInputTestSuit(baseURL, jwt); err != nil {
-		errorHappened = true
-	}
-	if err = deleteUser(baseURL, jwt); err != nil {
-		errorHappened = true
-	}
-
-	if errorHappened {
-		return errors.New("error in user tests")
+		// Test the route
+		res, err := itgmtod.TestRoute(
+			currentTest.HTTPMethod,
+			url,
+			currentTest.AuthJWT,
+			bytes.NewReader(body),
+			currentTest.ExpectedHTTPCode)
+		if err != nil {
+			newFailureMessage(currentTest.HTTPMethod, currentTest.URL(), currentTest.TestSuite, err.Error())
+			return fmt.Errorf("error in " + currentTest.TestSuite + " test suite")
+		}
+		// Check expected response Body
+		if currentTest.ExpectedResponse != nil {
+			if err := itgmtod.CheckExpectedResponse(res, currentTest.ExpectedResponse); err != nil {
+				newFailureMessage(currentTest.HTTPMethod, currentTest.URL(), currentTest.TestSuite, err.Error())
+				return fmt.Errorf("error in " + currentTest.TestSuite + " test suite")
+			}
+		}
+		// Call end function
+		if currentTest.CustomEndFunc != nil {
+			if err := currentTest.CustomEndFunc(res); err != nil {
+				newFailureMessage(currentTest.HTTPMethod, currentTest.URL(), currentTest.TestSuite, err.Error())
+				return fmt.Errorf("error in " + currentTest.TestSuite + " test suite")
+			}
+		}
+		newSuccessMessage(currentTest.HTTPMethod, currentTest.URL(), currentTest.TestSuite)
 	}
 	return nil
 }
@@ -56,71 +74,10 @@ func getBaseURL(environment string) (string, error) {
 	}
 }
 
-func workingTestSuit(baseURL string, jwt string) error {
-	userData, err := testUserGetWorking(baseURL, jwt)
-	if err != nil {
-		return err
-	}
-	userData.AuthToken = jwt
-	if err := testUserUpdateWorking(baseURL, userData); err != nil {
-		return err
-	}
-	return nil
-}
-
-func badInputTestSuit(baseURL string, jwt string) error {
-	if err := testUserUpdateBadRequest(baseURL, jwt); err != nil {
-		return err
-	}
-	return nil
-}
-
-func deleteUser(baseURL string, jwt string) error {
-	if err := testUserDeleteWorking(baseURL, jwt); err != nil {
-		return err
-	}
-	if err := testUserAlreadyDelete(baseURL, jwt); err != nil {
-		return err
-	}
-	return nil
-}
-
 func newSuccessMessage(verb string, route string, test string) {
-	coloredVerb := verb
-	switch verb {
-	case "GET":
-		coloredVerb = green(verb)
-		break
-	case "POST":
-		coloredVerb = cyan(verb)
-		break
-	case "PUT":
-		coloredVerb = magenta(verb)
-		break
-	case "DELETE":
-		coloredVerb = red(verb)
-		break
-	}
-
-	fmt.Printf("%s\t %s\t%-35s%-14s%-5s\n", backBlue("[USER]"), coloredVerb, route, test, green("✓"))
+	itgmtod.NewSuccessMessage(itgmtod.BackBlue("[USER]"), verb, route, test)
 }
 
 func newFailureMessage(verb string, route string, test string, message string) {
-	coloredVerb := verb
-	switch verb {
-	case "GET":
-		coloredVerb = green(verb)
-		break
-	case "POST":
-		coloredVerb = cyan(verb)
-		break
-	case "PUT":
-		coloredVerb = magenta(verb)
-		break
-	case "DELETE":
-		coloredVerb = red(verb)
-		break
-	}
-
-	fmt.Printf("%s\t %s\t%-35s%-14s%-5s\t%s\n", backBlue("[USER]"), coloredVerb, route, test, red("✗"), message)
+	itgmtod.NewFailureMessage(itgmtod.BackBlue("[USER]"), verb, route, test, message)
 }
