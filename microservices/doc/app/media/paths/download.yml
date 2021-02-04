@@ -1,0 +1,27 @@
+---
+paths:
+  /book/download:
+    get:
+      description: Download a book from the server
+      summary: Download a book
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DownloadRequest"
+      responses:
+        "200":
+          $ref: '#/components/schemas/DownloadResponse'
+        "401":
+          $ref: '#/components/schemas/UnauthorizedErrorResponse'
+        "400":
+          $ref: '#/components/schemas/BadRequestErrorResponse'
+      security:
+        - bearerAuth: []
+      servers:
+        - url: //media.alexandrio.cloud
+          description: Production server
+        - url: //media.preprod.alexandrio.cloud
+          description: Preprod server
+      tags:
+        - MEDIA

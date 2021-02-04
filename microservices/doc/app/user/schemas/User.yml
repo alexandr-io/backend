@@ -1,0 +1,27 @@
+---
+components:
+  schemas:
+    User:
+      description: User defines the structure for an API user
+      properties:
+        auth_token:
+          description: The authentication token of this user. Valid for 15 minutes.
+          example: eyJhb[...]FYqf4
+          type: string
+        email:
+          description: The email address of this user
+          example: john@provider.net
+          type: string
+        refresh_token:
+          description: The refresh token of this user. Valid for 30 days. Used to get a new
+            auth token.
+          example: eyJhb[...]FYqf4
+          type: string
+        username:
+          description: The username of this user
+          example: john
+          type: string
+      required:
+        - username
+        - email
+      type: object

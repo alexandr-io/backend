@@ -1,0 +1,9 @@
+---
+components:
+  securitySchemes:
+    bearerAuth:
+      description: "Alexandrio backend is using both auth token and refresh token.\n\nThe auth token is used to access resources as an authenticated user. This token is only valid for 15 minutes for security purposes.  \nThe auth token is given by the [`/register`](#operation/register), [`/login`](#operation/login) and [`/auth/refresh`](#operation/refresh_token) routes.  \nYou need to send the auth token as a Bearer authentication token in the header of the request to access protected routes.\n\nThe refresh token is used to get a new auth token. When the auth token is expired, you need to send this refresh token to [`/auth/refresh`](#operation/refresh_token) to get a new auth and refresh token.  \nThe refresh token is valid for 30 days and can be used only once. The [`/auth/refresh`](#operation/refresh_token) route return a new refresh token.\n\n<div align=\"center\">\n  <img alt=\"Workflow\" src=\"https://i.imgur.com/ldrebnu.png\" />\n</div>\n<center><p style=\"font-size:11px\">Schema of the authentication workflow</p></center>\n"
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+

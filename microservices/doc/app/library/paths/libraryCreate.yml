@@ -1,0 +1,26 @@
+---
+paths:
+  /library:
+    post:
+      description: Create a library
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LibraryCreateRequest"
+      responses:
+        "201":
+          $ref: '#/components/schemas/LibraryCreateResponse'
+        "400":
+          $ref: '#/components/schemas/BadRequestErrorResponse'
+        "401":
+          $ref: '#/components/schemas/UnauthorizedErrorResponse'
+      security:
+        - bearerAuth: []
+      servers:
+        - url: //library.alexandrio.cloud
+          description: Production server
+        - url: //library.preprod.alexandrio.cloud
+          description: Preprod server
+      tags:
+        - LIBRARIES

@@ -1,0 +1,24 @@
+---
+paths:
+  /login:
+    post:
+      description: Login a user and return it's information, auth token and refresh token
+      summary: Login User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserLogin"
+        description: The information to login a user
+      responses:
+        "200":
+          $ref: '#/components/schemas/UserResponse'
+        "400":
+          $ref: '#/components/schemas/BadRequestErrorResponse'
+      servers:
+        - url: //auth.alexandrio.cloud
+          description: Production server
+        - url: //auth.preprod.alexandrio.cloud
+          description: Preprod server
+      tags:
+        - AUTHENTICATION

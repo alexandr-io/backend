@@ -51,15 +51,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: external
   name: mongo
+  namespace: external
 spec:
   selector:
     app: mongo
   ports:
-    - protocol: TCP
+    - name: mongo
       port: 27017
-      nodePort: 30000
-  type: NodePort
-status:
-  loadBalancer: {}
+      protocol: TCP
+      targetPort: 27017

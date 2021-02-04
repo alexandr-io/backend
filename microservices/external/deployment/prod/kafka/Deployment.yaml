@@ -30,8 +30,6 @@ spec:
                 name: kafka
                 key: ADVERTISED_HOST_NAME
           - name: KAFKA_ADVERTISED_PORT
-            value: "30001"
-          - name: KAFKA_CREATE_TOPICS
             valueFrom:
               configMapKeyRef:
                 name: kafka
@@ -40,15 +38,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: external
   name: broker
+  namespace: external
 spec:
   selector:
     app: broker
   ports:
-    - protocol: TCP
+    - name: broker
       port: 9092
-      nodePort: 30001
-  type: NodePort
-status:
-  loadBalancer: {}
+      protocol: TCP
+      targetPort: 9092
