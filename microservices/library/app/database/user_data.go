@@ -2,9 +2,8 @@ package database
 
 import (
 	"context"
-	"time"
-
 	"github.com/alexandr-io/backend/library/data"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
@@ -66,45 +65,51 @@ func ProgressRetrieve(ctx context.Context, progressRetrieve data.APIProgressRetr
 // ProgressUpdate updates the user's progress in the mongo database
 func ProgressUpdate(ctx context.Context, progressData data.APIProgressData) (*data.BookUserData, error) {
 	collection := Instance.Db.Collection(CollectionBookUserData)
+
 	userFilter := bson.D{{"user_id", progressData.UserID}}
-	userDataRaw := collection.FindOne(ctx, userFilter)
-	var userData data.UserData
+	bookFilter := bson.D{{"book_id", progressData.BookID}}
 
-	if err := userDataRaw.Decode(&userData); err != nil {
-		if err == mongo.ErrNoDocuments {
-			return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, "Could not find user progress")
-		}
-		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
-	}
+	cursor, err := collection.Aggregate(ctx, mongo.Pipeline{
+		bson.D{{"$match", userFilter}},
+		bson.D{{"$unwind", bson.D{
+			{"path", "$book_user_data"},
+			{"preserveNullAndEmptyArrays", true}},
+		}},
+		bson.D{{"$replaceRoot", bson.D{
+			{"newRoot", "$book_user_data"}},
+		}},
+		bson.D{{"$match", bookFilter}},
+		bson.D{{"$set", bson.D{
+			{"progress", progressData.Progress},
+			{"last_read_date", time.Now()},
+		}},
+		},
+	})
 
-	updated := false
-	var returnValue data.BookUserData
-
-	// TODO: improve this
-	for i, bookData := range userData.BookData {
-		if bookData.BookID == progressData.BookID && bookData.LibraryID == progressData.LibraryID {
-			userData.BookData[i].Progress = progressData.Progress
-			userData.BookData[i].LastReadDate = time.Now()
-
-			returnValue = userData.BookData[i]
-			updated = true
-			break
-		}
-	}
-	if !updated {
-		returnValue = data.BookUserData{
-			BookID:       progressData.BookID,
-			LibraryID:    progressData.LibraryID,
-			Progress:     progressData.Progress,
-			LastReadDate: time.Now(),
-		}
-		userData.BookData = append(userData.BookData, returnValue)
-	}
-
-	_, err := collection.UpdateOne(ctx, userFilter, bson.D{{"$set", userData}})
 	if err != nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
-	return &returnValue, nil
+	if !cursor.Next(ctx) {
+		// TODO: Create data
+		return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, "Not found")
+	}
+
+	result := new(data.BookUserData)
+	if err = cursor.Decode(result); err != nil {
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+
+	filter := bson.D{
+		{"user_id", progressData.UserID},
+		{"book_user_data.book_id", progressData.BookID},
+	}
+	_, err = collection.UpdateOne(ctx, filter, bson.D{
+		{"$set", bson.D{{"book_user_data.$", result}}},
+	})
+	if err != nil {
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return result, nil
 }
