@@ -2,8 +2,6 @@ package database
 
 import (
 	"context"
-	"time"
-
 	"github.com/alexandr-io/backend/library/data"
 
 	"github.com/gofiber/fiber/v2"
@@ -82,7 +80,7 @@ func ProgressUpdate(ctx context.Context, progressData data.APIProgressData) (*da
 		bson.D{{"$match", bookFilter}},
 		bson.D{{"$set", bson.D{
 			{"progress", progressData.Progress},
-			{"last_read_date", time.Now()},
+			{"last_read_date", progressData.LastReadDate},
 		}},
 		},
 	})
@@ -92,8 +90,13 @@ func ProgressUpdate(ctx context.Context, progressData data.APIProgressData) (*da
 	}
 
 	if !cursor.Next(ctx) {
-		// TODO: Create data
-		return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, "Not found")
+		result := progressData.ToBookUserData()
+		_, err = collection.UpdateOne(ctx, userFilter, bson.D{{"$push", bson.D{{"book_user_data", result}}}})
+
+		if err != nil {
+			return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		}
+		return &result, nil
 	}
 
 	result := new(data.BookUserData)

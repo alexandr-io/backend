@@ -39,3 +39,15 @@ type APIProgressRetrieve struct {
 	BookID    string `json:"book_id,omitempty" validate:"required"`
 	LibraryID string `json:"library_id,omitempty" validate:"required"`
 }
+
+/// Functions
+
+// ToBookUserData converts an APIProgressData into a BookUserData
+func (apiProgressData *APIProgressData) ToBookUserData() BookUserData {
+	return BookUserData{
+		BookID:       apiProgressData.BookID,
+		LibraryID:    apiProgressData.LibraryID,
+		Progress:     apiProgressData.Progress,
+		LastReadDate: apiProgressData.LastReadDate,
+	}
+}

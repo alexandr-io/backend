@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"time"
+
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
 	"github.com/alexandr-io/backend/library/internal"
@@ -20,6 +22,7 @@ func DataUpdate(ctx *fiber.Ctx) error {
 	progressData.UserID = string(ctx.Request().Header.Peek("ID"))
 	progressData.BookID = ctx.Params("book_id")
 	progressData.LibraryID = ctx.Params("library_id")
+	progressData.LastReadDate = time.Now()
 
 	if progressData.Progress < 0 || progressData.Progress > 1 {
 		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, "Progress is out of range: must be between 0 and 1")
