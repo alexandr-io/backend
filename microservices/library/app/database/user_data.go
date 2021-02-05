@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+
 	"github.com/alexandr-io/backend/library/data"
 
 	"github.com/gofiber/fiber/v2"
@@ -35,7 +36,6 @@ func userDataCreate(ctx context.Context, userData data.UserData) (data.UserData,
 
 // ProgressRetrieve retrieves the user's progress from the mongo database
 func ProgressRetrieve(ctx context.Context, progressRetrieve data.APIProgressRetrieve) (*data.APIProgressData, error) {
-
 	collection := Instance.Db.Collection(CollectionBookUserData)
 	userFilter := bson.D{{"user_id", progressRetrieve.UserID}}
 	userDataRaw := collection.FindOne(ctx, userFilter)
@@ -64,7 +64,6 @@ func ProgressRetrieve(ctx context.Context, progressRetrieve data.APIProgressRetr
 // ProgressUpdate updates the user's progress in the mongo database
 func ProgressUpdate(ctx context.Context, progressData data.APIProgressData) (*data.BookUserData, error) {
 	collection := Instance.Db.Collection(CollectionBookUserData)
-
 	userFilter := bson.D{{"user_id", progressData.UserID}}
 	bookFilter := bson.D{{"book_id", progressData.BookID}}
 
@@ -86,17 +85,25 @@ func ProgressUpdate(ctx context.Context, progressData data.APIProgressData) (*da
 	})
 
 	if err != nil {
+		userDataRaw := collection.FindOne(ctx, userFilter)
+		var userData data.UserData
+
+		if err := userDataRaw.Decode(&userData); err != nil {
+			if err == mongo.ErrNoDocuments {
+				return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, "Could not find user progress")
+			}
+			return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		}
+
+		if len(userData.BookData) == 0 {
+			return createBookData(ctx, progressData)
+		}
+
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
 	if !cursor.Next(ctx) {
-		result := progressData.ToBookUserData()
-		_, err = collection.UpdateOne(ctx, userFilter, bson.D{{"$push", bson.D{{"book_user_data", result}}}})
-
-		if err != nil {
-			return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
-		}
-		return &result, nil
+		return createBookData(ctx, progressData)
 	}
 
 	result := new(data.BookUserData)
@@ -116,4 +123,16 @@ func ProgressUpdate(ctx context.Context, progressData data.APIProgressData) (*da
 	}
 
 	return result, nil
+}
+
+func createBookData(ctx context.Context, progressData data.APIProgressData) (*data.BookUserData, error) {
+	collection := Instance.Db.Collection(CollectionBookUserData)
+	userFilter := bson.D{{"user_id", progressData.UserID}}
+	result := progressData.ToBookUserData()
+	_, err := collection.UpdateOne(ctx, userFilter, bson.D{{"$push", bson.D{{"book_user_data", result}}}})
+
+	if err != nil {
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+	return &result, nil
 }
