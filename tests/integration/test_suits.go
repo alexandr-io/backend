@@ -74,6 +74,13 @@ var testSuites = []testSuitesStruct{
 					Channel: make(chan bool, 1),
 				},
 			},
+			{
+				Name: "LIBRARY_UNAUTHORISED",
+				FuncChan: funcChannel{
+					Func:    libraryTests.ExecLibraryUnauthorisedTests,
+					Channel: make(chan bool, 1),
+				},
+			},
 		},
 	},
 	{

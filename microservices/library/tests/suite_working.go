@@ -43,7 +43,7 @@ var workingTests = []test{
 	{
 		TestSuite:        workingSuite,
 		HTTPMethod:       http.MethodGet,
-		URL:              func() string { return "/libraries" },
+		URL:              func() string { return "/library/list" },
 		AuthJWT:          &authToken,
 		Body:             nil,
 		ExpectedHTTPCode: http.StatusOK,
@@ -51,13 +51,10 @@ var workingTests = []test{
 		CustomEndFunc:    LibrariesGetEndFunction,
 	},
 	{
-		TestSuite:  workingSuite,
-		HTTPMethod: http.MethodPut,
-		URL:        func() string { return "/library" },
-		AuthJWT:    &authToken,
-		Body: data.LibraryName{
-			Name: libraryName,
-		},
+		TestSuite:        workingSuite,
+		HTTPMethod:       http.MethodGet,
+		URL:              func() string { return "/library/" + libraryID },
+		AuthJWT:          &authToken,
 		ExpectedHTTPCode: http.StatusOK,
 		ExpectedResponse: data.Library{
 			Name:        libraryName,
@@ -68,14 +65,13 @@ var workingTests = []test{
 	{
 		TestSuite:  workingSuite,
 		HTTPMethod: http.MethodPost,
-		URL:        func() string { return "/book" },
+		URL:        func() string { return "/library/" + libraryID + "/book" },
 		AuthJWT:    &authToken,
 		Body: bookCreation{
 			Title:       bookTitle,
 			Author:      bookAuthor,
 			Publisher:   bookPublisher,
 			Description: bookDescription,
-			LibraryID:   &libraryID,
 		},
 		ExpectedHTTPCode: http.StatusCreated,
 		ExpectedResponse: data.Book{
@@ -88,8 +84,28 @@ var workingTests = []test{
 	},
 	{
 		TestSuite:  workingSuite,
-		HTTPMethod: http.MethodPut,
-		URL:        func() string { return "/book" },
+		HTTPMethod: http.MethodPost,
+		URL:        func() string { return "/library/" + libraryID + "/book" },
+		AuthJWT:    &authToken,
+		Body: bookCreation{
+			Title:       bookTitle,
+			Author:      bookAuthor,
+			Publisher:   bookPublisher,
+			Description: bookDescription,
+		},
+		ExpectedHTTPCode: http.StatusCreated,
+		ExpectedResponse: data.Book{
+			Title:       bookTitle,
+			Author:      bookAuthor,
+			Publisher:   bookPublisher,
+			Description: bookDescription,
+		},
+		CustomEndFunc: BookCreateEndFunction,
+	},
+	{
+		TestSuite:  workingSuite,
+		HTTPMethod: http.MethodGet,
+		URL:        func() string { return "/library/" + libraryID + "/book/" + bookID },
 		AuthJWT:    &authToken,
 		Body: bookRetrieve{
 			ID:        &bookID,
@@ -124,7 +140,7 @@ var workingTests = []test{
 	{
 		TestSuite:  workingSuite,
 		HTTPMethod: http.MethodDelete,
-		URL:        func() string { return "/book" },
+		URL:        func() string { return "/library/" + libraryID + "/book/" + bookID },
 		AuthJWT:    &authToken,
 		Body: bookRetrieve{
 			ID:        &bookID,
@@ -135,13 +151,10 @@ var workingTests = []test{
 		CustomEndFunc:    nil,
 	},
 	{
-		TestSuite:  workingSuite,
-		HTTPMethod: http.MethodDelete,
-		URL:        func() string { return "/library" },
-		AuthJWT:    &authToken,
-		Body: data.LibraryName{
-			Name: libraryName,
-		},
+		TestSuite:        workingSuite,
+		HTTPMethod:       http.MethodDelete,
+		URL:              func() string { return "/library/" + libraryID },
+		AuthJWT:          &authToken,
 		ExpectedHTTPCode: http.StatusNoContent,
 		ExpectedResponse: nil,
 		CustomEndFunc:    nil,

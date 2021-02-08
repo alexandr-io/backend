@@ -2,11 +2,13 @@ package tests
 
 import (
 	"encoding/json"
-	"github.com/alexandr-io/backend/library/data"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/alexandr-io/backend/library/data"
 )
 
+// LibrayCreateEndFunction is a function called at the end of a library create test
 func LibrayCreateEndFunction(res *http.Response) error {
 	// Read response Body
 	resBody, err := ioutil.ReadAll(res.Body)

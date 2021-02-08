@@ -14,14 +14,15 @@ func BookCreation(ctx *fiber.Ctx) error {
 
 	userID := string(ctx.Request().Header.Peek("ID"))
 
-	bookData := new(data.BookCreation)
-	if err := ParseBodyJSON(ctx, bookData); err != nil {
+	book := new(data.BookCreation)
+	if err := ParseBodyJSON(ctx, book); err != nil {
 		return err
 	}
+	book.LibraryID = ctx.Params("library_id")
 
-	bookData.UploaderID = userID
+	book.UploaderID = userID
 
-	ok, err := internal.HasUserAccessToLibraryFromID(userID, bookData.LibraryID)
+	ok, err := internal.HasUserAccessToLibraryFromID(userID, book.LibraryID)
 	if err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
@@ -29,12 +30,12 @@ func BookCreation(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "User does not have access to the specified library.")
 	}
 
-	book, err := database.BookCreate(ctx.Context(), *bookData)
+	bookData, err := database.BookCreate(ctx.Context(), *book)
 	if err != nil {
 		return err
 	}
 
-	if err := ctx.Status(fiber.StatusCreated).JSON(book); err != nil {
+	if err := ctx.Status(fiber.StatusCreated).JSON(bookData); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil

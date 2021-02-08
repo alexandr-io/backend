@@ -5,8 +5,6 @@ import (
 	"github.com/alexandr-io/backend/library/database"
 	"github.com/alexandr-io/backend/library/internal"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
-
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -28,17 +26,13 @@ func BookUpdate(ctx *fiber.Ctx) error {
 	} else if !ok {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You do not have access to this library.")
 	}
+	book.ID = bookIDStr
 
-	bookID, err := primitive.ObjectIDFromHex(bookIDStr)
+	bookResult, err := database.BookUpdate(ctx.Context(), libraryID, *book)
 	if err != nil {
-		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
-	}
-	book.ID = bookID
-
-	if err := database.BookUpdate(ctx.Context(), libraryID, *book); err != nil {
 		return err
 	}
-	if err := ctx.Status(fiber.StatusOK).JSON(book); err != nil {
+	if err := ctx.Status(fiber.StatusOK).JSON(bookResult); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil
