@@ -3,9 +3,9 @@ package main
 import (
 	"github.com/alexandr-io/backend/media/handlers"
 	mediaMiddleware "github.com/alexandr-io/backend/media/middleware"
-	"github.com/gofiber/fiber/v2/middleware/cors"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/gofiber/fiber/v2/middleware/recover"
@@ -29,7 +29,7 @@ func createRoute(app *fiber.App) {
 	app.Get("/dashboard", monitor.New())
 
 	app.Post("/book/upload", mediaMiddleware.Protected(), handlers.UploadBook)
-	app.Put("/book/download", mediaMiddleware.Protected(), handlers.DownloadBook)
+	app.Put("/book/:book_id/download", mediaMiddleware.Protected(), handlers.DownloadBook)
 
 	// Ping route used for testing that the service is up and running
 	app.Get("/ping", func(c *fiber.Ctx) error {

@@ -30,6 +30,6 @@ func BookCreateEndFunction(res *http.Response) error {
 	if err := json.Unmarshal(resBody, &bookData); err != nil {
 		return err
 	}
-	bookID = bookData.ID.String()
+	bookID = bookData.ID
 	return nil
 }

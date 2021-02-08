@@ -13,15 +13,11 @@ func LibraryDelete(ctx *fiber.Ctx) error {
 
 	userID := string(ctx.Request().Header.Peek("ID"))
 
-	libraryName := new(data.LibraryName)
-
-	if err := ParseBodyJSON(ctx, libraryName); err != nil {
-		return err
-	}
+	libraryID := ctx.Params("library_id")
 	libraryOwner := data.LibrariesOwner{
 		UserID: userID,
 	}
-	err := database.DeleteLibrary(libraryOwner, *libraryName)
+	err := database.DeleteLibrary(libraryOwner, libraryID)
 	if err != nil {
 		return err
 	}
