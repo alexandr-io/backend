@@ -95,7 +95,13 @@ func BookCreate(ctx context.Context, bookCreation data.BookCreation) (data.Book,
 		return data.Book{}, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, updateResult.Err().Error())
 	}
 
-	_, err = userDataCreate(ctx, data.UserData{UserID: bookCreation.UploaderID})
+	_, err = progressCreate(ctx, data.APIProgressData{
+		UserID:       bookCreation.UploaderID,
+		BookID:       generatedID.Hex(),
+		LibraryID:    bookCreation.LibraryID,
+		Progress:     0,
+		LastReadDate: time.Now(),
+	})
 	if err != nil {
 		return book, data.NewHTTPErrorInfo(fiber.StatusPartialContent, "Failed to create user data")
 	}
@@ -178,6 +184,14 @@ func BookDelete(ctx context.Context, bookRetrieve data.BookRetrieve) error {
 	updateResult := collection.FindOneAndUpdate(ctx, libraryFilter, updateValues)
 	if updateResult.Err() != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, updateResult.Err().Error())
+	}
+
+	if err := progressDelete(ctx, data.APIProgressData{
+		UserID:    bookRetrieve.UploaderID,
+		BookID:    bookRetrieve.ID,
+		LibraryID: bookRetrieve.LibraryID,
+	}); err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusPartialContent, err.Error())
 	}
 
 	return nil
