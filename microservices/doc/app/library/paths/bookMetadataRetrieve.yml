@@ -1,14 +1,22 @@
 ---
 paths:
-  /book:
+  /library/{library_id}/book/{book_id}:
     get:
       description: Retrieve the metadata of a book
       summary: Book Retrieve (metadata)
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/BookMetadataRetrieveRequest"
+      parameters:
+        - in: path
+          name: library_id
+          required: true
+          schema:
+            type: string
+          description: The ID of the library in which the book will be retrieved
+        - in: path
+          name: book_id
+          required: true
+          schema:
+            type: string
+          description: The ID of the book to retrieved
       responses:
         "200":
           $ref: '#/components/schemas/BookMetadataRetrieveResponse'

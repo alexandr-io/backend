@@ -1,9 +1,16 @@
 ---
 paths:
-  /book:
+  /library/{library_id}/book:
     post:
       description: Create the metadata of a book
       summary: Book Create (metadata)
+      parameters:
+        - in: path
+          name: library_id
+          required: true
+          schema:
+            type: string
+          description: The ID of the library in which the book will be uploaded
       requestBody:
         content:
           application/json:

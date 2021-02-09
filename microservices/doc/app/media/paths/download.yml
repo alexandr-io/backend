@@ -1,14 +1,9 @@
 ---
 paths:
-  /book/download:
+  /book/:book_id/download:
     get:
       description: Download a book from the server
       summary: Download a book
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/DownloadRequest"
       responses:
         "200":
           $ref: '#/components/schemas/DownloadResponse'
