@@ -41,11 +41,11 @@ func ProgressRetrieve(ctx context.Context, progressRetrieve data.APIProgressData
 	return &progressData, nil
 }
 
-// ProgressUpdate updates the user's progress in the mongo database
+// ProgressUpdate updates the user's progress in the database
 func ProgressUpdate(ctx context.Context, apiProgressData data.APIProgressData) (*data.BookUserData, error) {
 	collection := Instance.Db.Collection(CollectionBookUserData)
-	bookUserData, err := apiProgressData.ToBookUserData()
 
+	bookUserData, err := apiProgressData.ToBookUserData()
 	if err != nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
@@ -66,8 +66,8 @@ func ProgressUpdate(ctx context.Context, apiProgressData data.APIProgressData) (
 
 func progressCreate(ctx context.Context, progressData data.APIProgressData) (*data.BookUserData, error) {
 	collection := Instance.Db.Collection(CollectionBookUserData)
-	bookUserData, err := progressData.ToBookUserData()
 
+	bookUserData, err := progressData.ToBookUserData()
 	if err != nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
