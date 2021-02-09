@@ -14,13 +14,11 @@ func BookDelete(ctx *fiber.Ctx) error {
 
 	userID := string(ctx.Request().Header.Peek("ID"))
 
-	bookData := new(data.BookRetrieve)
-	if err := ParseBodyJSON(ctx, bookData); err != nil {
-		return err
+	bookData := &data.BookRetrieve{
+		ID:         ctx.Params("book_id"),
+		LibraryID:  ctx.Params("library_id"),
+		UploaderID: userID,
 	}
-
-	bookData.UploaderID = userID
-
 	ok, err := internal.HasUserAccessToLibraryFromID(userID, bookData.LibraryID)
 	if err != nil {
 		return err

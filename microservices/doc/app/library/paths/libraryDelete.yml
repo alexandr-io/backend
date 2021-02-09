@@ -1,13 +1,15 @@
 ---
 paths:
-  /library:
+  /library/{library_id}:
     delete:
       description: Delete a library
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/LibraryDeleteRequest"
+      parameters:
+        - in: path
+          name: library_id
+          required: true
+          schema:
+            type: string
+          description: The ID of the library to delete
       responses:
         "200":
           $ref: '#/components/schemas/LibraryDeleteResponse'
