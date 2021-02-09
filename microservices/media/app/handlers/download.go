@@ -14,9 +14,8 @@ import (
 // DownloadBook download a book from a book ID
 func DownloadBook(ctx *fiber.Ctx) error {
 
-	bookID := ctx.Params("book_id")
 	book := &data.Book{
-		ID: bookID,
+		ID: ctx.Params("book_id"),
 	}
 	if err := ParseBodyJSON(ctx, book); err != nil {
 		return err

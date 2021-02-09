@@ -19,8 +19,6 @@ func LibraryRetrieve(ctx *fiber.Ctx) error {
 	libraryID := ctx.Params("library_id")
 
 	library, err := database.GetLibraryByUserIDAndLibraryID(libraryOwner, libraryID)
-
-	// library, err := database.GetLibraryByUserIDAndName(libraryOwner, *libraryName)
 	if err != nil {
 		return err
 	}

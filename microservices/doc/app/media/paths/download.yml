@@ -1,6 +1,6 @@
 ---
 paths:
-  /book/:book_id/download:
+  /book/{book_id}/download:
     get:
       description: Download a book from the server
       summary: Download a book
