@@ -23,12 +23,7 @@ components:
           description: The tags of the book
           example: ["Fantasy", "Action"]
           type: array
-        library_id:
-          description: The ID of the library to store the book
-          example: My Library
-          type: string
 
       required:
         - title
-        - library_id
       type: object

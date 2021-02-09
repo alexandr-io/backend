@@ -15,13 +15,10 @@ func LibraryRetrieve(ctx *fiber.Ctx) error {
 	libraryOwner := data.LibrariesOwner{
 		UserID: userID,
 	}
-	libraryName := new(data.LibraryName)
 
-	if err := ParseBodyJSON(ctx, libraryName); err != nil {
-		return err
-	}
+	libraryID := ctx.Params("library_id")
 
-	library, err := database.GetLibraryByUserIDAndName(libraryOwner, *libraryName)
+	library, err := database.GetLibraryByUserIDAndLibraryID(libraryOwner, libraryID)
 	if err != nil {
 		return err
 	}

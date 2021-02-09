@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/alexandr-io/backend/library/data"
+
 	bson2 "github.com/globalsign/mgo/bson"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
@@ -28,22 +29,24 @@ func BookRetrieve(c context.Context, bookRetrieve data.BookRetrieve) (data.Book,
 		return data.Book{}, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
+	var book data.Book
+
 	library := &data.Library{}
 	libraryFilter := bson.D{{Key: "_id", Value: id}}
 
 	filterOptions := options.FindOne().SetProjection(bson.D{{"books", true}})
 	filteredByLibraryIDSingleResult := collection.FindOne(ctx, libraryFilter, filterOptions)
 	if err := filteredByLibraryIDSingleResult.Decode(library); err != nil {
-		return data.Book{}, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return book, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
-	for _, book := range library.Books {
-		if book.ID.Hex() == bookRetrieve.ID {
-			return book, nil
+	for _, bookData := range library.Books {
+		if bookData.ID.Hex() == bookRetrieve.ID {
+			return bookData.ToBook(), nil
 		}
 	}
 
-	return data.Book{}, data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "Book matching query does not exist")
+	return book, data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "Book matching query does not exist")
 }
 
 //
@@ -57,7 +60,9 @@ func BookCreate(c context.Context, bookCreation data.BookCreation) (data.Book, e
 
 	collection := Instance.Db.Collection(CollectionLibrary)
 
-	book := data.Book{
+	var book data.Book
+
+	bookData := data.BookData{
 		Title:       bookCreation.Title,
 		Author:      bookCreation.Author,
 		Publisher:   bookCreation.Publisher,
@@ -66,16 +71,17 @@ func BookCreate(c context.Context, bookCreation data.BookCreation) (data.Book, e
 		UploaderID:  bookCreation.UploaderID,
 	}
 
-	generatedID, err := primitive.ObjectIDFromHex(bson2.NewObjectId().Hex())
+	strID := bson2.NewObjectId().Hex()
+	generatedID, err := primitive.ObjectIDFromHex(strID)
 	if err != nil {
 		return book, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
-	book.ID = generatedID
+	bookData.ID = generatedID
 
 	id, err := primitive.ObjectIDFromHex(bookCreation.LibraryID)
 	if err != nil {
-		return data.Book{}, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return book, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	library := &data.Library{}
 	libraryFilter := bson.D{{Key: "_id", Value: id}}
@@ -83,57 +89,52 @@ func BookCreate(c context.Context, bookCreation data.BookCreation) (data.Book, e
 	filterOptions := options.FindOne().SetProjection(bson.D{{"books", true}})
 	filteredByLibraryIDSingleResult := collection.FindOne(ctx, libraryFilter, filterOptions)
 	if err := filteredByLibraryIDSingleResult.Decode(library); err != nil {
-		return data.Book{}, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return book, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
-	library.Books = append(library.Books, book)
+	library.Books = append(library.Books, bookData)
 
 	updateValues := bson.D{{Key: "$set", Value: bson.D{{Key: "books", Value: library.Books}}}}
 	updateResult := collection.FindOneAndUpdate(ctx, libraryFilter, updateValues)
 	if updateResult.Err() != nil {
-		return data.Book{}, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, updateResult.Err().Error())
+		return book, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, updateResult.Err().Error())
 	}
-	return book, nil
+
+	return bookData.ToBook(), nil
 }
 
 // BookUpdate update the metadata of a book
-func BookUpdate(c context.Context, libraryIDStr string, book data.Book) error {
+func BookUpdate(c context.Context, libraryIDStr string, book data.Book) (*data.Book, error) {
 	ctx, cancel := context.WithTimeout(c, 10*time.Second)
 	defer cancel()
 
 	libraryID, err := primitive.ObjectIDFromHex(libraryIDStr)
 	if err != nil {
-		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
-	bookFilter := bson.D{
-		{"_id", libraryID},
-		{"books._id", book.ID},
+
+	bookData, err := book.ToBookData()
+	if err != nil {
+		return nil, err
 	}
 
 	collection := Instance.Db.Collection(CollectionLibrary)
-	_, err = collection.UpdateOne(ctx, bookFilter, bson.D{{"$set", bson.D{{"books.$", book}}}})
+	libraryFilter := bson.D{{"_id", libraryID}}
+	booksFilter := bson.D{{"books._id", bookData.ID}}
+	err = ArraySubDocumentUpdate(ctx, collection, libraryFilter, booksFilter, "books", bookData)
 	if err != nil {
-		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return nil, err
 	}
-	return nil
 
-	/*
-		cursor, err := collection.Aggregate(ctx, mongo.Pipeline{
-			bson.D{{"$match", bookFilter}},
-			bson.D{{"$replaceRoot", bson.D{{"newRoot", bson.D{{"$first", "$books"}}}}}},
-		})
-		if err != nil {
-			return err
-		}
-		var showsLoaded data.Book
+	result, err := BookRetrieve(ctx, data.BookRetrieve{
+		ID:        book.ID,
+		LibraryID: libraryIDStr,
+	})
+	if err != nil {
+		return nil, err
+	}
 
-		if !cursor.Next(ctx) {
-			return data.NewHTTPErrorInfo(fiber.StatusNotFound, "The resource you requested does not exist.")
-		}
-		if err = cursor.Decode(&showsLoaded); err != nil {
-			return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
-		}
-	*/
+	return &result, nil
 }
 
 // BookDelete delete the metadata of a book on the mongo database
@@ -157,15 +158,15 @@ func BookDelete(c context.Context, bookRetrieve data.BookRetrieve) error {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
-	var bookList []data.Book
-	for _, book := range library.Books {
-		if book.ID.Hex() != bookRetrieve.ID {
-			bookList = append(bookList, book)
+	var bookList []data.BookData
+	for _, bookData := range library.Books {
+		if bookData.ID.Hex() != bookRetrieve.ID {
+			bookList = append(bookList, bookData)
 		}
 	}
 
 	if bookList == nil {
-		bookList = []data.Book{}
+		bookList = []data.BookData{}
 	}
 	updateValues := bson.D{{Key: "$set", Value: bson.D{{Key: "books", Value: bookList}}}}
 	updateResult := collection.FindOneAndUpdate(ctx, libraryFilter, updateValues)

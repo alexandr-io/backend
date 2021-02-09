@@ -1,13 +1,15 @@
 ---
 paths:
-  /library:
+  /library/{library_id}:
     get:
       description: Retrieve a library
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/LibraryRetrieveRequest"
+      parameters:
+        - in: path
+          name: library_id
+          required: true
+          schema:
+            type: string
+          description: The ID of the library to retrieve
       responses:
         "200":
           $ref: '#/components/schemas/LibraryRetrieveResponse'

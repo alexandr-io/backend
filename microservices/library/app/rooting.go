@@ -3,9 +3,9 @@ package main
 import (
 	"github.com/alexandr-io/backend/library/handlers"
 	userMiddleware "github.com/alexandr-io/backend/library/middleware"
-	"github.com/gofiber/fiber/v2/middleware/cors"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 )
@@ -25,16 +25,16 @@ func createRoute(app *fiber.App) {
 		},
 	}))
 
+	app.Get("/library/list", userMiddleware.Protected(), handlers.LibrariesRetrieve)
+
 	app.Post("/library", userMiddleware.Protected(), handlers.LibraryCreation)
-	app.Put("/library", userMiddleware.Protected(), handlers.LibraryRetrieve)
-	app.Delete("/library", userMiddleware.Protected(), handlers.LibraryDelete)
+	app.Get("/library/:library_id", userMiddleware.Protected(), handlers.LibraryRetrieve)
+	app.Delete("/library/:library_id", userMiddleware.Protected(), handlers.LibraryDelete)
 
-	app.Get("/libraries", userMiddleware.Protected(), handlers.LibrariesRetrieve)
-
-	app.Put("/book", userMiddleware.Protected(), handlers.BookRetrieve)
-	app.Post("/book", userMiddleware.Protected(), handlers.BookCreation)
-	app.Delete("/book", userMiddleware.Protected(), handlers.BookDelete)
+	app.Post("/library/:library_id/book", userMiddleware.Protected(), handlers.BookCreation)
+	app.Get("/library/:library_id/book/:book_id", userMiddleware.Protected(), handlers.BookRetrieve)
 	app.Post("/library/:library_id/book/:book_id", userMiddleware.Protected(), handlers.BookUpdate)
+	app.Delete("/library/:library_id/book/:book_id", userMiddleware.Protected(), handlers.BookDelete)
 
 	// Ping route used for testing that the service is up and running
 	app.Get("/ping", func(c *fiber.Ctx) error {
