@@ -1,6 +1,6 @@
 ---
 paths:
-  /library/list:
+  /libraries:
     get:
       description: Retrieve a list of the current user's libraries
       summary: Libraries Retrieve
