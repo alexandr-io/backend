@@ -10,8 +10,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// DataUpdate updates the user's progression on a book
-func DataUpdate(ctx *fiber.Ctx) error {
+// ProgressUpdate updates the user's progression on a book
+func ProgressUpdate(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
 	progressData := new(data.APIProgressData)

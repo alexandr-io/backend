@@ -14,16 +14,21 @@ import (
 const CollectionBookUserData = "user_progress"
 
 // ProgressRetrieve retrieves the user's progress from the mongo database
-func ProgressRetrieve(ctx context.Context, progressRetrieve data.APIProgressRetrieve) (*data.BookUserData, error) {
+func ProgressRetrieve(ctx context.Context, progressRetrieve data.APIProgressData) (*data.APIProgressData, error) {
 	collection := Instance.Db.Collection(CollectionBookUserData)
-	filter := bson.D{
-		{"user_id", progressRetrieve.UserID},
-		{"book_id", progressRetrieve.BookID},
-		{"library_id", progressRetrieve.LibraryID},
+	bookUserData, err := progressRetrieve.ToBookUserData()
+
+	if err != nil {
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
+	filter := bson.D{
+		{"user_id", bookUserData.UserID},
+		{"book_id", bookUserData.BookID},
+		{"library_id", bookUserData.LibraryID},
+	}
 	result := new(data.BookUserData)
-	err := collection.FindOne(ctx, filter).Decode(result)
+	err = collection.FindOne(ctx, filter).Decode(result)
 
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
@@ -31,7 +36,9 @@ func ProgressRetrieve(ctx context.Context, progressRetrieve data.APIProgressRetr
 		}
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
-	return result, nil
+
+	progressData := result.ToAPIProgressData()
+	return &progressData, nil
 }
 
 // ProgressUpdate updates the user's progress in the mongo database

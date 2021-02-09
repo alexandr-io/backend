@@ -28,17 +28,10 @@ type APIProgressData struct {
 	LastReadDate time.Time `json:"last_read_date,omitempty"`
 }
 
-// APIProgressRetrieve defines the structure for an API call to retrieve an user's progress on a book
-type APIProgressRetrieve struct {
-	UserID    string `json:"user_id,omitempty"`
-	BookID    string `json:"book_id,omitempty" validate:"required"`
-	LibraryID string `json:"library_id,omitempty" validate:"required"`
-}
-
 /// Functions
 
 // ToBookUserData converts an APIProgressData into a BookUserData
-func (apiProgressData APIProgressData) ToBookUserData() (*BookUserData, error) {
+func (apiProgressData *APIProgressData) ToBookUserData() (*BookUserData, error) {
 	userID, err1 := primitive.ObjectIDFromHex(apiProgressData.UserID)
 	bookID, err2 := primitive.ObjectIDFromHex(apiProgressData.BookID)
 	libraryID, err3 := primitive.ObjectIDFromHex(apiProgressData.LibraryID)
@@ -63,11 +56,11 @@ func (apiProgressData APIProgressData) ToBookUserData() (*BookUserData, error) {
 }
 
 // ToAPIProgressData converts a BookUserData into an APIProgressData
-func (bookUserData BookUserData) ToAPIProgressData() APIProgressData {
+func (bookUserData *BookUserData) ToAPIProgressData() APIProgressData {
 	return APIProgressData{
-		UserID:       bookUserData.UserID.String(),
-		BookID:       bookUserData.BookID.String(),
-		LibraryID:    bookUserData.LibraryID.String(),
+		UserID:       bookUserData.UserID.Hex(),
+		BookID:       bookUserData.BookID.Hex(),
+		LibraryID:    bookUserData.LibraryID.Hex(),
 		Progress:     bookUserData.Progress,
 		LastReadDate: bookUserData.LastReadDate,
 	}

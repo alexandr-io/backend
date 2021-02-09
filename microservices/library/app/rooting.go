@@ -36,8 +36,8 @@ func createRoute(app *fiber.App) {
 	app.Post("/library/:library_id/book/:book_id", userMiddleware.Protected(), handlers.BookUpdate)
 	app.Delete("/library/:library_id/book/:book_id", userMiddleware.Protected(), handlers.BookDelete)
 
-	app.Get("/book/:library_id/:book_id/data", userMiddleware.Protected(), handlers.DataRetrieve)
-	app.Post("/book/:library_id/:book_id/data", userMiddleware.Protected(), handlers.DataUpdate)
+	app.Get("/library/:library_id/book/:book_id/progress", userMiddleware.Protected(), handlers.ProgressRetrieve)
+	app.Post("/library/:library_id/book/:book_id/progress", userMiddleware.Protected(), handlers.ProgressUpdate)
 
 	// Ping route used for testing that the service is up and running
 	app.Get("/ping", func(c *fiber.Ctx) error {

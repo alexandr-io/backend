@@ -24,7 +24,7 @@ import (
 //
 // update: The update to perform, if a field is not referenced, it will not be changed nor delete
 //
-// A data.NewHTTPErrorInfo is return if an error occured
+// A data.NewHTTPErrorInfo is return if an error occurred
 func ArraySubDocumentUpdate(ctx context.Context, collection *mongo.Collection, filterDocument bson.D, filterSubDocument bson.D, subDocumentPath string, update interface{}) error {
 	cursor, err := collection.Aggregate(ctx, mongo.Pipeline{
 		bson.D{{"$match", filterDocument}},
