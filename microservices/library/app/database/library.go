@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/alexandr-io/backend/library/data"
+	"github.com/alexandr-io/backend/library/data/permissions"
 	"github.com/alexandr-io/berrors"
 
 	"github.com/gofiber/fiber/v2"
@@ -100,11 +101,11 @@ func GetLibraryByUserIDAndName(user data.LibrariesOwner, library data.LibraryNam
 	}
 
 	collection = Instance.Db.Collection(CollectionLibrary)
-	for _, libraryID := range libraries.Libraries {
+	for _, libraryData := range libraries.Libraries {
 
 		currentLibrary := &data.Library{}
 
-		id, err := primitive.ObjectIDFromHex(libraryID)
+		id, err := primitive.ObjectIDFromHex(libraryData.ID)
 		if err != nil {
 			return object, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 		}
@@ -164,11 +165,11 @@ func GetLibrariesNamesByUserID(user data.LibrariesOwner) (*data.LibrariesNames, 
 	}
 
 	collection = Instance.Db.Collection(CollectionLibrary)
-	for _, libraryID := range libraries.Libraries {
+	for _, libraryData := range libraries.Libraries {
 
 		library := &data.Library{}
 
-		id, err := primitive.ObjectIDFromHex(libraryID)
+		id, err := primitive.ObjectIDFromHex(libraryData.ID)
 		if err != nil {
 			return librariesNames, err
 		}
@@ -181,13 +182,45 @@ func GetLibrariesNamesByUserID(user data.LibrariesOwner) (*data.LibrariesNames, 
 			return librariesNames, err
 		}
 		librariesNames.Libraries = append(librariesNames.Libraries, data.LibraryName{
-			ID:   libraryID,
+			ID:   libraryData.ID,
 			Name: library.Name,
 		})
 	}
 
 	// Return the library object
 	return librariesNames, nil
+}
+
+// GetLibraryPermission find the user permissions for the given library and put it in the user.Permissions field
+func GetLibraryPermission(user *data.User, library *data.Library) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	collection := Instance.Db.Collection(CollectionLibraries)
+
+	userFilter := bson.D{{"user_id", user.ID}}
+	libraryFilter := bson.D{{"id", library.ID}}
+
+	cursor, err := collection.Aggregate(ctx, mongo.Pipeline{
+		bson.D{{"$match", userFilter}},
+		bson.D{{"$unwind", bson.D{{"path", "$libraries"}}}},
+		bson.D{{"$replaceRoot", bson.D{{"newRoot", "$libraries"}}}},
+		bson.D{{"$match", libraryFilter}},
+	})
+	if err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+
+	if !cursor.Next(ctx) {
+		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "The library does not exist")
+	}
+
+	var libraryData data.LibraryData
+	if err = cursor.Decode(&libraryData); err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+	user.Permissions = libraryData.Permissions
+	return nil
 }
 
 //
@@ -244,7 +277,10 @@ func InsertLibrary(user data.LibrariesOwner, library data.Library) (*data.Librar
 	if !ok {
 		return nil, errors.New("can't cast InsertedID to primitive.ObjectID")
 	}
-	object.Libraries = append(object.Libraries, id.Hex())
+	object.Libraries = append(object.Libraries, data.LibraryData{
+		ID:          id.Hex(),
+		Permissions: []permissions.Permission{permissions.Owner},
+	})
 
 	updateValues := bson.D{{Key: "$set", Value: object}}
 	findAndUpdateOptions := options.FindOneAndUpdate().SetReturnDocument(options.After)
@@ -264,7 +300,7 @@ func DeleteLibrary(user data.LibrariesOwner, libraryID string) error {
 
 	found := false
 	for _, library := range libraries.Libraries {
-		if library == libraryID {
+		if library.ID == libraryID {
 			found = true
 			break
 		}
@@ -290,8 +326,12 @@ func DeleteLibrary(user data.LibrariesOwner, libraryID string) error {
 		return errors.New("library does not exist")
 	}
 
-	for i, libraryElemID := range libraries.Libraries {
-		if libraryElemID == libraryID {
+	libraries, err = GetLibrariesByUsername(user)
+	if err != nil {
+		return err
+	}
+	for i, libraryData := range libraries.Libraries {
+		if libraryData.ID == libraryID {
 			libraries.Libraries = append(libraries.Libraries[:i], libraries.Libraries[i+1:]...)
 			break
 		}

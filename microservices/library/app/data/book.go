@@ -1,6 +1,7 @@
 package data
 
 import (
+	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -40,7 +41,7 @@ func (book *Book) ToBookData() (BookData, error) {
 
 	id, err := primitive.ObjectIDFromHex(book.ID)
 	if err != nil {
-		return BookData{}, err
+		return BookData{}, NewHTTPErrorInfo(fiber.StatusUnauthorized, err.Error())
 	}
 
 	return BookData{

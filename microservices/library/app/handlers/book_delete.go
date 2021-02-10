@@ -3,7 +3,6 @@ package handlers
 import (
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
-	"github.com/alexandr-io/backend/library/internal"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -19,12 +18,18 @@ func BookDelete(ctx *fiber.Ctx) error {
 		LibraryID:  ctx.Params("library_id"),
 		UploaderID: userID,
 	}
-	ok, err := internal.HasUserAccessToLibraryFromID(userID, bookData.LibraryID)
+
+	bookData.UploaderID = userID
+
+	var user = &data.User{ID: userID}
+	var library = &data.Library{ID: bookData.LibraryID}
+	err := database.GetLibraryPermission(user, library)
 	if err != nil {
-		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return err
 	}
-	if !ok {
-		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "User does not have access to the specified library.")
+
+	if !user.CanDeleteBook() {
+		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You are not allowed to delete books on this library")
 	}
 
 	err = database.BookDelete(ctx.Context(), *bookData)
