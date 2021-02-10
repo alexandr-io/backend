@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	mongo2 "github.com/alexandr-io/backend/library/database/mongo"
 
 	"github.com/alexandr-io/backend/library/data"
 
@@ -16,7 +17,7 @@ const CollectionBookProgress = "book_progress"
 
 // ProgressRetrieve retrieves the user's book progress from the mongo database
 func ProgressRetrieve(ctx context.Context, progressRetrieve data.APIProgressData) (*data.APIProgressData, error) {
-	collection := Instance.Db.Collection(CollectionBookProgress)
+	collection := mongo2.Instance.Db.Collection(CollectionBookProgress)
 	bookUserData, err := progressRetrieve.ToBookProgressData()
 
 	if err != nil {
@@ -42,7 +43,7 @@ func ProgressRetrieve(ctx context.Context, progressRetrieve data.APIProgressData
 
 // ProgressUpdateOrInsert updates the user's book progress in the database
 func ProgressUpdateOrInsert(ctx context.Context, bookUserData data.BookProgressData) (*data.BookProgressData, error) {
-	collection := Instance.Db.Collection(CollectionBookProgress)
+	collection := mongo2.Instance.Db.Collection(CollectionBookProgress)
 
 	filter := bson.D{
 		{"user_id", bookUserData.UserID},
@@ -61,7 +62,7 @@ func ProgressUpdateOrInsert(ctx context.Context, bookUserData data.BookProgressD
 
 // progressDelete deletes the user's book progress data entry in the database
 func progressDelete(ctx context.Context, bookUserData data.BookProgressData) error {
-	collection := Instance.Db.Collection(CollectionBookProgress)
+	collection := mongo2.Instance.Db.Collection(CollectionBookProgress)
 
 	filter := bson.D{
 		{"book_id", bookUserData.BookID},

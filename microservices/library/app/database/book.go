@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"github.com/alexandr-io/backend/library/database/mongo"
 	"time"
 
 	"github.com/alexandr-io/backend/library/data"
@@ -22,11 +23,11 @@ func BookRetrieve(ctx context.Context, bookRetrieve data.BookRetrieve) (data.Boo
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	collection := Instance.Db.Collection(CollectionLibrary)
+	collection := mongo.Instance.Db.Collection(CollectionLibrary)
 
 	id, err := primitive.ObjectIDFromHex(bookRetrieve.LibraryID)
 	if err != nil {
-		return data.Book{}, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return data.Book{}, data.NewHTTPErrorInfo(fiber.StatusUnauthorized, err.Error())
 	}
 
 	var book data.Book
@@ -58,7 +59,7 @@ func BookCreate(ctx context.Context, bookCreation data.BookCreation) (data.Book,
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	collection := Instance.Db.Collection(CollectionLibrary)
+	collection := mongo.Instance.Db.Collection(CollectionLibrary)
 
 	var book data.Book
 
@@ -74,14 +75,14 @@ func BookCreate(ctx context.Context, bookCreation data.BookCreation) (data.Book,
 	strID := bson2.NewObjectId().Hex()
 	generatedID, err := primitive.ObjectIDFromHex(strID)
 	if err != nil {
-		return book, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return book, data.NewHTTPErrorInfo(fiber.StatusUnauthorized, err.Error())
 	}
 
 	bookData.ID = generatedID
 
 	id, err := primitive.ObjectIDFromHex(bookCreation.LibraryID)
 	if err != nil {
-		return book, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return book, data.NewHTTPErrorInfo(fiber.StatusUnauthorized, err.Error())
 	}
 	library := &data.Library{}
 	libraryFilter := bson.D{{Key: "_id", Value: id}}
@@ -110,7 +111,7 @@ func BookUpdate(ctx context.Context, libraryIDStr string, book data.Book) (*data
 
 	libraryID, err := primitive.ObjectIDFromHex(libraryIDStr)
 	if err != nil {
-		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return nil, data.NewHTTPErrorInfo(fiber.StatusUnauthorized, err.Error())
 	}
 
 	bookData, err := book.ToBookData()
@@ -118,7 +119,7 @@ func BookUpdate(ctx context.Context, libraryIDStr string, book data.Book) (*data
 		return nil, err
 	}
 
-	collection := Instance.Db.Collection(CollectionLibrary)
+	collection := mongo.Instance.Db.Collection(CollectionLibrary)
 	libraryFilter := bson.D{{"_id", libraryID}}
 	booksFilter := bson.D{{"books._id", bookData.ID}}
 	err = ArraySubDocumentUpdate(ctx, collection, libraryFilter, booksFilter, "books", bookData)
@@ -142,11 +143,11 @@ func BookDelete(ctx context.Context, bookRetrieve data.BookRetrieve) error {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	collection := Instance.Db.Collection(CollectionLibrary)
+	collection := mongo.Instance.Db.Collection(CollectionLibrary)
 
 	id, err := primitive.ObjectIDFromHex(bookRetrieve.LibraryID)
 	if err != nil {
-		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, err.Error())
 	}
 
 	library := &data.Library{}

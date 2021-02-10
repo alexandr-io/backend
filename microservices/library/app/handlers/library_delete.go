@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/alexandr-io/backend/library/data"
-	"github.com/alexandr-io/backend/library/database"
+	"github.com/alexandr-io/backend/library/database/library/setters"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -11,16 +11,10 @@ import (
 func LibraryDelete(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
-	userID := string(ctx.Request().Header.Peek("ID"))
-
-	libraryID := ctx.Params("library_id")
-	libraryOwner := data.LibrariesOwner{
-		UserID: userID,
-	}
-	err := database.DeleteLibrary(libraryOwner, libraryID)
-	if err != nil {
+	if err := setters.DeleteLibrary(string(ctx.Request().Header.Peek("ID")), ctx.Params("library_id")); err != nil {
 		return err
 	}
+
 	if err := ctx.SendStatus(fiber.StatusNoContent); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}

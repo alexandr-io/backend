@@ -3,6 +3,9 @@ package database
 import (
 	"context"
 	"errors"
+	getters2 "github.com/alexandr-io/backend/library/database/libraries/getters"
+	"github.com/alexandr-io/backend/library/database/library/getters"
+	mongo2 "github.com/alexandr-io/backend/library/database/mongo"
 	"log"
 	"time"
 
@@ -32,7 +35,7 @@ func FindOneWithFilter(collectionName string, object interface{}, filters interf
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	collection := Instance.Db.Collection(collectionName)
+	collection := mongo2.Instance.Db.Collection(collectionName)
 	filteredSingleResult := collection.FindOne(ctx, filters)
 	return filteredSingleResult.Decode(object)
 }
@@ -42,13 +45,13 @@ func GetLibraryByID(libraryID string) (*data.Library, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	collection := Instance.Db.Collection(CollectionLibrary)
+	collection := mongo2.Instance.Db.Collection(CollectionLibrary)
 
 	library := &data.Library{}
 
 	id, err := primitive.ObjectIDFromHex(libraryID)
 	if err != nil {
-		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return nil, data.NewHTTPErrorInfo(fiber.StatusUnauthorized, err.Error())
 	}
 	libraryFilter := bson.D{{Key: "_id", Value: id}}
 
@@ -76,7 +79,7 @@ func GetLibraryByUserIDAndLibraryID(user data.LibrariesOwner, libraryID string) 
 		return nil, data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You do not have access to this library")
 	}
 
-	return GetLibraryByID(libraryID)
+	return getters.GetLibraryFromID(libraryID)
 }
 
 // GetLibraryByUserIDAndName retrieve a library from a user and the name of a library.
@@ -84,7 +87,7 @@ func GetLibraryByUserIDAndName(user data.LibrariesOwner, library data.LibraryNam
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	collection := Instance.Db.Collection(CollectionLibraries)
+	collection := mongo2.Instance.Db.Collection(CollectionLibraries)
 
 	object := &data.Library{}
 
@@ -100,14 +103,14 @@ func GetLibraryByUserIDAndName(user data.LibrariesOwner, library data.LibraryNam
 		return object, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
-	collection = Instance.Db.Collection(CollectionLibrary)
+	collection = mongo2.Instance.Db.Collection(CollectionLibrary)
 	for _, libraryData := range libraries.Libraries {
 
 		currentLibrary := &data.Library{}
 
 		id, err := primitive.ObjectIDFromHex(libraryData.ID)
 		if err != nil {
-			return object, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+			return object, data.NewHTTPErrorInfo(fiber.StatusUnauthorized, err.Error())
 		}
 		libraryFilter := bson.D{{Key: "_id", Value: id}}
 
@@ -129,7 +132,7 @@ func GetLibrariesByUsername(user data.LibrariesOwner) (*data.Libraries, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	collection := Instance.Db.Collection(CollectionLibraries)
+	collection := mongo2.Instance.Db.Collection(CollectionLibraries)
 	object := &data.Libraries{}
 
 	usernameFilter := bson.D{{Key: "user_id", Value: user.UserID}}
@@ -148,7 +151,7 @@ func GetLibrariesNamesByUserID(user data.LibrariesOwner) (*data.LibrariesNames, 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	collection := Instance.Db.Collection(CollectionLibraries)
+	collection := mongo2.Instance.Db.Collection(CollectionLibraries)
 
 	// Get library by username
 	usernameFilter := bson.D{{Key: "user_id", Value: user.UserID}}
@@ -164,7 +167,7 @@ func GetLibrariesNamesByUserID(user data.LibrariesOwner) (*data.LibrariesNames, 
 		return librariesNames, err
 	}
 
-	collection = Instance.Db.Collection(CollectionLibrary)
+	collection = mongo2.Instance.Db.Collection(CollectionLibrary)
 	for _, libraryData := range libraries.Libraries {
 
 		library := &data.Library{}
@@ -196,7 +199,7 @@ func GetLibraryPermission(user *data.User, library *data.Library) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	collection := Instance.Db.Collection(CollectionLibraries)
+	collection := mongo2.Instance.Db.Collection(CollectionLibraries)
 
 	userFilter := bson.D{{"user_id", user.ID}}
 	libraryFilter := bson.D{{"id", library.ID}}
@@ -232,7 +235,7 @@ func InsertLibraries(libraries data.Libraries) (*mongo.InsertOneResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	collection := Instance.Db.Collection(CollectionLibraries)
+	collection := mongo2.Instance.Db.Collection(CollectionLibraries)
 
 	insertedResult, err := collection.InsertOne(ctx, libraries)
 	if IsMongoDupKey(err) {
@@ -252,7 +255,7 @@ func InsertLibrary(user data.LibrariesOwner, library data.Library) (*data.Librar
 
 	userFilter := bson.D{{Key: "user_id", Value: user.UserID}}
 
-	collection := Instance.Db.Collection(CollectionLibrary)
+	collection := mongo2.Instance.Db.Collection(CollectionLibrary)
 
 	err := checkLibraryFieldDuplication(user, library)
 	if err != nil {
@@ -264,7 +267,7 @@ func InsertLibrary(user data.LibrariesOwner, library data.Library) (*data.Librar
 		return nil, err
 	}
 
-	collection = Instance.Db.Collection(CollectionLibraries)
+	collection = mongo2.Instance.Db.Collection(CollectionLibraries)
 	object := &data.Libraries{}
 
 	filteredByUsernameSingleResult := collection.FindOne(ctx, userFilter)
@@ -293,7 +296,7 @@ func InsertLibrary(user data.LibrariesOwner, library data.Library) (*data.Librar
 
 // DeleteLibrary delete the library for a user and the name of the library.
 func DeleteLibrary(user data.LibrariesOwner, libraryID string) error {
-	libraries, err := GetLibrariesByUsername(data.LibrariesOwner{UserID: user.UserID})
+	libraries, err := getters2.GetLibrariesFromUserID(user.UserID)
 	if err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
@@ -312,7 +315,7 @@ func DeleteLibrary(user data.LibrariesOwner, libraryID string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	collection := Instance.Db.Collection(CollectionLibrary)
+	collection := mongo2.Instance.Db.Collection(CollectionLibrary)
 
 	id, err := primitive.ObjectIDFromHex(libraryID)
 	if err != nil {
@@ -337,7 +340,7 @@ func DeleteLibrary(user data.LibrariesOwner, libraryID string) error {
 		}
 	}
 
-	collection = Instance.Db.Collection(CollectionLibraries)
+	collection = mongo2.Instance.Db.Collection(CollectionLibraries)
 
 	userFilter := bson.D{{Key: "user_id", Value: user.UserID}}
 

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"errors"
+	"github.com/alexandr-io/backend/library/database/library/setters"
 
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
@@ -26,7 +27,7 @@ func LibraryCreation(ctx *fiber.Ctx) error {
 		UserID: userID,
 	}
 
-	_, err := database.InsertLibrary(libraryOwner, *library)
+	_, err := setters.InsertLibrary(userID, *library)
 	if err != nil {
 		var badInputError *data.BadInputError
 		if errors.As(err, &badInputError) {

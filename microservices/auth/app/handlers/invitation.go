@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/alexandr-io/backend/auth/data"
-	"github.com/alexandr-io/backend/auth/database"
+	invitationSetters "github.com/alexandr-io/backend/auth/database/invitation/setters"
 	authJWT "github.com/alexandr-io/backend/auth/jwt"
 
 	"github.com/gofiber/fiber/v2"
@@ -21,7 +21,7 @@ func NewInvitation(ctx *fiber.Ctx) error {
 		UserID: nil,
 	}
 
-	if _, err := database.InsertInvitation(invitation); err != nil {
+	if _, err := invitationSetters.InsertInvitation(invitation); err != nil {
 		return err
 	}
 
@@ -33,7 +33,7 @@ func NewInvitation(ctx *fiber.Ctx) error {
 
 // DeleteInvitation delete an invitation in DB
 func DeleteInvitation(ctx *fiber.Ctx) error {
-	if err := database.DeleteInvitation(ctx.Params("token")); err != nil {
+	if err := invitationSetters.DeleteInvitation(ctx.Params("token")); err != nil {
 		return err
 	}
 

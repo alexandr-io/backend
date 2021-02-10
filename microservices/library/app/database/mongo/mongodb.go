@@ -1,4 +1,4 @@
-package database
+package mongo
 
 import (
 	"context"
@@ -51,9 +51,4 @@ func ConnectToMongo() {
 		Client: client,
 		Db:     db,
 	}
-}
-
-// InitCollections call the functions that init the collections.
-func InitCollections() {
-	createLibrariesUniqueIndexes()
 }

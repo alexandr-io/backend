@@ -3,8 +3,8 @@ package handlers
 import (
 	"github.com/alexandr-io/backend/auth/data"
 	authJWT "github.com/alexandr-io/backend/auth/jwt"
-
 	"github.com/alexandr-io/backend/auth/redis"
+
 	"github.com/gofiber/fiber/v2"
 )
 

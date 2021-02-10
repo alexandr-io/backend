@@ -4,7 +4,8 @@ import (
 	"time"
 
 	"github.com/alexandr-io/backend/auth/data"
-	"github.com/alexandr-io/backend/auth/database"
+	invitationGetters "github.com/alexandr-io/backend/auth/database/invitation/getters"
+	invitationSetters "github.com/alexandr-io/backend/auth/database/invitation/setters"
 	authJWT "github.com/alexandr-io/backend/auth/jwt"
 	"github.com/alexandr-io/backend/auth/kafka/producers"
 
@@ -25,7 +26,8 @@ func Register(ctx *fiber.Ctx) error {
 	}
 
 	// Check invitation token
-	invite, err := database.GetInvitationByToken(*userRegister.InvitationToken)
+	invite, err := invitationGetters.GetInvitationFromToken(*userRegister.InvitationToken)
+	// invite, err := database.GetInvitationByToken(*userRegister.InvitationToken)
 	if err != nil {
 		return err
 	} else if invite.Used != nil {
@@ -76,7 +78,7 @@ func Register(ctx *fiber.Ctx) error {
 		Used:   &timeNow,
 		UserID: &userID,
 	}
-	if _, err := database.UpdateInvitation(invitation); err != nil {
+	if _, err := invitationSetters.UpdateInvitation(invitation); err != nil {
 		return err
 	}
 
