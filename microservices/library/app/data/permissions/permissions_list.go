@@ -1,5 +1,6 @@
 package permissions
 
+// Permission is the type for the permissions
 type Permission string
 
 const (
@@ -34,6 +35,6 @@ const (
 	// Not applicable to an Admin except if the user is the Owner
 	UserRemove = "user_remove"
 
-	// The UserPermissionManage permission allow a user to manage other users in the library permissions
+	// UserPermissionManage permission allow a user to manage other users in the library permissions
 	UserPermissionManage = "user_permissions_manage"
 )

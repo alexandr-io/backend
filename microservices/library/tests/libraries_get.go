@@ -21,8 +21,10 @@ func LibrariesGetEndFunction(res *http.Response) error {
 	if err := json.Unmarshal(resBody, &librariesData); err != nil {
 		return err
 	}
+
+	// Libraries[0] is the default library, Libraries[1] is the newly created library
 	if librariesData.Libraries[1].Name != libraryName {
-		return fmt.Errorf("expected: %s\t got: %s", libraryName, librariesData.Libraries[0].Name)
+		return fmt.Errorf("expected: %s\t got: %s", libraryName, librariesData.Libraries[1].Name)
 	}
 	libraryID = librariesData.Libraries[1].ID
 	return nil
