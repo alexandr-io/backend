@@ -11,6 +11,7 @@ type Library struct {
 	Books []BookData `json:"books" bson:"books"`
 }
 
+// LibraryData define the data of a library stored in a libraries
 type LibraryData struct {
 	ID          string                   `bson:"id,omitempty"`
 	Permissions []permissions.Permission `bson:"permissions,omitempty"`

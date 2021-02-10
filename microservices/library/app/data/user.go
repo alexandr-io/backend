@@ -2,6 +2,7 @@ package data
 
 import "github.com/alexandr-io/backend/library/data/permissions"
 
+// User is the struct to retrieve the users' permissions
 type User struct {
 	ID          string
 	Permissions []permissions.Permission
