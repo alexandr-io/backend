@@ -38,7 +38,7 @@ func ProgressUpdate(ctx *fiber.Ctx) error {
 
 	bookUserData, err := progressData.ToBookUserData()
 	if err != nil {
-		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, err.Error())
 	}
 
 	userData, err := database.ProgressUpdateOrInsert(ctx.Context(), *bookUserData)
