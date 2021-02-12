@@ -1,8 +1,10 @@
-package database
+package mongo
 
 import (
 	"context"
 	"log"
+
+	"github.com/alexandr-io/backend/media/database"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -11,7 +13,7 @@ import (
 
 // createBookUniqueIndexes init the media collection.
 func createBookUniqueIndexes() {
-	bookCollection := Instance.Db.Collection(CollectionBook)
+	bookCollection := Instance.Db.Collection(database.CollectionBook)
 	_, err := bookCollection.Indexes().CreateOne(
 		context.Background(),
 		mongo.IndexModel{
