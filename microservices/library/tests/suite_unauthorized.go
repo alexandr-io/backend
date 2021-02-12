@@ -10,6 +10,8 @@ const (
 	unauthorisedSuite = "Unauthorised"
 	libraryInvalidID  = "invalid_id"
 	bookInvalidID     = "invalid_id"
+	libraryStrangerID = "000000000000000000000000"
+	bookStrangerID    = "000000000000000000000000"
 )
 
 var unauthorisedTests = []test{
@@ -216,6 +218,18 @@ var unauthorisedTests = []test{
 		TestSuite:  unauthorisedSuite,
 		HTTPMethod: http.MethodPost,
 		URL:        func() string { return "/library/" + libraryID + "/book/" + bookInvalidID + "/progress" },
+		AuthJWT:    &authToken,
+		Body: progressUpdate{
+			Progress: 42.42,
+		},
+		ExpectedHTTPCode: http.StatusUnauthorized,
+		ExpectedResponse: nil,
+		CustomEndFunc:    nil,
+	},
+	{
+		TestSuite:  unauthorisedSuite,
+		HTTPMethod: http.MethodPost,
+		URL:        func() string { return "/library/" + libraryID + "/book/" + bookStrangerID + "/progress" },
 		AuthJWT:    &authToken,
 		Body: progressUpdate{
 			Progress: 42.42,
