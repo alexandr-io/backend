@@ -13,6 +13,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// GetListFromLibraryID get the list of books in the given library
+// TODO: pagination
 func GetListFromLibraryID(libraryID string) (*[]data.Book, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
