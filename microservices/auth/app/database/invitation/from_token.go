@@ -2,10 +2,10 @@ package invitation
 
 import (
 	"context"
-	"github.com/alexandr-io/backend/auth/database"
 	"time"
 
 	"github.com/alexandr-io/backend/auth/data"
+	"github.com/alexandr-io/backend/auth/database"
 	"github.com/alexandr-io/backend/auth/database/mongo"
 
 	"github.com/gofiber/fiber/v2"

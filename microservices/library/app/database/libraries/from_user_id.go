@@ -2,10 +2,10 @@ package libraries
 
 import (
 	"context"
-	"github.com/alexandr-io/backend/library/database"
 	"time"
 
 	"github.com/alexandr-io/backend/library/data"
+	"github.com/alexandr-io/backend/library/database"
 	"github.com/alexandr-io/backend/library/database/mongo"
 
 	"github.com/gofiber/fiber/v2"
