@@ -6,12 +6,11 @@ import (
 
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
-	"github.com/alexandr-io/backend/library/database/mongo"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	mongo2 "go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // GetFromUserID get the user_libraries the current user has access to.
@@ -25,8 +24,8 @@ func GetFromUserID(userID string) (*[]data.Library, error) {
 	if err != nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
-	collection := mongo.Instance.Db.Collection(database.CollectionLibraries)
-	cursor, err := collection.Aggregate(ctx, mongo2.Pipeline{
+	collection := database.Instance.Db.Collection(database.CollectionLibraries)
+	cursor, err := collection.Aggregate(ctx, mongo.Pipeline{
 		bson.D{{"$match", bson.D{{"user_id", id}}}},
 		bson.D{{"$lookup", bson.D{
 			{"from", "library"},

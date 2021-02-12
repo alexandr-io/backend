@@ -1,10 +1,8 @@
-package mongo
+package database
 
 import (
 	"context"
 	"log"
-
-	"github.com/alexandr-io/backend/auth/database"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -12,7 +10,7 @@ import (
 )
 
 func initInvitationCollection() {
-	invitationCollection := Instance.Db.Collection(database.CollectionInvitation)
+	invitationCollection := Instance.Db.Collection(CollectionInvitation)
 	_, err := invitationCollection.Indexes().CreateOne(
 		context.Background(),
 		mongo.IndexModel{

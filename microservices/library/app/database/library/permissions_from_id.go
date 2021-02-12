@@ -6,7 +6,6 @@ import (
 
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
-	mongo2 "github.com/alexandr-io/backend/library/database/mongo"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
@@ -19,7 +18,7 @@ func GetPermissionFromUserAndLibraryID(user *data.User, libraryIDStr string) err
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	collection := mongo2.Instance.Db.Collection(database.CollectionLibraries)
+	collection := database.Instance.Db.Collection(database.CollectionLibraries)
 
 	libraryID, err := primitive.ObjectIDFromHex(libraryIDStr)
 	if err != nil {

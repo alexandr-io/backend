@@ -1,4 +1,4 @@
-package mongo
+package database
 
 import (
 	"context"
@@ -22,13 +22,13 @@ type InstanceData struct {
 var Instance InstanceData
 
 // Database settings
-const dbName = "library"
+const dbName = "media"
 
 // ConnectToMongo is connecting the service to mongodb using mongoURI.
 // After success, instanceMongo is filled with the db client and db handler.
 func ConnectToMongo() {
 	mongoURI := fmt.Sprintf(
-		"mongodb://%s:%s@%s:27017/%s?authSource=admin&readPreference=primary&appname=LibraryService&ssl=false",
+		"mongodb://%s:%s@%s:27017/%s?authSource=admin&readPreference=primary&appname=UserService&ssl=false",
 		os.Getenv("MONGO_INITDB_ROOT_USERNAME"),
 		os.Getenv("MONGO_INITDB_ROOT_PASSWORD"),
 		os.Getenv("MONGO_URL"),
@@ -51,4 +51,9 @@ func ConnectToMongo() {
 		Client: client,
 		Db:     db,
 	}
+}
+
+// InitCollections call the functions that init the collections.
+func InitCollections() {
+	createBookUniqueIndexes()
 }

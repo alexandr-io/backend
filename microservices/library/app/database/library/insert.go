@@ -8,7 +8,6 @@ import (
 	"github.com/alexandr-io/backend/library/data/permissions"
 	"github.com/alexandr-io/backend/library/database"
 	"github.com/alexandr-io/backend/library/database/libraries"
-	"github.com/alexandr-io/backend/library/database/mongo"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -19,7 +18,7 @@ func Insert(userIDStr string, DBLibrary data.Library) (*data.Library, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	collection := mongo.Instance.Db.Collection(database.CollectionLibrary)
+	collection := database.Instance.Db.Collection(database.CollectionLibrary)
 
 	insertedResult, err := collection.InsertOne(ctx, DBLibrary)
 	if err != nil {

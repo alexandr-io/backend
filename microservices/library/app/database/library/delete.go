@@ -7,7 +7,6 @@ import (
 
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
-	"github.com/alexandr-io/backend/library/database/mongo"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
@@ -15,12 +14,13 @@ import (
 )
 
 // Delete delete the library for a user and the name of the library.
+// TODO: Remove unused field
 func Delete(userID string, libraryID string) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	collection := mongo.Instance.Db.Collection(database.CollectionLibrary)
+	collection := database.Instance.Db.Collection(database.CollectionLibrary)
 
 	id, err := primitive.ObjectIDFromHex(libraryID)
 	if err != nil {
@@ -34,7 +34,7 @@ func Delete(userID string, libraryID string) error {
 		return errors.New("library does not exist")
 	}
 
-	collection = mongo.Instance.Db.Collection(database.CollectionLibraries)
+	collection = database.Instance.Db.Collection(database.CollectionLibraries)
 
 	userLibraryFilter := bson.D{{"library_id", id}}
 	_, err = collection.DeleteMany(ctx, userLibraryFilter)

@@ -5,7 +5,6 @@ import (
 
 	"github.com/alexandr-io/backend/auth/data"
 	"github.com/alexandr-io/backend/auth/database"
-	mongo2 "github.com/alexandr-io/backend/auth/database/mongo"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
@@ -13,7 +12,7 @@ import (
 
 // Delete delete an invitation corresponding to the given invitation token
 func Delete(token string) error {
-	invitationCollection := mongo2.Instance.Db.Collection(database.CollectionInvitation)
+	invitationCollection := database.Instance.Db.Collection(database.CollectionInvitation)
 
 	result, err := invitationCollection.DeleteOne(
 		context.Background(),

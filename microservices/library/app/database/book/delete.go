@@ -5,7 +5,6 @@ import (
 
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
-	"github.com/alexandr-io/backend/library/database/mongo"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
@@ -14,7 +13,7 @@ import (
 
 // Delete delete a book corresponding to the given invitation token
 func Delete(bookID string) error {
-	bookCollection := mongo.Instance.Db.Collection(database.CollectionBook)
+	bookCollection := database.Instance.Db.Collection(database.CollectionBook)
 
 	id, err := primitive.ObjectIDFromHex(bookID)
 	if err != nil {

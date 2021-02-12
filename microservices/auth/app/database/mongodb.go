@@ -1,4 +1,4 @@
-package mongo
+package database
 
 import (
 	"context"
@@ -22,7 +22,7 @@ type InstanceData struct {
 var Instance InstanceData
 
 // Database settings
-const dbName = "media"
+const dbName = "auth"
 
 // ConnectToMongo is connecting the service to mongodb using mongoURI.
 // After success, instanceMongo is filled with the db client and db handler.
@@ -51,9 +51,4 @@ func ConnectToMongo() {
 		Client: client,
 		Db:     db,
 	}
-}
-
-// InitCollections call the functions that init the collections.
-func InitCollections() {
-	createBookUniqueIndexes()
 }

@@ -5,7 +5,6 @@ import (
 
 	"github.com/alexandr-io/backend/auth/data"
 	"github.com/alexandr-io/backend/auth/database"
-	"github.com/alexandr-io/backend/auth/database/mongo"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
@@ -14,7 +13,7 @@ import (
 // Update take a data.Invitation to update an invitation in database
 func Update(invitationData data.Invitation) (data.Invitation, error) {
 	// Update data
-	invitationCollection := mongo.Instance.Db.Collection(database.CollectionInvitation)
+	invitationCollection := database.Instance.Db.Collection(database.CollectionInvitation)
 	if _, err := invitationCollection.UpdateOne(
 		context.Background(),
 		bson.D{

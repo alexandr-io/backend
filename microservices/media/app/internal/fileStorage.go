@@ -43,28 +43,28 @@ func UploadFile(ctx context.Context, file []byte, path string) error {
 // DownloadFile download a file from the storage  server
 func DownloadFile(ctx context.Context, path string) (*data.File, error) {
 
-	fileObject := new(data.File)
+	var fileObject data.File
 
 	// Open a connection to the bucket.
 	bucket, err := blob.OpenBucket(ctx, mediaURI+"://"+mediaPath)
 	if err != nil {
-		return fileObject, err
+		return nil, err
 	}
 	defer bucket.Close()
 
 	file, err := bucket.NewReader(ctx, path, nil)
 	if err != nil {
-		return fileObject, err
+		return nil, err
 	}
 	defer file.Close()
 
 	fileObject.Data, err = ioutil.ReadAll(file)
 	if err != nil {
-		return fileObject, err
+		return nil, err
 	}
 	fileObject.ContentType = file.ContentType()
 
-	return fileObject, err
+	return &fileObject, err
 }
 
 // DeleteFile delete a file from the storage server

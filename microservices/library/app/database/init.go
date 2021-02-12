@@ -1,4 +1,4 @@
-package mongo
+package database
 
 // InitCollections call the functions that init the collections.
 func InitCollections() {

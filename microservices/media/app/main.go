@@ -8,10 +8,10 @@ import (
 	"context"
 	"log"
 
+	"github.com/alexandr-io/backend/media/database"
 	consumers "github.com/alexandr-io/backend/media/kafka/comsumers"
 	"github.com/alexandr-io/backend/media/kafka/producers"
 
-	"github.com/alexandr-io/backend/media/database/mongo"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -20,9 +20,9 @@ func main() {
 	log.Println("Media Service started")
 
 	// MongoDB
-	mongo.ConnectToMongo()
-	defer mongo.Instance.Client.Disconnect(context.Background())
-	mongo.InitCollections()
+	database.ConnectToMongo()
+	defer database.Instance.Client.Disconnect(context.Background())
+	database.InitCollections()
 
 	consumers.StartConsumers()
 	for producers.CreateTopics() != nil {

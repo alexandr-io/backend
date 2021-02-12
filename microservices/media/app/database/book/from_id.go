@@ -6,7 +6,6 @@ import (
 
 	"github.com/alexandr-io/backend/media/data"
 	"github.com/alexandr-io/backend/media/database"
-	mongo2 "github.com/alexandr-io/backend/media/database/mongo"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
@@ -20,7 +19,7 @@ func GetFromID(bookID string) (*data.Book, error) {
 
 	var book data.Book
 	filter := bson.D{{Key: "book_id", Value: bookID}}
-	collection := mongo2.Instance.Db.Collection(database.CollectionBook)
+	collection := database.Instance.Db.Collection(database.CollectionBook)
 	result := collection.FindOne(ctx, filter)
 	if result.Err() == mongo.ErrNoDocuments {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, result.Err().Error())
