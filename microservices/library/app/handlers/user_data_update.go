@@ -14,8 +14,8 @@ import (
 func ProgressUpdate(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
-	progressData := new(data.APIProgressData)
-	if err := ParseBodyJSON(ctx, progressData); err != nil {
+	var progressData data.APIProgressData
+	if err := ParseBodyJSON(ctx, &progressData); err != nil {
 		return err
 	}
 
@@ -36,7 +36,12 @@ func ProgressUpdate(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "User does not have access to the specified library.")
 	}
 
-	userData, err := database.ProgressUpdate(ctx.Context(), *progressData)
+	bookUserData, err := progressData.ToBookUserData()
+	if err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+
+	userData, err := database.ProgressUpdateOrInsert(ctx.Context(), *bookUserData)
 	if err != nil {
 		return err
 	}

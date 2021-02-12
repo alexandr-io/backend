@@ -8,6 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // CollectionBookUserData is the name of the user data collection in mongodb
@@ -27,8 +28,8 @@ func ProgressRetrieve(ctx context.Context, progressRetrieve data.APIProgressData
 		{"book_id", bookUserData.BookID},
 		{"library_id", bookUserData.LibraryID},
 	}
-	result := new(data.BookUserData)
-	err = collection.FindOne(ctx, filter).Decode(result)
+	var result data.BookUserData
+	err = collection.FindOne(ctx, filter).Decode(&result)
 
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
@@ -41,14 +42,9 @@ func ProgressRetrieve(ctx context.Context, progressRetrieve data.APIProgressData
 	return &progressData, nil
 }
 
-// ProgressUpdate updates the user's book progress in the database
-func ProgressUpdate(ctx context.Context, apiProgressData data.APIProgressData) (*data.BookUserData, error) {
+// ProgressUpdateOrInsert updates the user's book progress in the database
+func ProgressUpdateOrInsert(ctx context.Context, bookUserData data.BookUserData) (*data.BookUserData, error) {
 	collection := Instance.Db.Collection(CollectionBookUserData)
-
-	bookUserData, err := apiProgressData.ToBookUserData()
-	if err != nil {
-		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
-	}
 
 	filter := bson.D{
 		{"user_id", bookUserData.UserID},
@@ -56,47 +52,25 @@ func ProgressUpdate(ctx context.Context, apiProgressData data.APIProgressData) (
 		{"library_id", bookUserData.LibraryID},
 	}
 
-	_, err = collection.UpdateOne(ctx, filter, bson.D{{"$set", bookUserData}})
-	if err != nil {
+	if err := collection.FindOneAndUpdate(ctx, filter, bson.D{{"$set", bookUserData}},
+		options.FindOneAndUpdate().SetUpsert(true).SetReturnDocument(1),
+	).Decode(&bookUserData); err != nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
-	return bookUserData, nil
-}
-
-// progressCreate creates the user's book progress data entry in the database
-func progressCreate(ctx context.Context, progressData data.APIProgressData) (*data.BookUserData, error) {
-	collection := Instance.Db.Collection(CollectionBookUserData)
-
-	bookUserData, err := progressData.ToBookUserData()
-	if err != nil {
-		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
-	}
-
-	_, err = collection.InsertOne(ctx, bookUserData)
-	if err != nil {
-		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
-	}
-
-	return bookUserData, nil
+	return &bookUserData, nil
 }
 
 // progressDelete deletes the user's book progress data entry in the database
-func progressDelete(ctx context.Context, progressData data.APIProgressData) error {
+func progressDelete(ctx context.Context, bookUserData data.BookUserData) error {
 	collection := Instance.Db.Collection(CollectionBookUserData)
 
-	bookUserData, err := progressData.ToBookUserData()
-	if err != nil {
-		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
-	}
-
 	filter := bson.D{
-		{"user_id", bookUserData.UserID},
 		{"book_id", bookUserData.BookID},
 		{"library_id", bookUserData.LibraryID},
 	}
 
-	_, err = collection.DeleteOne(ctx, filter)
+	_, err := collection.DeleteOne(ctx, filter)
 	if err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
