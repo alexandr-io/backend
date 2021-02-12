@@ -213,6 +213,18 @@ var unauthorisedTests = []test{
 		CustomEndFunc:    nil,
 	},
 	{
+		TestSuite:  unauthorisedSuite,
+		HTTPMethod: http.MethodPost,
+		URL:        func() string { return "/library/" + libraryID + "/book/" + bookInvalidID + "/progress" },
+		AuthJWT:    &authToken,
+		Body: progressUpdate{
+			Progress: 42.42,
+		},
+		ExpectedHTTPCode: http.StatusUnauthorized,
+		ExpectedResponse: nil,
+		CustomEndFunc:    nil,
+	},
+	{
 		TestSuite:        unauthorisedSuite,
 		HTTPMethod:       http.MethodDelete,
 		URL:              func() string { return "/library/" + libraryID },

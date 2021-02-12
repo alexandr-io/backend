@@ -30,6 +30,30 @@ var badRequestTests = []test{
 		ExpectedResponse: nil,
 		CustomEndFunc:    nil,
 	},
+	{
+		TestSuite:  badRequestSuite,
+		HTTPMethod: http.MethodPost,
+		URL:        func() string { return "/library/0/book/0/progress" },
+		AuthJWT:    &authToken,
+		Body: progressUpdate{
+			Progress: -1.25,
+		},
+		ExpectedHTTPCode: http.StatusBadRequest,
+		ExpectedResponse: nil,
+		CustomEndFunc:    nil,
+	},
+	{
+		TestSuite:  badRequestSuite,
+		HTTPMethod: http.MethodPost,
+		URL:        func() string { return "/library/0/book/0/progress" },
+		AuthJWT:    &authToken,
+		Body: progressUpdate{
+			Progress: 101.010,
+		},
+		ExpectedHTTPCode: http.StatusBadRequest,
+		ExpectedResponse: nil,
+		CustomEndFunc:    nil,
+	},
 }
 
 // ExecLibraryBadRequestTests execute bad request library tests.
