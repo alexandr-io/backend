@@ -2,7 +2,6 @@ package tests
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -11,21 +10,22 @@ import (
 
 // LibrariesGetEndFunction is a function called at the end of a library get test
 func LibrariesGetEndFunction(res *http.Response) error {
+	var librariesData []data.Library
 	// Read response Body
 	resBody, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return err
 	}
 	// Parse response Body
-	var librariesData data.LibrariesNames
 	if err := json.Unmarshal(resBody, &librariesData); err != nil {
 		return err
 	}
 
-	// Libraries[0] is the default library, Libraries[1] is the newly created library
-	if librariesData.Libraries[1].Name != libraryName {
-		return fmt.Errorf("expected: %s\t got: %s", libraryName, librariesData.Libraries[1].Name)
+	for _, library := range librariesData {
+		if library.Name == libraryName {
+			libraryID = library.ID
+			break
+		}
 	}
-	libraryID = librariesData.Libraries[1].ID
 	return nil
 }

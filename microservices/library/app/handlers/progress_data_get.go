@@ -3,6 +3,7 @@ package handlers
 import (
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
+	"github.com/alexandr-io/backend/library/database/library"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -25,8 +26,8 @@ func ProgressRetrieve(ctx *fiber.Ctx) error {
 	}
 
 	user := data.User{ID: progressRetrieve.UserID}
-	library := data.Library{ID: progressRetrieve.LibraryID}
-	if err := database.GetLibraryPermission(&user, &library); err != nil {
+
+	if err := library.GetPermissionFromUserAndLibraryID(&user, progressRetrieve.LibraryID); err != nil {
 		return err
 	}
 	if !user.CanReadBooks() {

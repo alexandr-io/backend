@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/alexandr-io/backend/library/data"
-	"github.com/alexandr-io/backend/library/database"
+	"github.com/alexandr-io/backend/library/database/libraries"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -12,17 +12,13 @@ func LibrariesRetrieve(ctx *fiber.Ctx) error {
 
 	userID := string(ctx.Request().Header.Peek("ID"))
 
-	librariesOwner := data.LibrariesOwner{
-		UserID: userID,
-	}
-
-	libraries, err := database.GetLibrariesNamesByUserID(librariesOwner)
+	result, err := libraries.GetFromUserID(userID)
 	if err != nil {
-		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return err
 	}
 
 	// Return the new library to the user
-	if err := ctx.Status(fiber.StatusOK).JSON(libraries); err != nil {
+	if err := ctx.Status(fiber.StatusOK).JSON(result); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil

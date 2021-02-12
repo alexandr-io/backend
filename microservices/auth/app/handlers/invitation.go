@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/alexandr-io/backend/auth/data"
-	invitationSetters "github.com/alexandr-io/backend/auth/database/invitation/setters"
+	"github.com/alexandr-io/backend/auth/database/invitation"
 	authJWT "github.com/alexandr-io/backend/auth/jwt"
 
 	"github.com/gofiber/fiber/v2"
@@ -13,19 +13,19 @@ func NewInvitation(ctx *fiber.Ctx) error {
 	// Set Content-Type: application/json
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
-	// Generate invitation token
+	// Generate invitationDB token
 	invitationToken := authJWT.RandomStringNoSpecialChar(10)
-	invitation := data.Invitation{
+	invitationDB := data.Invitation{
 		Token:  invitationToken,
 		Used:   nil,
 		UserID: nil,
 	}
 
-	if _, err := invitationSetters.InsertInvitation(invitation); err != nil {
+	if _, err := invitation.Insert(invitationDB); err != nil {
 		return err
 	}
 
-	if err := ctx.Status(fiber.StatusOK).JSON(invitation); err != nil {
+	if err := ctx.Status(fiber.StatusOK).JSON(invitationDB); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil
@@ -33,7 +33,7 @@ func NewInvitation(ctx *fiber.Ctx) error {
 
 // DeleteInvitation delete an invitation in DB
 func DeleteInvitation(ctx *fiber.Ctx) error {
-	if err := invitationSetters.DeleteInvitation(ctx.Params("token")); err != nil {
+	if err := invitation.Delete(ctx.Params("token")); err != nil {
 		return err
 	}
 

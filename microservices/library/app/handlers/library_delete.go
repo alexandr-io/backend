@@ -2,8 +2,7 @@ package handlers
 
 import (
 	"github.com/alexandr-io/backend/library/data"
-	"github.com/alexandr-io/backend/library/database/library/setters"
-
+	"github.com/alexandr-io/backend/library/database/library"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -11,7 +10,7 @@ import (
 func LibraryDelete(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
-	if err := setters.DeleteLibrary(string(ctx.Request().Header.Peek("ID")), ctx.Params("library_id")); err != nil {
+	if err := library.Delete(string(ctx.Request().Header.Peek("ID")), ctx.Params("library_id")); err != nil {
 		return err
 	}
 

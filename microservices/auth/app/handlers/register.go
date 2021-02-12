@@ -4,8 +4,7 @@ import (
 	"time"
 
 	"github.com/alexandr-io/backend/auth/data"
-	invitationGetters "github.com/alexandr-io/backend/auth/database/invitation/getters"
-	invitationSetters "github.com/alexandr-io/backend/auth/database/invitation/setters"
+	"github.com/alexandr-io/backend/auth/database/invitation"
 	authJWT "github.com/alexandr-io/backend/auth/jwt"
 	"github.com/alexandr-io/backend/auth/kafka/producers"
 
@@ -25,13 +24,13 @@ func Register(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	// Check invitation token
-	invite, err := invitationGetters.GetInvitationFromToken(*userRegister.InvitationToken)
+	// Check invitationDB token
+	invite, err := invitation.GetFromToken(*userRegister.InvitationToken)
 	// invite, err := database.GetInvitationByToken(*userRegister.InvitationToken)
 	if err != nil {
 		return err
 	} else if invite.Used != nil {
-		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "invitation token invalid")
+		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "invitationDB token invalid")
 	}
 	if userRegister.Password != userRegister.ConfirmPassword {
 		errorData := badInputJSON("confirm_password", "passwords does not match")
@@ -67,18 +66,18 @@ func Register(ctx *fiber.Ctx) error {
 		RefreshToken: refreshToken,
 	}
 
-	// Update the invitation data in db
+	// Update the invitationDB data in db
 	timeNow := time.Now()
 	userID, err := primitive.ObjectIDFromHex(kafkaUser.ID)
 	if err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
-	invitation := data.Invitation{
+	invitationDB := data.Invitation{
 		Token:  *userRegister.InvitationToken,
 		Used:   &timeNow,
 		UserID: &userID,
 	}
-	if _, err := invitationSetters.UpdateInvitation(invitation); err != nil {
+	if _, err := invitation.Update(invitationDB); err != nil {
 		return err
 	}
 

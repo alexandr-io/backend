@@ -1,35 +1,22 @@
 package data
 
-import "github.com/alexandr-io/backend/library/data/permissions"
+import (
+	"github.com/alexandr-io/backend/library/data/permissions"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 // Library defines the structure for an API library
 type Library struct {
 	ID          string `json:"id" bson:"_id,omitempty"`
 	Name        string `json:"name,omitempty" bson:"name,omitempty" validate:"required"`
 	Description string `json:"description" bson:"description"`
-	// The lists containing the information on the books of this library (the list can be empty `[]`)
-	Books []BookData `json:"books" bson:"books"`
 }
 
-// LibraryData define the data of a library stored in a libraries
-type LibraryData struct {
-	ID          string                   `bson:"id,omitempty"`
-	Permissions []permissions.Permission `bson:"permissions,omitempty"`
-}
-
-// Libraries defines the structure for an API libraries
-type Libraries struct {
-	UserID    string        `bson:"user_id,omitempty"`
-	Libraries []LibraryData `bson:"libraries"`
-}
-
-// LibraryName defines the structure for an API library name
-type LibraryName struct {
-	Name string `json:"name" bson:"name" validate:"required"`
-	ID   string `json:"id" bson:"-"`
-}
-
-// LibrariesNames is the format of the data return when fetching libraries names.
-type LibrariesNames struct {
-	Libraries []LibraryName `json:"libraries" bson:"name"`
+// UserLibrary is the structure for a database user_library
+type UserLibrary struct {
+	ID          primitive.ObjectID       `json:"id,omitempty" bson:"_id,omitempty"`
+	UserID      primitive.ObjectID       `json:"user_id,omitempty" bson:"user_id,omitempty"`
+	LibraryID   primitive.ObjectID       `json:"library_id,omitempty" bson:"library_id,omitempty"`
+	Permissions []permissions.Permission `json:"permissions,omitempty" bson:"permissions,omitempty"`
+	Groups      []string                 `json:"groups,omitempty" bson:"groups,omitempty"`
 }

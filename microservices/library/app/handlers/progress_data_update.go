@@ -5,6 +5,7 @@ import (
 
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
+	"github.com/alexandr-io/backend/library/database/library"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -24,8 +25,7 @@ func ProgressUpdate(ctx *fiber.Ctx) error {
 	progressData.LastReadDate = time.Now()
 
 	user := data.User{ID: progressData.UserID}
-	library := data.Library{ID: progressData.LibraryID}
-	if err := database.GetLibraryPermission(&user, &library); err != nil {
+	if err := library.GetPermissionFromUserAndLibraryID(&user, progressData.LibraryID); err != nil {
 		return err
 	}
 	if !user.CanReadBooks() {

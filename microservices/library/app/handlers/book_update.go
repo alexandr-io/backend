@@ -2,7 +2,8 @@ package handlers
 
 import (
 	"github.com/alexandr-io/backend/library/data"
-	"github.com/alexandr-io/backend/library/database"
+	"github.com/alexandr-io/backend/library/database/book"
+	"github.com/alexandr-io/backend/library/database/library"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -14,14 +15,13 @@ func BookUpdate(ctx *fiber.Ctx) error {
 	libraryID := ctx.Params("library_id")
 	bookIDStr := ctx.Params("book_id")
 
-	book := new(data.Book)
-	if err := ParseBodyJSON(ctx, book); err != nil {
+	var bookDB data.Book
+	if err := ParseBodyJSON(ctx, &bookDB); err != nil {
 		return err
 	}
 
 	var user = &data.User{ID: userID}
-	var library = &data.Library{ID: libraryID}
-	err := database.GetLibraryPermission(user, library)
+	err := library.GetPermissionFromUserAndLibraryID(user, libraryID)
 	if err != nil {
 		return err
 	}
@@ -29,13 +29,17 @@ func BookUpdate(ctx *fiber.Ctx) error {
 	if !user.CanUpdateBook() {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You are not allowed to update books in this library")
 	}
-	book.ID = bookIDStr
+	bookDB.ID = bookIDStr
 
-	bookResult, err := database.BookUpdate(ctx.Context(), libraryID, *book)
+	bookData, err := bookDB.ToBookData()
 	if err != nil {
 		return err
 	}
-	if err := ctx.Status(fiber.StatusOK).JSON(bookResult); err != nil {
+	result, err := book.Update(bookData)
+	if err != nil {
+		return err
+	}
+	if err := ctx.Status(fiber.StatusOK).JSON(result); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil

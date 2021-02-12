@@ -1,21 +1,20 @@
-package setters
+package invitation
 
 import (
 	"context"
+	"github.com/alexandr-io/backend/auth/database"
 
 	"github.com/alexandr-io/backend/auth/data"
-	"github.com/alexandr-io/backend/auth/database/invitation"
-	invitationGetters "github.com/alexandr-io/backend/auth/database/invitation/getters"
 	"github.com/alexandr-io/backend/auth/database/mongo"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-// UpdateInvitation take a data.Invitation to update an invitation in database
-func UpdateInvitation(invitationData data.Invitation) (data.Invitation, error) {
+// Update take a data.Invitation to update an invitation in database
+func Update(invitationData data.Invitation) (data.Invitation, error) {
 	// Update data
-	invitationCollection := mongo.Instance.Db.Collection(invitation.Collection)
+	invitationCollection := mongo.Instance.Db.Collection(database.CollectionInvitation)
 	if _, err := invitationCollection.UpdateOne(
 		context.Background(),
 		bson.D{
@@ -29,7 +28,7 @@ func UpdateInvitation(invitationData data.Invitation) (data.Invitation, error) {
 	}
 
 	// Retrieve updated data
-	updatedInvitation, err := invitationGetters.GetInvitationFromToken(invitationData.Token)
+	updatedInvitation, err := GetFromToken(invitationData.Token)
 	if err != nil {
 		return data.Invitation{}, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
