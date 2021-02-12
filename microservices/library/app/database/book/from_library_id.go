@@ -1,0 +1,36 @@
+package book
+
+import (
+	"context"
+	"github.com/alexandr-io/backend/library/data"
+	"github.com/alexandr-io/backend/library/database"
+	"github.com/alexandr-io/backend/library/database/mongo"
+	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"time"
+)
+
+func GetListFromLibraryID(libraryID string) (*[]data.Book, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	collection := mongo.Instance.Db.Collection(database.CollectionBook)
+
+	var DBBook []data.Book
+
+	id, err := primitive.ObjectIDFromHex(libraryID)
+	if err != nil {
+		return nil, data.NewHTTPErrorInfo(fiber.StatusBadRequest, err.Error())
+	}
+
+	bookFilter := bson.D{{Key: "library_id", Value: id}}
+	cursor, err := collection.Find(ctx, bookFilter)
+	if err != nil {
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+	if err := cursor.All(ctx, &DBBook); err != nil {
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+	return &DBBook, nil
+}
