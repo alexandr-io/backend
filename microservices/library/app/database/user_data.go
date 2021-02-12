@@ -13,7 +13,7 @@ import (
 // CollectionBookUserData is the name of the user data collection in mongodb
 const CollectionBookUserData = "user_progress"
 
-// ProgressRetrieve retrieves the user's progress from the mongo database
+// ProgressRetrieve retrieves the user's book progress from the mongo database
 func ProgressRetrieve(ctx context.Context, progressRetrieve data.APIProgressData) (*data.APIProgressData, error) {
 	collection := Instance.Db.Collection(CollectionBookUserData)
 	bookUserData, err := progressRetrieve.ToBookUserData()
@@ -41,7 +41,7 @@ func ProgressRetrieve(ctx context.Context, progressRetrieve data.APIProgressData
 	return &progressData, nil
 }
 
-// ProgressUpdate updates the user's progress in the database
+// ProgressUpdate updates the user's book progress in the database
 func ProgressUpdate(ctx context.Context, apiProgressData data.APIProgressData) (*data.BookUserData, error) {
 	collection := Instance.Db.Collection(CollectionBookUserData)
 
@@ -64,6 +64,7 @@ func ProgressUpdate(ctx context.Context, apiProgressData data.APIProgressData) (
 	return bookUserData, nil
 }
 
+// progressCreate creates the user's book progress data entry in the database
 func progressCreate(ctx context.Context, progressData data.APIProgressData) (*data.BookUserData, error) {
 	collection := Instance.Db.Collection(CollectionBookUserData)
 
@@ -80,6 +81,7 @@ func progressCreate(ctx context.Context, progressData data.APIProgressData) (*da
 	return bookUserData, nil
 }
 
+// progressDelete deletes the user's book progress data entry in the database
 func progressDelete(ctx context.Context, progressData data.APIProgressData) error {
 	collection := Instance.Db.Collection(CollectionBookUserData)
 

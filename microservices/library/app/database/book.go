@@ -100,14 +100,13 @@ func BookCreate(ctx context.Context, bookCreation data.BookCreation) (data.Book,
 		return book, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, updateResult.Err().Error())
 	}
 
-	_, err = progressCreate(ctx, data.APIProgressData{
+	if _, err = progressCreate(ctx, data.APIProgressData{
 		UserID:       bookCreation.UploaderID,
 		BookID:       generatedID.Hex(),
 		LibraryID:    bookCreation.LibraryID,
 		Progress:     0,
 		LastReadDate: time.Now(),
-	})
-	if err != nil {
+	}); err != nil {
 		return book, data.NewHTTPErrorInfo(fiber.StatusPartialContent, "Failed to create user data")
 	}
 

@@ -6,7 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-/// API & Database storage
+/// Database storage
 
 // BookUserData defines the structure for a user's book progress and personal data
 type BookUserData struct {
