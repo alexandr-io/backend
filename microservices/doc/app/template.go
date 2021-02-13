@@ -85,7 +85,7 @@ func fillTemplateSecurity(ctx *fiber.Ctx, folder string) (string, error) {
 		return "", err
 	}
 
-	var filePath = "/tmp/" + folder + "-security.yml"
+	var filePath = "./merged/" + folder + "-security.yml"
 	if err := ioutil.WriteFile(filePath, tpl.Bytes(), 0644); err != nil {
 		log.Println(err)
 		return "", err
