@@ -1,0 +1,13 @@
+---
+components:
+  schemas:
+    ProgressUpdateOrInsertRequest:
+      properties:
+        progress:
+          description: 64-bits floating point number indicating progress in the book, in the range [0;100]
+          example: 42.42
+          type: float
+
+      required:
+        - progress
+      type: object

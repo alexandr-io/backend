@@ -134,8 +134,8 @@ func GetLibrariesByUsername(user data.LibrariesOwner) (*data.Libraries, error) {
 
 	usernameFilter := bson.D{{Key: "user_id", Value: user.UserID}}
 	filteredByUsernameSingleResult := collection.FindOne(ctx, usernameFilter)
-	if err := filteredByUsernameSingleResult.Decode(object); err == nil {
-		return object, err
+	if err := filteredByUsernameSingleResult.Decode(object); err != nil {
+		return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, err.Error())
 	}
 
 	// Return the libraries object

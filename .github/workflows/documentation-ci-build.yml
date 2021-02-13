@@ -1,4 +1,4 @@
-name: doc service build CI
+name: Doc service build CI
 # This workflow is triggered on pushes to the /microservices/doc/app/ directory.
 # The workflow does not trigger on main and pre-prod branch
 on:

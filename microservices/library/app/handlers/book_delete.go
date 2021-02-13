@@ -32,9 +32,8 @@ func BookDelete(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You are not allowed to delete books on this library")
 	}
 
-	err = database.BookDelete(ctx.Context(), *bookData)
-	if err != nil {
-		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	if err := database.BookDelete(ctx.Context(), *bookData); err != nil {
+		return err
 	}
 	if err := ctx.SendStatus(fiber.StatusNoContent); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())

@@ -18,8 +18,8 @@ import (
 //
 
 // BookRetrieve search and return the metadata of a book on the mongo database
-func BookRetrieve(c context.Context, bookRetrieve data.BookRetrieve) (data.Book, error) {
-	ctx, cancel := context.WithTimeout(c, 10*time.Second)
+func BookRetrieve(ctx context.Context, bookRetrieve data.BookRetrieve) (data.Book, error) {
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
 	collection := Instance.Db.Collection(CollectionLibrary)
@@ -54,8 +54,8 @@ func BookRetrieve(c context.Context, bookRetrieve data.BookRetrieve) (data.Book,
 //
 
 // BookCreate create the metadata of a book on the mongo database
-func BookCreate(c context.Context, bookCreation data.BookCreation) (data.Book, error) {
-	ctx, cancel := context.WithTimeout(c, 10*time.Second)
+func BookCreate(ctx context.Context, bookCreation data.BookCreation) (data.Book, error) {
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
 	collection := Instance.Db.Collection(CollectionLibrary)
@@ -104,8 +104,8 @@ func BookCreate(c context.Context, bookCreation data.BookCreation) (data.Book, e
 }
 
 // BookUpdate update the metadata of a book
-func BookUpdate(c context.Context, libraryIDStr string, book data.Book) (*data.Book, error) {
-	ctx, cancel := context.WithTimeout(c, 10*time.Second)
+func BookUpdate(ctx context.Context, libraryIDStr string, book data.Book) (*data.Book, error) {
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
 	libraryID, err := primitive.ObjectIDFromHex(libraryIDStr)
@@ -138,8 +138,8 @@ func BookUpdate(c context.Context, libraryIDStr string, book data.Book) (*data.B
 }
 
 // BookDelete delete the metadata of a book on the mongo database
-func BookDelete(c context.Context, bookRetrieve data.BookRetrieve) error {
-	ctx, cancel := context.WithTimeout(c, 10*time.Second)
+func BookDelete(ctx context.Context, bookRetrieve data.BookRetrieve) error {
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
 	collection := Instance.Db.Collection(CollectionLibrary)
@@ -172,6 +172,20 @@ func BookDelete(c context.Context, bookRetrieve data.BookRetrieve) error {
 	updateResult := collection.FindOneAndUpdate(ctx, libraryFilter, updateValues)
 	if updateResult.Err() != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, updateResult.Err().Error())
+	}
+
+	apiProgressData := data.APIProgressData{
+		UserID:    bookRetrieve.UploaderID,
+		BookID:    bookRetrieve.ID,
+		LibraryID: bookRetrieve.LibraryID,
+	}
+	bookUserData, err := apiProgressData.ToBookProgressData()
+	if err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+
+	if err := progressDelete(ctx, *bookUserData); err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusPartialContent, err.Error())
 	}
 
 	return nil
