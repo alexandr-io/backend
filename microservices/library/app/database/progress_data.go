@@ -29,9 +29,7 @@ func ProgressRetrieve(ctx context.Context, progressRetrieve data.APIProgressData
 		{"library_id", bookUserData.LibraryID},
 	}
 	var result data.BookProgressData
-	err = collection.FindOne(ctx, filter).Decode(&result)
-
-	if err != nil {
+	if err := collection.FindOne(ctx, filter).Decode(&result); err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, "User data not found")
 		}
@@ -70,9 +68,10 @@ func progressDelete(ctx context.Context, bookUserData data.BookProgressData) err
 		{"library_id", bookUserData.LibraryID},
 	}
 
-	_, err := collection.DeleteOne(ctx, filter)
-	if err != nil {
+	if result, err := collection.DeleteOne(ctx, filter); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	} else if result.DeletedCount == 0 {
+		return data.NewHTTPErrorInfo(fiber.StatusNotFound, "Progress not found.")
 	}
 
 	return nil

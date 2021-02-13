@@ -2,7 +2,7 @@
 paths:
   /library/{library_id}/book/{book_id}/progress:
     post:
-      summary: Update book progress
+      summary: Upsert book progress
       description: Update book progress or create it if it doesn't exist
       parameters:
         - in: path

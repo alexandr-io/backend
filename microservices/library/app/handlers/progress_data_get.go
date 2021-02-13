@@ -25,11 +25,9 @@ func ProgressRetrieve(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, "Missing mandatory parameter: library_id")
 	}
 
-	ok, err := internal.HasUserAccessToLibraryFromID(progressRetrieve.UserID, progressRetrieve.LibraryID)
-	if err != nil {
+	if ok, err := internal.HasUserAccessToLibraryFromID(progressRetrieve.UserID, progressRetrieve.LibraryID); err != nil {
 		return err
-	}
-	if !ok {
+	} else if !ok {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "User does not have access to the specified library.")
 	}
 

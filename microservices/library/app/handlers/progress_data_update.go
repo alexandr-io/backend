@@ -28,11 +28,9 @@ func ProgressUpdate(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, "Progress is out of range: must be between 0 and 100")
 	}
 
-	ok, err := internal.HasUserAccessToLibraryFromID(progressData.UserID, progressData.LibraryID)
-	if err != nil {
+	if ok, err := internal.HasUserAccessToLibraryFromID(progressData.UserID, progressData.LibraryID); err != nil {
 		return err
-	}
-	if !ok {
+	} else if !ok {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "User does not have access to the specified library.")
 	}
 
