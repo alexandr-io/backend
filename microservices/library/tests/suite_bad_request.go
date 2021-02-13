@@ -35,7 +35,7 @@ var badRequestTests = []test{
 		HTTPMethod: http.MethodPost,
 		URL:        func() string { return "/library/0/book/0/progress" },
 		AuthJWT:    &authToken,
-		Body: progressUpdate{
+		Body: data.APIProgressData{
 			Progress: -1.25,
 		},
 		ExpectedHTTPCode: http.StatusBadRequest,
@@ -47,7 +47,7 @@ var badRequestTests = []test{
 		HTTPMethod: http.MethodPost,
 		URL:        func() string { return "/library/0/book/0/progress" },
 		AuthJWT:    &authToken,
-		Body: progressUpdate{
+		Body: data.APIProgressData{
 			Progress: 101.010,
 		},
 		ExpectedHTTPCode: http.StatusBadRequest,
