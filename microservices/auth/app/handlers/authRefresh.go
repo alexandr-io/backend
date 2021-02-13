@@ -19,8 +19,8 @@ func RefreshAuthToken(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
 	// Get and validate the body JSON
-	authRefresh := new(authRefresh)
-	if err := ParseBodyJSON(ctx, authRefresh); err != nil {
+	var authRefresh authRefresh
+	if err := ParseBodyJSON(ctx, &authRefresh); err != nil {
 		return err
 	}
 

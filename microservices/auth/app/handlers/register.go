@@ -19,14 +19,13 @@ func Register(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
 	// Get and validate the body JSON
-	userRegister := new(data.UserRegister)
-	if err := ParseBodyJSON(ctx, userRegister); err != nil {
+	var userRegister data.UserRegister
+	if err := ParseBodyJSON(ctx, &userRegister); err != nil {
 		return err
 	}
 
 	// Check invitationDB token
 	invite, err := invitation.GetFromToken(*userRegister.InvitationToken)
-	// invite, err := database.GetInvitationByToken(*userRegister.InvitationToken)
 	if err != nil {
 		return err
 	} else if invite.Used != nil {
@@ -41,7 +40,7 @@ func Register(ctx *fiber.Ctx) error {
 
 	userRegister.Password = hashAndSalt(userRegister.Password)
 
-	kafkaUser, err := producers.RegisterRequestHandler(*userRegister)
+	kafkaUser, err := producers.RegisterRequestHandler(userRegister)
 	if err != nil {
 		return err
 	}

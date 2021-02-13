@@ -14,13 +14,13 @@ func Login(ctx *fiber.Ctx) error {
 	// Set Content-Type: application/json
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
-	userLogin := new(data.UserLogin)
-	if err := ParseBodyJSON(ctx, userLogin); err != nil {
+	var userLogin data.UserLogin
+	if err := ParseBodyJSON(ctx, &userLogin); err != nil {
 		return err
 	}
 
 	// Kafka request to user
-	kafkaUser, err := producers.LoginRequestHandler(*userLogin)
+	kafkaUser, err := producers.LoginRequestHandler(userLogin)
 	if err != nil {
 		return err
 	}
