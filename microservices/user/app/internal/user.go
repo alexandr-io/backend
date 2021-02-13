@@ -3,10 +3,10 @@ package internal
 import (
 	"github.com/alexandr-io/backend/user/data"
 	"github.com/alexandr-io/backend/user/database"
+	"github.com/alexandr-io/backend/user/database/user"
 	"github.com/alexandr-io/backend/user/kafka/producers"
 
 	"github.com/gofiber/fiber/v2"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // User is the internal logic function used to get an user from an ID.
@@ -17,16 +17,11 @@ func User(key string, message string) error {
 		return producers.SendInternalErrorUserMessage(key, err.Error())
 	}
 
-	var user *data.User
+	var userDB *data.User
 
 	if kafkaUser.ID != "" {
-		// Create the bson objectID of the userID
-		userObjectID, err := primitive.ObjectIDFromHex(kafkaUser.ID)
-		if err != nil {
-			return producers.SendInternalErrorUserMessage(key, err.Error())
-		}
-		// Get the user from it's user ID
-		user, err = database.GetUserByID(userObjectID)
+		// Get the userDB from it's userDB ID
+		userDB, err = user.FromID(kafkaUser.ID)
 		if err != nil {
 			if database.IsMongoNoDocument(err) {
 				return producers.SendUnauthorizedUserMessage(key, err.Error())
@@ -34,13 +29,13 @@ func User(key string, message string) error {
 			return producers.SendInternalErrorUserMessage(key, err.Error())
 		}
 	} else if kafkaUser.Email != "" {
-		user, err = database.GetUserByLogin(kafkaUser.Email)
+		userDB, err = user.FromLogin(kafkaUser.Email)
 		if err != nil {
 			return producers.SendUnauthorizedUserMessage(key, err.Error())
 		}
 	} else {
-		return producers.SendInternalErrorUserMessage(key, "No email nor user ID")
+		return producers.SendInternalErrorUserMessage(key, "No email nor userDB ID")
 	}
 
-	return producers.SendSuccessUserMessage(key, fiber.StatusOK, *user)
+	return producers.SendSuccessUserMessage(key, fiber.StatusOK, *userDB)
 }

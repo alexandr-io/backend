@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/alexandr-io/backend/user/data"
-	"github.com/alexandr-io/backend/user/database"
+	"github.com/alexandr-io/backend/user/database/user"
 	"github.com/alexandr-io/backend/user/kafka/producers"
 
 	"github.com/gofiber/fiber/v2"
@@ -13,7 +13,8 @@ import (
 // Register is the internal logic function used to register a user.
 func Register(key string, message data.KafkaUserRegisterRequest) error {
 	// Insert the new data to the collection
-	insertedResult, err := database.InsertUserRegister(data.User{
+
+	createdUser, err := user.Insert(data.User{
 		Username: message.Username,
 		Email:    message.Email,
 		Password: message.Password,
@@ -25,12 +26,5 @@ func Register(key string, message data.KafkaUserRegisterRequest) error {
 		}
 		return producers.SendInternalErrorRegisterMessage(key, err.Error())
 	}
-
-	// Get the newly created user
-	createdUser, err := database.GetUserByID(insertedResult.InsertedID)
-	if err != nil {
-		return producers.SendInternalErrorRegisterMessage(key, err.Error())
-	}
-
 	return producers.SendSuccessRegisterMessage(key, fiber.StatusCreated, *createdUser)
 }

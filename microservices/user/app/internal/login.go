@@ -7,7 +7,7 @@ import (
 	"github.com/alexandr-io/berrors"
 
 	"github.com/alexandr-io/backend/user/data"
-	"github.com/alexandr-io/backend/user/database"
+	"github.com/alexandr-io/backend/user/database/user"
 	"github.com/alexandr-io/backend/user/kafka/producers"
 
 	"github.com/gofiber/fiber/v2"
@@ -16,8 +16,8 @@ import (
 
 // Login is the internal logic function used to login a user.
 func Login(key string, message data.KafkaUserLoginRequest) error {
-	// Get the user from it's login
-	user, err := database.GetUserByLogin(message.Login)
+	// Get the userDB from it's login
+	userDB, err := user.FromLogin(message.Login)
 	if err != nil {
 		var badInput *data.BadInputError
 		if errors.As(err, &badInput) {
@@ -26,12 +26,14 @@ func Login(key string, message data.KafkaUserLoginRequest) error {
 		return producers.SendInternalErrorLoginMessage(key, err.Error())
 	}
 
-	// Check the user's password
-	if !comparePasswords(user.Password, []byte(message.Password)) {
+	log.Printf("%+v\n", userDB)
+
+	// Check the userDB's password
+	if !comparePasswords(userDB.Password, []byte(message.Password)) {
 		return producers.SendBadRequestLoginMessage(key, berrors.BadInputJSONFromType("login", string(berrors.Login)))
 	}
 
-	return producers.SendSuccessLoginMessage(key, fiber.StatusOK, *user)
+	return producers.SendSuccessLoginMessage(key, fiber.StatusOK, *userDB)
 }
 
 // comparePasswords compare a hashed password with a plain string password.
