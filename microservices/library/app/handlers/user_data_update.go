@@ -36,7 +36,7 @@ func ProgressUpdate(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "User does not have access to the specified library.")
 	}
 
-	bookUserData, err := progressData.ToBookUserData()
+	bookUserData, err := progressData.ToBookProgressData()
 	if err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, err.Error())
 	}

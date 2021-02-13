@@ -8,8 +8,8 @@ import (
 
 /// Database storage
 
-// BookUserData defines the structure for a user's book progress and personal data
-type BookUserData struct {
+// BookProgressData defines the structure for a user's book progress and personal data
+type BookProgressData struct {
 	UserID       primitive.ObjectID `json:"user_id,omitempty" bson:"user_id,omitempty"`
 	BookID       primitive.ObjectID `json:"book_id,omitempty" bson:"book_id,omitempty"`
 	LibraryID    primitive.ObjectID `json:"library_id,omitempty" bson:"library_id,omitempty"`
@@ -30,8 +30,8 @@ type APIProgressData struct {
 
 /// Functions
 
-// ToBookUserData converts an APIProgressData into a BookUserData
-func (apiProgressData *APIProgressData) ToBookUserData() (*BookUserData, error) {
+// ToBookProgressData converts an APIProgressData into a BookProgressData
+func (apiProgressData *APIProgressData) ToBookProgressData() (*BookProgressData, error) {
 	userID, err1 := primitive.ObjectIDFromHex(apiProgressData.UserID)
 	bookID, err2 := primitive.ObjectIDFromHex(apiProgressData.BookID)
 	libraryID, err3 := primitive.ObjectIDFromHex(apiProgressData.LibraryID)
@@ -46,7 +46,7 @@ func (apiProgressData *APIProgressData) ToBookUserData() (*BookUserData, error) 
 		return nil, err3
 	}
 
-	return &BookUserData{
+	return &BookProgressData{
 		UserID:       userID,
 		BookID:       bookID,
 		LibraryID:    libraryID,
@@ -55,8 +55,8 @@ func (apiProgressData *APIProgressData) ToBookUserData() (*BookUserData, error) 
 	}, nil
 }
 
-// ToAPIProgressData converts a BookUserData into an APIProgressData
-func (bookUserData *BookUserData) ToAPIProgressData() APIProgressData {
+// ToAPIProgressData converts a BookProgressData into an APIProgressData
+func (bookUserData *BookProgressData) ToAPIProgressData() APIProgressData {
 	return APIProgressData{
 		UserID:       bookUserData.UserID.Hex(),
 		BookID:       bookUserData.BookID.Hex(),

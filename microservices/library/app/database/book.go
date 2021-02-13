@@ -179,7 +179,7 @@ func BookDelete(ctx context.Context, bookRetrieve data.BookRetrieve) error {
 		BookID:    bookRetrieve.ID,
 		LibraryID: bookRetrieve.LibraryID,
 	}
-	bookUserData, err := apiProgressData.ToBookUserData()
+	bookUserData, err := apiProgressData.ToBookProgressData()
 	if err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
