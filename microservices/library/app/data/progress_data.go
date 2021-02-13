@@ -24,7 +24,7 @@ type APIProgressData struct {
 	UserID       string    `json:"user_id,omitempty"`
 	BookID       string    `json:"book_id,omitempty"`
 	LibraryID    string    `json:"library_id,omitempty"`
-	Progress     float64   `json:"progress"`
+	Progress     float64   `json:"progress" validate:"min=0,max=100"`
 	LastReadDate time.Time `json:"last_read_date,omitempty"`
 }
 

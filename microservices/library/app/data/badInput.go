@@ -18,10 +18,14 @@ type ErrorType string
 const (
 	Username ErrorType = "username"
 	Required ErrorType = "required"
+	Min      ErrorType = "min"
+	Max      ErrorType = "max"
 )
 
 // ErrorTypes is a map with an ErrorType as a key and the value that should be used for this error
 var ErrorTypes = map[ErrorType]string{
 	Username: "The username is invalid",
 	Required: "The field is required",
+	Min:      "Out of range key: minimum value subceeded",
+	Max:      "Out of range key: maximum value exceeded",
 }
