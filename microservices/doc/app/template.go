@@ -48,7 +48,7 @@ func fillTemplateInfo(ctx *fiber.Ctx, folder string) (string, error) {
 		return "", err
 	}
 
-	var filePath = "/tmp/" + folder + "-info.yml"
+	var filePath = "./merged/" + folder + "-info.yml"
 	if err := ioutil.WriteFile(filePath, tpl.Bytes(), 0644); err != nil {
 		log.Println(err)
 		return "", err
