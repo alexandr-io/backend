@@ -2,7 +2,6 @@ package library
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/alexandr-io/backend/library/data"
@@ -14,8 +13,7 @@ import (
 )
 
 // Delete delete the library for a user and the name of the library.
-// TODO: Remove unused field
-func Delete(userID string, libraryID string) error {
+func Delete(libraryID string) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -31,15 +29,17 @@ func Delete(userID string, libraryID string) error {
 	if err != nil {
 		return err
 	} else if deleteResult.DeletedCount == 0 {
-		return errors.New("library does not exist")
+		return data.NewHTTPErrorInfo(fiber.StatusNotFound, "Library not found.")
 	}
 
 	collection = database.Instance.Db.Collection(database.CollectionLibraries)
 
 	userLibraryFilter := bson.D{{"library_id", id}}
-	_, err = collection.DeleteMany(ctx, userLibraryFilter)
+	deleteResult, err = collection.DeleteMany(ctx, userLibraryFilter)
 	if err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	} else if deleteResult.DeletedCount == 0 {
+		return data.NewHTTPErrorInfo(fiber.StatusNotFound, "User's library not found.")
 	}
 	return nil
 }
