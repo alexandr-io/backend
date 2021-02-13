@@ -3,7 +3,6 @@ package handlers
 import (
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
-	"github.com/alexandr-io/backend/library/internal"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -25,10 +24,13 @@ func ProgressRetrieve(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, "Missing mandatory parameter: library_id")
 	}
 
-	if ok, err := internal.HasUserAccessToLibraryFromID(progressRetrieve.UserID, progressRetrieve.LibraryID); err != nil {
+	user := data.User{ID: progressRetrieve.UserID}
+	library := data.Library{ID: progressRetrieve.LibraryID}
+	if err := database.GetLibraryPermission(&user, &library); err != nil {
 		return err
-	} else if !ok {
-		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "User does not have access to the specified library.")
+	}
+	if !user.CanReadBooks() {
+		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "User cannot access this book")
 	}
 
 	progress, err := database.ProgressRetrieve(ctx.Context(), progressRetrieve)
