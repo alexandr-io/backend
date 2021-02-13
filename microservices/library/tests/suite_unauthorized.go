@@ -219,7 +219,7 @@ var unauthorisedTests = []test{
 		HTTPMethod: http.MethodPost,
 		URL:        func() string { return "/library/" + libraryID + "/book/" + bookInvalidID + "/progress" },
 		AuthJWT:    &authToken,
-		Body: progressUpdate{
+		Body: data.APIProgressData{
 			Progress: 42.42,
 		},
 		ExpectedHTTPCode: http.StatusBadRequest,
@@ -231,7 +231,7 @@ var unauthorisedTests = []test{
 		HTTPMethod: http.MethodPost,
 		URL:        func() string { return "/library/" + libraryID + "/book/" + bookStrangerID + "/progress" },
 		AuthJWT:    &authToken,
-		Body: progressUpdate{
+		Body: data.APIProgressData{
 			Progress: 42.42,
 		},
 		ExpectedHTTPCode: http.StatusUnauthorized,
