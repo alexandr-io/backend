@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/alexandr-io/backend/library/data"
-	"github.com/alexandr-io/backend/library/database"
+	"github.com/alexandr-io/backend/library/database/bookprogress"
 	"github.com/alexandr-io/backend/library/database/library"
 
 	"github.com/gofiber/fiber/v2"
@@ -34,7 +34,7 @@ func ProgressRetrieve(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "User cannot access this book")
 	}
 
-	progress, err := database.ProgressRetrieve(ctx.Context(), progressRetrieve)
+	progress, err := bookprogress.Retrieve(ctx.Context(), progressRetrieve)
 	if err != nil {
 		return err
 	}

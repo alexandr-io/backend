@@ -6,6 +6,7 @@ import (
 
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
+	"github.com/alexandr-io/backend/library/database/bookprogress"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
@@ -41,5 +42,9 @@ func Delete(libraryID string) error {
 	} else if deleteResult.DeletedCount == 0 {
 		return data.NewHTTPErrorInfo(fiber.StatusNotFound, "User's library not found.")
 	}
+
+	_ = bookprogress.Delete(ctx, data.BookProgressData{
+		LibraryID: id,
+	})
 	return nil
 }

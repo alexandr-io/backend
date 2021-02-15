@@ -5,6 +5,7 @@ import (
 
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
+	"github.com/alexandr-io/backend/library/database/bookprogress"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
@@ -31,5 +32,9 @@ func Delete(bookID string) error {
 	if result.DeletedCount == 0 {
 		return data.NewHTTPErrorInfo(fiber.StatusNotFound, "can't find book to delete")
 	}
+
+	_ = bookprogress.Delete(context.Background(), data.BookProgressData{
+		BookID: id,
+	})
 	return nil
 }

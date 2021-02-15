@@ -4,8 +4,8 @@ import (
 	"time"
 
 	"github.com/alexandr-io/backend/library/data"
-	"github.com/alexandr-io/backend/library/database"
 	"github.com/alexandr-io/backend/library/database/book"
+	"github.com/alexandr-io/backend/library/database/bookprogress"
 	"github.com/alexandr-io/backend/library/database/library"
 
 	"github.com/gofiber/fiber/v2"
@@ -41,7 +41,8 @@ func ProgressUpdate(ctx *fiber.Ctx) error {
 	if _, err = book.GetFromID(progressData.BookID); err != nil {
 		return err
 	}
-	userData, err := database.ProgressUpdateOrInsert(ctx.Context(), *bookUserData)
+
+	userData, err := bookprogress.Upsert(ctx.Context(), *bookUserData)
 	if err != nil {
 		return err
 	}

@@ -13,6 +13,27 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+// GetFromID retrieve a library from its ID
+func GetFromID(libraryID string) (*data.Library, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	collection := database.Instance.Db.Collection(database.CollectionLibrary)
+
+	var DBLibrary data.Library
+
+	id, err := primitive.ObjectIDFromHex(libraryID)
+	if err != nil {
+		return nil, data.NewHTTPErrorInfo(fiber.StatusBadRequest, err.Error())
+	}
+
+	libraryFilter := bson.D{{Key: "_id", Value: id}}
+	if err := collection.FindOne(ctx, libraryFilter).Decode(&DBLibrary); err != nil {
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+	return &DBLibrary, nil
+}
+
 // GetPermissionFromUserAndLibraryID find the user permissions for the given library and put it in the user.Permissions field
 func GetPermissionFromUserAndLibraryID(user *data.User, libraryIDStr string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
