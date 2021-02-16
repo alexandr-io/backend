@@ -24,12 +24,12 @@ func Register(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	// Check invitationDB token
+	// Check invitation token
 	invite, err := invitation.GetFromToken(*userRegister.InvitationToken)
 	if err != nil {
 		return err
 	} else if invite.Used != nil {
-		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "invitationDB token invalid")
+		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "invitation token invalid")
 	}
 	if userRegister.Password != userRegister.ConfirmPassword {
 		errorData := badInputJSON("confirm_password", "passwords does not match")
@@ -65,7 +65,7 @@ func Register(ctx *fiber.Ctx) error {
 		RefreshToken: refreshToken,
 	}
 
-	// Update the invitationDB data in db
+	// Update the invitation data in db
 	timeNow := time.Now()
 	userID, err := primitive.ObjectIDFromHex(kafkaUser.ID)
 	if err != nil {

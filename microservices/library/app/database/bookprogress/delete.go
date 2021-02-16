@@ -5,6 +5,7 @@ import (
 
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
+
 	"github.com/gofiber/fiber/v2"
 )
 

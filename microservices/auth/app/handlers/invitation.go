@@ -13,19 +13,19 @@ func NewInvitation(ctx *fiber.Ctx) error {
 	// Set Content-Type: application/json
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
-	// Generate invitationDB token
+	// Generate invitation token
 	invitationToken := authJWT.RandomStringNoSpecialChar(10)
 	invitationDB := data.Invitation{
 		Token:  invitationToken,
 		Used:   nil,
 		UserID: nil,
 	}
-
-	if _, err := invitation.Insert(invitationDB); err != nil {
+	result, err := invitation.Insert(invitationDB)
+	if err != nil {
 		return err
 	}
 
-	if err := ctx.Status(fiber.StatusOK).JSON(invitationDB); err != nil {
+	if err := ctx.Status(fiber.StatusOK).JSON(result); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil

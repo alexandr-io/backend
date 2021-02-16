@@ -28,8 +28,7 @@ func FromID(userID string) (*data.User, error) {
 	filter := bson.D{{Key: "_id", Value: id}}
 	var result data.User
 
-	err = collection.FindOne(ctx, filter).Decode(&result)
-	if err != nil {
+	if err = collection.FindOne(ctx, filter).Decode(&result); err != nil {
 		return nil, err
 	}
 	return &result, nil

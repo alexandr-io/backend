@@ -16,7 +16,7 @@ import (
 
 // Login is the internal logic function used to login a user.
 func Login(key string, message data.KafkaUserLoginRequest) error {
-	// Get the userDB from it's login
+	// Get the user from it's login
 	userDB, err := user.FromLogin(message.Login)
 	if err != nil {
 		var badInput *data.BadInputError
@@ -26,9 +26,7 @@ func Login(key string, message data.KafkaUserLoginRequest) error {
 		return producers.SendInternalErrorLoginMessage(key, err.Error())
 	}
 
-	log.Printf("%+v\n", userDB)
-
-	// Check the userDB's password
+	// Check the user's password
 	if !comparePasswords(userDB.Password, []byte(message.Password)) {
 		return producers.SendBadRequestLoginMessage(key, berrors.BadInputJSONFromType("login", string(berrors.Login)))
 	}

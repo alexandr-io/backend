@@ -9,6 +9,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // GetFromToken get an invitation by it's given token.
@@ -21,6 +22,9 @@ func GetFromToken(token string) (*data.Invitation, error) {
 	object := &data.Invitation{}
 
 	if err := collection.FindOne(ctx, filter).Decode(object); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, "Invitation not found")
+		}
 		return nil, data.NewHTTPErrorInfo(fiber.StatusUnauthorized, err.Error())
 	}
 	return object, nil

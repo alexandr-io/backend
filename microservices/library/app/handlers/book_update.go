@@ -4,6 +4,7 @@ import (
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database/book"
 	"github.com/alexandr-io/backend/library/database/library"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -21,8 +22,7 @@ func BookUpdate(ctx *fiber.Ctx) error {
 	}
 
 	var user = &data.User{ID: userID}
-	err := library.GetPermissionFromUserAndLibraryID(user, libraryID)
-	if err != nil {
+	if err := library.GetPermissionFromUserAndLibraryID(user, libraryID); err != nil {
 		return err
 	}
 

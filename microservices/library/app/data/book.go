@@ -11,15 +11,15 @@ import (
 
 // Book defines the structure for an API book
 type Book struct {
-	ID          string   `json:"id,omitempty" bson:"_id,omitempty"`
-	Title       string   `json:"title,omitempty" bson:"title,omitempty"`
-	Author      string   `json:"author,omitempty" bson:"author,omitempty"`
-	Publisher   string   `json:"publisher,omitempty" bson:"publisher,omitempty"`
-	Description string   `json:"description,omitempty" bson:"description,omitempty"`
-	CoverID     string   `json:"cover_id,omitempty" bson:"cover_id,omitempty"`
-	Tags        []string `json:"tags,omitempty" bson:"tags,omitempty"`
-	LibraryID   string   `json:"library_id,omitempty" bson:"library_id,omitempty"`
-	UploaderID  string   `json:"-" bson:"uploader_id,omitempty"`
+	ID          string   `json:"id,omitempty"`
+	Title       string   `json:"title,omitempty"`
+	Author      string   `json:"author,omitempty"`
+	Publisher   string   `json:"publisher,omitempty"`
+	Description string   `json:"description,omitempty"`
+	CoverID     string   `json:"cover_id,omitempty"`
+	Tags        []string `json:"tags,omitempty"`
+	LibraryID   string   `json:"library_id,omitempty"`
+	UploaderID  string   `json:"-"`
 }
 
 // BookData is the structure of a book in the database

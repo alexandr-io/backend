@@ -17,7 +17,7 @@ func DeleteUser(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	// Return the userDB data to the userDB
+	// Return the user data to the user
 	if err := ctx.SendStatus(fiber.StatusNoContent); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}

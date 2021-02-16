@@ -234,7 +234,7 @@ var unauthorisedTests = []test{
 		Body: data.APIProgressData{
 			Progress: 42.42,
 		},
-		ExpectedHTTPCode: http.StatusUnauthorized,
+		ExpectedHTTPCode: http.StatusNotFound,
 		ExpectedResponse: nil,
 		CustomEndFunc:    nil,
 	},

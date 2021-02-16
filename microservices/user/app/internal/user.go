@@ -20,7 +20,7 @@ func User(key string, message string) error {
 	var userDB *data.User
 
 	if kafkaUser.ID != "" {
-		// Get the userDB from it's userDB ID
+		// Get the user from it's user ID
 		userDB, err = user.FromID(kafkaUser.ID)
 		if err != nil {
 			if database.IsMongoNoDocument(err) {
@@ -34,7 +34,7 @@ func User(key string, message string) error {
 			return producers.SendUnauthorizedUserMessage(key, err.Error())
 		}
 	} else {
-		return producers.SendInternalErrorUserMessage(key, "No email nor userDB ID")
+		return producers.SendInternalErrorUserMessage(key, "No email nor user ID")
 	}
 
 	return producers.SendSuccessUserMessage(key, fiber.StatusOK, *userDB)

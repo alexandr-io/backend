@@ -4,6 +4,7 @@ import (
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database/book"
 	"github.com/alexandr-io/backend/library/database/library"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -22,8 +23,8 @@ func BookRetrieve(ctx *fiber.Ctx) error {
 	bookData.UploaderID = userID
 
 	var user = &data.User{ID: userID}
-	err := library.GetPermissionFromUserAndLibraryID(user, bookData.LibraryID)
-	if err != nil {
+
+	if err := library.GetPermissionFromUserAndLibraryID(user, bookData.LibraryID); err != nil {
 		return err
 	}
 

@@ -28,11 +28,10 @@ func GetFromID(bookID string) (*data.Book, error) {
 	}
 
 	libraryFilter := bson.D{{Key: "_id", Value: id}}
-	result := collection.FindOne(ctx, libraryFilter)
-	if result.Err() == mongo.ErrNoDocuments {
-		return nil, data.NewHTTPErrorInfo(fiber.StatusUnauthorized, result.Err().Error())
-	}
-	if err := result.Decode(&DBBook); err != nil {
+	if err := collection.FindOne(ctx, libraryFilter).Decode(&DBBook); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, "Book not found.")
+		}
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return &DBBook, nil

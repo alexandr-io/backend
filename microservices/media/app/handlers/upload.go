@@ -28,8 +28,7 @@ func UploadBook(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "Not authorized")
 	}
 
-	err := checkBookUploadBadInputs(bookDB)
-	if err != nil {
+	if err := checkBookUploadBadInputs(bookDB); err != nil {
 		return err
 	}
 
@@ -52,20 +51,20 @@ func UploadBook(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
-	err = internal.UploadFile(ctx.Context(), fileContent, bookDB.Path)
-	if err != nil {
+	if err = internal.UploadFile(ctx.Context(), fileContent, bookDB.Path); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
-	_, err = book.Insert(bookDB)
-	if err != nil {
-		err2 := internal.DeleteFile(ctx.Context(), bookDB.Path)
-		if err2 != nil {
-			return err2
+	if _, err = book.Insert(bookDB); err != nil {
+		if err = internal.DeleteFile(ctx.Context(), bookDB.Path); err != nil {
+			return err
 		}
 		return err
 	}
 
+	if err := ctx.SendStatus(fiber.StatusNoContent); err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
 	return nil
 }
 

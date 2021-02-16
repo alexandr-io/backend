@@ -40,10 +40,10 @@ func GetFromUserID(userID string) (*[]data.Library, error) {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
-	err = cursor.All(ctx, &object)
-	if err != nil {
+	if err = cursor.All(ctx, &object); err != nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
+
 	// Return the libraries object
 	return &object, nil
 }

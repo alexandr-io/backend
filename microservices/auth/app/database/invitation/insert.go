@@ -18,11 +18,7 @@ func Insert(invitationData data.Invitation) (*data.Invitation, error) {
 
 	invitationCollection := database.Instance.Db.Collection(database.CollectionInvitation)
 
-	insertedResult, err := invitationCollection.InsertOne(ctx, data.Invitation{
-		Token:  invitationData.Token,
-		Used:   nil,
-		UserID: nil,
-	})
+	insertedResult, err := invitationCollection.InsertOne(ctx, invitationData)
 	if err != nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}

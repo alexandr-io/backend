@@ -8,13 +8,14 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // Update take a data.Invitation to update an invitation in database
-func Update(invitationData data.Invitation) (data.Invitation, error) {
-	// Update data
+func Update(invitationData data.Invitation) (*data.Invitation, error) {
 	invitationCollection := database.Instance.Db.Collection(database.CollectionInvitation)
-	if _, err := invitationCollection.UpdateOne(
+	if err := invitationCollection.FindOneAndUpdate(
 		context.Background(),
 		bson.D{
 			{"token", invitationData.Token},
@@ -22,14 +23,12 @@ func Update(invitationData data.Invitation) (data.Invitation, error) {
 		bson.D{
 			{"$set", invitationData},
 		},
-	); err != nil {
-		return data.Invitation{}, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		options.FindOneAndUpdate().SetReturnDocument(1),
+	).Decode(&invitationData); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, "Invitation not found.")
+		}
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
-
-	// Retrieve updated data
-	updatedInvitation, err := GetFromToken(invitationData.Token)
-	if err != nil {
-		return data.Invitation{}, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
-	}
-	return *updatedInvitation, nil
+	return &invitationData, nil
 }

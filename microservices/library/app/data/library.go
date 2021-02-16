@@ -2,6 +2,7 @@ package data
 
 import (
 	"github.com/alexandr-io/backend/library/data/permissions"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
