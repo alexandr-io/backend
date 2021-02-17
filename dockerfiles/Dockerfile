@@ -16,7 +16,7 @@ ENV GO111MODULE=on \
 
 WORKDIR /${path}
 
-COPY ./${path}/go.mod ./${path}/go.sum ./${path}/data/go.mod* ./${path}/data/go.sum* ./
+COPY ./${path}/go.mod ./${path}/go.sum ./${path}/data*/go.mod* ./${path}/data*/go.sum* ./
 COPY grpc/go.mod /grpc/
 #COPY go.mod go.sum data/go.mod* data/go.sum* ./
 RUN go mod download
