@@ -1,5 +1,4 @@
-
-name: Library service build CI
+name: Library CI
 # This workflow is triggered on pushes to the /microservices/library/app/ directory.
 # The workflow does not trigger on main and pre-prod branch
 on:
@@ -11,7 +10,7 @@ on:
 
 jobs:
   build-library:
-    name: Docker Build Library
+    name: Build image
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout code

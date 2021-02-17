@@ -1,4 +1,4 @@
-name: Build and push prod library's images CI
+name: Library CD prod
 # This workflow is triggered on tags e.g.: v.1.4.0
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-library-push-prod:
-    name: Docker Build Library and push image
+    name: Build push image
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout code

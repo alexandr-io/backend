@@ -1,4 +1,4 @@
-name: User service build CI
+name: User CI
 # This workflow is triggered on pushes to the /microservices/user/app/ directory.
 # The workflow does not trigger on main and pre-prod branch
 on:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-user:
-    name: Docker Build User
+    name: Build image
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout code

@@ -1,4 +1,4 @@
-name: Build and push preprod auth's images CI
+name: Auth CD preprod
 # This workflow is triggered on tag push finishing with '-preprod'
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-auth-push-preprod:
-    name: Docker Build Auth and push image
+    name: Build push image
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout code

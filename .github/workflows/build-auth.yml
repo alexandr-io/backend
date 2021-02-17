@@ -1,4 +1,4 @@
-name: Auth service build CI
+name: Auth CI
 # This workflow is triggered on pushes to the /microservices/auth/app/ directory.
 # The workflow does not trigger on main and pre-prod branch
 on:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-auth:
-    name: Docker Build Auth
+    name: Build image
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout code

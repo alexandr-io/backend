@@ -1,4 +1,4 @@
-name: Build and push prod doc's images CI
+name: Doc CD prod
 # This workflow is triggered on tag push finishing with '-preprod'
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-doc-push-prod:
-    name: Docker Build doc and push image
+    name: Build push image
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout code

@@ -1,4 +1,4 @@
-name: Media service build CI
+name: Media CI
 # This workflow is triggered on pushes to the /microservices/media/app/ directory.
 # The workflow does not trigger on main and pre-prod branch
 on:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-media:
-    name: Docker Build Media
+    name: Build image
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout code

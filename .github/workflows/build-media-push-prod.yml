@@ -1,4 +1,4 @@
-name: Build and push prod media's images CI
+name: Media CD prod
 # This workflow is triggered on tag push finishing with '-preprod'
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-media-push-prod:
-    name: Docker Build Media and push image
+    name: Build push image
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout code
