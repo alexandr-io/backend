@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/alexandr-io/backend/auth/data"
-	"github.com/alexandr-io/backend/auth/database"
+	"github.com/alexandr-io/backend/auth/database/invitation"
 	authJWT "github.com/alexandr-io/backend/auth/jwt"
 	"github.com/alexandr-io/backend/auth/kafka/producers"
 
@@ -19,13 +19,13 @@ func Register(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
 	// Get and validate the body JSON
-	userRegister := new(data.UserRegister)
-	if err := ParseBodyJSON(ctx, userRegister); err != nil {
+	var userRegister data.UserRegister
+	if err := ParseBodyJSON(ctx, &userRegister); err != nil {
 		return err
 	}
 
 	// Check invitation token
-	invite, err := database.GetInvitationByToken(*userRegister.InvitationToken)
+	invite, err := invitation.GetFromToken(*userRegister.InvitationToken)
 	if err != nil {
 		return err
 	} else if invite.Used != nil {
@@ -40,7 +40,7 @@ func Register(ctx *fiber.Ctx) error {
 
 	userRegister.Password = hashAndSalt(userRegister.Password)
 
-	kafkaUser, err := producers.RegisterRequestHandler(*userRegister)
+	kafkaUser, err := producers.RegisterRequestHandler(userRegister)
 	if err != nil {
 		return err
 	}
@@ -71,12 +71,12 @@ func Register(ctx *fiber.Ctx) error {
 	if err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
-	invitation := data.Invitation{
+	invitationDB := data.Invitation{
 		Token:  *userRegister.InvitationToken,
 		Used:   &timeNow,
 		UserID: &userID,
 	}
-	if _, err := database.UpdateInvitation(invitation); err != nil {
+	if _, err := invitation.Update(invitationDB); err != nil {
 		return err
 	}
 

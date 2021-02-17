@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/alexandr-io/backend/library/data"
-	"github.com/alexandr-io/backend/library/database"
+	"github.com/alexandr-io/backend/library/database/library"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -15,18 +15,12 @@ func LibraryCreation(ctx *fiber.Ctx) error {
 
 	userID := string(ctx.Request().Header.Peek("ID"))
 
-	library := new(data.Library)
-
-	if err := ParseBodyJSON(ctx, library); err != nil {
+	var libraryDB data.Library
+	if err := ParseBodyJSON(ctx, &libraryDB); err != nil {
 		return err
 	}
-	library.Books = []data.BookData{}
 
-	libraryOwner := data.LibrariesOwner{
-		UserID: userID,
-	}
-
-	_, err := database.InsertLibrary(libraryOwner, *library)
+	response, err := library.Insert(userID, libraryDB)
 	if err != nil {
 		var badInputError *data.BadInputError
 		if errors.As(err, &badInputError) {
@@ -36,16 +30,7 @@ func LibraryCreation(ctx *fiber.Ctx) error {
 		}
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
-
-	libraryName := &data.LibraryName{
-		Name: library.Name,
-	}
-	library, err = database.GetLibraryByUserIDAndName(libraryOwner, *libraryName)
-	if err != nil {
-		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
-	}
-
-	if err := ctx.Status(fiber.StatusCreated).JSON(library); err != nil {
+	if err := ctx.Status(fiber.StatusCreated).JSON(response); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil

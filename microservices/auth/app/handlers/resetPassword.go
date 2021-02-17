@@ -14,8 +14,8 @@ func SendResetPasswordEmail(ctx *fiber.Ctx) error {
 	// Set Content-Type: application/json
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
-	userEmail := new(data.UserSendResetPasswordEmail)
-	if err := ParseBodyJSON(ctx, userEmail); err != nil {
+	var userEmail data.UserSendResetPasswordEmail
+	if err := ParseBodyJSON(ctx, &userEmail); err != nil {
 		return err
 	}
 
@@ -52,8 +52,8 @@ func ResetPasswordInfoFromToken(ctx *fiber.Ctx) error {
 	// Set Content-Type: application/json
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
-	token := new(data.UserResetPasswordToken)
-	if err := ParseBodyJSON(ctx, token); err != nil {
+	var token data.UserResetPasswordToken
+	if err := ParseBodyJSON(ctx, &token); err != nil {
 		return err
 	}
 
@@ -84,8 +84,8 @@ func ResetPassword(ctx *fiber.Ctx) error {
 	// Set Content-Type: application/json
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
-	resetData := new(data.UserResetPassword)
-	if err := ParseBodyJSON(ctx, resetData); err != nil {
+	var resetData data.UserResetPassword
+	if err := ParseBodyJSON(ctx, &resetData); err != nil {
 		return err
 	}
 

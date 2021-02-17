@@ -52,8 +52,3 @@ func ConnectToMongo() {
 		Db:     db,
 	}
 }
-
-// InitCollections call the functions that init the collections.
-func InitCollections() {
-	createAuthUniqueIndexes()
-}

@@ -2,17 +2,18 @@ package handlers
 
 import (
 	"github.com/alexandr-io/backend/user/data"
-	"github.com/alexandr-io/backend/user/database"
+	"github.com/alexandr-io/backend/user/database/user"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 // DeleteUser delete the connected user.
 func DeleteUser(ctx *fiber.Ctx) error {
-	user := data.User{
+	userDB := data.User{
 		ID: string(ctx.Request().Header.Peek("ID")),
 	}
-	if err := database.DeleteUser(user.ID); err != nil {
+
+	if err := user.Delete(userDB.ID); err != nil {
 		return err
 	}
 

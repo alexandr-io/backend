@@ -3,8 +3,8 @@ package handlers
 import (
 	"github.com/alexandr-io/backend/auth/data"
 	authJWT "github.com/alexandr-io/backend/auth/jwt"
-
 	"github.com/alexandr-io/backend/auth/redis"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -19,8 +19,8 @@ func RefreshAuthToken(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
 	// Get and validate the body JSON
-	authRefresh := new(authRefresh)
-	if err := ParseBodyJSON(ctx, authRefresh); err != nil {
+	var authRefresh authRefresh
+	if err := ParseBodyJSON(ctx, &authRefresh); err != nil {
 		return err
 	}
 

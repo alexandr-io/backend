@@ -2,7 +2,9 @@ package handlers
 
 import (
 	"github.com/alexandr-io/backend/library/data"
-	"github.com/alexandr-io/backend/library/database"
+	"github.com/alexandr-io/backend/library/database/book"
+	"github.com/alexandr-io/backend/library/database/library"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -12,18 +14,16 @@ func BookCreation(ctx *fiber.Ctx) error {
 
 	userID := string(ctx.Request().Header.Peek("ID"))
 
-	bookData := new(data.BookCreation)
-	if err := ParseBodyJSON(ctx, bookData); err != nil {
+	var bookDB data.Book
+	if err := ParseBodyJSON(ctx, &bookDB); err != nil {
 		return err
 	}
 
-	bookData.UploaderID = userID
-	bookData.LibraryID = ctx.Params("library_id")
+	bookDB.UploaderID = userID
+	bookDB.LibraryID = ctx.Params("library_id")
 
 	var user = &data.User{ID: userID}
-	var library = &data.Library{ID: bookData.LibraryID}
-	err := database.GetLibraryPermission(user, library)
-	if err != nil {
+	if err := library.GetPermissionFromUserAndLibraryID(user, bookDB.LibraryID); err != nil {
 		return err
 	}
 
@@ -31,12 +31,17 @@ func BookCreation(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You are not allowed to upload books on this library")
 	}
 
-	book, err := database.BookCreate(ctx.Context(), *bookData)
+	bookData, err := bookDB.ToBookData()
 	if err != nil {
 		return err
 	}
 
-	if err := ctx.Status(fiber.StatusCreated).JSON(book); err != nil {
+	result, err := book.Insert(bookData)
+	if err != nil {
+		return err
+	}
+
+	if err := ctx.Status(fiber.StatusCreated).JSON(result.ToBook()); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil

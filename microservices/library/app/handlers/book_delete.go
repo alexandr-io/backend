@@ -2,7 +2,8 @@ package handlers
 
 import (
 	"github.com/alexandr-io/backend/library/data"
-	"github.com/alexandr-io/backend/library/database"
+	"github.com/alexandr-io/backend/library/database/book"
+	"github.com/alexandr-io/backend/library/database/library"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -13,7 +14,7 @@ func BookDelete(ctx *fiber.Ctx) error {
 
 	userID := string(ctx.Request().Header.Peek("ID"))
 
-	bookData := &data.BookRetrieve{
+	bookData := &data.Book{
 		ID:         ctx.Params("book_id"),
 		LibraryID:  ctx.Params("library_id"),
 		UploaderID: userID,
@@ -22,9 +23,7 @@ func BookDelete(ctx *fiber.Ctx) error {
 	bookData.UploaderID = userID
 
 	var user = &data.User{ID: userID}
-	var library = &data.Library{ID: bookData.LibraryID}
-	err := database.GetLibraryPermission(user, library)
-	if err != nil {
+	if err := library.GetPermissionFromUserAndLibraryID(user, bookData.LibraryID); err != nil {
 		return err
 	}
 
@@ -32,8 +31,8 @@ func BookDelete(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You are not allowed to delete books on this library")
 	}
 
-	if err := database.BookDelete(ctx.Context(), *bookData); err != nil {
-		return err
+	if err := book.Delete(bookData.ID); err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	if err := ctx.SendStatus(fiber.StatusNoContent); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())

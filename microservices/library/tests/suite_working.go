@@ -67,27 +67,7 @@ var workingTests = []test{
 		HTTPMethod: http.MethodPost,
 		URL:        func() string { return "/library/" + libraryID + "/book" },
 		AuthJWT:    &authToken,
-		Body: bookCreation{
-			Title:       bookTitle,
-			Author:      bookAuthor,
-			Publisher:   bookPublisher,
-			Description: bookDescription,
-		},
-		ExpectedHTTPCode: http.StatusCreated,
-		ExpectedResponse: data.Book{
-			Title:       bookTitle,
-			Author:      bookAuthor,
-			Publisher:   bookPublisher,
-			Description: bookDescription,
-		},
-		CustomEndFunc: BookCreateEndFunction,
-	},
-	{
-		TestSuite:  workingSuite,
-		HTTPMethod: http.MethodPost,
-		URL:        func() string { return "/library/" + libraryID + "/book" },
-		AuthJWT:    &authToken,
-		Body: bookCreation{
+		Body: data.Book{
 			Title:       bookTitle,
 			Author:      bookAuthor,
 			Publisher:   bookPublisher,

@@ -2,7 +2,8 @@ package handlers
 
 import (
 	"github.com/alexandr-io/backend/library/data"
-	"github.com/alexandr-io/backend/library/database"
+	"github.com/alexandr-io/backend/library/database/book"
+	"github.com/alexandr-io/backend/library/database/library"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -13,7 +14,7 @@ func BookRetrieve(ctx *fiber.Ctx) error {
 
 	userID := string(ctx.Request().Header.Peek("ID"))
 
-	bookData := &data.BookRetrieve{
+	bookData := &data.Book{
 		ID:         ctx.Params("book_id"),
 		LibraryID:  ctx.Params("library_id"),
 		UploaderID: userID,
@@ -22,9 +23,8 @@ func BookRetrieve(ctx *fiber.Ctx) error {
 	bookData.UploaderID = userID
 
 	var user = &data.User{ID: userID}
-	var library = &data.Library{ID: bookData.LibraryID}
-	err := database.GetLibraryPermission(user, library)
-	if err != nil {
+
+	if err := library.GetPermissionFromUserAndLibraryID(user, bookData.LibraryID); err != nil {
 		return err
 	}
 
@@ -32,12 +32,12 @@ func BookRetrieve(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You are not allowed to see the books in this library")
 	}
 
-	book, err := database.BookRetrieve(ctx.Context(), *bookData)
+	result, err := book.GetFromID(bookData.ID)
 	if err != nil {
 		return err
 	}
 
-	if err := ctx.Status(fiber.StatusOK).JSON(book); err != nil {
+	if err := ctx.Status(fiber.StatusOK).JSON(result); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 

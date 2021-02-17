@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/alexandr-io/backend/user/data"
-	"github.com/alexandr-io/backend/user/database"
+	"github.com/alexandr-io/backend/user/database/user"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -16,18 +16,18 @@ func UpdateUser(ctx *fiber.Ctx) error {
 		ID: string(ctx.Request().Header.Peek("ID")),
 	}
 
-	userUpdateData := new(data.User)
-	if err := ParseBodyJSON(ctx, userUpdateData); err != nil {
+	var userUpdateData data.User
+	if err := ParseBodyJSON(ctx, &userUpdateData); err != nil {
 		return err
 	}
 
-	user, err := database.UpdateUser(userAuth.ID, *userUpdateData)
+	userDB, err := user.Update(userAuth.ID, userUpdateData)
 	if err != nil {
 		return data.NewHTTPErrorInfo(500, err.Error())
 	}
 
 	// Return the user data to the user
-	if err := ctx.Status(200).JSON(user); err != nil {
+	if err := ctx.Status(fiber.StatusOK).JSON(userDB); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil
