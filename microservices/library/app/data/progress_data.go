@@ -13,7 +13,7 @@ type BookProgressData struct {
 	UserID       primitive.ObjectID `json:"user_id,omitempty" bson:"user_id,omitempty"`
 	BookID       primitive.ObjectID `json:"book_id,omitempty" bson:"book_id,omitempty"`
 	LibraryID    primitive.ObjectID `json:"library_id,omitempty" bson:"library_id,omitempty"`
-	Progress     float64            `json:"progress" bson:"progress,omitempty"`
+	Progress     float64            `json:"progress" bson:"progress"`
 	LastReadDate time.Time          `json:"last_read_date,omitempty" bson:"last_read_date,omitempty"`
 }
 

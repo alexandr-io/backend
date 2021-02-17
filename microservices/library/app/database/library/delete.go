@@ -15,7 +15,6 @@ import (
 
 // Delete delete the library for a user and the name of the library.
 func Delete(libraryID string) error {
-
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
