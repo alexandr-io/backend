@@ -1,0 +1,14 @@
+FROM golang:1.15.0
+
+RUN GO111MODULE=on go get github.com/cosmtrek/air@v1.15.1
+
+ARG microservice
+ARG path=microservices/${microservice}/app
+
+WORKDIR /${path}
+
+COPY ./${path}/go.mod ./${path}/go.sum ./${path}/data/go.mod* ./${path}/data/go.sum* ./
+COPY grpc/go.mod /grpc/
+RUN go mod download
+
+CMD ["air"]
