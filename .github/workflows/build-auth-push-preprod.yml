@@ -3,7 +3,7 @@ name: Auth CD preprod
 on:
   push:
     tags:
-      - v*-preprod
+      - v*-test
 
 jobs:
   build-auth-push-preprod:
@@ -28,7 +28,7 @@ jobs:
         id: docker_meta
         uses: crazy-max/ghaction-docker-meta@v1.11.0
         with:
-          images: ghcr.io/${{github.repository}}/auth
+          images: ghcr.io/alexandr-io/auth
           tag-custom: "latest-preprod"
           tag-latest: false
 
@@ -43,10 +43,10 @@ jobs:
           tags: ${{ steps.docker_meta.outputs.tags }}
           push: true
 
-      - name: Deploy or redeploy auth app
-        uses: cross-the-world/ssh-pipeline@master
-        with:
-          host: ${{ secrets.HOST_PREPROD }}
-          user: ${{ secrets.HOST_PREPROD_USERNAME }}
-          pass: ${{ secrets.HOST_PREPROD_PASSWORD }}
-          script: /kubernetes/app-deployment.sh auth
+#      - name: Deploy or redeploy auth app
+#        uses: cross-the-world/ssh-pipeline@master
+#        with:
+#          host: ${{ secrets.HOST_PREPROD }}
+#          user: ${{ secrets.HOST_PREPROD_USERNAME }}
+#          pass: ${{ secrets.HOST_PREPROD_PASSWORD }}
+#          script: /kubernetes/app-deployment.sh auth
