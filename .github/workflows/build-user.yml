@@ -9,7 +9,7 @@ on:
       - master
 
 jobs:
-  build:
+  build-user:
     name: Docker Build User
     runs-on: ubuntu-18.04
     steps:
@@ -18,9 +18,10 @@ jobs:
 
       - name: Build User Docker image
         # Official docker action: https://github.com/docker/build-push-action
-        uses: docker/build-push-action@v1.1.0
+        uses: docker/build-push-action@v2.2.2
         with:
-          # github.repository -> alexandr-io/backend
-          repository: ${{github.repository}}
-          path: microservices/user/app
+          context: .
+          file: ./dockerfiles/Dockerfile
+          build-args: |
+            microservice=user
           push: false

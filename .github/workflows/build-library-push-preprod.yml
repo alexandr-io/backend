@@ -1,4 +1,4 @@
-name: Build and push preprod auth's images CI
+name: Build and push preprod library's images CI
 # This workflow is triggered on tag push finishing with '-preprod'
 on:
   push:
@@ -6,8 +6,8 @@ on:
       - v*-preprod
 
 jobs:
-  build-auth-push-preprod:
-    name: Docker Build Auth and push image
+  build-library-push-preprod:
+    name: Docker Build Library and push image
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout code
@@ -28,25 +28,25 @@ jobs:
         id: docker_meta
         uses: crazy-max/ghaction-docker-meta@v1.11.0
         with:
-          images: ghcr.io/${{github.repository}}/auth
+          images: ghcr.io/${{github.repository}}/library
           tag-custom: "latest-preprod"
           tag-latest: false
 
-      - name: Build and push Auth Docker image
+      - name: Build and push Library Docker image
         uses: docker/build-push-action@v2.2.2
         with:
           builder: ${{ steps.builder.outputs.name }}
           context: .
           file: ./dockerfiles/Dockerfile
           build-args: |
-            microservice=auth
+            microservice=library
           tags: ${{ steps.docker_meta.outputs.tags }}
           push: true
 
-      - name: Deploy or redeploy auth app
+      - name: Deploy or redeploy library app
         uses: cross-the-world/ssh-pipeline@master
         with:
           host: ${{ secrets.HOST_PREPROD }}
           user: ${{ secrets.HOST_PREPROD_USERNAME }}
           pass: ${{ secrets.HOST_PREPROD_PASSWORD }}
-          script: /kubernetes/app-deployment.sh auth
+          script: /kubernetes/app-deployment.sh library

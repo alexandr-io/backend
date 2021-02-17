@@ -1,12 +1,12 @@
-name: Build and push preprod auth's images CI
+name: Build and push prod auth's images CI
 # This workflow is triggered on tag push finishing with '-preprod'
 on:
   push:
-    tags:
-      - v*-preprod
+    tags-ignore:
+      - 'v*-*'
 
 jobs:
-  build-auth-push-preprod:
+  build-auth-push-prod:
     name: Docker Build Auth and push image
     runs-on: ubuntu-18.04
     steps:
@@ -29,8 +29,7 @@ jobs:
         uses: crazy-max/ghaction-docker-meta@v1.11.0
         with:
           images: ghcr.io/${{github.repository}}/auth
-          tag-custom: "latest-preprod"
-          tag-latest: false
+          tag-latest: true
 
       - name: Build and push Auth Docker image
         uses: docker/build-push-action@v2.2.2
@@ -46,7 +45,7 @@ jobs:
       - name: Deploy or redeploy auth app
         uses: cross-the-world/ssh-pipeline@master
         with:
-          host: ${{ secrets.HOST_PREPROD }}
-          user: ${{ secrets.HOST_PREPROD_USERNAME }}
-          pass: ${{ secrets.HOST_PREPROD_PASSWORD }}
+          host: ${{ secrets.HOST_PROD }}
+          user: ${{ secrets.HOST_PROD_USERNAME }}
+          pass: ${{ secrets.HOST_PROD_PASSWORD }}
           script: /kubernetes/app-deployment.sh auth
