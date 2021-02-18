@@ -29,7 +29,7 @@ if [ ! -d "$1" ]; then
     # Since the folder was created, the k8s namespace is not defined
     echo "\033[0;33mCreating the k8s namespace $1...\033[0m"
     kubectl create namespace $1
-    kubectl create secret docker-registry regcred --docker-server=docker.pkg.github.com --docker-password=$(printenv GITHUB_TOKEN) --docker-username=$(printenv SVN_USERNAME) -n $1
+    kubectl create secret docker-registry regcred --docker-server=ghcr.io --docker-password=$(printenv GITHUB_TOKEN) --docker-username=$(printenv SVN_USERNAME) -n $1
 
     # Checking the environment variable HOST_TYPE to figure out which environment need to be deployed, preprod or prod
     # HOST_TYPE  =   PREPROD: preprod environment

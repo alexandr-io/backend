@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: api
-        image: docker.pkg.github.com/alexandr-io/backend/email:latest
+        image: ghcr.io/alexandr-io/backend/email:latest
         imagePullPolicy: Always
         env:
           - name: KAFKA_ADVERTISED_HOST_NAME

@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: docker.pkg.github.com/alexandr-io/backend/media:latest
+          image: ghcr.io/alexandr-io/backend/media:latest
           imagePullPolicy: Always
           env:
             - name: MEDIA_PATH
