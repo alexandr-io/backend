@@ -5,6 +5,7 @@
 package main
 
 import (
+	"backend/grpc"
 	"context"
 	"log"
 
@@ -16,6 +17,7 @@ import (
 )
 
 func main() {
+	grpc.OUI()
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.Println("Auth Service started")
 

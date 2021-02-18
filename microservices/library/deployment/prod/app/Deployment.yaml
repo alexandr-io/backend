@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: api
-        image: docker.pkg.github.com/alexandr-io/backend/library:latest
+        image: ghcr.io/alexandr-io/backend/library:latest
         imagePullPolicy: Always
         env:
           - name: MONGO_URL

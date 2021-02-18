@@ -69,8 +69,10 @@ services:
   user:
     container_name: user
     build:
-      context: microservices/user/app
-      dockerfile: Dockerfile-dev
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile-dev
+      args:
+        microservice: user
     depends_on:
       - mongodb
       - broker
@@ -82,14 +84,16 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - "./microservices/user/app:/app"
+      - "./microservices/user/app:/microservices/user/app"
 
   # Auth service
   auth:
     container_name: auth
     build:
-      context: microservices/auth/app
-      dockerfile: Dockerfile-dev
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile-dev
+      args:
+        microservice: auth
     depends_on:
       - mongodb
       - redis
@@ -102,14 +106,17 @@ services:
     ports:
       - "3001:3000"
     volumes:
-      - "./microservices/auth/app:/app"
+      - "./microservices/auth/app:/microservices/auth/app"
+      - "./grpc:/grpc"
 
   # Media service
   media:
     container_name: media
     build:
-      context: microservices/media/app
-      dockerfile: Dockerfile-dev
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile-dev
+      args:
+        microservice: media
     depends_on:
       - mongodb
       - broker
@@ -122,7 +129,7 @@ services:
     ports:
       - "4001:3000"
     volumes:
-      - "./microservices/media/app:/app"
+      - "./microservices/media/app:/microservices/media/app"
       - "./microservices/media/.media:/media"
 
   # Metadata service
@@ -142,20 +149,24 @@ services:
   doc:
     container_name: doc
     build:
-      context: microservices/doc/app
-      dockerfile: Dockerfile-dev
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile-dev
+      args:
+        microservice: doc
     env_file: .env-dev
     ports:
       - "4000:3000"
     volumes:
-      - "./microservices/doc/app:/app"
+      - "./microservices/doc/app:/microservices/doc/app"
 
   # Library service
   library:
     container_name: library
     build:
-      context: microservices/library/app
-      dockerfile: Dockerfile-dev
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile-dev
+      args:
+        microservice: library
     depends_on:
       - mongodb
       - broker
@@ -166,21 +177,23 @@ services:
     ports:
       - "3002:3000"
     volumes:
-    - "./microservices/library/app:/app"
+    - "./microservices/library/app:/microservices/library/app"
 
   # Email service
   email:
     container_name: email
     build:
-      context: microservices/email/app
-      dockerfile: Dockerfile-dev
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile-dev
+      args:
+        microservice: email
     depends_on:
       - broker
     env_file: .env-dev
     environment:
       KAFKA_URL: 'broker:29092'
     volumes:
-      - "./microservices/email/app:/app"
+      - "./microservices/email/app:/microservices/email/app"
 
 volumes:
   mongodb_data_container:

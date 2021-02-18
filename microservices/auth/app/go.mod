@@ -4,10 +4,14 @@ go 1.15
 
 replace github.com/alexandr-io/backend/auth/data => ./data
 
+replace backend/grpc => ../../../grpc
+
 require (
+	backend/grpc v0.0.0-00010101000000-000000000000
 	github.com/alexandr-io/backend/auth/data v0.0.0-00010101000000-000000000000
 	github.com/andybalholm/brotli v1.0.1 // indirect
 	github.com/confluentinc/confluent-kafka-go v1.5.2
+	github.com/cosmtrek/air v1.21.2 // indirect
 	github.com/fatih/structtag v1.2.0
 	github.com/form3tech-oss/jwt-go v3.2.2+incompatible
 	github.com/go-redis/redis/v8 v8.4.2
