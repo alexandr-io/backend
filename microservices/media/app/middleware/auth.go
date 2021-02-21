@@ -3,6 +3,7 @@ package middleware
 import (
 	"github.com/alexandr-io/backend/media/data"
 	"github.com/alexandr-io/backend/media/grpc"
+
 	"github.com/gofiber/fiber/v2"
 )
 
