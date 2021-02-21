@@ -21,7 +21,7 @@ func Auth(ctx context.Context, jwt string) (*data.User, error) {
 	fmt.Printf("[gRPC]: Auth send: %+v\n", authRequest.String())
 	authReply, err := authClient.Auth(ctx, &authRequest)
 	if err != nil {
-		return nil, grpc.GRPCErrorToFiber(err)
+		return nil, grpc.ErrorToFiber(err)
 	}
 
 	return &data.User{

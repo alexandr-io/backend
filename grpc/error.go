@@ -24,8 +24,8 @@ func FiberErrorToGRPC(err error) error {
 	return err
 }
 
-// GRPCErrorToFiber transform a gRPC error to a gRPC fiber
-func GRPCErrorToFiber(err error) error {
+// ErrorToFiber transform a gRPC error to a gRPC fiber
+func ErrorToFiber(err error) error {
 	st, ok := status.FromError(err)
 	if !ok {
 		return nil

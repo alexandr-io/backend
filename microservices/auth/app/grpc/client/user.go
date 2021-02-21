@@ -27,7 +27,7 @@ func User(ctx context.Context, user data.User) (*data.User, error) {
 	fmt.Printf("[gRPC]: User sent: %+v\n", userRequest.String())
 	userReply, err := UserClient.User(ctx, &userRequest)
 	if err != nil {
-		return nil, grpc.GRPCErrorToFiber(err)
+		return nil, grpc.ErrorToFiber(err)
 	}
 
 	return &data.User{
