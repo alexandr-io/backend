@@ -111,7 +111,7 @@ func libraryUploadAuthorizationResponseWatcher(id string, requestChannel chan st
 			if err := json.Unmarshal([]byte(message), &kafkaMessage); err != nil {
 				return nil, nil, err
 			}
-			AuthRequestChannels.Delete(id)
+			LibraryUploadAuthorizationRequestChannels.Delete(id)
 			return &kafkaMessage, []byte(message), nil
 		}
 	}

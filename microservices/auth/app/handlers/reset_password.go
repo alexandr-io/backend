@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/alexandr-io/backend/auth/data"
+	grpcclient "github.com/alexandr-io/backend/auth/grpc/client"
 	authJWT "github.com/alexandr-io/backend/auth/jwt"
 	"github.com/alexandr-io/backend/auth/kafka/producers"
 	"github.com/alexandr-io/backend/auth/redis"
@@ -20,7 +21,7 @@ func SendResetPasswordEmail(ctx *fiber.Ctx) error {
 	}
 
 	// Kafka request to user
-	kafkaUser, err := producers.UserRequestHandler(data.KafkaUser{Email: userEmail.Email})
+	userData, err := grpcclient.User(ctx.Context(), data.User{Email: userEmail.Email})
 	if err != nil {
 		return err
 	}
@@ -28,13 +29,13 @@ func SendResetPasswordEmail(ctx *fiber.Ctx) error {
 	// Generate UUID
 	resetPasswordToken := authJWT.RandomStringNoSpecialChar(6)
 
-	if err := redis.StoreResetPasswordToken(ctx, resetPasswordToken, kafkaUser.ID); err != nil {
+	if err := redis.StoreResetPasswordToken(ctx, resetPasswordToken, userData.ID); err != nil {
 		return err
 	}
 
 	if err := producers.EmailRequestHandler(data.KafkaEmail{
-		Email:    kafkaUser.Email,
-		Username: kafkaUser.Username,
+		Email:    userData.Email,
+		Username: userData.Username,
 		Type:     data.ResetPassword,
 		Data:     resetPasswordToken,
 	}); err != nil {
@@ -64,16 +65,13 @@ func ResetPasswordInfoFromToken(ctx *fiber.Ctx) error {
 	}
 
 	// Kafka request to user
-	kafkaUser, err := producers.UserRequestHandler(data.KafkaUser{ID: userID})
+	userData, err := grpcclient.User(ctx.Context(), data.User{ID: userID})
 	if err != nil {
 		return err
 	}
 
 	// Return the new user to the user
-	if err := ctx.Status(fiber.StatusOK).JSON(data.User{
-		Username: kafkaUser.Username,
-		Email:    kafkaUser.Email,
-	}); err != nil {
+	if err := ctx.Status(fiber.StatusOK).JSON(userData); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil

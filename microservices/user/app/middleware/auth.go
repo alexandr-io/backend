@@ -2,8 +2,7 @@ package middleware
 
 import (
 	"github.com/alexandr-io/backend/user/data"
-	"github.com/alexandr-io/backend/user/kafka/producers"
-
+	"github.com/alexandr-io/backend/user/grpc"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -25,7 +24,7 @@ func Protected() func(*fiber.Ctx) error {
 		if err != nil {
 			return err
 		}
-		user, err := producers.AuthRequestHandler(token)
+		user, err := grpc.Auth(ctx.Context(), token)
 		if err != nil {
 			return err
 		}

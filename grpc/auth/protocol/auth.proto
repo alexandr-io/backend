@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option go_package = "github.com/alexandr-io/backend/grpc/grpcauth";
+
+package auth;
+
+service Auth {
+  rpc Auth (AuthRequest) returns (AuthReply) {}
+}
+
+message AuthRequest {
+  string JWT = 1;
+}
+
+message AuthReply {
+  string ID = 1;
+  string username = 2;
+  string email = 3;
+}

@@ -13,8 +13,6 @@ func StartConsumers() {
 	go consumeLoginRequestMessages()
 	go consumeUserRequestMessages()
 	go consumeUpdatePasswordRequestMessages()
-
-	go consumeAuthResponseMessages()
 }
 
 // newConsumer create a new kafka consumer.

@@ -3,8 +3,6 @@ package consumers
 import (
 	"fmt"
 	"log"
-
-	"github.com/alexandr-io/backend/user/internal"
 )
 
 // consumeUserRequestMessages consume all the kafka message from the `user` topic.
@@ -30,7 +28,7 @@ func consumeUserRequestMessages() {
 			fmt.Printf("[KAFKA]: Message on %s: %s:%s\n", msg.TopicPartition, string(msg.Key), string(msg.Value))
 
 			// Send to logic
-			_ = internal.User(string(msg.Key), string(msg.Value))
+			//_ = internal.User(string(msg.Key), string(msg.Value))
 		} else {
 			log.Printf("Consumer error: %s", err)
 		}
