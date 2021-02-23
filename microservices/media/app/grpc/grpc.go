@@ -18,11 +18,11 @@ var (
 func initClients() {
 	authConnection, err := grpc.Dial(os.Getenv("AUTH_URL")+":"+os.Getenv("GRPC_PORT"), grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
-		log.Fatalf("[GRPC]: did not connect: %v", err)
+		log.Fatalf("[gRPC]: did not connect: %v", err)
 	}
 
 	authClient = grpcauth.NewAuthClient(authConnection)
-	log.Println("[GRPC]: auth client created")
+	log.Println("[gRPC]: auth client created")
 }
 
 // InitGRPC init gRPC clients

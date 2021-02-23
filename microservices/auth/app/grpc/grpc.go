@@ -23,7 +23,7 @@ type server struct {
 func initClients() {
 	userConnection, err := grpc.Dial(os.Getenv("USER_URL")+":"+os.Getenv("GRPC_PORT"), grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
-		log.Fatalf("[GRPC]: did not connect: %v", err)
+		log.Fatalf("[gRPC]: did not connect: %v", err)
 	}
 
 	grpcclient.UserClient = grpcuser.NewUserClient(userConnection)
@@ -32,13 +32,13 @@ func initClients() {
 func initServer() {
 	lis, err := net.Listen("tcp", ":"+os.Getenv("GRPC_PORT"))
 	if err != nil {
-		log.Fatalf("[GRPC]: failed to listen: %v", err)
+		log.Fatalf("[gRPC]: failed to listen: %v", err)
 	}
 	authServer := grpc.NewServer()
 	grpcauth.RegisterAuthServer(authServer, &server{})
-	log.Println("[GRPC]: Listening to :", lis.Addr())
+	log.Println("[gRPC]: Listening to :", lis.Addr())
 	if err := authServer.Serve(lis); err != nil {
-		log.Fatalf("[GRPC]: failed to serve: %v", err)
+		log.Fatalf("[gRPC]: failed to serve: %v", err)
 	}
 }
 

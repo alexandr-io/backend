@@ -11,7 +11,6 @@ import (
 func StartConsumers() {
 	go consumeRegisterRequestMessages()
 	go consumeLoginRequestMessages()
-	go consumeUserRequestMessages()
 	go consumeUpdatePasswordRequestMessages()
 }
 
