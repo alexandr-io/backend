@@ -9,6 +9,7 @@ import (
 	"log"
 
 	"github.com/alexandr-io/backend/media/database"
+	"github.com/alexandr-io/backend/media/grpc"
 	consumers "github.com/alexandr-io/backend/media/kafka/comsumers"
 	"github.com/alexandr-io/backend/media/kafka/producers"
 
@@ -23,6 +24,10 @@ func main() {
 	database.ConnectToMongo()
 	defer database.Instance.Client.Disconnect(context.Background())
 	database.InitCollections()
+
+	// gRPC
+	grpc.InitGRPC()
+	defer grpc.CloseGRPC()
 
 	consumers.StartConsumers()
 	for producers.CreateTopics() != nil {

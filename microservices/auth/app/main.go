@@ -5,11 +5,11 @@
 package main
 
 import (
-	"backend/grpc"
 	"context"
 	"log"
 
 	"github.com/alexandr-io/backend/auth/database"
+	"github.com/alexandr-io/backend/auth/grpc"
 	"github.com/alexandr-io/backend/auth/kafka/consumers"
 	"github.com/alexandr-io/backend/auth/kafka/producers"
 
@@ -17,7 +17,6 @@ import (
 )
 
 func main() {
-	grpc.OUI()
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.Println("Auth Service started")
 
@@ -25,6 +24,10 @@ func main() {
 	database.ConnectToMongo()
 	defer database.Instance.Client.Disconnect(context.Background())
 	database.InitCollections()
+
+	// gRPC
+	grpc.InitGRPC()
+	defer grpc.CloseGRPC()
 
 	// Create a new fiber instance with custom config
 	app := fiber.New(fiber.Config{

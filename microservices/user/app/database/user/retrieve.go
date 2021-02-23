@@ -29,7 +29,7 @@ func FromID(userID string) (*data.User, error) {
 	var result data.User
 
 	if err = collection.FindOne(ctx, filter).Decode(&result); err != nil {
-		return nil, err
+		return nil, data.NewHTTPErrorInfo(fiber.StatusUnauthorized, err.Error())
 	}
 	return &result, nil
 }
@@ -90,5 +90,5 @@ func FromLogin(login string) (*data.User, error) {
 		return result, nil
 	}
 
-	return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, "can't find user with login "+login)
+	return nil, data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "can't find user with login "+login)
 }

@@ -1,8 +1,10 @@
 package jwt
 
 import (
+	"context"
+
 	"github.com/alexandr-io/backend/auth/data"
-	"github.com/alexandr-io/backend/auth/kafka/producers"
+	grpcclient "github.com/alexandr-io/backend/auth/grpc/client"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -16,13 +18,9 @@ func GetUserFromContextJWT(ctx *fiber.Ctx) (*data.User, error) {
 	}
 
 	// Get the user from user MS using kafka
-	kafkaUser, err := producers.UserRequestHandler(data.KafkaUser{ID: userID})
+	userData, err := grpcclient.User(context.Background(), data.User{ID: userID})
 	if err != nil {
 		return nil, err
 	}
-	return &data.User{
-		ID:       kafkaUser.ID,
-		Username: kafkaUser.Username,
-		Email:    kafkaUser.Email,
-	}, nil
+	return userData, nil
 }

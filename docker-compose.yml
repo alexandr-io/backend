@@ -81,10 +81,12 @@ services:
       MONGO_URL: mongodb
       REDIS_URL: redis
       KAFKA_URL: 'broker:29092'
+      AUTH_URL: auth
     ports:
       - "3000:3000"
     volumes:
       - "./microservices/user/app:/microservices/user/app"
+      - "./grpc:/grpc"
 
   # Auth service
   auth:
@@ -103,6 +105,7 @@ services:
       MONGO_URL: mongodb
       REDIS_URL: redis
       KAFKA_URL: 'broker:29092'
+      USER_URL: user
     ports:
       - "3001:3000"
     volumes:
@@ -126,11 +129,13 @@ services:
       MEDIA_PATH: '/media/'
       MEDIA_URI: 'file'
       MONGO_URL: mongodb
+      AUTH_URL: auth
     ports:
       - "4001:3000"
     volumes:
       - "./microservices/media/app:/microservices/media/app"
       - "./microservices/media/.media:/media"
+      - "./grpc:/grpc"
 
   # Metadata service
   metadata:
@@ -174,10 +179,12 @@ services:
     environment:
       MONGO_URL: mongodb
       KAFKA_URL: 'broker:29092'
+      AUTH_URL: auth
     ports:
       - "3002:3000"
     volumes:
     - "./microservices/library/app:/microservices/library/app"
+    - "./grpc:/grpc"
 
   # Email service
   email:
