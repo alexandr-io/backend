@@ -5,7 +5,7 @@ import grpc
 import metadata_pb2 as metadata__pb2
 
 
-class AuthStub(object):
+class MetadataStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -14,17 +14,17 @@ class AuthStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.Auth = channel.unary_unary(
-                '/auth.Auth/Auth',
-                request_serializer=metadata__pb2.AuthRequest.SerializeToString,
-                response_deserializer=metadata__pb2.AuthReply.FromString,
+        self.Metadata = channel.unary_unary(
+                '/metadata.Metadata/Metadata',
+                request_serializer=metadata__pb2.MetadataRequest.SerializeToString,
+                response_deserializer=metadata__pb2.MetadataReply.FromString,
                 )
 
 
-class AuthServicer(object):
+class MetadataServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def Auth(self, request, context):
+    def Metadata(self, request, context):
         """Used to check a JWT and retrieve the corresponding user.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -32,25 +32,25 @@ class AuthServicer(object):
         raise NotImplementedError('Method not implemented!')
 
 
-def add_AuthServicer_to_server(servicer, server):
+def add_MetadataServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'Auth': grpc.unary_unary_rpc_method_handler(
-                    servicer.Auth,
-                    request_deserializer=metadata__pb2.AuthRequest.FromString,
-                    response_serializer=metadata__pb2.AuthReply.SerializeToString,
+            'Metadata': grpc.unary_unary_rpc_method_handler(
+                    servicer.Metadata,
+                    request_deserializer=metadata__pb2.MetadataRequest.FromString,
+                    response_serializer=metadata__pb2.MetadataReply.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'auth.Auth', rpc_method_handlers)
+            'metadata.Metadata', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
  # This class is part of an EXPERIMENTAL API.
-class Auth(object):
+class Metadata(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def Auth(request,
+    def Metadata(request,
             target,
             options=(),
             channel_credentials=None,
@@ -60,8 +60,8 @@ class Auth(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/auth.Auth/Auth',
-            metadata__pb2.AuthRequest.SerializeToString,
-            metadata__pb2.AuthReply.FromString,
+        return grpc.experimental.unary_unary(request, target, '/metadata.Metadata/Metadata',
+            metadata__pb2.MetadataRequest.SerializeToString,
+            metadata__pb2.MetadataReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

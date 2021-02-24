@@ -1,0 +1,33 @@
+---
+paths:
+  /metadata:
+    get:
+      description: Retrieve the metadata of a book via Google Books API
+      summary: Metadata Retrieve
+      parameters:
+        - in: query
+          name: title
+          required: true
+          schema:
+            type: string
+          description: Title of the book
+        - in: query
+          name: authors
+          required: false
+          schema:
+            type: string
+          description: Authors of the book
+      responses:
+        "200":
+          $ref: '#/components/schemas/MetadataResponse'
+        "401":
+          $ref: '#/components/schemas/UnauthorizedErrorResponse'
+      security:
+        - bearerAuth: []
+      servers:
+        - url: //library.alexandrio.cloud
+          description: Production server
+        - url: //library.preprod.alexandrio.cloud
+          description: Preprod server
+      tags:
+        - BOOKS
