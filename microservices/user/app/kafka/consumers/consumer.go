@@ -10,7 +10,6 @@ import (
 // StartConsumers starts all the kafka consumers in goroutines.
 func StartConsumers() {
 	go consumeRegisterRequestMessages()
-	go consumeLoginRequestMessages()
 	go consumeUpdatePasswordRequestMessages()
 }
 

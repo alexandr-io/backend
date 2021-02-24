@@ -56,7 +56,7 @@ var incorrectTests = []test{
 			Login:    &randomName,
 			Password: "wrong-password",
 		},
-		ExpectedHTTPCode: http.StatusBadRequest,
+		ExpectedHTTPCode: http.StatusNotFound,
 		ExpectedResponse: nil,
 		CustomEndFunc:    nil,
 	},
@@ -70,7 +70,7 @@ var incorrectTests = []test{
 		}{
 			Email: "wrong-email@test.test",
 		},
-		ExpectedHTTPCode: http.StatusUnauthorized,
+		ExpectedHTTPCode: http.StatusNotFound,
 		ExpectedResponse: nil,
 		CustomEndFunc:    nil,
 	},

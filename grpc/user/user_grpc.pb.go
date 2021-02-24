@@ -19,7 +19,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserClient interface {
+	// User is used to retrieve a user by it's ID or email.
 	User(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserReply, error)
+	// Login is used to retrieve a user by it's login(email or username) and password.
+	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*UserReply, error)
 }
 
 type userClient struct {
@@ -39,11 +42,23 @@ func (c *userClient) User(ctx context.Context, in *UserRequest, opts ...grpc.Cal
 	return out, nil
 }
 
+func (c *userClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*UserReply, error) {
+	out := new(UserReply)
+	err := c.cc.Invoke(ctx, "/user.User/Login", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
 type UserServer interface {
+	// User is used to retrieve a user by it's ID or email.
 	User(context.Context, *UserRequest) (*UserReply, error)
+	// Login is used to retrieve a user by it's login(email or username) and password.
+	Login(context.Context, *LoginRequest) (*UserReply, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -53,6 +68,9 @@ type UnimplementedUserServer struct {
 
 func (UnimplementedUserServer) User(context.Context, *UserRequest) (*UserReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method User not implemented")
+}
+func (UnimplementedUserServer) Login(context.Context, *LoginRequest) (*UserReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -85,6 +103,24 @@ func _User_User_Handler(srv interface{}, ctx context.Context, dec func(interface
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).Login(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.User/Login",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).Login(ctx, req.(*LoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -95,6 +131,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "User",
 			Handler:    _User_User_Handler,
+		},
+		{
+			MethodName: "Login",
+			Handler:    _User_Login_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"github.com/alexandr-io/backend/auth/data"
+	grpcclient "github.com/alexandr-io/backend/auth/grpc/client"
 	authJWT "github.com/alexandr-io/backend/auth/jwt"
-	"github.com/alexandr-io/backend/auth/kafka/producers"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -20,19 +20,19 @@ func Login(ctx *fiber.Ctx) error {
 	}
 
 	// Kafka request to user
-	kafkaUser, err := producers.LoginRequestHandler(userLogin)
+	userData, err := grpcclient.Login(ctx.Context(), userLogin)
 	if err != nil {
 		return err
 	}
 
 	// Create auth and refresh token
-	refreshToken, authToken, err := authJWT.GenerateNewRefreshTokenAndAuthToken(ctx, kafkaUser.ID)
+	refreshToken, authToken, err := authJWT.GenerateNewRefreshTokenAndAuthToken(ctx, userData.ID)
 	if err != nil {
 		return err
 	}
 	user := data.User{
-		Username:     kafkaUser.Username,
-		Email:        kafkaUser.Email,
+		Username:     userData.Username,
+		Email:        userData.Email,
 		AuthToken:    authToken,
 		RefreshToken: refreshToken,
 	}

@@ -9,10 +9,10 @@ import (
 	"github.com/alexandr-io/backend/user/internal"
 )
 
-// User is a gRPC server method that take an ID or an email and return the corresponding user information
-func (s *server) User(_ context.Context, in *grpcuser.UserRequest) (*grpcuser.UserReply, error) {
-	fmt.Printf("[gRPC]: User received: %+v\n", in)
-	user, err := internal.User(in.GetID(), in.GetEmail())
+// Login is a gRPC server method that take a login(email or username) and a password and return the corresponding user information
+func (s *server) Login(_ context.Context, in *grpcuser.LoginRequest) (*grpcuser.UserReply, error) {
+	fmt.Printf("[gRPC]: Login received: %+v\n", in)
+	user, err := internal.Login(in.GetLogin(), in.GetPassword())
 	if err != nil {
 		return nil, grpc.FiberErrorToGRPC(err)
 	}

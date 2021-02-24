@@ -5,6 +5,7 @@ option go_package = "github.com/alexandr-io/backend/grpc/grpcauth";
 package auth;
 
 service Auth {
+  // Used to check a JWT and retrieve the corresponding user.
   rpc Auth (AuthRequest) returns (AuthReply) {}
 }
 
