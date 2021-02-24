@@ -1,20 +1,28 @@
 syntax = "proto3";
 
-option go_package = "github.com/alexandr-io/backend/grpc/grpcauth";
+option go_package = "github.com/alexandr-io/backend/grpc/grpcmetadata";
 
-package auth;
+package metadata;
 
-service Auth {
+service Metadata {
   // Used to check a JWT and retrieve the corresponding user.
-  rpc Auth (AuthRequest) returns (AuthReply) {}
+  rpc Metadata (MetadataRequest) returns (MetadataReply) {}
 }
 
-message AuthRequest {
-  string JWT = 1;
+message MetadataRequest {
+  string Title = 1;
+  string Author = 2;
 }
 
-message AuthReply {
-  string ID = 1;
-  string username = 2;
-  string email = 3;
+message MetadataReply {
+  string Title = 1;
+  string Author = 2;
+  string Publisher = 3;
+  string PublishedDate = 4;
+  string PageCount = 5;
+  string Categories = 6;
+  string MaturityRating = 7;
+  string Language = 8;
+  string ImageLinks = 9;
+  string Descriptions = 10;
 }
