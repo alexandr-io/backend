@@ -150,7 +150,7 @@ type LoginRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Login    string `protobuf:"bytes,1,opt,name=Login,proto3" json:"Login,omitempty"`       // Login is an username or an email
+	Login    string `protobuf:"bytes,1,opt,name=Login,proto3" json:"Login,omitempty"`       // Login is a username or an email
 	Password string `protobuf:"bytes,2,opt,name=Password,proto3" json:"Password,omitempty"` // The password must be send hashed
 }
 

@@ -24,6 +24,6 @@ message UserReply {
 }
 
 message LoginRequest {
-  string Login = 1; // Login is an username or an email
+  string Login = 1; // Login is a username or an email
   string Password = 2; // The password must be send hashed
 }
