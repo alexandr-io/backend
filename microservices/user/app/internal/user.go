@@ -14,7 +14,7 @@ func User(ID string, email string) (*data.User, error) {
 	if ID != "" {
 		userData, err = user.FromID(ID)
 	} else if email != "" {
-		userData, err = user.FromLogin(email)
+		userData, err = user.FromEmail(email)
 	} else {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusBadRequest, "no ID nor email received")
 	}
