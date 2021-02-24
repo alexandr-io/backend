@@ -11,7 +11,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// User get a data.User containing an ID or an email and return the complete user data
+// Login get a data.User containing an ID or an email and return the complete user data
 func Login(ctx context.Context, login data.UserLogin) (*data.User, error) {
 	if UserClient == nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, "gRPC user client not initialized")

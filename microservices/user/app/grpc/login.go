@@ -3,6 +3,7 @@ package grpc
 import (
 	"context"
 	"fmt"
+
 	"github.com/alexandr-io/backend/grpc"
 	grpcuser "github.com/alexandr-io/backend/grpc/user"
 	"github.com/alexandr-io/backend/user/internal"
