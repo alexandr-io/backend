@@ -11,12 +11,12 @@ service Metadata {
 
 message MetadataRequest {
   string Title = 1;
-  string Author = 2;
+  string Authors = 2;
 }
 
 message MetadataReply {
   string Title = 1;
-  string Author = 2;
+  string Authors = 2;
   string Publisher = 3;
   string PublishedDate = 4;
   string PageCount = 5;
