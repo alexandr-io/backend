@@ -22,12 +22,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
 
       - name: Paths Changes Filter
         uses: dorny/paths-filter@v2.9.0
         id: changes
         with:
-          initial-fetch-depth: 1
+          initial-fetch-depth: 2
           base: '${{ github.ref }}'
           filters: |
             microservice:
