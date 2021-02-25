@@ -23,7 +23,7 @@
     become_user: alexandrio
 
   - name: Create the Traefik Daemonset
-    shell: "kubectl apply -f /kubernetes/traefik/Traefik-Daemonset.yaml"
+    shell: "kubectl apply -f /kubernetes/traefik/Traefik.yaml"
     become: yes
     become_method: su
     become_user: alexandrio
