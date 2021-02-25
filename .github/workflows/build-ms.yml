@@ -32,8 +32,8 @@ jobs:
           filters: |
             microservice:
               - 'microservices/${{ matrix.microservice }}/app/**'
-            workflow:
-              - '${{ github.action_path }}'
+      #            workflow:
+      #              - '.github/workflows/build-ms.yml'
 
       - name: Build ${{ matrix.microservice }} image
         # Official docker action: https://github.com/docker/build-push-action
