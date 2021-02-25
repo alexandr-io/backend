@@ -7,7 +7,7 @@ on:
   push:
     paths:
       - '.github/workflows/build-ms.yml'  # if this workflow changes, re-run CI on all microservices
-      - 'microservices/${{ matrix.microservice }}/app/**'
+      - 'microservices/*/app/**'
     branches-ignore:
       - master
 
@@ -23,6 +23,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Paths Changes Filter
+        uses: dorny/paths-filter@v2.9.0
+        id: changes
+        with:
+          filters: |
+            microservice:
+              - '.github/workflows/build-ms.yml'
+              - 'microservices/${{ matrix.microservice }}/app/**'
+
       - name: Build Docker Image
         # Official docker action: https://github.com/docker/build-push-action
         uses: docker/build-push-action@v2.2.2
@@ -32,3 +41,4 @@ jobs:
           build-args: |
             microservice=${{ matrix.microservice }}
           push: false
+        if: steps.changes.outputs.microservices == 'true'
