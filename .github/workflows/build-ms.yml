@@ -42,4 +42,4 @@ jobs:
           build-args: |
             microservice=${{ matrix.microservice }}
           push: false
-        if: steps.changes.outputs.microservices == 'true' || steps.changes.outputs.microservices == 'true'
+        if: steps.changes.outputs.microservices == 'true' || steps.changes.outputs.workflow == 'true'
