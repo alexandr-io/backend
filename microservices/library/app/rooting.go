@@ -25,6 +25,8 @@ func createRoute(app *fiber.App) {
 		},
 	}))
 
+	app.Get("/metadata", userMiddleware.Protected(), handlers.MetadataRetrieve)
+
 	app.Get("/library/list", userMiddleware.Protected(), handlers.LibrariesRetrieve)
 
 	app.Post("/library", userMiddleware.Protected(), handlers.LibraryCreation)

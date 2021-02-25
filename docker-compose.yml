@@ -141,14 +141,13 @@ services:
   metadata:
     container_name: metadata
     build:
-      context: microservices/metadata/app
-      dockerfile: Dockerfile
-    depends_on:
-      - broker
-    environment:
-      KAFKA_URL: 'broker:29092'
+      context: .
+      dockerfile: dockerfiles/Dockerfile-dev-python
+      args:
+        microservice: metadata
     env_file: .env-dev
-    restart: unless-stopped
+    volumes:
+      - "./grpc:/grpc"
 
   # Doc service
   doc:
@@ -180,6 +179,7 @@ services:
       MONGO_URL: mongodb
       KAFKA_URL: 'broker:29092'
       AUTH_URL: auth
+      METADATA_URL: metadata
     ports:
       - "3002:3000"
     volumes:
