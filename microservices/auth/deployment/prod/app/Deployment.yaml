@@ -52,6 +52,17 @@ spec:
                 name: mongo-secret
                 key: password
 
+          - name: USER_URL
+            valueFrom:
+              configMapKeyRef:
+                name: microservicesDNS
+                key: USER_URL
+          - name: GRPC_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: gRPCPort
+                key: PORT
+
       imagePullSecrets:
       - name: regcred
 
