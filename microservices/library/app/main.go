@@ -19,7 +19,6 @@ import (
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.Println("Library Service started")
-	log.Println("Library Service started") // TODO: temp
 
 	// MongoDB
 	database.ConnectToMongo()
