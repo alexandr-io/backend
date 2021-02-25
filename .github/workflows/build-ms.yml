@@ -4,10 +4,12 @@
 name: Microservice CI Build
 
 on:
-  pull_request:
+  push:
     paths:
       - '.github/workflows/build-ms.yml'  # if this workflow changes, re-run CI on all microservices
       - 'microservices/*/app/**'
+    branches-ignore:
+      - master
 
 jobs:
   build:
@@ -26,7 +28,7 @@ jobs:
         id: changes
         with:
           initial-fetch-depth: 1
-          base: '${{ github.head_ref }}'
+          base: '${{ github.ref }}'
           filters: |
             microservice:
               - 'microservices/${{ matrix.microservice }}/app/**'
