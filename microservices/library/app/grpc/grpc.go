@@ -6,15 +6,15 @@ import (
 
 	grpcauth "github.com/alexandr-io/backend/grpc/auth"
 	grpcmetadata "github.com/alexandr-io/backend/grpc/metadata"
-	
+
 	"google.golang.org/grpc"
 )
 
 var (
-	authConnection *grpc.ClientConn
+	authConnection     *grpc.ClientConn
 	metadataConnection *grpc.ClientConn
 
-	authClient grpcauth.AuthClient
+	authClient     grpcauth.AuthClient
 	metadataClient grpcmetadata.MetadataClient
 )
 
@@ -26,7 +26,7 @@ func initClients() {
 
 	authClient = grpcauth.NewAuthClient(authConnection)
 	log.Println("[gRPC]: auth client created")
-	
+
 	metadataConnection, err := grpc.Dial(os.Getenv("METADATA_URL")+":"+os.Getenv("GRPC_PORT"), grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		log.Fatalf("[gRPC]: metadata did not connect: %v", err)

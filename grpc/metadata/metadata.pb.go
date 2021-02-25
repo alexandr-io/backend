@@ -95,7 +95,7 @@ type MetadataReply struct {
 	MaturityRating string `protobuf:"bytes,7,opt,name=MaturityRating,proto3" json:"MaturityRating,omitempty"`
 	Language       string `protobuf:"bytes,8,opt,name=Language,proto3" json:"Language,omitempty"`
 	ImageLinks     string `protobuf:"bytes,9,opt,name=ImageLinks,proto3" json:"ImageLinks,omitempty"`
-	Description   string `protobuf:"bytes,10,opt,name=Description,proto3" json:"Description,omitempty"`
+	Description    string `protobuf:"bytes,10,opt,name=Description,proto3" json:"Description,omitempty"`
 }
 
 func (x *MetadataReply) Reset() {
