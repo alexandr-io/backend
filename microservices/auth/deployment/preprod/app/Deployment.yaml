@@ -55,12 +55,12 @@ spec:
           - name: USER_URL
             valueFrom:
               configMapKeyRef:
-                name: microservicesDNS
+                name: microservices-dns
                 key: USER_URL
           - name: GRPC_PORT
             valueFrom:
               configMapKeyRef:
-                name: gRPCPort
+                name: grpc-port
                 key: PORT
 
       imagePullSecrets:
