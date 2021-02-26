@@ -69,7 +69,7 @@ grep -v '^ *#' < configs.txt | while IFS= read -r config
 do
     # Installing configs one by one
     echo "\033[0;33mInstalling configuration for $config...\033[0m"
-    for file in /kubernetes/configs/"$config"/"$hostType"/**/*.yaml
+    for file in /kubernetes/configs/"$config"/"$hostType"/*.yaml
     do
         echo "\033[0;33mFind file ""$file"" to apply\033[0m"
         sed "s/<namespace>/$1/g" "$file" | kubectl apply -f -
