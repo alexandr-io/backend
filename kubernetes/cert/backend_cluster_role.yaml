@@ -1,0 +1,14 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: backend
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "services", "secrets", "pods/log", "pods/portforward", "namespaces", "serviceaccounts", "endpoints"]
+    verbs: ["create", "get", "update", "list", "delete"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses"]
+    verbs: ["create", "get", "update", "list", "delete"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "daemonsets"]
+    verbs: ["create", "get", "update", "list", "delete", "patch"]

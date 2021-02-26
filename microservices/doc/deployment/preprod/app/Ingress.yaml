@@ -1,17 +1,17 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
-  name: ingress
+  name: ingressroutetls
   namespace: doc
 spec:
-  rules:
-  - host: doc.preprod.alexandrio.cloud
-    http:
-      paths:
-      - pathType: Prefix
-        path: /
-        backend:
-          service:
-            name: api
-            port:
-              number: 80
+  entryPoints:
+    - websecure
+    - web
+  routes:
+    - match: Host(`doc.preprod.alexandrio.cloud`)
+      kind: Rule
+      services:
+        - name: api
+          port: 80
+  tls:
+    certResolver: myresolver
