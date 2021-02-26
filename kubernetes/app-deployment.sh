@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 # /kubernetes is the folder with every k8s config files for every micro services.
 echo "\033[0;33mMoving on the /kubernetes folder...\033[0m"
 cd /kubernetes || exit
