@@ -3,13 +3,14 @@ package user
 import (
 	"context"
 	"errors"
-	"github.com/gofiber/fiber/v2"
 	"time"
 
 	"github.com/alexandr-io/backend/user/data"
 	"github.com/alexandr-io/backend/user/database"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 // Insert insert a new user into the database.

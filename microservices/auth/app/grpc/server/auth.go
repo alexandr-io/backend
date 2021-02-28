@@ -3,9 +3,9 @@ package server
 import (
 	"context"
 	"fmt"
-	"github.com/alexandr-io/backend/common/regex"
 
 	"github.com/alexandr-io/backend/auth/internal"
+	"github.com/alexandr-io/backend/common/regex"
 	"github.com/alexandr-io/backend/grpc"
 	grpcauth "github.com/alexandr-io/backend/grpc/auth"
 )

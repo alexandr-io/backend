@@ -3,6 +3,7 @@ package grpcclient
 import (
 	"context"
 	"fmt"
+
 	"github.com/alexandr-io/backend/auth/data"
 	"github.com/alexandr-io/backend/common/regex"
 	"github.com/alexandr-io/backend/grpc"

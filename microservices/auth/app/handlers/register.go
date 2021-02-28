@@ -1,11 +1,11 @@
 package handlers
 
 import (
-	grpcclient "github.com/alexandr-io/backend/auth/grpc/client"
 	"time"
 
 	"github.com/alexandr-io/backend/auth/data"
 	"github.com/alexandr-io/backend/auth/database/invitation"
+	grpcclient "github.com/alexandr-io/backend/auth/grpc/client"
 	authJWT "github.com/alexandr-io/backend/auth/jwt"
 	"github.com/alexandr-io/backend/auth/kafka/producers"
 

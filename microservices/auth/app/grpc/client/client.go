@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	// gRPC connection to user MS
+	// UserConnection is the gRPC connection to user MS
 	UserConnection *grpc.ClientConn
 
 	userClient grpcuser.UserClient

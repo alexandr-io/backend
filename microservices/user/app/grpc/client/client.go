@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	// gRPC connection to auth MS
+	// AuthConnection is the gRPC connection to auth MS
 	AuthConnection *grpc.ClientConn
 
 	authClient grpcauth.AuthClient
