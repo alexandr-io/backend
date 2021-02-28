@@ -4,7 +4,10 @@ go 1.15
 
 replace github.com/alexandr-io/backend/grpc => ../../../grpc
 
+replace github.com/alexandr-io/backend/common => ../../../common
+
 require (
+	github.com/alexandr-io/backend/common v0.0.0-00010101000000-000000000000
 	github.com/alexandr-io/backend/grpc v0.0.0-00010101000000-000000000000
 	github.com/alexandr-io/berrors v1.2.7
 	github.com/andybalholm/brotli v1.0.1 // indirect

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/alexandr-io/backend/common/regex"
 	"github.com/alexandr-io/backend/grpc"
 	grpcauth "github.com/alexandr-io/backend/grpc/auth"
 	"github.com/alexandr-io/backend/user/data"
@@ -18,7 +19,7 @@ func Auth(ctx context.Context, jwt string) (*data.User, error) {
 	}
 
 	authRequest := grpcauth.AuthRequest{JWT: jwt}
-	fmt.Printf("[gRPC]: Auth send: %+v\n", authRequest.String())
+	fmt.Printf("[gRPC]: Auth send: %+v\n", regex.Hide(authRequest.String()))
 	authReply, err := authClient.Auth(ctx, &authRequest)
 	if err != nil {
 		return nil, grpc.ErrorToFiber(err)

@@ -3,6 +3,7 @@ package grpcclient
 import (
 	"context"
 	"fmt"
+	"github.com/alexandr-io/backend/common/regex"
 
 	"github.com/alexandr-io/backend/auth/data"
 	"github.com/alexandr-io/backend/grpc"
@@ -21,7 +22,7 @@ func UpdatePassword(ctx context.Context, id string, password string) (*data.User
 		ID:       id,
 		Password: password,
 	}
-	fmt.Printf("[gRPC]: Update password sent: %+v\n", updatePasswordRequest.String())
+	fmt.Printf("[gRPC]: Update password sent: %+v\n", regex.Hide(updatePasswordRequest.String()))
 	userReply, err := userClient.UpdatePassword(ctx, &updatePasswordRequest)
 	if err != nil {
 		return nil, grpc.ErrorToFiber(err)

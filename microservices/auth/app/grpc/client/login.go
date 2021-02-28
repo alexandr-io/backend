@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/alexandr-io/backend/auth/data"
+	"github.com/alexandr-io/backend/common/regex"
 	"github.com/alexandr-io/backend/grpc"
 	grpcuser "github.com/alexandr-io/backend/grpc/user"
 
@@ -21,7 +22,7 @@ func Login(ctx context.Context, login data.UserLogin) (*data.User, error) {
 		Login:    login.Login,
 		Password: login.Password,
 	}
-	fmt.Printf("[gRPC]: Login sent: %+v\n", loginRequest.String())
+	fmt.Printf("[gRPC]: Login sent: %+v\n", regex.Hide(loginRequest.String()))
 	userReply, err := userClient.Login(ctx, &loginRequest)
 	if err != nil {
 		return nil, grpc.ErrorToFiber(err)

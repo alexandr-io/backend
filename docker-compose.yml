@@ -85,6 +85,7 @@ services:
     volumes:
       - "./microservices/user/app:/microservices/user/app"
       - "./grpc:/grpc"
+      - "./common:/common"
 
   # Auth service
   auth:
@@ -109,6 +110,7 @@ services:
     volumes:
       - "./microservices/auth/app:/microservices/auth/app"
       - "./grpc:/grpc"
+      - "./common:/common"
 
   # Media service
   media:

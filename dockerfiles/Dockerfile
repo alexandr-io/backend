@@ -22,6 +22,8 @@ RUN go mod download
 
 COPY ./${path}/ ./
 COPY grpc/ /grpc/
+COPY common/ /common/
+
 
 RUN go build -a -tags musl -installsuffix cgo -ldflags '-extldflags "-static"' -o service-binary .
 

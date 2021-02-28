@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/alexandr-io/backend/auth/data"
+	"github.com/alexandr-io/backend/common/regex"
 	"github.com/alexandr-io/backend/grpc"
 	grpcuser "github.com/alexandr-io/backend/grpc/user"
 
@@ -21,7 +22,7 @@ func Register(ctx context.Context, register data.UserRegister) (*data.User, erro
 		Email:    register.Email,
 		Password: register.Password,
 	}
-	fmt.Printf("[gRPC]: Register sent: %+v\n", registerRequest.String())
+	fmt.Printf("[gRPC]: Register sent: %+v\n", regex.Hide(registerRequest.String()))
 	userReply, err := userClient.Register(ctx, &registerRequest)
 	if err != nil {
 		return nil, grpc.ErrorToFiber(err)

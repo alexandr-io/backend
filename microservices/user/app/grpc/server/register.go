@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"github.com/alexandr-io/backend/common/regex"
 	"github.com/alexandr-io/backend/user/data"
 
 	"github.com/alexandr-io/backend/grpc"
@@ -12,7 +13,7 @@ import (
 
 // Register is a gRPC server method that take user infos and create a new entry in DB
 func (s *server) Register(_ context.Context, in *grpcuser.RegisterRequest) (*grpcuser.UserReply, error) {
-	fmt.Printf("[gRPC]: Register received: %+v\n", in)
+	fmt.Printf("[gRPC]: Register received: %+v\n", regex.Hide(in.String()))
 	user, err := internal.Register(data.User{
 		Username: in.GetUsername(),
 		Email:    in.GetEmail(),
