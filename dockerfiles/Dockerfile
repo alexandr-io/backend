@@ -18,7 +18,7 @@ WORKDIR /${path}
 
 COPY ./${path}/go.mod ./${path}/go.sum ./${path}/data*/go.mod* ./${path}/data*/go.sum* ./
 COPY grpc/go.mod /grpc/
-COPY common/go.mod /commom/
+COPY common/go.mod /common/
 RUN go mod download
 
 COPY ./${path}/ ./
