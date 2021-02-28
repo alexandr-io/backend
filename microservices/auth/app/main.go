@@ -10,7 +10,6 @@ import (
 
 	"github.com/alexandr-io/backend/auth/database"
 	"github.com/alexandr-io/backend/auth/grpc"
-	"github.com/alexandr-io/backend/auth/kafka/consumers"
 	"github.com/alexandr-io/backend/auth/kafka/producers"
 
 	"github.com/gofiber/fiber/v2"
@@ -36,7 +35,6 @@ func main() {
 	})
 	createRoute(app)
 
-	consumers.StartConsumers()
 	for producers.CreateTopics() != nil {
 	}
 

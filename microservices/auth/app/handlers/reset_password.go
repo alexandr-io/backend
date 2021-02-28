@@ -100,8 +100,7 @@ func ResetPassword(ctx *fiber.Ctx) error {
 	// Hash new password
 	password := hashAndSalt(resetData.NewPassword)
 
-	// Kafka update user password
-	kafkaUser, err := producers.UpdatePasswordRequestHandler(data.KafkaUpdatePassword{ID: userID, Password: password})
+	userData, err := grpcclient.UpdatePassword(ctx.Context(), userID, password)
 	if err != nil {
 		return err
 	}
@@ -112,8 +111,8 @@ func ResetPassword(ctx *fiber.Ctx) error {
 		return err
 	}
 	user := data.User{
-		Username:     kafkaUser.Username,
-		Email:        kafkaUser.Email,
+		Username:     userData.Username,
+		Email:        userData.Email,
 		AuthToken:    authToken,
 		RefreshToken: refreshToken,
 	}

@@ -14,13 +14,11 @@ import (
 func (s *server) Register(_ context.Context, in *grpcuser.RegisterRequest) (*grpcuser.UserReply, error) {
 	fmt.Printf("[gRPC]: Register received: %+v\n", in)
 	user, err := internal.Register(data.User{
-		Username: in.Username,
-		Email:    in.Email,
-		Password: in.Password,
+		Username: in.GetUsername(),
+		Email:    in.GetEmail(),
+		Password: in.GetPassword(),
 	})
 	if err != nil {
-		fmt.Println(err)
-		fmt.Println(err.Error())
 		return nil, grpc.FiberErrorToGRPC(err)
 	}
 

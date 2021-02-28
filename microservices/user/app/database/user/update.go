@@ -18,7 +18,7 @@ func Update(id string, user data.User) (*data.User, error) {
 	// Transform ID to bson id object
 	userObjectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return nil, err
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
 	// Update data

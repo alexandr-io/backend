@@ -3,18 +3,15 @@ package internal
 import (
 	"github.com/alexandr-io/backend/user/data"
 	"github.com/alexandr-io/backend/user/database/user"
-	"github.com/alexandr-io/backend/user/kafka/producers"
-
-	"github.com/gofiber/fiber/v2"
 )
 
 // UpdatePassword is the internal logic function used to update the password of an user.
-func UpdatePassword(key string, message data.KafkaUpdatePassword) error {
-	userDB, err := user.Update(message.ID, data.User{
-		Password: message.Password,
+func UpdatePassword(id string, password string) (*data.User, error) {
+	userData, err := user.Update(id, data.User{
+		Password: password,
 	})
 	if err != nil {
-		return producers.SendInternalErrorUpdatePasswordMessage(key, err.Error())
+		return nil, err
 	}
-	return producers.SendSuccessUpdatePasswordMessage(key, fiber.StatusOK, *userDB)
+	return userData, nil
 }

@@ -10,8 +10,6 @@ import (
 
 	"github.com/alexandr-io/backend/user/database"
 	"github.com/alexandr-io/backend/user/grpc"
-	"github.com/alexandr-io/backend/user/kafka/consumers"
-	"github.com/alexandr-io/backend/user/kafka/producers"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -28,10 +26,6 @@ func main() {
 	// gRPC
 	grpc.InitGRPC()
 	defer grpc.CloseGRPC()
-
-	consumers.StartConsumers()
-	for producers.CreateTopics() != nil {
-	}
 
 	// Create a new fiber instance with custom config
 	app := fiber.New(fiber.Config{

@@ -23,8 +23,10 @@ type UserClient interface {
 	User(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserReply, error)
 	// Login is used to retrieve a user by it's login(email or username) and password.
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*UserReply, error)
-	// Register is used create a user.
+	// Register is used to create a user.
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*UserReply, error)
+	// UpdatePassword change a user's password in DB.
+	UpdatePassword(ctx context.Context, in *UpdatePasswordRequest, opts ...grpc.CallOption) (*UserReply, error)
 }
 
 type userClient struct {
@@ -62,6 +64,15 @@ func (c *userClient) Register(ctx context.Context, in *RegisterRequest, opts ...
 	return out, nil
 }
 
+func (c *userClient) UpdatePassword(ctx context.Context, in *UpdatePasswordRequest, opts ...grpc.CallOption) (*UserReply, error) {
+	out := new(UserReply)
+	err := c.cc.Invoke(ctx, "/user.User/UpdatePassword", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -70,8 +81,10 @@ type UserServer interface {
 	User(context.Context, *UserRequest) (*UserReply, error)
 	// Login is used to retrieve a user by it's login(email or username) and password.
 	Login(context.Context, *LoginRequest) (*UserReply, error)
-	// Register is used create a user.
+	// Register is used to create a user.
 	Register(context.Context, *RegisterRequest) (*UserReply, error)
+	// UpdatePassword change a user's password in DB.
+	UpdatePassword(context.Context, *UpdatePasswordRequest) (*UserReply, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -87,6 +100,9 @@ func (UnimplementedUserServer) Login(context.Context, *LoginRequest) (*UserReply
 }
 func (UnimplementedUserServer) Register(context.Context, *RegisterRequest) (*UserReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
+}
+func (UnimplementedUserServer) UpdatePassword(context.Context, *UpdatePasswordRequest) (*UserReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePassword not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -155,6 +171,24 @@ func _User_Register_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_UpdatePassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdatePasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UpdatePassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.User/UpdatePassword",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UpdatePassword(ctx, req.(*UpdatePasswordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -173,6 +207,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Register",
 			Handler:    _User_Register_Handler,
+		},
+		{
+			MethodName: "UpdatePassword",
+			Handler:    _User_UpdatePassword_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
