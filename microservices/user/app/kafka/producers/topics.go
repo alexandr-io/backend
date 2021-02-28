@@ -35,35 +35,6 @@ func (topic *Topic) ToTopicSpecification() kafka.TopicSpecification {
 }
 
 var (
-	// OLD: registerResponse = "register-response"
-	registerResponse = Topic{
-		Name:              "user.register.response",
-		RetentionMS:       1000 * 15,
-		NumPartitions:     1,
-		ReplicationFactor: 1,
-	}
-	// OLD: loginResponse    = "login-response"
-	loginResponse = Topic{
-		Name:              "user.login.response",
-		RetentionMS:       1000 * 15,
-		NumPartitions:     1,
-		ReplicationFactor: 1,
-	}
-	// OLD: userResponse     = "user-response"
-	userResponse = Topic{
-		Name:              "user.retrieve.response",
-		RetentionMS:       900000, // 15min
-		NumPartitions:     1,
-		ReplicationFactor: 1,
-	}
-	// OLD: authRequest      = "auth"
-	authRequest = Topic{
-		Name:              "auth.token",
-		RetentionMS:       1000 * 15,
-		NumPartitions:     1,
-		ReplicationFactor: 1,
-	}
-
 	updatePasswordResponse = Topic{
 		Name:              "user.password.update.response",
 		RetentionMS:       1000 * 15,
@@ -91,10 +62,6 @@ func CreateTopics() error {
 	results, err := client.CreateTopics(
 		ctx,
 		[]kafka.TopicSpecification{
-			registerResponse.ToTopicSpecification(),
-			loginResponse.ToTopicSpecification(),
-			userResponse.ToTopicSpecification(),
-			authRequest.ToTopicSpecification(),
 			updatePasswordResponse.ToTopicSpecification(),
 		},
 		kafka.SetAdminOperationTimeout(durationBeforeTimeout))

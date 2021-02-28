@@ -2,7 +2,8 @@ package middleware
 
 import (
 	"github.com/alexandr-io/backend/user/data"
-	"github.com/alexandr-io/backend/user/grpc"
+	grpcclient "github.com/alexandr-io/backend/user/grpc/client"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -24,7 +25,7 @@ func Protected() func(*fiber.Ctx) error {
 		if err != nil {
 			return err
 		}
-		user, err := grpc.Auth(ctx.Context(), token)
+		user, err := grpcclient.Auth(ctx.Context(), token)
 		if err != nil {
 			return err
 		}

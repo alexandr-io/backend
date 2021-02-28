@@ -9,6 +9,8 @@ service User {
   rpc User (UserRequest) returns (UserReply) {}
   // Login is used to retrieve a user by it's login(email or username) and password.
   rpc Login (LoginRequest) returns (UserReply) {}
+  // Register is used create a user.
+  rpc Register (RegisterRequest) returns (UserReply) {}
 }
 
 // Only one field must be filled. If both are sent, the user will be retrieved by it's ID.
@@ -26,4 +28,10 @@ message UserReply {
 message LoginRequest {
   string Login = 1; // Login is a username or an email
   string Password = 2; // The password must be send hashed
+}
+
+message RegisterRequest {
+  string Username = 1;
+  string Email = 2;
+  string Password = 3; // The password must be send hashed
 }

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	grpcclient "github.com/alexandr-io/backend/auth/grpc/client"
 	"time"
 
 	"github.com/alexandr-io/backend/auth/data"
@@ -40,34 +41,34 @@ func Register(ctx *fiber.Ctx) error {
 
 	userRegister.Password = hashAndSalt(userRegister.Password)
 
-	kafkaUser, err := producers.RegisterRequestHandler(userRegister)
+	userData, err := grpcclient.Register(ctx.Context(), userRegister)
 	if err != nil {
 		return err
 	}
 
 	// Create the libraries of the user on the library MS
 	userRegisterLibraries := data.KafkaLibrariesCreationMessage{
-		UserID: kafkaUser.ID,
+		UserID: userData.ID,
 	}
 	if err := producers.CreateUserLibrariesRequestHandler(userRegisterLibraries); err != nil {
 		return err
 	}
 
 	// Create auth and refresh token
-	refreshToken, authToken, err := authJWT.GenerateNewRefreshTokenAndAuthToken(ctx, kafkaUser.ID)
+	refreshToken, authToken, err := authJWT.GenerateNewRefreshTokenAndAuthToken(ctx, userData.ID)
 	if err != nil {
 		return err
 	}
 	user := data.User{
-		Username:     kafkaUser.Username,
-		Email:        kafkaUser.Email,
+		Username:     userData.Username,
+		Email:        userData.Email,
 		AuthToken:    authToken,
 		RefreshToken: refreshToken,
 	}
 
 	// Update the invitation data in db
 	timeNow := time.Now()
-	userID, err := primitive.ObjectIDFromHex(kafkaUser.ID)
+	userID, err := primitive.ObjectIDFromHex(userData.ID)
 	if err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}

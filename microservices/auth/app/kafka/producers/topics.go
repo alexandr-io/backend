@@ -35,43 +35,11 @@ func (topic *Topic) ToTopicSpecification() kafka.TopicSpecification {
 }
 
 var (
-	// OLD: registerRequest  = "register"
-	registerRequest = Topic{
-		Name:              "user.register",
-		RetentionMS:       1000 * 15, // Topic kept for 5 seconds before deletion
-		NumPartitions:     1,
-		ReplicationFactor: 1,
-	}
-
-	// OLD: loginRequest     = "login"
-	loginRequest = Topic{
-		Name:              "user.login",
-		RetentionMS:       1000 * 15, // Topic kept for 5 seconds before deletion
-		NumPartitions:     1,
-		ReplicationFactor: 1,
-	}
-
-	// OLD: userRequest      = "user"
-	userRequest = Topic{
-		Name:              "user.retrieve",
-		RetentionMS:       1000 * 15, // Topic kept for 5 seconds before deletion
-		NumPartitions:     1,
-		ReplicationFactor: 1,
-	}
-
 	// librariesRequest is the topic send to the library MS to create a user libraries object
 	// OLD: librariesRequest = "libraries-creation-request"
 	librariesRequest = Topic{
 		Name:              "library.libraries.create",
 		RetentionMS:       604800000, // 7d
-		NumPartitions:     1,
-		ReplicationFactor: 1,
-	}
-
-	// OLD: authResponse     = "auth-response"
-	authResponse = Topic{
-		Name:              "auth.token.response",
-		RetentionMS:       1000 * 15, // Topic kept for 5 seconds before deletion
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
@@ -109,11 +77,7 @@ func CreateTopics() error {
 	results, err := client.CreateTopics(
 		ctx,
 		[]kafka.TopicSpecification{
-			registerRequest.ToTopicSpecification(),
-			loginRequest.ToTopicSpecification(),
-			userRequest.ToTopicSpecification(),
 			librariesRequest.ToTopicSpecification(),
-			authResponse.ToTopicSpecification(),
 			updatePasswordRequest.ToTopicSpecification(),
 		},
 		kafka.SetAdminOperationTimeout(durationBeforeTimeout))
