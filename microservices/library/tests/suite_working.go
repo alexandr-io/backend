@@ -122,7 +122,7 @@ var workingTests = []test{
 		HTTPMethod:       http.MethodPost,
 		URL:              func() string { return "/library/" + libraryID + "/book/" + bookID + "/progress" },
 		AuthJWT:          &authToken,
-		Body:             data.APIProgressData{Progress: 42.42},
+		Body:             data.APIProgressData{Progress: 42},
 		ExpectedHTTPCode: http.StatusOK,
 		ExpectedResponse: nil,
 		CustomEndFunc:    nil,
@@ -137,7 +137,7 @@ var workingTests = []test{
 		ExpectedResponse: data.APIProgressData{
 			BookID:    bookID,
 			LibraryID: libraryID,
-			Progress:  42.42,
+			Progress:  42,
 		},
 		CustomEndFunc: nil,
 	},

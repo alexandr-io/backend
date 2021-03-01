@@ -220,7 +220,7 @@ var unauthorisedTests = []test{
 		URL:        func() string { return "/library/" + libraryID + "/book/" + bookInvalidID + "/progress" },
 		AuthJWT:    &authToken,
 		Body: data.APIProgressData{
-			Progress: 42.42,
+			Progress: 42,
 		},
 		ExpectedHTTPCode: http.StatusBadRequest,
 		ExpectedResponse: nil,
@@ -232,7 +232,7 @@ var unauthorisedTests = []test{
 		URL:        func() string { return "/library/" + libraryID + "/book/" + bookStrangerID + "/progress" },
 		AuthJWT:    &authToken,
 		Body: data.APIProgressData{
-			Progress: 42.42,
+			Progress: 42,
 		},
 		ExpectedHTTPCode: http.StatusNotFound,
 		ExpectedResponse: nil,

@@ -36,7 +36,7 @@ var badRequestTests = []test{
 		URL:        func() string { return "/library/0/book/0/progress" },
 		AuthJWT:    &authToken,
 		Body: data.APIProgressData{
-			Progress: -1.25,
+			Progress: 0,
 		},
 		ExpectedHTTPCode: http.StatusBadRequest,
 		ExpectedResponse: nil,
@@ -48,7 +48,7 @@ var badRequestTests = []test{
 		URL:        func() string { return "/library/0/book/0/progress" },
 		AuthJWT:    &authToken,
 		Body: data.APIProgressData{
-			Progress: 101.010,
+			Progress: 18446744073709551615,
 		},
 		ExpectedHTTPCode: http.StatusBadRequest,
 		ExpectedResponse: nil,

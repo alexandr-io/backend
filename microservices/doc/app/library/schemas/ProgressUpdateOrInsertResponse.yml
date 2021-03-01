@@ -20,8 +20,8 @@ components:
                 example: 5fbfe5[...]7076844
                 type: string
               progress:
-                description: 64-bits floating point number indicating progress in the book, in the range [0;100]
-                example: 42.42
+                description: 64-bits unsigned integer indicating progress in the book, in the range [0;18446744073709551615]
+                example: 42
                 type: float
               last_read_date:
                 description: ISO 8601 string that represents the date and time of last progress update
