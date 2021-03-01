@@ -4,6 +4,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// UserDataTypes is an array of all possible UserData types
 var UserDataTypes = [...]string{"bookmark", "highlight", "note"}
 
 // UserData defines the structure for a bookmark in the database
