@@ -1,4 +1,4 @@
-package user_data
+package userdata
 
 import (
 	"context"

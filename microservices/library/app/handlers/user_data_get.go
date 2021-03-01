@@ -3,7 +3,7 @@ package handlers
 import (
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database/library"
-	"github.com/alexandr-io/backend/library/database/user_data"
+	"github.com/alexandr-io/backend/library/database/userdata"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -38,7 +38,7 @@ func UserDataGet(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "User cannot access this book")
 	}
 
-	userData, err := user_data.Retrieve(ctx.Context(), userDataRetrieve.ID)
+	userData, err := userdata.Retrieve(ctx.Context(), userDataRetrieve.ID)
 	if err != nil {
 		return err
 	}
