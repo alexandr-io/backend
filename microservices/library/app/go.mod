@@ -14,7 +14,7 @@ require (
 	github.com/fatih/structtag v1.2.0
 	github.com/globalsign/mgo v0.0.0-20181015135952-eeefdecb41b8 // indirect
 	github.com/gofiber/fiber/v2 v2.5.0
-	github.com/google/uuid v1.1.2
+	github.com/golang/protobuf v1.4.3
 	github.com/kr/text v0.2.0 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	go.mongodb.org/mongo-driver v1.4.5

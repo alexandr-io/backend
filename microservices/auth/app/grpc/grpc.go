@@ -14,4 +14,5 @@ func InitGRPC() {
 // CloseGRPC close client connections
 func CloseGRPC() {
 	_ = grpcclient.UserConnection.Close()
+	_ = grpcclient.LibraryConnection.Close()
 }

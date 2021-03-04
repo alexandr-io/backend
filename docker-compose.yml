@@ -105,6 +105,7 @@ services:
       REDIS_URL: redis
       KAFKA_URL: 'broker:29092'
       USER_URL: user
+      LIBRARY_URL: library
     ports:
       - "3001:3000"
     volumes:

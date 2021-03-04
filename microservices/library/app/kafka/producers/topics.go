@@ -35,14 +35,6 @@ func (topic *Topic) ToTopicSpecification() kafka.TopicSpecification {
 }
 
 var (
-	// OLD: authRequest = "auth"
-	authRequest = Topic{
-		Name:              "auth.token",
-		RetentionMS:       1000 * 15,
-		NumPartitions:     1,
-		ReplicationFactor: 1,
-	}
-
 	libraryUploadAllowed = Topic{
 		Name:              "library.upload.allowed.response",
 		RetentionMS:       1000 * 15,
@@ -70,7 +62,6 @@ func CreateTopics() error {
 	results, err := client.CreateTopics(
 		ctx,
 		[]kafka.TopicSpecification{
-			authRequest.ToTopicSpecification(),
 			libraryUploadAllowed.ToTopicSpecification(),
 		},
 		kafka.SetAdminOperationTimeout(durationBeforeTimeout))

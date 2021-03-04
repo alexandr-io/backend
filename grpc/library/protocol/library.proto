@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option go_package = "github.com/alexandr-io/backend/grpc/grpclibrary";
+
+import "google/protobuf/empty.proto";
+
+package library;
+
+service Library {
+  // CreateLibrary is used to create the default library after a user creation
+  rpc CreateLibrary (CreateLibraryRequest) returns (google.protobuf.Empty) {}
+}
+
+message CreateLibraryRequest {
+  string UserID = 1;
+}

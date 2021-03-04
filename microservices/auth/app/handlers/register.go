@@ -7,8 +7,6 @@ import (
 	"github.com/alexandr-io/backend/auth/database/invitation"
 	grpcclient "github.com/alexandr-io/backend/auth/grpc/client"
 	authJWT "github.com/alexandr-io/backend/auth/jwt"
-	"github.com/alexandr-io/backend/auth/kafka/producers"
-
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -46,11 +44,7 @@ func Register(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	// Create the libraries of the user on the library MS
-	userRegisterLibraries := data.KafkaLibrariesCreationMessage{
-		UserID: userData.ID,
-	}
-	if err := producers.CreateUserLibrariesRequestHandler(userRegisterLibraries); err != nil {
+	if err := grpcclient.CreateLibrary(ctx.Context(), userData.ID); err != nil {
 		return err
 	}
 
