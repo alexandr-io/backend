@@ -1,11 +1,13 @@
 package client
 
 import (
-	grpcauth "github.com/alexandr-io/backend/grpc/auth"
-	grpcmetadata "github.com/alexandr-io/backend/grpc/metadata"
-	"google.golang.org/grpc"
 	"log"
 	"os"
+
+	grpcauth "github.com/alexandr-io/backend/grpc/auth"
+	grpcmetadata "github.com/alexandr-io/backend/grpc/metadata"
+
+	"google.golang.org/grpc"
 )
 
 var (
@@ -18,6 +20,7 @@ var (
 	metadataClient grpcmetadata.MetadataClient
 )
 
+// InitClients init the gRPC clients
 func InitClients() {
 	var err error
 	AuthConnection, err = grpc.Dial(os.Getenv("AUTH_URL")+":"+os.Getenv("GRPC_PORT"), grpc.WithInsecure(), grpc.WithBlock())

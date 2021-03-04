@@ -1,10 +1,10 @@
 package grpcclient
 
 import (
-	grpclibrary "github.com/alexandr-io/backend/grpc/library"
 	"log"
 	"os"
 
+	grpclibrary "github.com/alexandr-io/backend/grpc/library"
 	grpcuser "github.com/alexandr-io/backend/grpc/user"
 
 	"google.golang.org/grpc"
