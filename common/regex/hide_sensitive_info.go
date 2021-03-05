@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// used to get the string after password or jwt or refreshtoken in a string (non case sensitive)
 var pattern = regexp.MustCompile(`(?im)(password|jwt|refreshtoken?\s*[:=]\s*)([^\s]+)`)
 
 // Hide hide password, jwt and refresh token from the given string. Replaced by ****

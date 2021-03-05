@@ -7,6 +7,7 @@ import (
 	"github.com/alexandr-io/backend/grpc"
 	grpclibrary "github.com/alexandr-io/backend/grpc/library"
 	"github.com/alexandr-io/backend/library/internal"
+
 	"github.com/golang/protobuf/ptypes/empty"
 )
 

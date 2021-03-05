@@ -29,16 +29,16 @@ message UserReply {
 
 message LoginRequest {
   string Login = 1; // Login is a username or an email
-  string Password = 2; // The password must be send hashed
+  string Password = 2; // The password must be sent hashed
 }
 
 message RegisterRequest {
   string Username = 1;
   string Email = 2;
-  string Password = 3; // The password must be send hashed
+  string Password = 3; // The password must be sent hashed
 }
 
 message UpdatePasswordRequest {
   string ID = 1;
-  string Password = 2; // The password must be send hashed
+  string Password = 2; // The password must be sent hashed
 }
