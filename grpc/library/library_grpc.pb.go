@@ -22,6 +22,8 @@ const _ = grpc.SupportPackageIsVersion7
 type LibraryClient interface {
 	// CreateLibrary is used to create the default library after a user creation
 	CreateLibrary(ctx context.Context, in *CreateLibraryRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// UploadAuthorization check if a user can upload a book to a library
+	UploadAuthorization(ctx context.Context, in *UploadAuthorizationRequest, opts ...grpc.CallOption) (*UploadAuthorizationReply, error)
 }
 
 type libraryClient struct {
@@ -41,12 +43,23 @@ func (c *libraryClient) CreateLibrary(ctx context.Context, in *CreateLibraryRequ
 	return out, nil
 }
 
+func (c *libraryClient) UploadAuthorization(ctx context.Context, in *UploadAuthorizationRequest, opts ...grpc.CallOption) (*UploadAuthorizationReply, error) {
+	out := new(UploadAuthorizationReply)
+	err := c.cc.Invoke(ctx, "/library.Library/UploadAuthorization", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LibraryServer is the server API for Library service.
 // All implementations must embed UnimplementedLibraryServer
 // for forward compatibility
 type LibraryServer interface {
 	// CreateLibrary is used to create the default library after a user creation
 	CreateLibrary(context.Context, *CreateLibraryRequest) (*emptypb.Empty, error)
+	// UploadAuthorization check if a user can upload a book to a library
+	UploadAuthorization(context.Context, *UploadAuthorizationRequest) (*UploadAuthorizationReply, error)
 	mustEmbedUnimplementedLibraryServer()
 }
 
@@ -56,6 +69,9 @@ type UnimplementedLibraryServer struct {
 
 func (UnimplementedLibraryServer) CreateLibrary(context.Context, *CreateLibraryRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateLibrary not implemented")
+}
+func (UnimplementedLibraryServer) UploadAuthorization(context.Context, *UploadAuthorizationRequest) (*UploadAuthorizationReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UploadAuthorization not implemented")
 }
 func (UnimplementedLibraryServer) mustEmbedUnimplementedLibraryServer() {}
 
@@ -88,6 +104,24 @@ func _Library_CreateLibrary_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Library_UploadAuthorization_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UploadAuthorizationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LibraryServer).UploadAuthorization(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/library.Library/UploadAuthorization",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LibraryServer).UploadAuthorization(ctx, req.(*UploadAuthorizationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Library_ServiceDesc is the grpc.ServiceDesc for Library service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +132,10 @@ var Library_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateLibrary",
 			Handler:    _Library_CreateLibrary_Handler,
+		},
+		{
+			MethodName: "UploadAuthorization",
+			Handler:    _Library_UploadAuthorization_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -1,4 +1,4 @@
-package grpc
+package client
 
 import (
 	"context"
@@ -18,7 +18,7 @@ func Auth(ctx context.Context, jwt string) (*data.User, error) {
 	}
 
 	authRequest := grpcauth.AuthRequest{JWT: jwt}
-	fmt.Printf("[gRPC]: Auth send: %+v\n", authRequest.String())
+	fmt.Printf("[gRPC]: Auth sent: %+v\n", authRequest.String())
 	authReply, err := authClient.Auth(ctx, &authRequest)
 	if err != nil {
 		return nil, grpc.ErrorToFiber(err)

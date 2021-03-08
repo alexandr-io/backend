@@ -9,8 +9,19 @@ package library;
 service Library {
   // CreateLibrary is used to create the default library after a user creation
   rpc CreateLibrary (CreateLibraryRequest) returns (google.protobuf.Empty) {}
+  // UploadAuthorization check if a user can upload a book to a library
+  rpc UploadAuthorization (UploadAuthorizationRequest) returns (UploadAuthorizationReply) {}
 }
 
 message CreateLibraryRequest {
   string UserID = 1;
+}
+
+message UploadAuthorizationRequest {
+  string UserID = 1;
+  string LibraryID = 3;
+}
+
+message UploadAuthorizationReply {
+  bool Authorized = 1;
 }

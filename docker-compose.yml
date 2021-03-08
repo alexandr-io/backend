@@ -131,6 +131,7 @@ services:
       MEDIA_URI: 'file'
       MONGO_URL: mongodb
       AUTH_URL: auth
+      LIBRARY_URL: library
     ports:
       - "4001:3000"
     volumes:

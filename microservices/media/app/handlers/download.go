@@ -1,13 +1,12 @@
 package handlers
 
 import (
+	grpcclient "github.com/alexandr-io/backend/media/grpc/client"
 	"path"
 
 	"github.com/alexandr-io/backend/media/data"
 	"github.com/alexandr-io/backend/media/database/book"
 	"github.com/alexandr-io/backend/media/internal"
-	"github.com/alexandr-io/backend/media/kafka/producers"
-
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -18,7 +17,7 @@ func DownloadBook(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	if isAllowed, err := producers.LibraryUploadAuthorizationRequestHandler(bookDB, string(ctx.Request().Header.Peek("ID"))); err != nil {
+	if isAllowed, err := grpcclient.UploadAuthorization(ctx.Context(), string(ctx.Request().Header.Peek("ID")), bookDB.LibraryID); err != nil {
 		return err
 	} else if !isAllowed {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "Not authorized")
