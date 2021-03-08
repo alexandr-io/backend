@@ -3,10 +3,10 @@ package grpcclient
 import (
 	"context"
 	"fmt"
-	grpcemail "github.com/alexandr-io/backend/grpc/email"
 
 	"github.com/alexandr-io/backend/auth/data"
 	"github.com/alexandr-io/backend/grpc"
+	grpcemail "github.com/alexandr-io/backend/grpc/email"
 
 	"github.com/gofiber/fiber/v2"
 )

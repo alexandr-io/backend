@@ -6,12 +6,12 @@ package main
 
 import (
 	"crypto/tls"
-	"github.com/alexandr-io/backend/mail/grpc"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
 
+	"github.com/alexandr-io/backend/mail/grpc"
 	"github.com/alexandr-io/backend/mail/internal"
 
 	"github.com/matcornic/hermes/v2"

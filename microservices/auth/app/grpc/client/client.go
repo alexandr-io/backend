@@ -1,10 +1,10 @@
 package grpcclient
 
 import (
-	grpcemail "github.com/alexandr-io/backend/grpc/email"
 	"log"
 	"os"
 
+	grpcemail "github.com/alexandr-io/backend/grpc/email"
 	grpclibrary "github.com/alexandr-io/backend/grpc/library"
 	grpcuser "github.com/alexandr-io/backend/grpc/user"
 

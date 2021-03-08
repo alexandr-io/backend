@@ -1,14 +1,15 @@
 package handlers
 
 import (
-	grpcclient "github.com/alexandr-io/backend/media/grpc/client"
 	"io/ioutil"
 	"os"
 	"path"
 
 	"github.com/alexandr-io/backend/media/data"
 	"github.com/alexandr-io/backend/media/database/book"
+	grpcclient "github.com/alexandr-io/backend/media/grpc/client"
 	"github.com/alexandr-io/backend/media/internal"
+
 	"github.com/gofiber/fiber/v2"
 )
 
