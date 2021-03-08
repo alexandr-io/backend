@@ -12,7 +12,6 @@ require (
 	github.com/alexandr-io/berrors v1.2.7
 	github.com/andybalholm/brotli v1.0.1 // indirect
 	github.com/aws/aws-sdk-go v1.35.35 // indirect
-	github.com/confluentinc/confluent-kafka-go v1.5.2
 	github.com/fatih/structtag v1.2.0
 	github.com/gofiber/fiber/v2 v2.5.0
 	github.com/golang/snappy v0.0.2 // indirect

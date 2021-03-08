@@ -6,13 +6,13 @@ package main
 
 import (
 	"crypto/tls"
+	"github.com/alexandr-io/backend/mail/grpc"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/alexandr-io/backend/mail/internal"
-	"github.com/alexandr-io/backend/mail/kafka/consumers"
 
 	"github.com/matcornic/hermes/v2"
 	"github.com/sendgrid/rest"
@@ -36,7 +36,6 @@ func main() {
 			Copyright: "Copyright © " + strconv.Itoa(time.Now().Year()) + " Alexandrio. All rights reserved.",
 		},
 	}
-	for consumers.CreateTopics() != nil {
-	}
-	consumers.ConsumeEmailRequestMessages()
+
+	grpc.InitGRPC()
 }

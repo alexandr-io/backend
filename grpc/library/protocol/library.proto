@@ -19,7 +19,7 @@ message CreateLibraryRequest {
 
 message UploadAuthorizationRequest {
   string UserID = 1;
-  string LibraryID = 3;
+  string LibraryID = 2;
 }
 
 message UploadAuthorizationReply {

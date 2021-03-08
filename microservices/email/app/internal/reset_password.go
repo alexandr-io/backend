@@ -14,7 +14,7 @@ import (
 )
 
 // ResetPasswordMail create an email with the data.KafkaEmail
-func ResetPasswordMail(mailData data.KafkaEmail) error {
+func ResetPasswordMail(mailData data.Email) error {
 	// Create email object sender and receiver
 	from := mail.NewEmail(os.Getenv("MAIL_USERNAME"), os.Getenv("MAIL_EMAIL"))
 	subject := "Modify your password"
@@ -40,7 +40,7 @@ func ResetPasswordMail(mailData data.KafkaEmail) error {
 }
 
 // createResetPasswordBody create the html and text body of the email
-func createResetPasswordBody(mailData data.KafkaEmail) (string, string, error) {
+func createResetPasswordBody(mailData data.Email) (string, string, error) {
 	email := hermes.Email{
 		Body: hermes.Body{
 			Name: mailData.Username,
