@@ -33,7 +33,7 @@ func Insert(userIDStr string, libraryData data.Library) (*data.Library, error) {
 	userLibrary := data.UserLibrary{
 		UserID:      userID,
 		LibraryID:   insertedResult.InsertedID.(primitive.ObjectID),
-		Permissions: []permissions.Permission{permissions.Owner},
+		Permissions: permissions.PermissionLibrary{Owner: permissions.BoolPtr(true)},
 	}
 	_, err = libraries.Insert(userLibrary)
 	if err != nil {

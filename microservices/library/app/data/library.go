@@ -15,9 +15,9 @@ type Library struct {
 
 // UserLibrary is the structure for a database user_library
 type UserLibrary struct {
-	ID          primitive.ObjectID       `json:"id,omitempty" bson:"_id,omitempty"`
-	UserID      primitive.ObjectID       `json:"user_id,omitempty" bson:"user_id,omitempty"`
-	LibraryID   primitive.ObjectID       `json:"library_id,omitempty" bson:"library_id,omitempty"`
-	Permissions []permissions.Permission `json:"permissions,omitempty" bson:"permissions,omitempty"`
-	Groups      []string                 `json:"groups,omitempty" bson:"groups,omitempty"`
+	ID          primitive.ObjectID            `json:"id,omitempty" bson:"_id,omitempty"`
+	UserID      primitive.ObjectID            `json:"user_id,omitempty" bson:"user_id,omitempty"`
+	LibraryID   primitive.ObjectID            `json:"library_id,omitempty" bson:"library_id,omitempty"`
+	Permissions permissions.PermissionLibrary `json:"permissions,omitempty" bson:"permissions,omitempty"`
+	Groups      []primitive.ObjectID          `json:"groups,omitempty" bson:"groups,omitempty"`
 }

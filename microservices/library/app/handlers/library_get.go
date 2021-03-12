@@ -3,6 +3,8 @@ package handlers
 import (
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database/library"
+	"github.com/alexandr-io/backend/library/internal"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -10,11 +12,13 @@ import (
 func LibraryRetrieve(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
+	userID := string(ctx.Request().Header.Peek("ID"))
 	libraryID := ctx.Params("library_id")
-	user := &data.User{ID: string(ctx.Request().Header.Peek("ID"))}
-	if err := library.GetPermissionFromUserAndLibraryID(user, libraryID); err != nil {
+
+	if _, err := internal.GetUserLibraryPermission(userID, libraryID); err != nil {
 		return err
 	}
+
 	result, err := library.GetFromID(libraryID)
 	if err != nil {
 		return err

@@ -43,7 +43,7 @@ var workingTests = []test{
 	{
 		TestSuite:        workingSuite,
 		HTTPMethod:       http.MethodGet,
-		URL:              func() string { return "/library/list" },
+		URL:              func() string { return "/libraries" },
 		AuthJWT:          &authToken,
 		Body:             nil,
 		ExpectedHTTPCode: http.StatusOK,

@@ -3,6 +3,7 @@ package handlers
 import (
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database/library"
+	"github.com/alexandr-io/backend/library/internal"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -11,7 +12,16 @@ import (
 func LibraryDelete(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
-	if err := library.Delete(ctx.Params("library_id")); err != nil {
+	userID := string(ctx.Request().Header.Peek("ID"))
+	libraryID := ctx.Params("library_id")
+
+	if perm, err := internal.GetUserLibraryPermission(userID, libraryID); err != nil {
+		return err
+	} else if perm.CanDeleteLibrary() == false {
+		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You are not allowed to delete this library")
+	}
+
+	if err := library.Delete(libraryID); err != nil {
 		return err
 	}
 

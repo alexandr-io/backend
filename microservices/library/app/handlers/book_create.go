@@ -3,7 +3,7 @@ package handlers
 import (
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database/book"
-	"github.com/alexandr-io/backend/library/database/library"
+	"github.com/alexandr-io/backend/library/internal"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -22,12 +22,9 @@ func BookCreation(ctx *fiber.Ctx) error {
 	bookDB.UploaderID = userID
 	bookDB.LibraryID = ctx.Params("library_id")
 
-	var user = &data.User{ID: userID}
-	if err := library.GetPermissionFromUserAndLibraryID(user, bookDB.LibraryID); err != nil {
+	if perm, err := internal.GetUserLibraryPermission(userID, bookDB.LibraryID); err != nil {
 		return err
-	}
-
-	if !user.CanUploadBook() {
+	} else if perm.CanUploadBook() == false {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You are not allowed to upload books on this library")
 	}
 

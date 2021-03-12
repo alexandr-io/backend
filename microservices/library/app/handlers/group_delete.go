@@ -2,32 +2,32 @@ package handlers
 
 import (
 	"github.com/alexandr-io/backend/library/data"
-	"github.com/alexandr-io/backend/library/database/book"
+	"github.com/alexandr-io/backend/library/database/group"
 	"github.com/alexandr-io/backend/library/internal"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-// BooksRetrieve retrieve the list of book in the library.
-func BooksRetrieve(ctx *fiber.Ctx) error {
+// GroupDelete delete a group.
+func GroupDelete(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
 	userID := string(ctx.Request().Header.Peek("ID"))
 	libraryID := ctx.Params("library_id")
+	groupID := ctx.Params("group_id")
 
 	if perm, err := internal.GetUserLibraryPermission(userID, libraryID); err != nil {
 		return err
-	} else if perm.CanDeleteBook() == false {
-		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You are not allowed to see books in this library")
+	} else if perm.CanManagePermissions() == false {
+		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You are not allowed to delete a group in this library")
 	}
 
-	result, err := book.GetListFromLibraryID(libraryID)
+	err := group.Delete(groupID)
 	if err != nil {
 		return err
 	}
 
-	// Return the new library to the user
-	if err := ctx.Status(fiber.StatusOK).JSON(result); err != nil {
+	if err := ctx.SendStatus(fiber.StatusNoContent); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil

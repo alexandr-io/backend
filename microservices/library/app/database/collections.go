@@ -9,5 +9,8 @@ const CollectionLibraries = "user_library"
 // CollectionLibrary is the name of the library collection in the database
 const CollectionLibrary = "library"
 
-// CollectionBookProgress is the name of the user data collection in mongodb
+// CollectionBookProgress is the name of the user's book progress collection in mongodb
 const CollectionBookProgress = "book_progress"
+
+// CollectionGroup is the name of the group collection in mongodb
+const CollectionGroup = "group"
