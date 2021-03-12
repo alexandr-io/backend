@@ -26,7 +26,6 @@ func Delete(groupID string) error {
 		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, err.Error())
 	}
 	groupFilter := bson.D{{Key: "_id", Value: id}, {"priority", bson.D{{"$ne", 0}}}}
-
 	var object permissions.Group
 	if err := collection.FindOneAndDelete(ctx, groupFilter).Decode(&object); err != nil {
 		if err == mongo.ErrNoDocuments {
@@ -36,8 +35,7 @@ func Delete(groupID string) error {
 	}
 
 	groupUpperFilter := bson.D{{"priority", bson.D{{"$gte", object.Priority}}}, {"library_id", object.LibraryID}}
-	_, err = collection.UpdateMany(ctx, groupUpperFilter, bson.D{{"$inc", bson.D{{"priority", -1}}}})
-	if err != nil {
+	if _, err = collection.UpdateMany(ctx, groupUpperFilter, bson.D{{"$inc", bson.D{{"priority", -1}}}}); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 

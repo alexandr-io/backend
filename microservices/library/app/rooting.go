@@ -54,8 +54,8 @@ func createRoute(app *fiber.App) {
 	app.Post("/library/:library_id/group/:group_id", userMiddleware.Protected(), handlers.GroupUpdate)
 	app.Delete("/library/:library_id/group/:group_id", userMiddleware.Protected(), handlers.GroupDelete)
 
-	app.Post("/library/:library_id/group/:group_id/join", userMiddleware.Protected(), handlers.GroupJoin)
-	app.Get("/library/:library_id/user/groups", userMiddleware.Protected(), handlers.UserGroupRetrieve)
+	app.Post("/library/:library_id/group/:group_id/join", userMiddleware.Protected(), handlers.GroupAddUser)
+	app.Get("/library/:library_id/user/groups", userMiddleware.Protected(), handlers.GroupsRetrieveUser)
 
 	app.Get("/library/:library_id/permissions", userMiddleware.Protected(), handlers.UserLibraryPermissionRetrieve)
 

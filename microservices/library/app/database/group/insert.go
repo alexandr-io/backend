@@ -21,14 +21,13 @@ func Insert(group permissions.Group) (*permissions.Group, error) {
 	collection := database.Instance.Db.Collection(database.CollectionGroup)
 
 	groupUpperFilter := bson.D{{"priority", bson.D{{"$gte", group.Priority}}}, {"library_id", group.LibraryID}}
-	_, err := collection.UpdateMany(ctx, groupUpperFilter, bson.D{{"$inc", bson.D{{"priority", 1}}}})
-	if err != nil {
+	if _, err := collection.UpdateMany(ctx, groupUpperFilter, bson.D{{"$inc", bson.D{{"priority", 1}}}}); err != nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
 	result, err := collection.InsertOne(ctx, group)
 	if err != nil {
-		return nil, err
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
 	group.ID = result.InsertedID.(primitive.ObjectID)

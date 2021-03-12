@@ -22,142 +22,62 @@ type PermissionLibrary struct {
 
 // IsOwner check if a user is the owner of the library
 func (object *PermissionLibrary) IsOwner() bool {
-	if *object.Owner == true {
-		return true
-	}
-	return false
+	return *object.Owner
 }
 
 // IsAdmin check if a user is an admin of the library
 func (object *PermissionLibrary) IsAdmin() bool {
-	if object.IsOwner() == true {
-		return true
-	}
-
-	if *object.Admin == true {
-		return true
-	}
-	return false
+	return object.IsOwner() || *object.Admin
 }
 
 // CanDeleteBook check if the user can delete a book for the requested library
 func (object *PermissionLibrary) CanDeleteBook() bool {
-	if object.IsAdmin() == true {
-		return true
-	}
-
-	if *object.BookDelete == true {
-		return true
-	}
-	return false
+	return object.IsAdmin() || *object.BookDelete
 }
 
 // CanUploadBook check if the user can upload a book for the requested library
 func (object *PermissionLibrary) CanUploadBook() bool {
-	if object.IsAdmin() == true {
-		return true
-	}
-
-	if *object.BookUpload == true {
-		return true
-	}
-	return false
+	return object.IsAdmin() || *object.BookUpload
 }
 
 // CanUpdateBook check if the user can update a book for the requested library
 func (object *PermissionLibrary) CanUpdateBook() bool {
-	if object.IsAdmin() == true {
-		return true
-	}
-
-	if *object.BookUpdate == true {
-		return true
-	}
-	return false
+	return object.IsAdmin() || *object.BookUpdate
 }
 
 // CanDisplayBook check if the user can see the books for the requested library
 func (object *PermissionLibrary) CanDisplayBook() bool {
-	if object.IsAdmin() == true {
-		return true
-	}
-
-	if *object.BookDisplay == true {
-		return true
-	}
-	return false
+	return object.IsAdmin() || *object.BookDisplay
 }
 
 // CanReadBook check if the user can read the books for the requested library
 func (object *PermissionLibrary) CanReadBook() bool {
-	if object.IsAdmin() == true {
-		return true
-	}
-
-	if *object.BookRead == true {
-		return true
-	}
-	return false
+	return object.IsAdmin() || *object.BookRead
 }
 
 // CanUpdateLibrary check if the user can update the library information
 func (object *PermissionLibrary) CanUpdateLibrary() bool {
-	if object.IsAdmin() == true {
-		return true
-	}
-
-	if *object.LibraryUpdate == true {
-		return true
-	}
-	return false
+	return object.IsAdmin() || *object.LibraryUpdate
 }
 
 // CanDeleteLibrary check if the user can delete the library
 func (object *PermissionLibrary) CanDeleteLibrary() bool {
-	if object.IsAdmin() == true {
-		return true
-	}
-
-	if *object.LibraryDelete == true {
-		return true
-	}
-	return false
+	return object.IsAdmin() || *object.LibraryDelete
 }
 
 // CanInviteUser check if the user can invite users to a library
 func (object *PermissionLibrary) CanInviteUser() bool {
-	if object.IsAdmin() == true {
-		return true
-	}
-
-	if *object.UserInvite == true {
-		return true
-	}
-	return false
+	return object.IsAdmin() || *object.UserInvite
 }
 
 // CanRemoveUser check if the user can remove users from a library
 func (object *PermissionLibrary) CanRemoveUser() bool {
-	if object.IsAdmin() == true {
-		return true
-	}
-
-	if *object.UserRemove == true {
-		return true
-	}
-	return false
+	return object.IsAdmin() || *object.UserRemove
 }
 
 // CanManagePermissions check if the user can manage other users permissions for a library
 func (object *PermissionLibrary) CanManagePermissions() bool {
-	if object.IsAdmin() == true {
-		return true
-	}
-
-	if *object.UserPermissionManage == true {
-		return true
-	}
-	return false
+	return object.IsAdmin() || *object.UserPermissionManage
 }
 
 // BoolPtr create a bointer to a boolean

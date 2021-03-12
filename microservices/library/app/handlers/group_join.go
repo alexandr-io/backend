@@ -9,8 +9,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// GroupJoin add a user to a group.
-func GroupJoin(ctx *fiber.Ctx) error {
+// GroupAddUser add a user to a group.
+func GroupAddUser(ctx *fiber.Ctx) error {
 
 	userID := string(ctx.Request().Header.Peek("ID"))
 	libraryID := ctx.Params("library_id")
@@ -22,7 +22,7 @@ func GroupJoin(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You are not allowed to add a user in a group in this library")
 	}
 
-	var groupJoinData data.GroupJoinData
+	var groupJoinData data.GroupJoin
 	if err := ParseBodyJSON(ctx, &groupJoinData); err != nil {
 		return err
 	}
@@ -34,5 +34,10 @@ func GroupJoin(ctx *fiber.Ctx) error {
 	if _, err := group.AddUserToGroup(groupJoinData.UserID, groupID, libraryID); err != nil {
 		return err
 	}
+
+	if err := ctx.SendStatus(fiber.StatusNoContent); err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+
 	return nil
 }

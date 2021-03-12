@@ -8,8 +8,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// UserGroupRetrieve retrieve a list of the user's groups.
-func UserGroupRetrieve(ctx *fiber.Ctx) error {
+// GroupsRetrieveUser retrieve a list of the user's groups.
+func GroupsRetrieveUser(ctx *fiber.Ctx) error {
+	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
 	userID := string(ctx.Request().Header.Peek("ID"))
 	libraryID := ctx.Params("library_id")
