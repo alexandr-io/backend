@@ -13,20 +13,23 @@ import (
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
-// ResetPasswordMail create an email with the data.Email
-func ResetPasswordMail(mailData data.Email) error {
+// VerifyEmailMail create an email with the data.Email
+func VerifyEmailMail(mailData data.Email) error {
 	// Create email object sender and receiver
 	from := mail.NewEmail(os.Getenv("MAIL_USERNAME"), os.Getenv("MAIL_EMAIL"))
-	subject := "Modify your password"
+	subject := "Verify your email"
 	to := mail.NewEmail(mailData.Username, mailData.Email)
+
 	// Create email content
-	htmlContent, plainTextContent, err := createResetPasswordBody(mailData)
+	htmlContent, plainTextContent, err := createVerifyEmailBody(mailData)
 	if err != nil {
 		return err
 	}
+
 	// Send email
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
 	client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
+
 	// Don't send email in test cases
 	if !strings.Contains(mailData.Email, "@test.test") {
 		resp, err := client.Send(message)
@@ -39,22 +42,23 @@ func ResetPasswordMail(mailData data.Email) error {
 	return nil
 }
 
-// createResetPasswordBody create the html and text body of the email
-func createResetPasswordBody(mailData data.Email) (string, string, error) {
+// createVerifyEmailBody create the html and text body of the email
+func createVerifyEmailBody(mailData data.Email) (string, string, error) {
 	email := hermes.Email{
 		Body: hermes.Body{
 			Name: mailData.Username,
 			Intros: []string{
-				"We received a request to reset your password for your account Alexandrio.",
+				"To complete your account, please verify your email",
 			},
 			Actions: []hermes.Action{
 				{
-					Instructions: "Use the following code to reset your password (valid for 3 hours):",
-					InviteCode:   mailData.Data,
+					Instructions: "Use the following link to verify your email (valid for 3 days):",
+					Button: hermes.Button{
+						Color: "#22BC66", // Optional action button color
+						Text:  "Confirm your account",
+						Link:  mailData.Data,
+					},
 				},
-			},
-			Outros: []string{
-				"If you didn't made this request, or do not want to reset your password anymore, just ignore this e-mail.",
 			},
 		},
 	}

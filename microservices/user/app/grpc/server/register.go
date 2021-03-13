@@ -12,9 +12,9 @@ import (
 )
 
 // Register is a gRPC server method that take user infos and create a new entry in DB
-func (s *server) Register(_ context.Context, in *grpcuser.RegisterRequest) (*grpcuser.UserReply, error) {
+func (s *server) Register(ctx context.Context, in *grpcuser.RegisterRequest) (*grpcuser.UserReply, error) {
 	fmt.Printf("[gRPC]: Register received: %+v\n", regex.Hide(in.String()))
-	user, err := internal.Register(data.User{
+	user, err := internal.Register(ctx, data.User{
 		Username: in.GetUsername(),
 		Email:    in.GetEmail(),
 		Password: in.GetPassword(),

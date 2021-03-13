@@ -16,6 +16,7 @@ type mailFunc func(email data.Email) error
 // messageTypeMap map of mail types and their corresponding function
 var messageTypeMap = map[string]mailFunc{
 	"password-reset": ResetPasswordMail,
+	"verify-email":   VerifyEmailMail,
 }
 
 // CreateMailFromMessage is reading the data.Email.Type to execute the corresponding function stored in messageTypeMap
