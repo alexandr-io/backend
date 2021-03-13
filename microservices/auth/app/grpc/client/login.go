@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/alexandr-io/backend/auth/data"
+	"github.com/alexandr-io/backend/common/regex"
 	"github.com/alexandr-io/backend/grpc"
 	grpcuser "github.com/alexandr-io/backend/grpc/user"
 
@@ -13,7 +14,7 @@ import (
 
 // Login get a data.User containing an ID or an email and return the complete user data
 func Login(ctx context.Context, login data.UserLogin) (*data.User, error) {
-	if UserClient == nil {
+	if userClient == nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, "gRPC user client not initialized")
 	}
 
@@ -21,8 +22,8 @@ func Login(ctx context.Context, login data.UserLogin) (*data.User, error) {
 		Login:    login.Login,
 		Password: login.Password,
 	}
-	fmt.Printf("[gRPC]: User sent: %+v\n", loginRequest.String())
-	userReply, err := UserClient.Login(ctx, &loginRequest)
+	fmt.Printf("[gRPC]: Login sent: %+v\n", regex.Hide(loginRequest.String()))
+	userReply, err := userClient.Login(ctx, &loginRequest)
 	if err != nil {
 		return nil, grpc.ErrorToFiber(err)
 	}

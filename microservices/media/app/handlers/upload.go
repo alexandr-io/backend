@@ -7,8 +7,8 @@ import (
 
 	"github.com/alexandr-io/backend/media/data"
 	"github.com/alexandr-io/backend/media/database/book"
+	grpcclient "github.com/alexandr-io/backend/media/grpc/client"
 	"github.com/alexandr-io/backend/media/internal"
-	"github.com/alexandr-io/backend/media/kafka/producers"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -22,7 +22,7 @@ func UploadBook(ctx *fiber.Ctx) error {
 		LibraryID: ctx.FormValue("library_id", ""),
 	}
 
-	if isAllowed, err := producers.LibraryUploadAuthorizationRequestHandler(&bookDB, string(ctx.Request().Header.Peek("ID"))); err != nil {
+	if isAllowed, err := grpcclient.UploadAuthorization(ctx.Context(), string(ctx.Request().Header.Peek("ID")), bookDB.LibraryID); err != nil {
 		return err
 	} else if !isAllowed {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "Not authorized")

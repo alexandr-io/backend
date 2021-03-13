@@ -8,10 +8,11 @@ import (
 
 var httpToGRPC = map[int]codes.Code{
 	200: codes.OK,
-	504: codes.DeadlineExceeded,
-	404: codes.NotFound,
+	400: codes.InvalidArgument,
 	401: codes.PermissionDenied,
+	404: codes.NotFound,
 	500: codes.Internal,
+	504: codes.DeadlineExceeded,
 }
 
 // FiberErrorToGRPC transform a fiber error to a gRPC error

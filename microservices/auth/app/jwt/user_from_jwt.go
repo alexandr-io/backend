@@ -17,7 +17,7 @@ func GetUserFromContextJWT(ctx *fiber.Ctx) (*data.User, error) {
 		return nil, err
 	}
 
-	// Get the user from user MS using kafka
+	// Get the user from user MS using grpc
 	userData, err := grpcclient.User(context.Background(), data.User{ID: userID})
 	if err != nil {
 		return nil, err

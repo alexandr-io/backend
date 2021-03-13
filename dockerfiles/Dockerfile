@@ -18,13 +18,15 @@ WORKDIR /${path}
 
 COPY ./${path}/go.mod ./${path}/go.sum ./${path}/data*/go.mod* ./${path}/data*/go.sum* ./
 COPY grpc/go.mod /grpc/
+COPY common/go.mod /common/
+
 RUN go mod download
 
 COPY ./${path}/ ./
 COPY grpc/ /grpc/
+COPY common/ /common/
 
 RUN go build -a -tags musl -installsuffix cgo -ldflags '-extldflags "-static"' -o service-binary .
-
 
 # Run stage
 FROM scratch

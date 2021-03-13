@@ -2,7 +2,8 @@ package middleware
 
 import (
 	"github.com/alexandr-io/backend/user/data"
-	"github.com/alexandr-io/backend/user/grpc"
+	grpcclient "github.com/alexandr-io/backend/user/grpc/client"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -17,14 +18,14 @@ func extractJWTFromContext(ctx *fiber.Ctx) (string, error) {
 	return "", data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "Missing or malformed JWT")
 }
 
-// Protected is a middleware calling the kafka logic to verify the token and get user info
+// Protected is a middleware calling the grpc logic to verify the token and get user info
 func Protected() func(*fiber.Ctx) error {
 	return func(ctx *fiber.Ctx) error {
 		token, err := extractJWTFromContext(ctx)
 		if err != nil {
 			return err
 		}
-		user, err := grpc.Auth(ctx.Context(), token)
+		user, err := grpcclient.Auth(ctx.Context(), token)
 		if err != nil {
 			return err
 		}

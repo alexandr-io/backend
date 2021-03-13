@@ -2,12 +2,15 @@ package user
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/alexandr-io/backend/user/data"
 	"github.com/alexandr-io/backend/user/database"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 // Insert insert a new user into the database.
@@ -21,9 +24,12 @@ func Insert(user data.User) (*data.User, error) {
 	if database.IsMongoDupKey(err) {
 		// If the mongo db error is a duplication error, return the proper error
 		err := checkRegisterFieldDuplication(user)
-		return nil, err
+		var badInput *data.BadInputError
+		if errors.As(err, &badInput) {
+			return nil, data.NewHTTPErrorInfo(fiber.StatusBadRequest, badInput.Error())
+		}
 	} else if err != nil {
-		return nil, err
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
 	user.ID = insertedResult.InsertedID.(primitive.ObjectID).Hex()

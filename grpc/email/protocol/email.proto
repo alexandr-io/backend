@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option go_package = "github.com/alexandr-io/backend/grpc/grpcemail";
+
+import "google/protobuf/empty.proto";
+
+package email;
+
+service Email {
+  // SendEmail send an email with the given information
+  rpc SendEmail (SendEmailRequest) returns (google.protobuf.Empty) {}
+}
+
+message SendEmailRequest {
+  string Email = 1;
+  string Username = 2;
+  string Type = 3;
+  string Data = 4;
+}

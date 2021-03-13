@@ -14,17 +14,17 @@ import (
 )
 
 // Insert insert on the database a new library in the user's libraries.
-func Insert(userIDStr string, DBLibrary data.Library) (*data.Library, error) {
+func Insert(userIDStr string, libraryData data.Library) (*data.Library, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	collection := database.Instance.Db.Collection(database.CollectionLibrary)
 
-	insertedResult, err := collection.InsertOne(ctx, DBLibrary)
+	insertedResult, err := collection.InsertOne(ctx, libraryData)
 	if err != nil {
-		return nil, err
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
-	DBLibrary.ID = insertedResult.InsertedID.(primitive.ObjectID).Hex()
+	libraryData.ID = insertedResult.InsertedID.(primitive.ObjectID).Hex()
 
 	userID, err := primitive.ObjectIDFromHex(userIDStr)
 	if err != nil {
@@ -39,5 +39,5 @@ func Insert(userIDStr string, DBLibrary data.Library) (*data.Library, error) {
 	if err != nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
-	return &DBLibrary, nil
+	return &libraryData, nil
 }

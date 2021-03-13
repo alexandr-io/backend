@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/alexandr-io/backend/library/data"
-	"github.com/alexandr-io/backend/library/grpc"
+	grpcclient "github.com/alexandr-io/backend/library/grpc/client"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -13,7 +13,7 @@ func MetadataRetrieve(ctx *fiber.Ctx) error {
 
 	title := ctx.Query("title")
 	authors := ctx.Query("authors")
-	response, err := grpc.Metadata(ctx.Context(), title, authors)
+	response, err := grpcclient.Metadata(ctx.Context(), title, authors)
 	if err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}

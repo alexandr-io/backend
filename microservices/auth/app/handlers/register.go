@@ -5,9 +5,8 @@ import (
 
 	"github.com/alexandr-io/backend/auth/data"
 	"github.com/alexandr-io/backend/auth/database/invitation"
+	grpcclient "github.com/alexandr-io/backend/auth/grpc/client"
 	authJWT "github.com/alexandr-io/backend/auth/jwt"
-	"github.com/alexandr-io/backend/auth/kafka/producers"
-
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -40,34 +39,30 @@ func Register(ctx *fiber.Ctx) error {
 
 	userRegister.Password = hashAndSalt(userRegister.Password)
 
-	kafkaUser, err := producers.RegisterRequestHandler(userRegister)
+	userData, err := grpcclient.Register(ctx.Context(), userRegister)
 	if err != nil {
 		return err
 	}
 
-	// Create the libraries of the user on the library MS
-	userRegisterLibraries := data.KafkaLibrariesCreationMessage{
-		UserID: kafkaUser.ID,
-	}
-	if err := producers.CreateUserLibrariesRequestHandler(userRegisterLibraries); err != nil {
+	if err := grpcclient.CreateLibrary(ctx.Context(), userData.ID); err != nil {
 		return err
 	}
 
 	// Create auth and refresh token
-	refreshToken, authToken, err := authJWT.GenerateNewRefreshTokenAndAuthToken(ctx, kafkaUser.ID)
+	refreshToken, authToken, err := authJWT.GenerateNewRefreshTokenAndAuthToken(ctx, userData.ID)
 	if err != nil {
 		return err
 	}
 	user := data.User{
-		Username:     kafkaUser.Username,
-		Email:        kafkaUser.Email,
+		Username:     userData.Username,
+		Email:        userData.Email,
 		AuthToken:    authToken,
 		RefreshToken: refreshToken,
 	}
 
 	// Update the invitation data in db
 	timeNow := time.Now()
-	userID, err := primitive.ObjectIDFromHex(kafkaUser.ID)
+	userID, err := primitive.ObjectIDFromHex(userData.ID)
 	if err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}

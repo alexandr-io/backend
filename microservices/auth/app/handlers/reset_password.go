@@ -4,7 +4,6 @@ import (
 	"github.com/alexandr-io/backend/auth/data"
 	grpcclient "github.com/alexandr-io/backend/auth/grpc/client"
 	authJWT "github.com/alexandr-io/backend/auth/jwt"
-	"github.com/alexandr-io/backend/auth/kafka/producers"
 	"github.com/alexandr-io/backend/auth/redis"
 
 	"github.com/gofiber/fiber/v2"
@@ -33,14 +32,12 @@ func SendResetPasswordEmail(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	if err := producers.EmailRequestHandler(data.KafkaEmail{
+	go grpcclient.SendEmail(ctx.Context(), data.Email{
 		Email:    userData.Email,
 		Username: userData.Username,
 		Type:     data.ResetPassword,
 		Data:     resetPasswordToken,
-	}); err != nil {
-		return err
-	}
+	})
 
 	if err := ctx.SendStatus(fiber.StatusNoContent); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
@@ -100,8 +97,7 @@ func ResetPassword(ctx *fiber.Ctx) error {
 	// Hash new password
 	password := hashAndSalt(resetData.NewPassword)
 
-	// Kafka update user password
-	kafkaUser, err := producers.UpdatePasswordRequestHandler(data.KafkaUpdatePassword{ID: userID, Password: password})
+	userData, err := grpcclient.UpdatePassword(ctx.Context(), userID, password)
 	if err != nil {
 		return err
 	}
@@ -112,8 +108,8 @@ func ResetPassword(ctx *fiber.Ctx) error {
 		return err
 	}
 	user := data.User{
-		Username:     kafkaUser.Username,
-		Email:        kafkaUser.Email,
+		Username:     userData.Username,
+		Email:        userData.Email,
 		AuthToken:    authToken,
 		RefreshToken: refreshToken,
 	}

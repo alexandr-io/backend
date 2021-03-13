@@ -16,16 +16,16 @@ type ErrorType string
 
 // error type variables
 const (
-	Email    ErrorType = "email"
-	Required ErrorType = "required"
-	Login    ErrorType = "login"
-	Length   ErrorType = "len"
+	IncorrectEmail ErrorType = "email"
+	Required       ErrorType = "required"
+	Login          ErrorType = "login"
+	Length         ErrorType = "len"
 )
 
 // ErrorTypes is a map with an ErrorType as a key and the value that should be used for this error
 var ErrorTypes = map[ErrorType]string{
-	Email:    "The email given is not correct",
-	Required: "The field is required",
-	Login:    "The login and password does not match",
-	Length:   "The required length is not respected",
+	IncorrectEmail: "The email given is not correct",
+	Required:       "The field is required",
+	Login:          "The login and password does not match",
+	Length:         "The required length is not respected",
 }
