@@ -7,3 +7,8 @@ type Email struct {
 	Type     string
 	Data     string
 }
+
+type EmailVerification struct {
+	OldEmail string `json:"old_email"`
+	NewEmail string `json:"new_email"`
+}

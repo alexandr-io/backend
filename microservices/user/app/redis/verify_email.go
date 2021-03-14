@@ -2,6 +2,7 @@ package redis
 
 import (
 	"context"
+	"encoding/json"
 	"os"
 	"time"
 
@@ -12,7 +13,12 @@ import (
 )
 
 // StoreVerifyEmail store a given verify email token and email to redis.
-func StoreVerifyEmail(ctx context.Context, verifyEmailToken string, email string) error {
+func StoreVerifyEmail(ctx context.Context, verifyEmailToken string, email data.EmailVerification) error {
+	emailBytes, err := json.Marshal(&email)
+	if err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     os.Getenv("REDIS_URL") + ":" + os.Getenv("REDIS_PORT"),
 		Password: "",
@@ -20,7 +26,7 @@ func StoreVerifyEmail(ctx context.Context, verifyEmailToken string, email string
 	})
 
 	// Store verify token for 3 days
-	err := rdb.Set(ctx, verifyEmailToken, email, time.Hour*24*3).Err()
+	err = rdb.Set(ctx, verifyEmailToken, string(emailBytes), time.Hour*24*3).Err()
 	if err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
@@ -28,7 +34,7 @@ func StoreVerifyEmail(ctx context.Context, verifyEmailToken string, email string
 }
 
 // GetVerifyEmail get the email by it's verify email token.
-func GetVerifyEmail(ctx context.Context, verifyEmailToken string) (string, error) {
+func GetVerifyEmail(ctx context.Context, verifyEmailToken string) (*data.EmailVerification, error) {
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     os.Getenv("REDIS_URL") + ":" + os.Getenv("REDIS_PORT"),
 		Password: "",
@@ -37,9 +43,15 @@ func GetVerifyEmail(ctx context.Context, verifyEmailToken string) (string, error
 
 	email, err := rdb.Get(ctx, verifyEmailToken).Result()
 	if err != nil {
-		return "", data.NewHTTPErrorInfo(fiber.StatusUnauthorized, err.Error())
+		return nil, data.NewHTTPErrorInfo(fiber.StatusUnauthorized, err.Error())
 	}
-	return email, nil
+
+	var emailData data.EmailVerification
+	if err := json.Unmarshal([]byte(email), &emailData); err != nil {
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return &emailData, nil
 }
 
 // DeleteVerifyEmail delete the given verify email token from redis.

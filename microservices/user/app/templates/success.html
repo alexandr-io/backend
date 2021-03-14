@@ -14,7 +14,7 @@
 
         @-webkit-keyframes animatebottom {
             from { bottom:-100px; opacity:0 }
-            to { bottom:0px; opacity:1 }
+            to { bottom:0; opacity:1 }
         }
 
         @keyframes animatebottom {
@@ -30,7 +30,7 @@
 </head>
 <body>
     <div class="animate-bottom">
-        <h1>Your email has been verified!</h1>
+        <h1>{{.text}}</h1>
         <h3>You can quit this page.</h3>
     </div>
 </body>

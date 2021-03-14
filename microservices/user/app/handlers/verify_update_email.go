@@ -7,12 +7,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// VerifyEmail verify an email pages. Link to this page is generated at user creation and sent by email to the user.
-// The user will be verified if this page succeed. The email is also update to the NewEmail stored in Redis.
-func VerifyEmail(ctx *fiber.Ctx) error {
+// VerifyUpdateEmail verify an email pages. Link to this page is generated at user email update and sent by email to the user.
+func VerifyUpdateEmail(ctx *fiber.Ctx) error {
 	if err := ctx.Render("load", fiber.Map{
-		"title": "Verifying email",
-		"text":  "We are verifying your email",
+		"title": "Updating email",
+		"text":  "We are updating your email",
 	}); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
@@ -42,13 +41,8 @@ func VerifyEmail(ctx *fiber.Ctx) error {
 		})
 		return err
 	}
-	if err := redis.DeleteVerifyEmail(ctx.Context(), token); err != nil {
-		_ = ctx.Render("error", fiber.Map{
-			"error": "Invalid Token",
-		})
-		return err
-	}
+
 	return ctx.Render("success", fiber.Map{
-		"text": "Your email has been verified!",
+		"text": "Your email has been updated successfully!",
 	})
 }

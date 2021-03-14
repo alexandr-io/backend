@@ -2,7 +2,6 @@ package user
 
 import (
 	"context"
-
 	"github.com/alexandr-io/backend/user/data"
 	"github.com/alexandr-io/backend/user/database"
 
