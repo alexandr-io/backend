@@ -4,6 +4,7 @@ import (
 	"github.com/alexandr-io/backend/user/data"
 	"github.com/alexandr-io/backend/user/database/user"
 	"github.com/alexandr-io/backend/user/redis"
+
 	"github.com/gofiber/fiber/v2"
 )
 

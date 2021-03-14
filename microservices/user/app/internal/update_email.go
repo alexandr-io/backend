@@ -3,12 +3,14 @@ package internal
 import (
 	"context"
 	"encoding/json"
+	"os"
+
 	"github.com/alexandr-io/backend/common/generate"
 	"github.com/alexandr-io/backend/user/data"
 	grpcclient "github.com/alexandr-io/backend/user/grpc/client"
 	"github.com/alexandr-io/backend/user/redis"
+
 	"github.com/gofiber/fiber/v2"
-	"os"
 )
 
 // updateEmail is the internal logic function used to update and verify an email.
