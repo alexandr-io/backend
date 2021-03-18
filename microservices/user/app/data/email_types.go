@@ -7,6 +7,6 @@ var (
 	UpdateEmailVerify = "update-email-verify"
 	// UpdateEmailOldEmail is the email type to notify the previous email of a change
 	UpdateEmailOldEmail = "update-email-old-email"
-	// UpdatePassword is the email type to notify that an user's password has been modified
+	// UpdatedPassword is the email type to notify that an user's password has been modified
 	UpdatedPassword = "updated-password"
 )

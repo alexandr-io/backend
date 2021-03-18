@@ -2,9 +2,11 @@ package internal
 
 import (
 	"context"
+
 	"github.com/alexandr-io/backend/user/data"
 	"github.com/alexandr-io/backend/user/database/user"
 	grpcclient "github.com/alexandr-io/backend/user/grpc/client"
+
 	"github.com/gofiber/fiber/v2"
 )
 
