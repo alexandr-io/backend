@@ -31,7 +31,7 @@ func StructContain(x, y interface{}) bool {
 		if v1.Field(i).Kind() == reflect.Ptr {
 			val1 = v1.Field(i).Elem().Interface()
 		}
-		if v2.Field(i).Kind() == reflect.Ptr {
+		if v2.Field(i).Kind() == reflect.Ptr && !v2.Field(i).IsZero() {
 			val2 = v2.Field(i).Elem().Interface()
 		}
 		if !isZeroOfUnderlyingType(val2) { // Check that the second struct field is not empty
