@@ -32,6 +32,7 @@ services:
       MONGO_URL: mongodb
       REDIS_URL: redis
       AUTH_URL: auth
+      EMAIL_URL: email
     ports:
       - "3000:3000"
     volumes:

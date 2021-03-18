@@ -36,7 +36,6 @@ var deleteTests = []test{
 		ExpectedHTTPCode: http.StatusOK,
 		ExpectedResponse: user{
 			Username: &randomName,
-			Email:    &randomEmail,
 		},
 		CustomEndFunc: nil,
 	},

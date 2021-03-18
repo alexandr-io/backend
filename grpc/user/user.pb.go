@@ -151,7 +151,7 @@ type LoginRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	Login    string `protobuf:"bytes,1,opt,name=Login,proto3" json:"Login,omitempty"`       // Login is a username or an email
-	Password string `protobuf:"bytes,2,opt,name=Password,proto3" json:"Password,omitempty"` // The password must be send hashed
+	Password string `protobuf:"bytes,2,opt,name=Password,proto3" json:"Password,omitempty"` // The password must be sent hashed
 }
 
 func (x *LoginRequest) Reset() {
@@ -207,7 +207,7 @@ type RegisterRequest struct {
 
 	Username string `protobuf:"bytes,1,opt,name=Username,proto3" json:"Username,omitempty"`
 	Email    string `protobuf:"bytes,2,opt,name=Email,proto3" json:"Email,omitempty"`
-	Password string `protobuf:"bytes,3,opt,name=Password,proto3" json:"Password,omitempty"` // The password must be send hashed
+	Password string `protobuf:"bytes,3,opt,name=Password,proto3" json:"Password,omitempty"` // The password must be sent hashed
 }
 
 func (x *RegisterRequest) Reset() {
@@ -269,7 +269,7 @@ type UpdatePasswordRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	ID       string `protobuf:"bytes,1,opt,name=ID,proto3" json:"ID,omitempty"`
-	Password string `protobuf:"bytes,2,opt,name=Password,proto3" json:"Password,omitempty"` // The password must be send hashed
+	Password string `protobuf:"bytes,2,opt,name=Password,proto3" json:"Password,omitempty"` // The password must be sent hashed
 }
 
 func (x *UpdatePasswordRequest) Reset() {
