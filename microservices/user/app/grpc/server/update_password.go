@@ -12,7 +12,7 @@ import (
 
 // UpdatePassword is a gRPC server method that take an ID and a new password to replace the current one
 func (s *server) UpdatePassword(_ context.Context, in *grpcuser.UpdatePasswordRequest) (*grpcuser.UserReply, error) {
-	fmt.Printf("[gRPC]: Update pasword received: %+v\n", regex.Hide(in.String()))
+	fmt.Printf("[gRPC]: Update password received: %+v\n", regex.Hide(in.String()))
 	user, err := internal.UpdatePassword(in.GetID(), in.GetPassword())
 	if err != nil {
 		return nil, grpc.FiberErrorToGRPC(err)

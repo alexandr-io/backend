@@ -19,6 +19,7 @@ var messageTypeMap = map[string]mailFunc{
 	"verify-email":           VerifyEmailMail,
 	"update-email-verify":    UpdateEmailVerify,
 	"update-email-old-email": UpdateEmailOldEmail,
+	"updated-password":       UpdatedPasswordMail,
 }
 
 // CreateMailFromMessage is reading the data.Email.Type to execute the corresponding function stored in messageTypeMap
