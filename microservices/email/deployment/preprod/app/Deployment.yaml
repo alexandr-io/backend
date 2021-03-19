@@ -26,6 +26,26 @@ spec:
             value: "no-reply@alexandrio.cloud"
           - name: MAIL_USERNAME
             value: "Alexandrio"
+          - name: GRPC_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: grpc-port
+                key: PORT
 
       imagePullSecrets:
       - name: regcred
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+  namespace: email
+spec:
+  selector:
+    app: api
+  ports:
+    - name: grpc
+      port: 5051
+      protocol: TCP
+      targetPort: 5051
