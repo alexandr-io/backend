@@ -4,15 +4,8 @@ FROM golang:1.15.0-alpine AS builder
 ARG microservice
 ARG path=microservices/${microservice}/app
 
-RUN set -ex &&\
-    apk add --no-progress --no-cache \
-      gcc \
-      musl-dev
-
 ENV GO111MODULE=on \
-    CGO_ENABLED=1 \
-    GOOS=linux \
-    GOARCH=amd64
+    CGO_ENABLED=0
 
 WORKDIR /${path}
 
@@ -26,7 +19,7 @@ COPY ./${path}/ ./
 COPY grpc/ /grpc/
 COPY common/ /common/
 
-RUN go build -a -tags musl -installsuffix cgo -ldflags '-extldflags "-static"' -o service-binary .
+RUN go build -o service-binary .
 
 # Run stage
 FROM scratch
