@@ -24,18 +24,6 @@ spec:
             value: redis
           - name: REDIS_PORT
             value: "6379"
-          - name: KAFKA_ADVERTISED_HOST_NAME
-            valueFrom:
-              configMapKeyRef:
-                name: kafka
-                key: ADVERTISED_HOST_NAME
-          - name: KAFKA_ADVERTISED_PORT
-            valueFrom:
-              configMapKeyRef:
-                name: kafka
-                key: KAFKA_ADVERTISED_PORT
-          - name: KAFKA_URL
-            value: "$(KAFKA_ADVERTISED_HOST_NAME):$(KAFKA_ADVERTISED_PORT)"
           - name: MONGO_URL
             valueFrom:
               secretKeyRef:
@@ -57,6 +45,19 @@ spec:
               configMapKeyRef:
                 name: microservices-dns
                 key: USER_URL
+
+          - name: LIBRARY_URL
+            valueFrom:
+              configMapKeyRef:
+                name: microservices-dns
+                key: LIBRARY_URL
+
+          - name: EMAIL_URL
+            valueFrom:
+              configMapKeyRef:
+                name: microservices-dns
+                key: EMAIL_URL
+
           - name: GRPC_PORT
             valueFrom:
               configMapKeyRef:

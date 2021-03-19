@@ -20,18 +20,6 @@ spec:
         image: ghcr.io/alexandr-io/backend/email:latest-preprod
         imagePullPolicy: Always
         env:
-          - name: KAFKA_ADVERTISED_HOST_NAME
-            valueFrom:
-              configMapKeyRef:
-                name: kafka
-                key: ADVERTISED_HOST_NAME
-          - name: KAFKA_ADVERTISED_PORT
-            valueFrom:
-              configMapKeyRef:
-                name: kafka
-                key: KAFKA_ADVERTISED_PORT
-          - name: KAFKA_URL
-            value: "$(KAFKA_ADVERTISED_HOST_NAME):$(KAFKA_ADVERTISED_PORT)"
           - name: SENDGRID_API_KEY
             value: "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"
           - name: MAIL_EMAIL
