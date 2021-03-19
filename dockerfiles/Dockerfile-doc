@@ -1,0 +1,25 @@
+# Build stage
+FROM golang:1.15.0-alpine AS builder
+
+WORKDIR /app
+
+ENV GO111MODULE=on \
+    CGO_ENABLED=0
+
+COPY ./microservices/doc/app/go.mod ./microservices/doc/app/go.sum ./
+
+RUN go mod download
+
+COPY ./microservices/doc/app/ ./
+
+RUN go build -o service-binary .
+
+# Run stage
+FROM scratch
+
+WORKDIR /app
+
+COPY --from=builder /app/service-binary ./
+COPY ./microservices/doc/app/ ./
+
+ENTRYPOINT ["./service-binary"]

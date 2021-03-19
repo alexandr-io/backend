@@ -64,9 +64,9 @@ func getBaseURL(environment string) (string, error) {
 	case "local":
 		return "http://localhost:3002/", nil
 	case "preprod":
-		return "http://library.preprod.alexandrio.cloud/", nil
+		return "https://library.preprod.alexandrio.cloud/", nil
 	case "prod":
-		return "http://library.alexandrio.cloud/", nil
+		return "https://library.alexandrio.cloud/", nil
 	default:
 		return "", errors.New("provided environment unknown")
 	}
