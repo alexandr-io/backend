@@ -36,24 +36,17 @@ spec:
               secretKeyRef:
                 name: mongo-secret
                 key: password
-          - name: KAFKA_ADVERTISED_HOST_NAME
-            valueFrom:
-              configMapKeyRef:
-                name: kafka
-                key: ADVERTISED_HOST_NAME
-          - name: KAFKA_ADVERTISED_PORT
-            valueFrom:
-              configMapKeyRef:
-                name: kafka
-                key: KAFKA_ADVERTISED_PORT
-          - name: KAFKA_URL
-            value: "$(KAFKA_ADVERTISED_HOST_NAME):$(KAFKA_ADVERTISED_PORT)"
 
           - name: AUTH_URL
             valueFrom:
               configMapKeyRef:
                 name: microservices-dns
                 key: AUTH_URL
+          - name: METADATA_URL
+            valueFrom:
+              configMapKeyRef:
+                name: microservices-dns
+                key: METADATA_URL
           - name: GRPC_PORT
             valueFrom:
               configMapKeyRef:
