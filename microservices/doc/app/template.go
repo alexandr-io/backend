@@ -23,7 +23,11 @@ type security struct {
 }
 
 func fillTemplateInfo(ctx *fiber.Ctx, folder string) (string, error) {
-	url := string(ctx.Request().URI().Scheme()) + "://" + string(ctx.Request().URI().Host())
+	scheme := "http"
+	if os.Getenv("DEV") == "" {
+		scheme = scheme + "s"
+	}
+	url := scheme + "://" + string(ctx.Request().URI().Host())
 	infos := info{
 		Auth:    url + "/auth",
 		User:    url + "/user",

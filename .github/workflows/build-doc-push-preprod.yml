@@ -1,6 +1,6 @@
 # This workflow is triggered on tag push finishing with '-preprod'
 
-name: CD preproduction
+name: CD preproduction doc
 
 on:
   push:
