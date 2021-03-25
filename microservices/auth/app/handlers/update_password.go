@@ -4,6 +4,7 @@ import (
 	"github.com/alexandr-io/backend/auth/data"
 	grpcclient "github.com/alexandr-io/backend/auth/grpc/client"
 	authJWT "github.com/alexandr-io/backend/auth/jwt"
+
 	"github.com/gofiber/fiber/v2"
 )
 

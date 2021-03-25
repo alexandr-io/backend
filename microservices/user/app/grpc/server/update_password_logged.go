@@ -12,7 +12,7 @@ import (
 
 // UpdatePasswordLogged is a gRPC server method that take an ID current and new password to replace the current password
 func (s *server) UpdatePasswordLogged(ctx context.Context, in *grpcuser.UpdatePasswordLoggedRequest) (*grpcuser.UserReply, error) {
-	fmt.Printf("[gRPC]: Update pasword logged received: %+v\n", regex.Hide(in.String()))
+	fmt.Printf("[gRPC]: Update password logged received: %+v\n", regex.Hide(in.String()))
 	user, err := internal.UpdatePasswordLogged(ctx, in.GetID(), in.GetCurrentPassword(), in.GetNewPassword())
 	if err != nil {
 		return nil, grpc.FiberErrorToGRPC(err)
