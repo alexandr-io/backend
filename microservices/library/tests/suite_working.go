@@ -228,22 +228,22 @@ var workingTests = []test{
 		},
 		CustomEndFunc: nil,
 	},
-	//{
-	//	TestSuite: workingSuite,
-	//	HTTPMethod: http.MethodGet,
-	//	URL: func() string { return "/library/" + libraryID + "/user/groups"},
-	//	AuthJWT: &authToken,
-	//	Body: nil,
-	//	ExpectedHTTPCode: http.StatusOK,
-	//	ExpectedResponse: []permissions.Group{
-	//		{
-	//			Name:        "Test Updated",
-	//			Description: "Testing group, delete if in db",
-	//			Priority:    0,
-	//		},
-	//	},
-	//	CustomEndFunc: nil,
-	//},
+	{
+		TestSuite:        workingSuite,
+		HTTPMethod:       http.MethodGet,
+		URL:              func() string { return "/library/" + libraryID + "/user/groups" },
+		AuthJWT:          &authToken,
+		Body:             nil,
+		ExpectedHTTPCode: http.StatusOK,
+		ExpectedResponse: []permissions.Group{
+			{
+				Name:        "Test Updated",
+				Description: "Testing group, delete if in db",
+				Priority:    0,
+			},
+		},
+		CustomEndFunc: nil,
+	},
 	{
 		TestSuite:        workingSuite,
 		HTTPMethod:       http.MethodDelete,
