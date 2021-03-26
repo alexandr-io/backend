@@ -10,6 +10,6 @@ type Group struct {
 	LibraryID   primitive.ObjectID `json:"library_id,omitempty" bson:"library_id"`
 	Name        string             `json:"name" bson:"name"`
 	Description string             `json:"description" bson:"description,omitempty"`
-	Priority    int                `json:"priority" bson:"priority" validate:"min=1"`
+	Priority    int                `json:"priority" bson:"priority" validate:"min=0"`
 	Permissions PermissionLibrary  `json:"permissions" bson:"permissions"`
 }

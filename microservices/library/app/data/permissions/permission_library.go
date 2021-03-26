@@ -79,9 +79,3 @@ func (object *PermissionLibrary) CanRemoveUser() bool {
 func (object *PermissionLibrary) CanManagePermissions() bool {
 	return object.IsAdmin() || *object.UserPermissionManage
 }
-
-// BoolPtr create a bointer to a boolean
-// TODO: move in common folder
-func BoolPtr(value bool) *bool {
-	return &value
-}

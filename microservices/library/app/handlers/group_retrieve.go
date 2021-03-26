@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"github.com/alexandr-io/backend/library/data"
-	"github.com/alexandr-io/backend/library/data/permissions"
 	"github.com/alexandr-io/backend/library/database/group"
 
 	"github.com/gofiber/fiber/v2"
@@ -14,11 +13,6 @@ func GroupRetrieve(ctx *fiber.Ctx) error {
 
 	libraryID := ctx.Params("library_id")
 	groupID := ctx.Params("group_id")
-
-	var groupData permissions.Group
-	if err := ParseBodyJSON(ctx, &groupData); err != nil {
-		return err
-	}
 
 	object, err := group.GetFromIDAndLibraryID(groupID, libraryID)
 	if err != nil {

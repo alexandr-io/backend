@@ -14,8 +14,11 @@ replace github.com/alexandr-io/backend/auth/data => ../../microservices/auth/app
 
 replace github.com/alexandr-io/backend/library/data => ../../microservices/library/app/data
 
+replace github.com/alexandr-io/backend/common => ../../common
+
 require (
 	github.com/alexandr-io/backend/auth/tests v0.0.0-00010101000000-000000000000
+	github.com/alexandr-io/backend/common v0.0.0-00010101000000-000000000000 // indirect
 	github.com/alexandr-io/backend/library/tests v0.0.0-00010101000000-000000000000
 	github.com/alexandr-io/backend/user/tests v0.0.0-00010101000000-000000000000
 	github.com/urfave/cli/v2 v2.3.0

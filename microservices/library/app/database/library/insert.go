@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/alexandr-io/backend/common/typeconv"
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/data/permissions"
 	"github.com/alexandr-io/backend/library/database"
@@ -34,7 +35,7 @@ func Insert(userIDStr string, libraryData data.Library) (*data.Library, error) {
 	userLibrary := data.UserLibrary{
 		UserID:      userID,
 		LibraryID:   insertedResult.InsertedID.(primitive.ObjectID),
-		Permissions: permissions.PermissionLibrary{Owner: permissions.BoolPtr(true)},
+		Permissions: permissions.PermissionLibrary{Owner: typeconv.BoolPtr(true)},
 	}
 
 	if _, err = libraries.Insert(userLibrary); err != nil {
@@ -47,18 +48,18 @@ func Insert(userIDStr string, libraryData data.Library) (*data.Library, error) {
 		Description: "Group with every user in it.",
 		Priority:    -1,
 		Permissions: permissions.PermissionLibrary{
-			Owner:                permissions.BoolPtr(false),
-			Admin:                permissions.BoolPtr(false),
-			BookDelete:           permissions.BoolPtr(false),
-			BookUpload:           permissions.BoolPtr(false),
-			BookUpdate:           permissions.BoolPtr(false),
-			BookDisplay:          permissions.BoolPtr(true),
-			BookRead:             permissions.BoolPtr(true),
-			LibraryUpdate:        permissions.BoolPtr(false),
-			LibraryDelete:        permissions.BoolPtr(false),
-			UserInvite:           permissions.BoolPtr(false),
-			UserRemove:           permissions.BoolPtr(false),
-			UserPermissionManage: permissions.BoolPtr(false),
+			Owner:                typeconv.BoolPtr(false),
+			Admin:                typeconv.BoolPtr(false),
+			BookDelete:           typeconv.BoolPtr(false),
+			BookUpload:           typeconv.BoolPtr(false),
+			BookUpdate:           typeconv.BoolPtr(false),
+			BookDisplay:          typeconv.BoolPtr(true),
+			BookRead:             typeconv.BoolPtr(true),
+			LibraryUpdate:        typeconv.BoolPtr(false),
+			LibraryDelete:        typeconv.BoolPtr(false),
+			UserInvite:           typeconv.BoolPtr(false),
+			UserRemove:           typeconv.BoolPtr(false),
+			UserPermissionManage: typeconv.BoolPtr(false),
 		},
 	}); err != nil {
 		return nil, err
