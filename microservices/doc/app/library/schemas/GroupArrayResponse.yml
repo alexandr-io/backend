@@ -1,0 +1,12 @@
+---
+components:
+  schemas:
+    GroupArrayResponse:
+      description: A group object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              # TODO: Fix array do not display
+              $ref: '#/components/schemas/GroupResponse'

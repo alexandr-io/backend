@@ -11,8 +11,7 @@ func CreateDefaultLibrary(userID string) error {
 		Name:        "Bookshelf",
 		Description: "The default library",
 	}
-	_, err := library.Insert(userID, libraryData)
-	if err != nil {
+	if _, err := library.Insert(userID, libraryData); err != nil {
 		return err
 	}
 	return nil

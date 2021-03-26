@@ -1,18 +1,19 @@
 ---
 paths:
-  /library/{library_id}:
-    delete:
-      description: Delete a library
+  /library/{library_id}/user/groups:
+    get:
+      description: retrieve the list of the current user's group
+      summary: User's group retrieve
       parameters:
         - in: path
           name: library_id
           required: true
           schema:
             type: string
-          description: The ID of the library to delete
+          description: The ID of the library in which the group will be
       responses:
         "200":
-          $ref: '#/components/schemas/NoContentResponse'
+          $ref: '#/components/schemas/GroupArrayResponse'
         "400":
           $ref: '#/components/schemas/BadRequestErrorResponse'
         "401":
@@ -25,4 +26,4 @@ paths:
         - url: //library.preprod.alexandrio.cloud
           description: Preprod server
       tags:
-        - LIBRARIES
+        - GROUPS

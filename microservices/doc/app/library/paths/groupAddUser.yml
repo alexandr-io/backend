@@ -1,17 +1,29 @@
 ---
 paths:
-  /library/{library_id}:
-    delete:
-      description: Delete a library
+  /library/{library_id}/group/{group_id}/join:
+    post:
+      description: Add an user to a group
+      summary: User join group
       parameters:
         - in: path
           name: library_id
           required: true
           schema:
             type: string
-          description: The ID of the library to delete
+          description: The ID of the library in which the group is
+        - in: path
+          name: group_id
+          required: true
+          schema:
+            type: string
+          description: The ID of the group to add the user in
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GroupAddUserRequest"
       responses:
-        "200":
+        "204":
           $ref: '#/components/schemas/NoContentResponse'
         "400":
           $ref: '#/components/schemas/BadRequestErrorResponse'
@@ -25,4 +37,4 @@ paths:
         - url: //library.preprod.alexandrio.cloud
           description: Preprod server
       tags:
-        - LIBRARIES
+        - GROUPS

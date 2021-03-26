@@ -60,7 +60,7 @@ func GetFromIDListAndLibraryID(groupIDs []primitive.ObjectID, libraryID string) 
 
 	var filter bson.D
 	if len(groupIDs) > 0 {
-		filter = bson.D{{"$or", []interface{}{bson.D{{"priority", 0}}, bson.D{{"_id", bson.D{{"$in", groupIDs}}}, {"library_id", libraryObjID}}}}}
+		filter = bson.D{{"$or", []interface{}{bson.D{{"priority", -1}}, bson.D{{"_id", bson.D{{"$in", groupIDs}}}, {"library_id", libraryObjID}}}}}
 	} else {
 		filter = bson.D{{"priority", 0}, {"library_id", libraryObjID}}
 	}

@@ -1,18 +1,19 @@
 ---
 paths:
-  /library/{library_id}:
-    delete:
-      description: Delete a library
+  /library/{library_id}/permissions:
+    get:
+      description: Retrieve the current user's permissions in the library
+      summary: User's permissions retrieve
       parameters:
         - in: path
           name: library_id
           required: true
           schema:
             type: string
-          description: The ID of the library to delete
+          description: The ID of the library to retrieve the permissions from
       responses:
         "200":
-          $ref: '#/components/schemas/NoContentResponse'
+          $ref: '#/components/schemas/PermissionsList'
         "400":
           $ref: '#/components/schemas/BadRequestErrorResponse'
         "401":
@@ -25,4 +26,4 @@ paths:
         - url: //library.preprod.alexandrio.cloud
           description: Preprod server
       tags:
-        - LIBRARIES
+        - GROUPS

@@ -25,7 +25,7 @@ func Delete(groupID string) error {
 	if err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, err.Error())
 	}
-	groupFilter := bson.D{{Key: "_id", Value: id}, {"priority", bson.D{{"$ne", 0}}}}
+	groupFilter := bson.D{{Key: "_id", Value: id}, {"priority", bson.D{{"$ne", -1}}}}
 	var object permissions.Group
 	if err := collection.FindOneAndDelete(ctx, groupFilter).Decode(&object); err != nil {
 		if err == mongo.ErrNoDocuments {
