@@ -1,0 +1,36 @@
+---
+components:
+  schemas:
+    GroupResponseData:
+        required:
+          - id
+          - library_id
+          - name
+          - description
+          - priority
+          - permissions
+        properties:
+          id:
+            description: The ID of the newly created group object
+            example: 5fbfe5[...]7076844
+            type: string
+          library_id:
+            description: The ID of the library
+            example: 8fe8fa[...]702534e
+            type: string
+          name:
+            description: The name of the group
+            example: Students
+            type: string
+          description:
+            description: The description of the group
+            example: The students of the class
+            type: string
+          priority:
+            description: The priority of the group
+            example: 1
+            type: number
+          permissions:
+            $ref: '#/components/schemas/PermissionData'
+
+        type: object

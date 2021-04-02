@@ -8,5 +8,4 @@ components:
           schema:
             type: array
             items:
-              # TODO: Fix array do not display
-              $ref: '#/components/schemas/GroupResponse'
+              $ref: '#/components/schemas/GroupResponseData'

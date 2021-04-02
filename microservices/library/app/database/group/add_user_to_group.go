@@ -3,9 +3,6 @@ package group
 import (
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database/libraries"
-
-	"github.com/gofiber/fiber/v2"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // AddUserToGroup add a user to a group on the given library.
@@ -15,11 +12,12 @@ func AddUserToGroup(userID string, groupID string, libraryID string) (*data.User
 		return nil, err
 	}
 
-	groupObjID, err := primitive.ObjectIDFromHex(groupID)
+	group, err := GetFromIDAndLibraryID(groupID, libraryID)
 	if err != nil {
-		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return nil, err
 	}
-	library.Groups = append(library.Groups, groupObjID)
+
+	library.Groups = append(library.Groups, group.ID)
 
 	return libraries.Update(*library)
 }
