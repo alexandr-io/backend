@@ -2,6 +2,8 @@ package tests
 
 import (
 	"net/http"
+
+	"github.com/alexandr-io/backend/auth/data"
 )
 
 const workingSuite = "Working"
@@ -85,6 +87,22 @@ var workingTests = []test{
 		ExpectedHTTPCode: http.StatusNoContent,
 		ExpectedResponse: nil,
 		CustomEndFunc:    nil,
+	},
+	{
+		TestSuite:  workingSuite,
+		HTTPMethod: http.MethodPut,
+		URL:        func() string { return "/password/update" },
+		AuthJWT:    &authToken,
+		Body: data.UpdatePassword{
+			CurrentPassword: "test",
+			NewPassword:     "newPassword",
+		},
+		ExpectedHTTPCode: http.StatusOK,
+		ExpectedResponse: data.User{
+			Username: randomName,
+			Email:    randomEmail,
+		},
+		CustomEndFunc: nil,
 	},
 }
 

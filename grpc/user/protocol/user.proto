@@ -13,6 +13,8 @@ service User {
   rpc Register (RegisterRequest) returns (UserReply) {}
   // UpdatePassword change a user's password in DB.
   rpc UpdatePassword (UpdatePasswordRequest) returns (UserReply) {}
+  // UpdatePasswordLogged changed a logged user's password in DB.
+  rpc UpdatePasswordLogged (UpdatePasswordLoggedRequest) returns (UserReply) {}
 }
 
 // Only one field must be filled. If both are sent, the user will be retrieved by it's ID.
@@ -41,4 +43,10 @@ message RegisterRequest {
 message UpdatePasswordRequest {
   string ID = 1;
   string Password = 2; // The password must be sent hashed
+}
+
+message UpdatePasswordLoggedRequest {
+  string ID = 1;
+  string CurrentPassword = 2;
+  string NewPassword = 3;
 }
