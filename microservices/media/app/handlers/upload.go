@@ -52,7 +52,7 @@ func UploadBook(ctx *fiber.Ctx) error {
 	}
 
 	if err = internal.UploadFile(ctx.Context(), fileContent, bookDB.Path); err != nil {
-		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return err
 	}
 
 	if _, err = book.Insert(bookDB); err != nil {
