@@ -14,10 +14,11 @@ const (
 	libraryDescription     = "My bookshelf"
 	bookTitle              = "Memoirs of Napoleon Bonaparte"
 	bookAuthor             = "Louis Antoine Fauvelet de Bourrienne"
-	bookPublisher          = "Public domain in the USA"
 	bookDescription        = "Translated from: Mémoires sur Napoléon, le Directoire le Consulat, l'Empire et la Restauration."
 	bookDescriptionUpdated = "Biographie de Napoleon Bonaparte"
 )
+
+var bookCategories []string = []string{"Novel", "Classic"}
 
 var (
 	authToken string
@@ -73,33 +74,30 @@ var workingTests = []test{
 		Body: data.Book{
 			Title:       bookTitle,
 			Author:      bookAuthor,
-			Publisher:   bookPublisher,
 			Description: bookDescription,
+			Categories:  bookCategories,
 		},
 		ExpectedHTTPCode: http.StatusCreated,
 		ExpectedResponse: data.Book{
 			Title:       bookTitle,
 			Author:      bookAuthor,
-			Publisher:   bookPublisher,
 			Description: bookDescription,
+			Categories:  bookCategories,
 		},
 		CustomEndFunc: BookCreateEndFunction,
 	},
 	{
-		TestSuite:  workingSuite,
-		HTTPMethod: http.MethodGet,
-		URL:        func() string { return "/library/" + libraryID + "/book/" + bookID },
-		AuthJWT:    &authToken,
-		Body: bookRetrieve{
-			ID:        &bookID,
-			LibraryID: &libraryID,
-		},
+		TestSuite:        workingSuite,
+		HTTPMethod:       http.MethodGet,
+		URL:              func() string { return "/library/" + libraryID + "/book/" + bookID },
+		AuthJWT:          &authToken,
+		Body:             nil,
 		ExpectedHTTPCode: http.StatusOK,
 		ExpectedResponse: data.Book{
 			Title:       bookTitle,
 			Author:      bookAuthor,
-			Publisher:   bookPublisher,
 			Description: bookDescription,
+			Categories:  bookCategories,
 		},
 		CustomEndFunc: nil,
 	},
@@ -115,8 +113,8 @@ var workingTests = []test{
 		ExpectedResponse: data.Book{
 			Title:       bookTitle,
 			Author:      bookAuthor,
-			Publisher:   bookPublisher,
 			Description: bookDescriptionUpdated,
+			Categories:  bookCategories,
 		},
 		CustomEndFunc: nil,
 	},
@@ -296,7 +294,7 @@ func ExecLibraryWorkingTests(environment string, jwt string) error {
 	}
 	authToken = jwt
 
-	if err := execTestSuite(baseURL, workingTests); err != nil {
+	if err = execTestSuite(baseURL, workingTests); err != nil {
 		return err
 	}
 	return nil

@@ -8,14 +8,22 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// BooksRetrieve retrieve the list of book in the library.
+// BooksRetrieve retrieve the list of book in a library
 func BooksRetrieve(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
-	userID := string(ctx.Request().Header.Peek("ID"))
-	libraryID := ctx.Params("library_id")
+	// Get data from header and params
+	userID, err := userIDFromHeader(ctx)
+	if err != nil {
+		return err
+	}
+	libraryID, err := getLibraryIDFromParams(ctx)
+	if err != nil {
+		return err
+	}
 
-	if perm, err := internal.GetUserLibraryPermission(userID, libraryID); err != nil {
+	// Check permission
+	if perm, err := internal.GetUserLibraryPermission(userID.Hex(), libraryID.Hex()); err != nil {
 		return err
 	} else if perm.CanDeleteBook() == false {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You are not allowed to see books in this library")
@@ -26,8 +34,7 @@ func BooksRetrieve(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	// Return the new library to the user
-	if err := ctx.Status(fiber.StatusOK).JSON(result); err != nil {
+	if err = ctx.Status(fiber.StatusOK).JSON(result); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil

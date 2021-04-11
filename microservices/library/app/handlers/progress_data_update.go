@@ -15,16 +15,29 @@ import (
 func ProgressUpdate(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
+	// Parse data
 	var progressData data.APIProgressData
 	if err := ParseBodyJSON(ctx, &progressData); err != nil {
 		return err
 	}
 
-	progressData.UserID = string(ctx.Request().Header.Peek("ID"))
-	progressData.BookID = ctx.Params("book_id")
-	progressData.LibraryID = ctx.Params("library_id")
+	// Get data from header and params
+	userID, err := userIDFromHeader(ctx)
+	if err != nil {
+		return err
+	}
+	libraryID, bookID, err := getLibraryBookIDFromParams(ctx)
+	if err != nil {
+		return err
+	}
+
+	// Fill data
+	progressData.UserID = userID.Hex()
+	progressData.BookID = bookID.Hex()
+	progressData.LibraryID = libraryID.Hex()
 	progressData.LastReadDate = time.Now()
 
+	// Check permission
 	if perm, err := internal.GetUserLibraryPermission(progressData.UserID, progressData.LibraryID); err != nil {
 		return err
 	} else if perm.CanReadBook() == false {
@@ -36,16 +49,17 @@ func ProgressUpdate(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, err.Error())
 	}
 
-	if _, err = book.GetFromID(progressData.BookID); err != nil {
+	if _, err = book.GetFromID(bookID); err != nil {
 		return err
 	}
 
+	// Update / Insert data
 	userData, err := bookprogress.Upsert(ctx.Context(), *bookUserData)
 	if err != nil {
 		return err
 	}
 
-	if err := ctx.Status(fiber.StatusOK).JSON(userData); err != nil {
+	if err = ctx.Status(fiber.StatusOK).JSON(userData); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil

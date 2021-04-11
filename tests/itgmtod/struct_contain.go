@@ -20,6 +20,12 @@ func checkFields(v1, v2 reflect.Value) bool {
 		if v2.Field(i).Kind() == reflect.Ptr && !v2.Field(i).IsZero() {
 			val2 = v2.Field(i).Elem().Interface()
 		}
+		if v2.Field(i).Kind() == reflect.Slice {
+			if reflect.DeepEqual(val1, val2) {
+				return true
+			}
+			return false
+		}
 		if !isZeroOfUnderlyingType(val2) { // Check that the second struct field is not empty
 			if val1 != val2 { // Check if field is equal in two structs
 				fmt.Printf("Field %s with value %v is not eqal to field %s with value %v\n",

@@ -12,31 +12,35 @@ import (
 func ProgressRetrieve(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
-	progressRetrieve := data.APIProgressData{
-		UserID:    string(ctx.Request().Header.Peek("ID")),
-		BookID:    ctx.Params("book_id"),
-		LibraryID: ctx.Params("library_id"),
+	// Get data from header and params
+	userID, err := userIDFromHeader(ctx)
+	if err != nil {
+		return err
+	}
+	libraryID, bookID, err := getLibraryBookIDFromParams(ctx)
+	if err != nil {
+		return err
 	}
 
-	if progressRetrieve.BookID == "" {
-		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, "Missing mandatory parameter: book_id")
-	}
-	if progressRetrieve.LibraryID == "" {
-		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, "Missing mandatory parameter: library_id")
-	}
-
-	if perm, err := internal.GetUserLibraryPermission(progressRetrieve.UserID, progressRetrieve.LibraryID); err != nil {
+	// Check permission
+	if perm, err := internal.GetUserLibraryPermission(userID.Hex(), libraryID.Hex()); err != nil {
 		return err
 	} else if perm.CanReadBook() == false {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You are not allowed to read books in this library")
 	}
 
+	// Retrieve
+	progressRetrieve := data.APIProgressData{ // TODO create only one function with custom marshal like book example: https://github.com/awslabs/goformation/blob/master/cloudformation/custom_resource.go
+		UserID:    userID.Hex(),
+		BookID:    bookID.Hex(),
+		LibraryID: libraryID.Hex(),
+	}
 	progress, err := bookprogress.Retrieve(ctx.Context(), progressRetrieve)
 	if err != nil {
 		return err
 	}
 
-	if err := ctx.Status(fiber.StatusOK).JSON(progress); err != nil {
+	if err = ctx.Status(fiber.StatusOK).JSON(progress); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil

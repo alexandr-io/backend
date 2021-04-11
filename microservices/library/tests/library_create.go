@@ -17,7 +17,7 @@ func LibrayCreateEndFunction(res *http.Response) error {
 	}
 	// Parse response Body
 	var libraryData data.Library
-	if err := json.Unmarshal(resBody, &libraryData); err != nil {
+	if err = json.Unmarshal(resBody, &libraryData); err != nil {
 		return err
 	}
 	libraryID = libraryData.ID

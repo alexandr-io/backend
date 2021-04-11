@@ -17,7 +17,7 @@ func LibrariesGetEndFunction(res *http.Response) error {
 		return err
 	}
 	// Parse response Body
-	if err := json.Unmarshal(resBody, &librariesData); err != nil {
+	if err = json.Unmarshal(resBody, &librariesData); err != nil {
 		return err
 	}
 

@@ -12,19 +12,28 @@ import (
 func LibraryRetrieve(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
-	userID := string(ctx.Request().Header.Peek("ID"))
-	libraryID := ctx.Params("library_id")
-
-	if _, err := internal.GetUserLibraryPermission(userID, libraryID); err != nil {
+	// Get data from header and params
+	userID, err := userIDFromHeader(ctx)
+	if err != nil {
+		return err
+	}
+	libraryID, err := getLibraryIDFromParams(ctx)
+	if err != nil {
 		return err
 	}
 
+	// Check permission
+	if _, err := internal.GetUserLibraryPermission(userID.Hex(), libraryID.Hex()); err != nil {
+		return err
+	}
+
+	// Retrieve
 	result, err := library.GetFromID(libraryID)
 	if err != nil {
 		return err
 	}
 
-	if err := ctx.Status(fiber.StatusOK).JSON(result); err != nil {
+	if err = ctx.Status(fiber.StatusOK).JSON(result); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil

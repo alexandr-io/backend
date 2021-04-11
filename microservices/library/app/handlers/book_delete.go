@@ -12,26 +12,29 @@ import (
 func BookDelete(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
-	userID := string(ctx.Request().Header.Peek("ID"))
-
-	bookData := &data.Book{
-		ID:         ctx.Params("book_id"),
-		LibraryID:  ctx.Params("library_id"),
-		UploaderID: userID,
+	// Get data from header and params
+	userID, err := userIDFromHeader(ctx)
+	if err != nil {
+		return err
+	}
+	libraryID, bookID, err := getLibraryBookIDFromParams(ctx)
+	if err != nil {
+		return err
 	}
 
-	bookData.UploaderID = userID
-
-	if perm, err := internal.GetUserLibraryPermission(userID, bookData.LibraryID); err != nil {
+	// Check permission
+	if perm, err := internal.GetUserLibraryPermission(userID.Hex(), libraryID.Hex()); err != nil {
 		return err
 	} else if perm.CanDeleteBook() == false {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You are not allowed to delete books on this library")
 	}
 
-	if err := book.Delete(bookData.ID); err != nil {
+	// Delete
+	if err = book.Delete(bookID); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
-	if err := ctx.SendStatus(fiber.StatusNoContent); err != nil {
+
+	if err = ctx.SendStatus(fiber.StatusNoContent); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil

@@ -42,15 +42,15 @@ var unauthorisedTests = []test{
 		Body: data.Book{
 			Title:       bookTitle,
 			Author:      bookAuthor,
-			Publisher:   bookPublisher,
 			Description: bookDescription,
+			Categories:  bookCategories,
 		},
 		ExpectedHTTPCode: http.StatusCreated,
 		ExpectedResponse: data.Book{
 			Title:       bookTitle,
 			Author:      bookAuthor,
-			Publisher:   bookPublisher,
 			Description: bookDescription,
+			Categories:  bookCategories,
 		},
 		CustomEndFunc: BookCreateEndFunction,
 	},
@@ -120,8 +120,8 @@ var unauthorisedTests = []test{
 		Body: data.Book{
 			Title:       bookTitle,
 			Author:      bookAuthor,
-			Publisher:   bookPublisher,
 			Description: bookDescription,
+			Categories:  bookCategories,
 		},
 		ExpectedHTTPCode: http.StatusBadRequest,
 		ExpectedResponse: nil,
@@ -135,8 +135,8 @@ var unauthorisedTests = []test{
 		Body: data.Book{
 			Title:       bookTitle,
 			Author:      bookAuthor,
-			Publisher:   bookPublisher,
 			Description: bookDescription,
+			Categories:  bookCategories,
 		},
 		ExpectedHTTPCode: http.StatusUnauthorized,
 		ExpectedResponse: nil,
