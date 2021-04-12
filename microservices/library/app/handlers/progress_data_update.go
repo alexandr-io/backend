@@ -49,6 +49,7 @@ func ProgressUpdate(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, err.Error())
 	}
 
+	// Check book existence
 	if _, err = book.GetFromID(bookID); err != nil {
 		return err
 	}

@@ -2,6 +2,7 @@ package data
 
 import (
 	"encoding/json"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -11,7 +12,7 @@ type IndustryIdentifiers struct {
 	Identifier string `json:"identifier,omitempty" bson:"identifier"`
 }
 
-// BookData is the structure of a book in the database
+// Book is the structure of a book in the database
 type Book struct {
 	ID         primitive.ObjectID `json:"-" bson:"_id,omitempty"`
 	LibraryID  primitive.ObjectID `json:"-" bson:"library_id,omitempty"`

@@ -3,13 +3,14 @@ package server
 import (
 	"context"
 	"fmt"
+
 	"github.com/alexandr-io/backend/grpc"
+	grpclibrary "github.com/alexandr-io/backend/grpc/library"
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/internal"
+
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-
-	grpclibrary "github.com/alexandr-io/backend/grpc/library"
 )
 
 // UploadAuthorization is a gRPC server method that check if a user can upload a book to a library

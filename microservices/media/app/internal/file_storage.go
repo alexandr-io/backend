@@ -2,7 +2,6 @@ package internal
 
 import (
 	"context"
-	"fmt"
 	"io/ioutil"
 	"os"
 
@@ -18,7 +17,6 @@ var mediaURI = os.Getenv("MEDIA_URI")
 
 // UploadFile upload a file on the storage server
 func UploadFile(ctx context.Context, file []byte, path string) error {
-	fmt.Println("PAF", path)
 	// Open a connection to the bucket.
 	bucket, err := blob.OpenBucket(ctx, mediaURI+"://"+mediaPath)
 	if err != nil {

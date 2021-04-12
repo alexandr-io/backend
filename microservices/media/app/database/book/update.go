@@ -28,7 +28,7 @@ func Update(ctx context.Context, book data.Book) (*data.Book, error) {
 		options.FindOneAndUpdate().SetReturnDocument(1),
 	).Decode(&book); err != nil {
 		if err == mongo.ErrNoDocuments {
-			return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, "Invitation not found.")
+			return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, "Book not found.")
 		}
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}

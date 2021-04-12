@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
@@ -57,6 +58,7 @@ func UploadBookCover(ctx *fiber.Ctx) error {
 	if err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
+
 	// Upload cover
 	if err = internal.UploadFile(ctx.Context(), coverContent, bookData.CoverPath); err != nil {
 		return err
@@ -64,13 +66,21 @@ func UploadBookCover(ctx *fiber.Ctx) error {
 
 	// Add cover path in DB
 	if _, err = book.Update(ctx.Context(), bookData); err != nil {
-		if err = internal.DeleteFile(ctx.Context(), bookData.CoverPath); err != nil {
+		if err := internal.DeleteFile(ctx.Context(), bookData.CoverPath); err != nil {
 			return err
 		}
 		return err
 	}
 
-	if err := ctx.SendStatus(fiber.StatusNoContent); err != nil {
+	// Send URL to retrieve image to library book metadata
+	// http(s)://HOST/book/{bookID}/cover
+	fmt.Println("OUI")
+	coverURL := string(ctx.Request().URI().Scheme()) + "://" + path.Join(string(ctx.Request().Host()), "book", bookData.ID, "cover")
+	if err = grpcclient.CoverUploaded(ctx.Context(), bookData.ID, coverURL); err != nil {
+		return err
+	}
+
+	if err = ctx.SendStatus(fiber.StatusNoContent); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil
