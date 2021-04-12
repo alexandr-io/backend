@@ -6,7 +6,10 @@ replace github.com/alexandr-io/backend/grpc => ../../../grpc
 
 replace github.com/alexandr-io/backend/library/data => ./data
 
+replace github.com/alexandr-io/backend/common => ../../../common
+
 require (
+	github.com/alexandr-io/backend/common v0.0.0-00010101000000-000000000000
 	github.com/alexandr-io/backend/grpc v0.0.0-00010101000000-000000000000
 	github.com/alexandr-io/backend/library/data v0.0.0-00010101000000-000000000000
 	github.com/fatih/structtag v1.2.0
@@ -19,6 +22,7 @@ require (
 	go.mongodb.org/mongo-driver v1.4.5
 	google.golang.org/grpc v1.35.0
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
+	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 // indirect
 )

@@ -12,7 +12,7 @@ paths:
           description: The ID of the library to delete
       responses:
         "200":
-          $ref: '#/components/schemas/LibraryDeleteResponse'
+          $ref: '#/components/schemas/NoContentResponse'
         "400":
           $ref: '#/components/schemas/BadRequestErrorResponse'
         "401":

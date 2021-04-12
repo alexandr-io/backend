@@ -6,11 +6,6 @@ components:
       content:
         application/json:
           schema:
-            properties:
-              libraries:
-                $ref: "#/components/schemas/LibrariesNamesData"
-                description: The list of libraries
-                type: array
-            required:
-              - username
-            type: object
+            type: array
+            items:
+              $ref: "#/components/schemas/LibrariesNamesData"

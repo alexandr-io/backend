@@ -1,0 +1,11 @@
+---
+components:
+  schemas:
+    GroupArrayResponse:
+      description: A group object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/GroupResponseData'

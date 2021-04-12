@@ -3,7 +3,9 @@ package tests
 import (
 	"net/http"
 
+	"github.com/alexandr-io/backend/common/typeconv"
 	"github.com/alexandr-io/backend/library/data"
+	"github.com/alexandr-io/backend/library/data/permissions"
 )
 
 const (
@@ -20,6 +22,7 @@ const (
 var (
 	authToken string
 	libraryID string
+	groupID   string
 	bookID    string
 )
 
@@ -43,7 +46,7 @@ var workingTests = []test{
 	{
 		TestSuite:        workingSuite,
 		HTTPMethod:       http.MethodGet,
-		URL:              func() string { return "/library/list" },
+		URL:              func() string { return "/libraries" },
 		AuthJWT:          &authToken,
 		Body:             nil,
 		ExpectedHTTPCode: http.StatusOK,
@@ -174,6 +177,102 @@ var workingTests = []test{
 			ID:        &bookID,
 			LibraryID: &libraryID,
 		},
+		ExpectedHTTPCode: http.StatusNoContent,
+		ExpectedResponse: nil,
+		CustomEndFunc:    nil,
+	},
+	{
+		TestSuite:  workingSuite,
+		HTTPMethod: http.MethodPost,
+		URL:        func() string { return "/library/" + libraryID + "/group" },
+		AuthJWT:    &authToken,
+		Body: permissions.Group{
+			Name:        "Test",
+			Description: "Testing group, delete if in db",
+			Priority:    0,
+			Permissions: permissions.PermissionLibrary{
+				Admin: typeconv.BoolPtr(true),
+			},
+		},
+		ExpectedHTTPCode: http.StatusCreated,
+		ExpectedResponse: nil,
+		CustomEndFunc:    GroupPostEndFunction,
+	},
+	{
+		TestSuite:        workingSuite,
+		HTTPMethod:       http.MethodGet,
+		URL:              func() string { return "/library/" + libraryID + "/group/" + groupID },
+		AuthJWT:          &authToken,
+		Body:             nil,
+		ExpectedHTTPCode: http.StatusOK,
+		ExpectedResponse: permissions.Group{
+			Name:        "Test",
+			Description: "Testing group, delete if in db",
+			Priority:    0,
+		},
+		CustomEndFunc: nil,
+	},
+	{
+		TestSuite:  workingSuite,
+		HTTPMethod: http.MethodPost,
+		URL:        func() string { return "/library/" + libraryID + "/group/" + groupID },
+		AuthJWT:    &authToken,
+		Body: permissions.Group{
+			Name: "Test Updated",
+		},
+		ExpectedHTTPCode: http.StatusOK,
+		ExpectedResponse: permissions.Group{
+			Name:        "Test Updated",
+			Description: "Testing group, delete if in db",
+			Priority:    0,
+		},
+		CustomEndFunc: nil,
+	},
+	{
+		TestSuite:        workingSuite,
+		HTTPMethod:       http.MethodGet,
+		URL:              func() string { return "/library/" + libraryID + "/user/groups" },
+		AuthJWT:          &authToken,
+		Body:             nil,
+		ExpectedHTTPCode: http.StatusOK,
+		ExpectedResponse: []permissions.Group{
+			{
+				Name:        "Test Updated",
+				Description: "Testing group, delete if in db",
+				Priority:    0,
+			},
+		},
+		CustomEndFunc: nil,
+	},
+	{
+		TestSuite:        workingSuite,
+		HTTPMethod:       http.MethodGet,
+		URL:              func() string { return "/library/" + libraryID + "/permissions" },
+		AuthJWT:          &authToken,
+		Body:             nil,
+		ExpectedHTTPCode: http.StatusOK,
+		ExpectedResponse: PermissionLibrary{
+			Owner:                false,
+			Admin:                false,
+			BookDelete:           false,
+			BookUpload:           false,
+			BookUpdate:           false,
+			BookDisplay:          false,
+			BookRead:             false,
+			LibraryUpdate:        false,
+			LibraryDelete:        false,
+			UserInvite:           false,
+			UserRemove:           false,
+			UserPermissionManage: false,
+		},
+		CustomEndFunc: nil,
+	},
+	{
+		TestSuite:        workingSuite,
+		HTTPMethod:       http.MethodDelete,
+		URL:              func() string { return "/library/" + libraryID + "/group/" + groupID },
+		AuthJWT:          &authToken,
+		Body:             nil,
 		ExpectedHTTPCode: http.StatusNoContent,
 		ExpectedResponse: nil,
 		CustomEndFunc:    nil,

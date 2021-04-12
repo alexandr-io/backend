@@ -3,7 +3,7 @@ package handlers
 import (
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database/book"
-	"github.com/alexandr-io/backend/library/database/library"
+	"github.com/alexandr-io/backend/library/internal"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -22,13 +22,9 @@ func BookRetrieve(ctx *fiber.Ctx) error {
 
 	bookData.UploaderID = userID
 
-	var user = &data.User{ID: userID}
-
-	if err := library.GetPermissionFromUserAndLibraryID(user, bookData.LibraryID); err != nil {
+	if perm, err := internal.GetUserLibraryPermission(userID, bookData.LibraryID); err != nil {
 		return err
-	}
-
-	if !user.CanSeeBooks() {
+	} else if perm.CanDeleteBook() == false {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You are not allowed to see the books in this library")
 	}
 

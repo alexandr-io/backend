@@ -135,6 +135,7 @@ services:
     volumes:
     - "./microservices/library/app:/microservices/library/app"
     - "./grpc:/grpc"
+    - "./common:/common"
 
   # Email service
   email:

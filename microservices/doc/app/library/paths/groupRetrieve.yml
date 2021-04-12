@@ -1,0 +1,35 @@
+---
+paths:
+  /library/{library_id}/group/{group_id}:
+    get:
+      description: Retrieve a group in a library
+      summary: Group retrieve
+      parameters:
+        - in: path
+          name: library_id
+          required: true
+          schema:
+            type: string
+          description: The ID of the library in which the group will be retrieved
+        - in: path
+          name: group_id
+          required: true
+          schema:
+            type: string
+          description: The ID of the group to retrieve
+      responses:
+        "200":
+          $ref: '#/components/schemas/GroupResponse'
+        "400":
+          $ref: '#/components/schemas/BadRequestErrorResponse'
+        "401":
+          $ref: '#/components/schemas/UnauthorizedErrorResponse'
+      security:
+        - bearerAuth: []
+      servers:
+        - url: //library.alexandrio.cloud
+          description: Production server
+        - url: //library.preprod.alexandrio.cloud
+          description: Preprod server
+      tags:
+        - GROUPS

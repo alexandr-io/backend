@@ -4,9 +4,12 @@ components:
     LibrariesNamesData:
       properties:
         name:
-          example: My Library
+          example: My Bookshelf
           type: string
         id:
           example: 5fbfe5[...]7076844
+          type: string
+        description:
+          example: General library
           type: string
       type: object

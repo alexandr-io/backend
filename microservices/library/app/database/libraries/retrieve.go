@@ -47,3 +47,31 @@ func GetFromUserID(userID string) (*[]data.Library, error) {
 	// Return the libraries object
 	return &object, nil
 }
+
+// GetFromUserIDAndLibraryID retrieve a user library from the user's ID and the library's ID
+func GetFromUserIDAndLibraryID(userID string, libraryID string) (*data.UserLibrary, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	var object data.UserLibrary
+
+	userObjID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return nil, data.NewHTTPErrorInfo(fiber.StatusBadRequest, err.Error())
+	}
+	libraryObjID, err := primitive.ObjectIDFromHex(libraryID)
+	if err != nil {
+		return nil, data.NewHTTPErrorInfo(fiber.StatusBadRequest, err.Error())
+	}
+
+	collection := database.Instance.Db.Collection(database.CollectionLibraries)
+
+	filters := bson.D{{"user_id", userObjID}, {"library_id", libraryObjID}}
+	if err := collection.FindOne(ctx, filters).Decode(&object); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, "Library not found")
+		}
+		return nil, data.NewHTTPErrorInfo(fiber.StatusUnauthorized, err.Error())
+	}
+	return &object, nil
+}

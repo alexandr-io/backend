@@ -10,6 +10,22 @@ const badRequestSuite = "Bad Request"
 
 var badRequestTests = []test{
 	{
+		TestSuite:  badRequestSuite,
+		HTTPMethod: http.MethodPost,
+		URL:        func() string { return "/library" },
+		AuthJWT:    &authToken,
+		Body: data.Library{
+			Name:        libraryName,
+			Description: libraryDescription,
+		},
+		ExpectedHTTPCode: http.StatusCreated,
+		ExpectedResponse: data.Library{
+			Name:        libraryName,
+			Description: libraryDescription,
+		},
+		CustomEndFunc: LibrayCreateEndFunction,
+	},
+	{
 		TestSuite:        badRequestSuite,
 		HTTPMethod:       http.MethodPost,
 		URL:              func() string { return "/library" },
@@ -51,6 +67,25 @@ var badRequestTests = []test{
 			Progress: 18446744073709551615,
 		},
 		ExpectedHTTPCode: http.StatusBadRequest,
+		ExpectedResponse: nil,
+		CustomEndFunc:    nil,
+	},
+	{
+		TestSuite:        badRequestSuite,
+		HTTPMethod:       http.MethodPost,
+		URL:              func() string { return "/library/" + libraryID + "/group" },
+		AuthJWT:          &authToken,
+		Body:             nil,
+		ExpectedHTTPCode: http.StatusBadRequest,
+		ExpectedResponse: nil,
+		CustomEndFunc:    nil,
+	},
+	{
+		TestSuite:        badRequestSuite,
+		HTTPMethod:       http.MethodDelete,
+		URL:              func() string { return "/library/" + libraryID },
+		AuthJWT:          &authToken,
+		ExpectedHTTPCode: http.StatusNoContent,
 		ExpectedResponse: nil,
 		CustomEndFunc:    nil,
 	},
