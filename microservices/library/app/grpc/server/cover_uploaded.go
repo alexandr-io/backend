@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"net/url"
 
 	"github.com/alexandr-io/backend/grpc"
 	grpclibrary "github.com/alexandr-io/backend/grpc/library"
@@ -27,7 +28,23 @@ func (s *server) CoverUploaded(_ context.Context, in *grpclibrary.CoverUploadedR
 		return nil, grpc.FiberErrorToGRPC(err)
 	}
 
-	coverURLS := append(bookData.Thumbnails, in.GetCoverURL())
+	coverURLS := bookData.Thumbnails
+	urlCover, err := url.Parse(in.GetCoverURL())
+	if err != nil {
+		return nil, grpc.FiberErrorToGRPC(data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error()))
+	}
+	for i, link := range bookData.Thumbnails {
+		u, err := url.Parse(link)
+		if err != nil {
+			return nil, grpc.FiberErrorToGRPC(data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error()))
+		}
+		if u.Host == urlCover.Host {
+			coverURLS = append(coverURLS[:i], coverURLS[i+1:]...)
+			break
+		}
+	}
+	coverURLS = append(coverURLS, in.GetCoverURL())
+
 	fmt.Println(coverURLS)
 	if _, err = book.Update(data.Book{ID: bookID, Thumbnails: coverURLS}); err != nil {
 		return nil, grpc.FiberErrorToGRPC(err)
