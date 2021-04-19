@@ -34,7 +34,6 @@ func BookCover(ctx *fiber.Ctx) error {
 
 	err = ctx.Send(file.Data)
 	ctx.Set(fiber.HeaderContentType, file.ContentType)
-	//ctx.Set(fiber.HeaderContentDisposition, "attachment")
 
 	if err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())

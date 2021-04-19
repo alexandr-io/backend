@@ -4,7 +4,7 @@ components:
     UploadCoverRequest:
       properties:
         cover:
-          description: The book cover to upload (the formot must be .png .jpg .jpeg)
+          description: The book cover to upload (the format must be .png .jpg .jpeg)
           type: binary
         book_id:
           description: The ID of the book on the Library MS

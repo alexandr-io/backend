@@ -27,7 +27,7 @@ func UploadBookCover(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	// TODO: Upload authorization or other?
+	// TODO: Upload authorization or other? Create gRPC route to retrieve all the permissions
 	if isAllowed, err := grpcclient.UploadAuthorization(ctx.Context(), string(ctx.Request().Header.Peek("ID")), bookData.LibraryID); err != nil {
 		return err
 	} else if !isAllowed {
