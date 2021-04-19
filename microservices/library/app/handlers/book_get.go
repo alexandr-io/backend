@@ -12,30 +12,31 @@ import (
 func BookRetrieve(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
-	userID := string(ctx.Request().Header.Peek("ID"))
-
-	bookData := &data.Book{
-		ID:         ctx.Params("book_id"),
-		LibraryID:  ctx.Params("library_id"),
-		UploaderID: userID,
+	// Get data from header and params
+	userID, err := userIDFromHeader(ctx)
+	if err != nil {
+		return err
+	}
+	libraryID, bookID, err := getLibraryBookIDFromParams(ctx)
+	if err != nil {
+		return err
 	}
 
-	bookData.UploaderID = userID
-
-	if perm, err := internal.GetUserLibraryPermission(userID, bookData.LibraryID); err != nil {
+	// Check permission
+	if perm, err := internal.GetUserLibraryPermission(userID.Hex(), libraryID.Hex()); err != nil {
 		return err
 	} else if perm.CanDeleteBook() == false {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You are not allowed to see the books in this library")
 	}
 
-	result, err := book.GetFromID(bookData.ID)
+	// Retrieve
+	result, err := book.GetFromID(bookID)
 	if err != nil {
 		return err
 	}
 
-	if err := ctx.Status(fiber.StatusOK).JSON(result); err != nil {
+	if err = ctx.Status(fiber.StatusOK).JSON(result); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
-
 	return nil
 }

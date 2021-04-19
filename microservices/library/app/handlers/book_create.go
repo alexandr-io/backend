@@ -12,25 +12,30 @@ import (
 func BookCreation(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
-	userID := string(ctx.Request().Header.Peek("ID"))
+	// Parse data
+	var bookData data.Book
+	if err := ParseBodyJSON(ctx, &bookData); err != nil {
+		return err
+	}
+	if bookData.Title == "" {
+		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, "Book title is required")
+	}
 
-	var bookDB data.Book
-	if err := ParseBodyJSON(ctx, &bookDB); err != nil {
+	// Get data from header and params
+	var err error
+	bookData.UploaderID, err = userIDFromHeader(ctx)
+	if err != nil {
+		return err
+	}
+	bookData.LibraryID, err = getLibraryIDFromParams(ctx)
+	if err != nil {
 		return err
 	}
 
-	bookDB.UploaderID = userID
-	bookDB.LibraryID = ctx.Params("library_id")
-
-	if perm, err := internal.GetUserLibraryPermission(userID, bookDB.LibraryID); err != nil {
+	if perm, err := internal.GetUserLibraryPermission(bookData.UploaderID.Hex(), bookData.LibraryID.Hex()); err != nil {
 		return err
 	} else if perm.CanUploadBook() == false {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You are not allowed to upload books on this library")
-	}
-
-	bookData, err := bookDB.ToBookData()
-	if err != nil {
-		return err
 	}
 
 	result, err := book.Insert(bookData)
@@ -38,7 +43,7 @@ func BookCreation(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	if err := ctx.Status(fiber.StatusCreated).JSON(result.ToBook()); err != nil {
+	if err = ctx.Status(fiber.StatusCreated).JSON(result); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil

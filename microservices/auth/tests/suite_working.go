@@ -104,6 +104,22 @@ var workingTests = []test{
 		},
 		CustomEndFunc: nil,
 	},
+	{
+		TestSuite:  workingSuite,
+		HTTPMethod: http.MethodPut,
+		URL:        func() string { return "/password/update" },
+		AuthJWT:    &authToken,
+		Body: data.UpdatePassword{
+			CurrentPassword: "newPassword",
+			NewPassword:     "test",
+		},
+		ExpectedHTTPCode: http.StatusOK,
+		ExpectedResponse: data.User{
+			Username: randomName,
+			Email:    randomEmail,
+		},
+		CustomEndFunc: nil,
+	},
 }
 
 // ExecAuthWorkingTests execute working auth tests.

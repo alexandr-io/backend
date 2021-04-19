@@ -17,24 +17,23 @@ var mediaURI = os.Getenv("MEDIA_URI")
 
 // UploadFile upload a file on the storage server
 func UploadFile(ctx context.Context, file []byte, path string) error {
-
 	// Open a connection to the bucket.
 	bucket, err := blob.OpenBucket(ctx, mediaURI+"://"+mediaPath)
 	if err != nil {
-		return err
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	defer bucket.Close()
 
 	w, err := bucket.NewWriter(ctx, path, nil)
 	if err != nil {
-		return err
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	_, err = w.Write(file)
 	if err != nil {
-		return err
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
-	if err := w.Close(); err != nil {
-		return err
+	if err = w.Close(); err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
 	return nil
@@ -48,23 +47,23 @@ func DownloadFile(ctx context.Context, path string) (*data.File, error) {
 	// Open a connection to the bucket.
 	bucket, err := blob.OpenBucket(ctx, mediaURI+"://"+mediaPath)
 	if err != nil {
-		return nil, err
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	defer bucket.Close()
 
 	file, err := bucket.NewReader(ctx, path, nil)
 	if err != nil {
-		return nil, err
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	defer file.Close()
 
 	fileObject.Data, err = ioutil.ReadAll(file)
 	if err != nil {
-		return nil, err
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	fileObject.ContentType = file.ContentType()
 
-	return &fileObject, err
+	return &fileObject, nil
 }
 
 // DeleteFile delete a file from the storage server

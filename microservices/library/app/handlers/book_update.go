@@ -12,32 +12,37 @@ import (
 func BookUpdate(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
-	userID := string(ctx.Request().Header.Peek("ID"))
-	libraryID := ctx.Params("library_id")
-	bookIDStr := ctx.Params("book_id")
-
-	var bookDB data.Book
-	if err := ParseBodyJSON(ctx, &bookDB); err != nil {
+	// Get data from header and params
+	userID, err := userIDFromHeader(ctx)
+	if err != nil {
+		return err
+	}
+	libraryID, bookID, err := getLibraryBookIDFromParams(ctx)
+	if err != nil {
 		return err
 	}
 
-	if perm, err := internal.GetUserLibraryPermission(userID, libraryID); err != nil {
+	// Parse data
+	var bookData data.Book
+	if err = ParseBodyJSON(ctx, &bookData); err != nil {
+		return err
+	}
+	bookData.ID = bookID
+
+	// Check permission
+	if perm, err := internal.GetUserLibraryPermission(userID.Hex(), libraryID.Hex()); err != nil {
 		return err
 	} else if perm.CanDeleteBook() == false {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You are not allowed to update books in this library")
 	}
 
-	bookDB.ID = bookIDStr
-
-	bookData, err := bookDB.ToBookData()
-	if err != nil {
-		return err
-	}
+	// Update
 	result, err := book.Update(bookData)
 	if err != nil {
 		return err
 	}
-	if err := ctx.Status(fiber.StatusOK).JSON(result); err != nil {
+
+	if err = ctx.Status(fiber.StatusOK).JSON(result); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil

@@ -42,14 +42,14 @@ func execTestSuite(baseURL string, testSuite []test) error {
 		}
 		// Check expected response Body
 		if currentTest.ExpectedResponse != nil {
-			if err := itgmtod.CheckExpectedResponse(res, currentTest.ExpectedResponse); err != nil {
+			if err = itgmtod.CheckExpectedResponse(res, currentTest.ExpectedResponse); err != nil {
 				newFailureMessage(currentTest.HTTPMethod, currentTest.URL(), currentTest.TestSuite, err.Error())
 				return fmt.Errorf("error in " + currentTest.TestSuite + " test suite")
 			}
 		}
 		// Call end function
 		if currentTest.CustomEndFunc != nil {
-			if err := currentTest.CustomEndFunc(res); err != nil {
+			if err = currentTest.CustomEndFunc(res); err != nil {
 				newFailureMessage(currentTest.HTTPMethod, currentTest.URL(), currentTest.TestSuite, err.Error())
 				return fmt.Errorf("error in " + currentTest.TestSuite + " test suite")
 			}

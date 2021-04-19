@@ -13,7 +13,7 @@ import (
 )
 
 // GetFromID retrieve a library from its ID
-func GetFromID(libraryID string) (*data.Library, error) {
+func GetFromID(libraryID primitive.ObjectID) (*data.Library, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -21,12 +21,7 @@ func GetFromID(libraryID string) (*data.Library, error) {
 
 	var DBLibrary data.Library
 
-	id, err := primitive.ObjectIDFromHex(libraryID)
-	if err != nil {
-		return nil, data.NewHTTPErrorInfo(fiber.StatusBadRequest, err.Error())
-	}
-
-	libraryFilter := bson.D{{Key: "_id", Value: id}}
+	libraryFilter := bson.D{{Key: "_id", Value: libraryID}}
 	if err := collection.FindOne(ctx, libraryFilter).Decode(&DBLibrary); err != nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}

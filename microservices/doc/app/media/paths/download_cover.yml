@@ -1,17 +1,12 @@
 ---
 paths:
-  /book/upload:
-    post:
-      description: Upload a book to the server and link it to its metadata on the library MS
-      summary: Upload a book
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              $ref: "#/components/schemas/UploadRequest"
+  /book/{book_id}/cover:
+    get:
+      description: Download a book cover from the server
+      summary: Download a book cover
       responses:
-        "204":
-          $ref: '#/components/schemas/NoContentResponse'
+        "200":
+          $ref: '#/components/schemas/DownloadCoverResponse'
         "401":
           $ref: '#/components/schemas/UnauthorizedErrorResponse'
         "400":

@@ -13,20 +13,20 @@ import (
 )
 
 // Update update a book in a library.
-func Update(DBBook data.BookData) (*data.BookData, error) {
+func Update(bookData data.Book) (*data.Book, error) {
 	invitationCollection := database.Instance.Db.Collection(database.CollectionBook)
 	if err := invitationCollection.FindOneAndUpdate(
 		context.Background(),
 		bson.D{
-			{"_id", DBBook.ID},
+			{"_id", bookData.ID},
 		},
-		bson.D{{"$set", DBBook}},
+		bson.D{{"$set", bookData}},
 		options.FindOneAndUpdate().SetReturnDocument(1),
-	).Decode(&DBBook); err != nil {
+	).Decode(&bookData); err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, "Book not found.")
 		}
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
-	return &DBBook, nil
+	return &bookData, nil
 }

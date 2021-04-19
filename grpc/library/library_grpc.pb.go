@@ -24,6 +24,8 @@ type LibraryClient interface {
 	CreateLibrary(ctx context.Context, in *CreateLibraryRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// UploadAuthorization check if a user can upload a book to a library
 	UploadAuthorization(ctx context.Context, in *UploadAuthorizationRequest, opts ...grpc.CallOption) (*UploadAuthorizationReply, error)
+	// CoverUploaded set the url of the uploaded cover in the book metadata
+	CoverUploaded(ctx context.Context, in *CoverUploadedRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type libraryClient struct {
@@ -52,6 +54,15 @@ func (c *libraryClient) UploadAuthorization(ctx context.Context, in *UploadAutho
 	return out, nil
 }
 
+func (c *libraryClient) CoverUploaded(ctx context.Context, in *CoverUploadedRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/library.Library/CoverUploaded", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LibraryServer is the server API for Library service.
 // All implementations must embed UnimplementedLibraryServer
 // for forward compatibility
@@ -60,6 +71,8 @@ type LibraryServer interface {
 	CreateLibrary(context.Context, *CreateLibraryRequest) (*emptypb.Empty, error)
 	// UploadAuthorization check if a user can upload a book to a library
 	UploadAuthorization(context.Context, *UploadAuthorizationRequest) (*UploadAuthorizationReply, error)
+	// CoverUploaded set the url of the uploaded cover in the book metadata
+	CoverUploaded(context.Context, *CoverUploadedRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedLibraryServer()
 }
 
@@ -72,6 +85,9 @@ func (UnimplementedLibraryServer) CreateLibrary(context.Context, *CreateLibraryR
 }
 func (UnimplementedLibraryServer) UploadAuthorization(context.Context, *UploadAuthorizationRequest) (*UploadAuthorizationReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UploadAuthorization not implemented")
+}
+func (UnimplementedLibraryServer) CoverUploaded(context.Context, *CoverUploadedRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CoverUploaded not implemented")
 }
 func (UnimplementedLibraryServer) mustEmbedUnimplementedLibraryServer() {}
 
@@ -122,6 +138,24 @@ func _Library_UploadAuthorization_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Library_CoverUploaded_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CoverUploadedRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LibraryServer).CoverUploaded(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/library.Library/CoverUploaded",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LibraryServer).CoverUploaded(ctx, req.(*CoverUploadedRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Library_ServiceDesc is the grpc.ServiceDesc for Library service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -136,6 +170,10 @@ var Library_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UploadAuthorization",
 			Handler:    _Library_UploadAuthorization_Handler,
+		},
+		{
+			MethodName: "CoverUploaded",
+			Handler:    _Library_CoverUploaded_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

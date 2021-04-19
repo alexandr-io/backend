@@ -11,17 +11,17 @@ import (
 )
 
 // Insert insert on the database a new book in a library.
-func Insert(DBBook data.BookData) (*data.BookData, error) {
+func Insert(bookData data.Book) (*data.Book, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	collection := database.Instance.Db.Collection(database.CollectionBook)
 
-	result, err := collection.InsertOne(ctx, DBBook)
+	result, err := collection.InsertOne(ctx, bookData)
 	if err != nil {
 		return nil, err
 	}
 
-	DBBook.ID = result.InsertedID.(primitive.ObjectID)
-	return &DBBook, nil
+	bookData.ID = result.InsertedID.(primitive.ObjectID)
+	return &bookData, nil
 }

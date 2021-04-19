@@ -11,6 +11,8 @@ service Library {
   rpc CreateLibrary (CreateLibraryRequest) returns (google.protobuf.Empty) {}
   // UploadAuthorization check if a user can upload a book to a library
   rpc UploadAuthorization (UploadAuthorizationRequest) returns (UploadAuthorizationReply) {}
+  // CoverUploaded set the url of the uploaded cover in the book metadata
+  rpc CoverUploaded (CoverUploadedRequest) returns (google.protobuf.Empty) {}
 }
 
 message CreateLibraryRequest {
@@ -24,4 +26,9 @@ message UploadAuthorizationRequest {
 
 message UploadAuthorizationReply {
   bool Authorized = 1;
+}
+
+message CoverUploadedRequest {
+  string BookID = 1;
+  string CoverURL = 2;
 }

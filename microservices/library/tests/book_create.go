@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-
-	"github.com/alexandr-io/backend/library/data"
 )
 
 // BookCreateEndFunction is a function called at the end of a book creation test
@@ -16,8 +14,10 @@ func BookCreateEndFunction(res *http.Response) error {
 		return err
 	}
 	// Parse response Body
-	var bookData data.Book
-	if err := json.Unmarshal(resBody, &bookData); err != nil {
+	bookData := struct {
+		ID string `json:"id"`
+	}{}
+	if err = json.Unmarshal(resBody, &bookData); err != nil {
 		return err
 	}
 	bookID = bookData.ID

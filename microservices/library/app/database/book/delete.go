@@ -13,17 +13,13 @@ import (
 )
 
 // Delete delete a book corresponding to the given invitation token
-func Delete(bookID string) error {
+func Delete(bookID primitive.ObjectID) error {
 	bookCollection := database.Instance.Db.Collection(database.CollectionBook)
 
-	id, err := primitive.ObjectIDFromHex(bookID)
-	if err != nil {
-		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, err.Error())
-	}
 	result, err := bookCollection.DeleteOne(
 		context.Background(),
 		bson.D{
-			{Key: "_id", Value: id},
+			{Key: "_id", Value: bookID},
 		},
 	)
 	if err != nil {
@@ -34,7 +30,7 @@ func Delete(bookID string) error {
 	}
 
 	_ = bookprogress.Delete(context.Background(), data.BookProgressData{
-		BookID: id,
+		BookID: bookID,
 	})
 	return nil
 }

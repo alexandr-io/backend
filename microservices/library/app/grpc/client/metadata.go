@@ -28,6 +28,6 @@ func Metadata(ctx context.Context, title string, author string) (*data.Book, err
 		Author:      metadataReply.Authors,
 		Publisher:   metadataReply.Publisher,
 		Description: metadataReply.Description,
-		Tags:        []string{metadataReply.Categories},
+		Categories:  []string{metadataReply.Categories},
 	}, err
 }
