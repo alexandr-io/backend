@@ -33,7 +33,7 @@ type Book struct {
 	PageCount           int                  `json:"-" bson:"page_count,omitempty"`
 }
 
-// MarshalJSON overrite the default marshal function to cast primitive.ObjectID to string
+// MarshalJSON override the default marshal function to cast primitive.ObjectID to string
 func (book Book) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		ID         string `json:"id,omitempty"`
