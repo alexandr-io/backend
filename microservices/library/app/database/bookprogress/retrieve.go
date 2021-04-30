@@ -2,6 +2,8 @@ package bookprogress
 
 import (
 	"context"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"time"
 
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
@@ -11,19 +13,17 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-// Retrieve retrieves the user's book progress from the mongo database
-func Retrieve(ctx context.Context, progressRetrieve data.APIProgressData) (*data.APIProgressData, error) {
-	collection := database.Instance.Db.Collection(database.CollectionBookProgress)
-	bookUserData, err := progressRetrieve.ToBookProgressData()
+// RetrieveFromIDs retrieves the user's book progress from the mongo database
+func RetrieveFromIDs(userID primitive.ObjectID, bookID primitive.ObjectID, libraryID primitive.ObjectID) (*data.BookProgressData, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
-	if err != nil {
-		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
-	}
+	collection := database.Instance.Db.Collection(database.CollectionBookProgress)
 
 	filter := bson.D{
-		{"user_id", bookUserData.UserID},
-		{"book_id", bookUserData.BookID},
-		{"library_id", bookUserData.LibraryID},
+		{"user_id", userID},
+		{"book_id", bookID},
+		{"library_id", libraryID},
 	}
 	var result data.BookProgressData
 	if err := collection.FindOne(ctx, filter).Decode(&result); err != nil {
@@ -33,6 +33,5 @@ func Retrieve(ctx context.Context, progressRetrieve data.APIProgressData) (*data
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
-	progressData := result.ToAPIProgressData()
-	return &progressData, nil
+	return &result, nil
 }

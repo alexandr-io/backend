@@ -123,7 +123,7 @@ var workingTests = []test{
 		HTTPMethod:       http.MethodPost,
 		URL:              func() string { return "/library/" + libraryID + "/book/" + bookID + "/progress" },
 		AuthJWT:          &authToken,
-		Body:             data.APIProgressData{Progress: "42"},
+		Body:             data.BookProgressData{Progress: "42"},
 		ExpectedHTTPCode: http.StatusOK,
 		ExpectedResponse: nil,
 		CustomEndFunc:    nil,
@@ -135,7 +135,7 @@ var workingTests = []test{
 		AuthJWT:          &authToken,
 		Body:             nil,
 		ExpectedHTTPCode: http.StatusOK,
-		ExpectedResponse: data.APIProgressData{
+		ExpectedResponse: bookProgressData{
 			BookID:    bookID,
 			LibraryID: libraryID,
 			Progress:  "42",
@@ -147,7 +147,7 @@ var workingTests = []test{
 		HTTPMethod:       http.MethodPost,
 		URL:              func() string { return "/library/" + libraryID + "/book/" + bookID + "/progress" },
 		AuthJWT:          &authToken,
-		Body:             data.APIProgressData{Progress: "100"},
+		Body:             data.BookProgressData{Progress: "100"},
 		ExpectedHTTPCode: http.StatusOK,
 		ExpectedResponse: nil,
 		CustomEndFunc:    nil,
@@ -159,7 +159,7 @@ var workingTests = []test{
 		AuthJWT:          &authToken,
 		Body:             nil,
 		ExpectedHTTPCode: http.StatusOK,
-		ExpectedResponse: data.APIProgressData{
+		ExpectedResponse: bookProgressData{
 			BookID:    bookID,
 			LibraryID: libraryID,
 			Progress:  "100",

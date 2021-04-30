@@ -47,13 +47,11 @@ var badRequestTests = []test{
 		CustomEndFunc:    nil,
 	},
 	{
-		TestSuite:  badRequestSuite,
-		HTTPMethod: http.MethodPost,
-		URL:        func() string { return "/library/0/book/0/progress" },
-		AuthJWT:    &authToken,
-		Body: data.APIProgressData{
-			Progress: "progress",
-		},
+		TestSuite:        badRequestSuite,
+		HTTPMethod:       http.MethodPost,
+		URL:              func() string { return "/library/0/book/0/progress" },
+		AuthJWT:          &authToken,
+		Body:             data.BookProgressData{Progress: "progress"},
 		ExpectedHTTPCode: http.StatusBadRequest,
 		ExpectedResponse: nil,
 		CustomEndFunc:    nil,

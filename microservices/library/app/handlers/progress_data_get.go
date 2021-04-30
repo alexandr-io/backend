@@ -29,13 +29,8 @@ func ProgressRetrieve(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You are not allowed to read books in this library")
 	}
 
-	// Retrieve
-	progressRetrieve := data.APIProgressData{ // TODO create only one function with custom marshal like book example: https://github.com/awslabs/goformation/blob/master/cloudformation/custom_resource.go
-		UserID:    userID.Hex(),
-		BookID:    bookID.Hex(),
-		LibraryID: libraryID.Hex(),
-	}
-	progress, err := bookprogress.Retrieve(ctx.Context(), progressRetrieve)
+	// RetrieveFromIDs
+	progress, err := bookprogress.RetrieveFromIDs(userID, bookID, libraryID)
 	if err != nil {
 		return err
 	}
