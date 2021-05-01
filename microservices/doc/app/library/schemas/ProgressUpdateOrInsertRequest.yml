@@ -4,9 +4,9 @@ components:
     ProgressUpdateOrInsertRequest:
       properties:
         progress:
-          description: 64-bits unsigned integer indicating progress in the book, in the range [0;18446744073709551615]
-          example: 42
-          type: float
+          description: String representation of user progress. (percentage, EPUB CFI, ...)
+          example: "some progress indicator"
+          type: string
 
       required:
         - progress
