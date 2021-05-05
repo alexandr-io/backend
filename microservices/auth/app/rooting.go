@@ -49,5 +49,4 @@ func createRoute(app *fiber.App) {
 	app.Use(func(c *fiber.Ctx) error {
 		return fiber.ErrNotFound
 	})
-
 }
