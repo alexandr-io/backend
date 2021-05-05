@@ -30,6 +30,6 @@ ARG microservice
 ARG path=microservices/${microservice}/app
 
 COPY --from=builder /${path}/service-binary ./
-COPY --from=builder /${path}/templates/* ./templates/
+COPY --from=builder /${path}/templates*/* ./templates/
 
 ENTRYPOINT ["./service-binary"]
