@@ -3,3 +3,4 @@
 - import_playbook: "tasks/docker.yml"
 - import_playbook: "tasks/kubernetes.yml"
 - import_playbook: "tasks/traefik.yml"
+- import_playbook: "tasks/cert.yml"
