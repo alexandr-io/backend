@@ -56,6 +56,9 @@ spec:
             value: redis
           - name: REDIS_PORT
             value: "6379"
+          - name: USER_URI
+            value: https://user.preprod.alexandrio.cloud
+
 
       imagePullSecrets:
       - name: regcred
