@@ -52,4 +52,5 @@ func VerifyEmail(ctx *fiber.Ctx) error {
 	return ctx.Render("success", fiber.Map{
 		"text": "Your email has been verified!",
 	})
+
 }
