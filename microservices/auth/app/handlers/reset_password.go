@@ -28,7 +28,7 @@ func SendResetPasswordEmail(ctx *fiber.Ctx) error {
 	// Generate UUID
 	resetPasswordToken := authJWT.RandomStringNoSpecialChar(6)
 
-	if err := redis.StoreResetPasswordToken(ctx, resetPasswordToken, userData.ID); err != nil {
+	if err = redis.ResetPasswordToken.Create(ctx.Context(), resetPasswordToken, userData.ID); err != nil {
 		return err
 	}
 
@@ -56,7 +56,7 @@ func ResetPasswordInfoFromToken(ctx *fiber.Ctx) error {
 	}
 
 	// Get the userID from redis using the reset password token as key
-	userID, err := redis.GetResetPasswordTokenUserID(ctx, token.Token)
+	userID, err := redis.ResetPasswordToken.Read(ctx.Context(), token.Token)
 	if err != nil {
 		return err
 	}
@@ -85,12 +85,12 @@ func ResetPassword(ctx *fiber.Ctx) error {
 	}
 
 	// Get the userID from redis using the reset password token as key
-	userID, err := redis.GetResetPasswordTokenUserID(ctx, resetData.Token)
+	userID, err := redis.ResetPasswordToken.Read(ctx.Context(), resetData.Token)
 	if err != nil {
 		return err
 	}
 
-	if err := redis.DeleteResetPasswordToken(ctx, resetData.Token); err != nil {
+	if err = redis.ResetPasswordToken.Delete(ctx.Context(), resetData.Token); err != nil {
 		return err
 	}
 
