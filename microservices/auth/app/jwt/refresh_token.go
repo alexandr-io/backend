@@ -27,7 +27,7 @@ func newRefreshToken(ctx *fiber.Ctx, userID string) (string, error) {
 	if err != nil {
 		return "", data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
-	if err := redis.StoreRefreshToken(ctx, signedToken, secret); err != nil {
+	if err = redis.RefreshToken.Create(ctx.Context(), signedToken, secret); err != nil {
 		return "", err
 	}
 	return signedToken, nil

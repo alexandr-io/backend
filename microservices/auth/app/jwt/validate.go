@@ -1,6 +1,7 @@
 package jwt
 
 import (
+	"context"
 	"os"
 
 	"github.com/alexandr-io/backend/auth/data"
@@ -17,8 +18,8 @@ func Validate(jwt string) (*jwt.Token, error) {
 		return nil, err
 	}
 
-	ok := redis.IsAuthTokenInBlackList(tokenObject.Raw)
-	if ok {
+	value := redis.AuthTokenBlackList.Read(context.Background(), tokenObject.Raw)
+	if value != "" {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "token is blacklisted")
 	}
 	return tokenObject, nil

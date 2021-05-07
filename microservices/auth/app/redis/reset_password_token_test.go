@@ -3,15 +3,13 @@ package redis
 import (
 	"context"
 	"errors"
-	"testing"
-	"time"
-
 	"github.com/go-redis/redismock/v8"
 	"github.com/gofiber/fiber/v2"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
-func TestReadSuccess(t *testing.T) {
+func TestResetPasswordReadSuccess(t *testing.T) {
 	var (
 		resetPasswordToken = "mMT22L"
 		expectedUserID     = "609275fd478e505b860cc7be"
@@ -27,7 +25,7 @@ func TestReadSuccess(t *testing.T) {
 	assert.Nil(t, mock.ExpectationsWereMet())
 }
 
-func TestReadFail(t *testing.T) {
+func TestResetPasswordReadFail(t *testing.T) {
 	var resetPasswordToken = "mMT22L"
 	rdb, mock := redismock.NewClientMock()
 	ResetPasswordToken.RDB = rdb
@@ -46,7 +44,7 @@ func TestReadFail(t *testing.T) {
 	assert.Nil(t, mock.ExpectationsWereMet())
 }
 
-func TestReadConnection(t *testing.T) {
+func TestResetPasswordReadConnection(t *testing.T) {
 	var resetPasswordToken = "mMT22L"
 	ResetPasswordToken.RDB = nil
 
@@ -60,7 +58,7 @@ func TestReadConnection(t *testing.T) {
 	assert.Equal(t, userID, "")
 }
 
-func TestCreateSuccess(t *testing.T) {
+func TestResetPasswordCreateSuccess(t *testing.T) {
 	var (
 		resetPasswordToken = "mMT22L"
 		userID             = "609275fd478e505b860cc7be"
@@ -68,14 +66,14 @@ func TestCreateSuccess(t *testing.T) {
 	rdb, mock := redismock.NewClientMock()
 	ResetPasswordToken.RDB = rdb
 
-	mock.ExpectSet(resetPasswordToken, userID, time.Hour*3).SetVal("OK")
+	mock.ExpectSet(resetPasswordToken, userID, resetPasswordTokenExpirationTime).SetVal("OK")
 	err := ResetPasswordToken.Create(context.TODO(), resetPasswordToken, userID)
 
 	assert.Nil(t, err)
 	assert.Nil(t, mock.ExpectationsWereMet())
 }
 
-func TestCreateFail(t *testing.T) {
+func TestResetPasswordCreateFail(t *testing.T) {
 	var (
 		resetPasswordToken = "mMT22L"
 		userID             = "609275fd478e505b860cc7be"
@@ -83,7 +81,7 @@ func TestCreateFail(t *testing.T) {
 	rdb, mock := redismock.NewClientMock()
 	ResetPasswordToken.RDB = rdb
 
-	mock.ExpectSet(resetPasswordToken, userID, time.Hour*3).SetErr(errors.New("error"))
+	mock.ExpectSet(resetPasswordToken, userID, resetPasswordTokenExpirationTime).SetErr(errors.New("error"))
 	err := ResetPasswordToken.Create(context.TODO(), resetPasswordToken, userID)
 
 	assert.NotNil(t, err)
@@ -95,7 +93,7 @@ func TestCreateFail(t *testing.T) {
 	assert.Nil(t, mock.ExpectationsWereMet())
 }
 
-func TestCreateConnection(t *testing.T) {
+func TestResetPasswordCreateConnection(t *testing.T) {
 	var (
 		resetPasswordToken = "mMT22L"
 		userID             = "609275fd478e505b860cc7be"
@@ -108,10 +106,10 @@ func TestCreateConnection(t *testing.T) {
 
 	e, ok := err.(*fiber.Error)
 	assert.True(t, ok)
-	assert.Equal(t, e.Code, fiber.StatusUnauthorized)
+	assert.Equal(t, e.Code, fiber.StatusInternalServerError)
 }
 
-func TestDeleteSuccess(t *testing.T) {
+func TestResetPasswordDeleteSuccess(t *testing.T) {
 	var resetPasswordToken = "mMT22L"
 	rdb, mock := redismock.NewClientMock()
 	ResetPasswordToken.RDB = rdb
@@ -123,7 +121,7 @@ func TestDeleteSuccess(t *testing.T) {
 	assert.Nil(t, mock.ExpectationsWereMet())
 }
 
-func TestDeleteFail(t *testing.T) {
+func TestResetPasswordDeleteFail(t *testing.T) {
 	var resetPasswordToken = "mMT22L"
 	rdb, mock := redismock.NewClientMock()
 	ResetPasswordToken.RDB = rdb
@@ -140,7 +138,7 @@ func TestDeleteFail(t *testing.T) {
 	assert.Nil(t, mock.ExpectationsWereMet())
 }
 
-func TestDeleteConnection(t *testing.T) {
+func TestResetPasswordDeleteConnection(t *testing.T) {
 	var resetPasswordToken = "mMT22L"
 	ResetPasswordToken.RDB = nil
 
@@ -150,5 +148,5 @@ func TestDeleteConnection(t *testing.T) {
 
 	e, ok := err.(*fiber.Error)
 	assert.True(t, ok)
-	assert.Equal(t, e.Code, fiber.StatusUnauthorized)
+	assert.Equal(t, e.Code, fiber.StatusInternalServerError)
 }

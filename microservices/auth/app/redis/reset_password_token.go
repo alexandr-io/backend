@@ -18,6 +18,7 @@ type ResetPasswordTokenData struct {
 
 // ResetPasswordToken is the client for the reset password token redis db
 var ResetPasswordToken = (&ResetPasswordTokenData{}).Connect()
+var resetPasswordTokenExpirationTime = time.Hour * 3
 
 // Connect the redis db
 func (r *ResetPasswordTokenData) Connect() *ResetPasswordTokenData {
@@ -35,8 +36,7 @@ func (r *ResetPasswordTokenData) Create(ctx context.Context, key string, value s
 		r.Connect()
 	}
 
-	err := r.RDB.Set(ctx, key, value, time.Hour*3).Err()
-	if err != nil {
+	if err := r.RDB.Set(ctx, key, value, resetPasswordTokenExpirationTime).Err(); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil
