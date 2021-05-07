@@ -17,7 +17,7 @@ func CancelEmailUpdate(ctx *fiber.Ctx) error {
 	}
 
 	token := ctx.Query("token")
-	email, err := redis.GetVerifyEmail(ctx.Context(), token)
+	email, err := redis.VerifyEmail.Read(ctx.Context(), token)
 	if err != nil {
 		_ = ctx.Render("error", fiber.Map{
 			"error": "Invalid Token",
@@ -45,7 +45,7 @@ func CancelEmailUpdate(ctx *fiber.Ctx) error {
 		}
 	}
 
-	if err := redis.DeleteVerifyEmail(ctx.Context(), token); err != nil {
+	if err := redis.VerifyEmail.Delete(ctx.Context(), token); err != nil {
 		_ = ctx.Render("error", fiber.Map{
 			"error": "Invalid Token",
 		})

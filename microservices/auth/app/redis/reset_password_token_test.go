@@ -3,10 +3,11 @@ package redis
 import (
 	"context"
 	"errors"
+	"testing"
+
 	"github.com/go-redis/redismock/v8"
 	"github.com/gofiber/fiber/v2"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestResetPasswordReadSuccess(t *testing.T) {
@@ -21,7 +22,7 @@ func TestResetPasswordReadSuccess(t *testing.T) {
 	userID, err := ResetPasswordToken.Read(context.TODO(), resetPasswordToken)
 
 	assert.Nil(t, err)
-	assert.Equal(t, userID, expectedUserID)
+	assert.Equal(t, expectedUserID, userID)
 	assert.Nil(t, mock.ExpectationsWereMet())
 }
 
@@ -37,9 +38,9 @@ func TestResetPasswordReadFail(t *testing.T) {
 
 	e, ok := err.(*fiber.Error)
 	assert.True(t, ok)
-	assert.Equal(t, e.Code, fiber.StatusUnauthorized)
+	assert.Equal(t, fiber.StatusUnauthorized, e.Code)
 
-	assert.Equal(t, userID, "")
+	assert.Equal(t, "", userID)
 
 	assert.Nil(t, mock.ExpectationsWereMet())
 }
@@ -54,8 +55,8 @@ func TestResetPasswordReadConnection(t *testing.T) {
 
 	e, ok := err.(*fiber.Error)
 	assert.True(t, ok)
-	assert.Equal(t, e.Code, fiber.StatusUnauthorized)
-	assert.Equal(t, userID, "")
+	assert.Equal(t, fiber.StatusUnauthorized, e.Code)
+	assert.Equal(t, "", userID)
 }
 
 func TestResetPasswordCreateSuccess(t *testing.T) {
@@ -88,7 +89,7 @@ func TestResetPasswordCreateFail(t *testing.T) {
 
 	e, ok := err.(*fiber.Error)
 	assert.True(t, ok)
-	assert.Equal(t, e.Code, fiber.StatusInternalServerError)
+	assert.Equal(t, fiber.StatusInternalServerError, e.Code)
 
 	assert.Nil(t, mock.ExpectationsWereMet())
 }
@@ -106,7 +107,7 @@ func TestResetPasswordCreateConnection(t *testing.T) {
 
 	e, ok := err.(*fiber.Error)
 	assert.True(t, ok)
-	assert.Equal(t, e.Code, fiber.StatusInternalServerError)
+	assert.Equal(t, fiber.StatusInternalServerError, e.Code)
 }
 
 func TestResetPasswordDeleteSuccess(t *testing.T) {
@@ -133,7 +134,7 @@ func TestResetPasswordDeleteFail(t *testing.T) {
 
 	e, ok := err.(*fiber.Error)
 	assert.True(t, ok)
-	assert.Equal(t, e.Code, fiber.StatusInternalServerError)
+	assert.Equal(t, fiber.StatusInternalServerError, e.Code)
 
 	assert.Nil(t, mock.ExpectationsWereMet())
 }
@@ -148,5 +149,5 @@ func TestResetPasswordDeleteConnection(t *testing.T) {
 
 	e, ok := err.(*fiber.Error)
 	assert.True(t, ok)
-	assert.Equal(t, e.Code, fiber.StatusInternalServerError)
+	assert.Equal(t, fiber.StatusInternalServerError, e.Code)
 }

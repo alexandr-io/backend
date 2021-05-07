@@ -23,7 +23,7 @@ func TestAuthTokenBlackListReadSuccess(t *testing.T) {
 	mock.ExpectGet(token).SetVal(expectedSecret)
 	secret := AuthTokenBlackList.Read(context.TODO(), token)
 
-	assert.Equal(t, secret, expectedSecret)
+	assert.Equal(t, expectedSecret, secret)
 	assert.Nil(t, mock.ExpectationsWereMet())
 }
 
@@ -35,7 +35,7 @@ func TestAuthTokenBlackListReadFail(t *testing.T) {
 	mock.ExpectGet(refreshToken).RedisNil()
 	secret := AuthTokenBlackList.Read(context.TODO(), refreshToken)
 
-	assert.Equal(t, secret, "")
+	assert.Equal(t, "", secret)
 	assert.Nil(t, mock.ExpectationsWereMet())
 }
 
@@ -45,7 +45,7 @@ func TestAuthTokenBlackListReadConnection(t *testing.T) {
 
 	secret := AuthTokenBlackList.Read(context.TODO(), token)
 
-	assert.Equal(t, secret, "")
+	assert.Equal(t, "", secret)
 }
 
 func TestAuthTokenBlackListCreateSuccess(t *testing.T) {
@@ -78,7 +78,7 @@ func TestAuthTokenBlackListCreateFail(t *testing.T) {
 
 	e, ok := err.(*fiber.Error)
 	assert.True(t, ok)
-	assert.Equal(t, e.Code, fiber.StatusInternalServerError)
+	assert.Equal(t, fiber.StatusInternalServerError, e.Code)
 
 	assert.Nil(t, mock.ExpectationsWereMet())
 }
@@ -93,5 +93,5 @@ func TestAuthTokenBlackListCreateConnection(t *testing.T) {
 
 	e, ok := err.(*fiber.Error)
 	assert.True(t, ok)
-	assert.Equal(t, e.Code, fiber.StatusInternalServerError)
+	assert.Equal(t, fiber.StatusInternalServerError, e.Code)
 }

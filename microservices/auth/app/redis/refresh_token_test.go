@@ -22,7 +22,7 @@ func TestRefreshTokenReadSuccess(t *testing.T) {
 	secret, err := RefreshToken.Read(context.TODO(), refreshToken)
 
 	assert.Nil(t, err)
-	assert.Equal(t, secret, expectedSecret)
+	assert.Equal(t, expectedSecret, secret)
 	assert.Nil(t, mock.ExpectationsWereMet())
 }
 
@@ -37,9 +37,9 @@ func TestRefreshTokenReadFail(t *testing.T) {
 	assert.NotNil(t, err)
 	e, ok := err.(*fiber.Error)
 	assert.True(t, ok)
-	assert.Equal(t, e.Code, fiber.StatusUnauthorized)
+	assert.Equal(t, fiber.StatusUnauthorized, e.Code)
 
-	assert.Equal(t, secret, "")
+	assert.Equal(t, "", secret)
 
 	assert.Nil(t, mock.ExpectationsWereMet())
 }
@@ -54,8 +54,8 @@ func TestRefreshTokenReadConnection(t *testing.T) {
 
 	e, ok := err.(*fiber.Error)
 	assert.True(t, ok)
-	assert.Equal(t, e.Code, fiber.StatusUnauthorized)
-	assert.Equal(t, secret, "")
+	assert.Equal(t, fiber.StatusUnauthorized, e.Code)
+	assert.Equal(t, "", secret)
 }
 
 func TestRefreshTokenCreateSuccess(t *testing.T) {
@@ -88,7 +88,7 @@ func TestRefreshTokenCreateFail(t *testing.T) {
 
 	e, ok := err.(*fiber.Error)
 	assert.True(t, ok)
-	assert.Equal(t, e.Code, fiber.StatusInternalServerError)
+	assert.Equal(t, fiber.StatusInternalServerError, e.Code)
 
 	assert.Nil(t, mock.ExpectationsWereMet())
 }
@@ -106,7 +106,7 @@ func TestRefreshTokenCreateConnection(t *testing.T) {
 
 	e, ok := err.(*fiber.Error)
 	assert.True(t, ok)
-	assert.Equal(t, e.Code, fiber.StatusInternalServerError)
+	assert.Equal(t, fiber.StatusInternalServerError, e.Code)
 }
 
 func TestRefreshTokenDeleteSuccess(t *testing.T) {
@@ -133,7 +133,7 @@ func TestRefreshTokenDeleteFail(t *testing.T) {
 
 	e, ok := err.(*fiber.Error)
 	assert.True(t, ok)
-	assert.Equal(t, e.Code, fiber.StatusInternalServerError)
+	assert.Equal(t, fiber.StatusInternalServerError, e.Code)
 
 	assert.Nil(t, mock.ExpectationsWereMet())
 }
@@ -148,5 +148,5 @@ func TestRefreshTokenDeleteConnection(t *testing.T) {
 
 	e, ok := err.(*fiber.Error)
 	assert.True(t, ok)
-	assert.Equal(t, e.Code, fiber.StatusInternalServerError)
+	assert.Equal(t, fiber.StatusInternalServerError, e.Code)
 }

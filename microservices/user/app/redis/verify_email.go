@@ -12,64 +12,67 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// StoreVerifyEmail store a given verify email token and email to redis.
-func StoreVerifyEmail(ctx context.Context, verifyEmailToken string, email data.EmailVerification) error {
-	emailBytes, err := json.Marshal(&email)
-	if err != nil {
-		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
-	}
+// VerifyEmailData struct for redis verify email
+type VerifyEmailData struct {
+	RDB *redis.Client
+}
 
-	rdb := redis.NewClient(&redis.Options{
+// VerifyEmail is the client for the verify email redis db
+var VerifyEmail = (&VerifyEmailData{}).Connect()
+var verifyEmailExpirationTime = time.Hour * 3
+
+// Connect the redis db
+func (r *VerifyEmailData) Connect() *VerifyEmailData {
+	r.RDB = redis.NewClient(&redis.Options{
 		Addr:     os.Getenv("REDIS_URL") + ":" + os.Getenv("REDIS_PORT"),
 		Password: "",
 		DB:       10,
 	})
+	return r
+}
 
-	// Store verify token for 3 days
-	err = rdb.Set(ctx, verifyEmailToken, string(emailBytes), time.Hour*24*3).Err()
+// Create store a given verify email token key with email as value to redis.
+func (r *VerifyEmailData) Create(ctx context.Context, key string, value data.EmailVerification) error {
+	if r.RDB == nil {
+		r.Connect()
+	}
+
+	emailBytes, err := json.Marshal(&value)
 	if err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+
+	if err := r.RDB.Set(ctx, key, string(emailBytes), verifyEmailExpirationTime).Err(); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil
 }
 
-// GetVerifyEmail get the email by it's verify email token.
-func GetVerifyEmail(ctx context.Context, verifyEmailToken string) (*data.EmailVerification, error) {
-	rdb := redis.NewClient(&redis.Options{
-		Addr:     os.Getenv("REDIS_URL") + ":" + os.Getenv("REDIS_PORT"),
-		Password: "",
-		DB:       10,
-	})
+// Read get the email value from a given verify email token key from redis.
+func (r *VerifyEmailData) Read(ctx context.Context, key string) (*data.EmailVerification, error) {
+	if r.RDB == nil {
+		r.Connect()
+	}
 
-	email, err := rdb.Get(ctx, verifyEmailToken).Result()
+	value, err := r.RDB.Get(ctx, key).Result()
 	if err != nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusUnauthorized, err.Error())
 	}
 
 	var emailData data.EmailVerification
-	if err := json.Unmarshal([]byte(email), &emailData); err != nil {
+	if err := json.Unmarshal([]byte(value), &emailData); err != nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
-
 	return &emailData, nil
 }
 
-// DeleteVerifyEmail delete the given verify email token from redis.
-func DeleteVerifyEmail(ctx context.Context, verifyEmailToken string) error {
-	rdb := redis.NewClient(&redis.Options{
-		Addr:     os.Getenv("REDIS_URL") + ":" + os.Getenv("REDIS_PORT"),
-		Password: "",
-		DB:       10,
-	})
-
-	iter := rdb.Scan(ctx, 0, verifyEmailToken, 0).Iterator()
-	for iter.Next(ctx) {
-		err := rdb.Del(ctx, iter.Val()).Err()
-		if err != nil {
-			return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
-		}
+// Delete delete the given verify email token key from redis.
+func (r *VerifyEmailData) Delete(ctx context.Context, key string) error {
+	if r.RDB == nil {
+		r.Connect()
 	}
-	if err := iter.Err(); err != nil {
+
+	if err := r.RDB.Del(ctx, key).Err(); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil
