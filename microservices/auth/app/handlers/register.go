@@ -4,9 +4,11 @@ import (
 	"time"
 
 	"github.com/alexandr-io/backend/auth/data"
+	"github.com/alexandr-io/backend/auth/database"
 	"github.com/alexandr-io/backend/auth/database/invitation"
 	grpcclient "github.com/alexandr-io/backend/auth/grpc/client"
 	authJWT "github.com/alexandr-io/backend/auth/jwt"
+
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -24,7 +26,7 @@ func Register(ctx *fiber.Ctx) error {
 	}
 
 	// Check invitation token
-	invite, err := invitation.GetFromToken(*userRegister.InvitationToken)
+	invite, err := invitation.GetFromToken(database.InvitationCollection, *userRegister.InvitationToken)
 	if err != nil {
 		return err
 	} else if invite.Used != nil {
@@ -71,7 +73,7 @@ func Register(ctx *fiber.Ctx) error {
 		Used:   &timeNow,
 		UserID: &userID,
 	}
-	if _, err := invitation.Update(invitationDB); err != nil {
+	if _, err := invitation.Update(database.InvitationCollection, invitationDB); err != nil {
 		return err
 	}
 

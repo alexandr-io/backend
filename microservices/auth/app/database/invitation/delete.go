@@ -4,17 +4,15 @@ import (
 	"context"
 
 	"github.com/alexandr-io/backend/auth/data"
-	"github.com/alexandr-io/backend/auth/database"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // Delete delete an invitation corresponding to the given invitation token
-func Delete(token string) error {
-	invitationCollection := database.Instance.Db.Collection(database.CollectionInvitation)
-
-	result, err := invitationCollection.DeleteOne(
+func Delete(collection *mongo.Collection, token string) error {
+	result, err := collection.DeleteOne(
 		context.Background(),
 		bson.D{
 			{Key: "token", Value: token},
