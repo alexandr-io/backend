@@ -20,7 +20,7 @@ func Login(ctx *fiber.Ctx) error {
 	}
 
 	// Kafka request to user
-	userData, err := grpcclient.Login(ctx.Context(), userLogin)
+	userData, err := grpcclient.Login(userLogin)
 	if err != nil {
 		return err
 	}

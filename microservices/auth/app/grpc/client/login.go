@@ -13,7 +13,7 @@ import (
 )
 
 // Login get a data.User containing an ID or an email and return the complete user data
-func Login(ctx context.Context, login data.UserLogin) (*data.User, error) {
+func Login(login data.UserLogin) (*data.User, error) {
 	if userClient == nil {
 		InitClients()
 		if userClient == nil {
@@ -26,7 +26,7 @@ func Login(ctx context.Context, login data.UserLogin) (*data.User, error) {
 		Password: login.Password,
 	}
 	fmt.Printf("[gRPC]: Login sent: %+v\n", regex.Hide(loginRequest.String()))
-	userReply, err := userClient.Login(ctx, &loginRequest)
+	userReply, err := userClient.Login(context.Background(), &loginRequest)
 	if err != nil {
 		return nil, grpc.ErrorToFiber(err)
 	}

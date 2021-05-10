@@ -20,6 +20,7 @@ require (
 	github.com/go-redis/redismock/v8 v8.0.6
 	github.com/gofiber/fiber/v2 v2.5.0
 	github.com/gofiber/jwt/v2 v2.1.0
+	github.com/golang/mock v1.5.0
 	github.com/klauspost/compress v1.11.3 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
