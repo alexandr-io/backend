@@ -21,11 +21,11 @@ func TestCreate(t *testing.T) {
 	mt.RunOpts("find one", mtest.NewOptions().ClientType(mtest.Mock), func(mt *mtest.T) {
 		database.Instance.Db = mt.DB
 		mt.Run("success", func(mt *mtest.T) {
+			database.InvitationCollection = mt.Coll
 			var token = "dOG8UVzaLk"
 			id := primitive.NewObjectID()
-
 			mt.AddMockResponses(mtest.CreateSuccessResponse(bson.E{Key: "id", Value: id}))
-			invitation, err := Insert(mt.Coll, data.Invitation{
+			invitation, err := Insert(data.Invitation{
 				ID:     id,
 				Token:  token,
 				Used:   nil,
@@ -40,8 +40,9 @@ func TestCreate(t *testing.T) {
 			}, invitation)
 		})
 		mt.Run("error", func(t *mtest.T) {
+			database.InvitationCollection = mt.Coll
 			mt.AddMockResponses(bson.D{{"ok", 0}})
-			invitation, err := Insert(mt.Coll, data.Invitation{})
+			invitation, err := Insert(data.Invitation{})
 			assert.NotNil(t, err)
 			assert.Nil(t, invitation)
 

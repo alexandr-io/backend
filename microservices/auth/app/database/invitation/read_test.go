@@ -20,6 +20,7 @@ func TestRead(t *testing.T) {
 	mt.RunOpts("read one", mtest.NewOptions().ClientType(mtest.Mock), func(mt *mtest.T) {
 		database.Instance.Db = mt.DB
 		mt.Run("success", func(mt *mtest.T) {
+			database.InvitationCollection = mt.Coll
 			expectedInvitation := data.Invitation{
 				ID:    primitive.NewObjectID(),
 				Token: "dOG8UVzaLk",
@@ -31,17 +32,18 @@ func TestRead(t *testing.T) {
 			assert.Nil(t, err)
 
 			mt.AddMockResponses(mtest.CreateCursorResponse(1, "foo.bar", mtest.FirstBatch, bsonD))
-			invitation, err := GetFromToken(mt.Coll, expectedInvitation.Token)
+			invitation, err := GetFromToken(expectedInvitation.Token)
 			assert.Nil(t, err)
 			assert.Equal(t, &expectedInvitation, invitation)
 		})
 		mt.Run("error", func(t *mtest.T) {
+			database.InvitationCollection = mt.Coll
 			sentInvitation := data.Invitation{
 				ID:    primitive.NewObjectID(),
 				Token: "dOG8UVzaLk",
 			}
 
-			invitation, err := GetFromToken(mt.Coll, sentInvitation.Token)
+			invitation, err := GetFromToken(sentInvitation.Token)
 			assert.NotNil(t, err)
 			assert.Nil(t, invitation)
 
@@ -50,6 +52,7 @@ func TestRead(t *testing.T) {
 			assert.Equal(t, fiber.StatusUnauthorized, e.Code)
 		})
 		mt.Run("no document", func(t *mtest.T) {
+			database.InvitationCollection = mt.Coll
 			var token = "dOG8UVzaLk"
 
 			mt.AddMockResponses(bson.D{
@@ -60,7 +63,7 @@ func TestRead(t *testing.T) {
 					{string(mtest.FirstBatch), bson.A{}},
 				}},
 			})
-			invitation, err := GetFromToken(mt.Coll, token)
+			invitation, err := GetFromToken(token)
 			assert.NotNil(t, err)
 			assert.Nil(t, invitation)
 
