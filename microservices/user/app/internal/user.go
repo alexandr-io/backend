@@ -4,14 +4,15 @@ import (
 	"github.com/alexandr-io/backend/user/data"
 	"github.com/alexandr-io/backend/user/database/user"
 	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // User is the internal logic function used to get an user from an ID.
-func User(ID string, email string) (*data.User, error) {
+func User(ID primitive.ObjectID, email string) (*data.User, error) {
 
 	var userData *data.User
 	var err error = nil
-	if ID != "" {
+	if ID != primitive.NilObjectID {
 		userData, err = user.FromID(ID)
 	} else if email != "" {
 		userData, err = user.FromEmail(email)

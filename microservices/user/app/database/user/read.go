@@ -14,21 +14,16 @@ import (
 )
 
 // FromID get an user by it's given id.
-func FromID(userID string) (*data.User, error) {
+func FromID(userID primitive.ObjectID) (*data.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	collection := database.Instance.Db.Collection(database.CollectionUser)
 
-	id, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
-	}
-
-	filter := bson.D{{Key: "_id", Value: id}}
+	filter := bson.D{{Key: "_id", Value: userID}}
 	var result data.User
 
-	if err = collection.FindOne(ctx, filter).Decode(&result); err != nil {
+	if err := collection.FindOne(ctx, filter).Decode(&result); err != nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusUnauthorized, err.Error())
 	}
 	return &result, nil

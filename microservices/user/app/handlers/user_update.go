@@ -4,6 +4,7 @@ import (
 	"github.com/alexandr-io/backend/user/data"
 	"github.com/alexandr-io/backend/user/database/user"
 	"github.com/alexandr-io/backend/user/internal"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -13,8 +14,12 @@ func UpdateUser(ctx *fiber.Ctx) error {
 	// Set Content-Type: application/json
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
+	id, err := primitive.ObjectIDFromHex(string(ctx.Request().Header.Peek("ID")))
+	if err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
 	userAuth := data.User{
-		ID:       string(ctx.Request().Header.Peek("ID")),
+		ID:       id,
 		Username: string(ctx.Request().Header.Peek("Username")),
 	}
 

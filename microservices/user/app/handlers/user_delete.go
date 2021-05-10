@@ -3,17 +3,19 @@ package handlers
 import (
 	"github.com/alexandr-io/backend/user/data"
 	"github.com/alexandr-io/backend/user/database/user"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 // DeleteUser delete the connected user.
 func DeleteUser(ctx *fiber.Ctx) error {
-	userDB := data.User{
-		ID: string(ctx.Request().Header.Peek("ID")),
+	id, err := primitive.ObjectIDFromHex(string(ctx.Request().Header.Peek("ID")))
+	if err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
-	if err := user.Delete(userDB.ID); err != nil {
+	if err := user.Delete(id); err != nil {
 		return err
 	}
 

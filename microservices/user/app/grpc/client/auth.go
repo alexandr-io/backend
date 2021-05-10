@@ -10,6 +10,7 @@ import (
 	"github.com/alexandr-io/backend/user/data"
 
 	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // Auth grpc Client to check jwt and get corresponding user data
@@ -25,8 +26,12 @@ func Auth(ctx context.Context, jwt string) (*data.User, error) {
 		return nil, grpc.ErrorToFiber(err)
 	}
 
+	id, err := primitive.ObjectIDFromHex(authReply.ID)
+	if err != nil {
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
 	return &data.User{
-		ID:       authReply.ID,
+		ID:       id,
 		Username: authReply.Username,
 		Email:    authReply.Email,
 	}, nil
