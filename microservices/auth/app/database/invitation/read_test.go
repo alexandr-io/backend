@@ -17,7 +17,7 @@ func TestRead(t *testing.T) {
 	mt := mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
 	defer mt.Close()
 
-	mt.RunOpts("read one", mtest.NewOptions().ClientType(mtest.Mock), func(mt *mtest.T) {
+	mt.RunOpts("find one", mtest.NewOptions().ClientType(mtest.Mock), func(mt *mtest.T) {
 		database.Instance.Db = mt.DB
 		mt.Run("success", func(mt *mtest.T) {
 			database.InvitationCollection = mt.Coll
