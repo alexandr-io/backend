@@ -13,9 +13,7 @@ import (
 
 // Delete user delete a user corresponding to the given user id
 func Delete(id primitive.ObjectID) error {
-	userCollection := database.Instance.Db.Collection(database.CollectionUser)
-
-	result, err := userCollection.DeleteOne(
+	result, err := database.UserCollection.DeleteOne(
 		context.Background(),
 		bson.D{
 			{Key: "_id", Value: id},

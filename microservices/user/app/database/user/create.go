@@ -14,7 +14,6 @@ import (
 
 // Insert insert a new user into the database.
 func Insert(user data.User) (*data.User, error) {
-
 	insertedResult, err := database.UserCollection.InsertOne(context.Background(), user)
 	if database.IsMongoDupKey(err) {
 		// If the mongo db error is a duplication error, return the proper error
