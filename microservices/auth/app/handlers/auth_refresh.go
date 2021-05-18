@@ -25,7 +25,7 @@ func RefreshAuthToken(ctx *fiber.Ctx) error {
 	}
 
 	// Get secret of refresh token from redis
-	secret, err := redis.GetRefreshTokenSecret(ctx, authRefresh.RefreshToken)
+	secret, err := redis.RefreshToken.Read(ctx.Context(), authRefresh.RefreshToken)
 	if err != nil {
 		return err
 	}
@@ -52,7 +52,7 @@ func RefreshAuthToken(ctx *fiber.Ctx) error {
 	user.RefreshToken = refreshToken
 
 	// Delete the previous refresh token
-	if err := redis.DeleteRefreshToken(ctx, authRefresh.RefreshToken); err != nil {
+	if err = redis.RefreshToken.Delete(ctx.Context(), authRefresh.RefreshToken); err != nil {
 		return err
 	}
 

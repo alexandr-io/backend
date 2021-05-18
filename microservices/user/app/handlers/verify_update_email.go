@@ -18,7 +18,7 @@ func VerifyUpdateEmail(ctx *fiber.Ctx) error {
 	}
 
 	token := ctx.Query("token")
-	email, err := redis.GetVerifyEmail(ctx.Context(), token)
+	email, err := redis.VerifyEmail.Read(ctx.Context(), token)
 	if err != nil {
 		_ = ctx.Render("error", fiber.Map{
 			"error": "Invalid Token",

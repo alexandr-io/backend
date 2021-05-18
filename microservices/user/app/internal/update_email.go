@@ -17,7 +17,7 @@ import (
 func updateEmail(ctx context.Context, user *data.User, newEmail string) (string, error) {
 	verifyEmailToken := generate.RandomStringNoSpecialChar(12)
 
-	if err := redis.StoreVerifyEmail(ctx, verifyEmailToken, data.EmailVerification{
+	if err := redis.VerifyEmail.Create(ctx, verifyEmailToken, data.EmailVerification{
 		OldEmail: user.Email,
 		NewEmail: newEmail,
 	}); err != nil {

@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"context"
 	"os"
 	"time"
 
@@ -10,52 +11,57 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// StoreRefreshToken store a given refresh token and it's secret to redis.
-func StoreRefreshToken(ctx *fiber.Ctx, refreshToken string, secret string) error {
-	rdb := redis.NewClient(&redis.Options{
+// RefreshTokenData struct for redis refresh token interaction
+type RefreshTokenData struct {
+	RDB *redis.Client
+}
+
+// RefreshToken is the client for the refresh token redis db
+var RefreshToken = (&RefreshTokenData{}).Connect()
+var refreshTokenExpirationTime = time.Hour * 24 * 30 // 30 days
+
+// Connect the redis db
+func (r *RefreshTokenData) Connect() *RefreshTokenData {
+	r.RDB = redis.NewClient(&redis.Options{
 		Addr:     os.Getenv("REDIS_URL") + ":" + os.Getenv("REDIS_PORT"),
 		Password: "",
 		DB:       0,
 	})
+	return r
+}
 
-	err := rdb.Set(ctx.Context(), refreshToken, secret, time.Hour*24*30).Err()
-	if err != nil {
+// Create store a given refresh token key with secret as value to redis.
+func (r *RefreshTokenData) Create(ctx context.Context, key string, value string) error {
+	if r.RDB == nil {
+		r.Connect()
+	}
+
+	if err := r.RDB.Set(ctx, key, value, refreshTokenExpirationTime).Err(); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil
 }
 
-// GetRefreshTokenSecret get the secret from a given refresh token from redis.
-func GetRefreshTokenSecret(ctx *fiber.Ctx, refreshToken string) (string, error) {
-	rdb := redis.NewClient(&redis.Options{
-		Addr:     os.Getenv("REDIS_URL") + ":" + os.Getenv("REDIS_PORT"),
-		Password: "",
-		DB:       0,
-	})
+// Read get the secret value from a given refresh token key from redis.
+func (r *RefreshTokenData) Read(ctx context.Context, key string) (string, error) {
+	if r.RDB == nil {
+		r.Connect()
+	}
 
-	secret, err := rdb.Get(ctx.Context(), refreshToken).Result()
+	value, err := r.RDB.Get(ctx, key).Result()
 	if err != nil {
 		return "", data.NewHTTPErrorInfo(fiber.StatusUnauthorized, err.Error())
 	}
-	return secret, nil
+	return value, nil
 }
 
-// DeleteRefreshToken delete the given refresh token from redis.
-func DeleteRefreshToken(ctx *fiber.Ctx, refreshToken string) error {
-	rdb := redis.NewClient(&redis.Options{
-		Addr:     os.Getenv("REDIS_URL") + ":" + os.Getenv("REDIS_PORT"),
-		Password: "",
-		DB:       0,
-	})
-
-	iter := rdb.Scan(ctx.Context(), 0, refreshToken, 0).Iterator()
-	for iter.Next(ctx.Context()) {
-		err := rdb.Del(ctx.Context(), iter.Val()).Err()
-		if err != nil {
-			return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
-		}
+// Delete delete the given refresh token key from redis.
+func (r *RefreshTokenData) Delete(ctx context.Context, key string) error {
+	if r.RDB == nil {
+		r.Connect()
 	}
-	if err := iter.Err(); err != nil {
+
+	if err := r.RDB.Del(ctx, key).Err(); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil

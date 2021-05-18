@@ -2,7 +2,6 @@ package redis
 
 import (
 	"context"
-	"log"
 	"os"
 	"time"
 
@@ -12,35 +11,47 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// StoreAuthTokenBlackList store a given auth token to redis.
-func StoreAuthTokenBlackList(ctx *fiber.Ctx, authToken string, duration time.Duration) error {
-	rdb := redis.NewClient(&redis.Options{
+// AuthTokenBlackListData struct for redis auth token blacklist
+type AuthTokenBlackListData struct {
+	RDB *redis.Client
+}
+
+// AuthTokenBlackList is the client for the auth token blacklist redis db
+var AuthTokenBlackList = (&AuthTokenBlackListData{}).Connect()
+
+// Connect the redis db
+func (r *AuthTokenBlackListData) Connect() *AuthTokenBlackListData {
+	r.RDB = redis.NewClient(&redis.Options{
 		Addr:     os.Getenv("REDIS_URL") + ":" + os.Getenv("REDIS_PORT"),
 		Password: "",
 		DB:       1,
 	})
+	return r
+}
 
-	err := rdb.Set(ctx.Context(), authToken, os.Getenv("JWT_SECRET"), duration).Err()
-	if err != nil {
+// Create store a given auth token key for the given duration to redis.
+func (r *AuthTokenBlackListData) Create(ctx context.Context, key string, duration time.Duration) error {
+	if r.RDB == nil {
+		r.Connect()
+	}
+
+	if err := r.RDB.Set(ctx, key, os.Getenv("JWT_SECRET"), duration).Err(); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil
 }
 
-// IsAuthTokenInBlackList return true if the auth token is in the black list.
-func IsAuthTokenInBlackList(authToken string) bool {
-	rdb := redis.NewClient(&redis.Options{
-		Addr:     os.Getenv("REDIS_URL") + ":" + os.Getenv("REDIS_PORT"),
-		Password: "",
-		DB:       1,
-	})
-
-	_, err := rdb.Get(context.Background(), authToken).Result()
-	if err == redis.Nil {
-		return false
-	} else if err != nil {
-		log.Println(err)
-		return true
+// Read get the value from a given auth token key from redis.
+func (r *AuthTokenBlackListData) Read(ctx context.Context, key string) string {
+	if r.RDB == nil {
+		r.Connect()
 	}
-	return true
+
+	value, err := r.RDB.Get(ctx, key).Result()
+	if err == redis.Nil {
+		return ""
+	} else if err != nil {
+		return ""
+	}
+	return value
 }

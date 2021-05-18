@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"context"
 	"os"
 	"time"
 
@@ -10,52 +11,57 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// StoreResetPasswordToken store a given reset password token to redis.
-func StoreResetPasswordToken(ctx *fiber.Ctx, resetPasswordToken string, userID string) error {
-	rdb := redis.NewClient(&redis.Options{
+// ResetPasswordTokenData struct for redis reset password token interaction
+type ResetPasswordTokenData struct {
+	RDB *redis.Client
+}
+
+// ResetPasswordToken is the client for the reset password token redis db
+var ResetPasswordToken = (&ResetPasswordTokenData{}).Connect()
+var resetPasswordTokenExpirationTime = time.Hour * 3
+
+// Connect the redis db
+func (r *ResetPasswordTokenData) Connect() *ResetPasswordTokenData {
+	r.RDB = redis.NewClient(&redis.Options{
 		Addr:     os.Getenv("REDIS_URL") + ":" + os.Getenv("REDIS_PORT"),
 		Password: "",
 		DB:       2,
 	})
+	return r
+}
 
-	err := rdb.Set(ctx.Context(), resetPasswordToken, userID, time.Hour*3).Err()
-	if err != nil {
+// Create store a given reset password token key with userID as value to redis.
+func (r *ResetPasswordTokenData) Create(ctx context.Context, key string, value string) error {
+	if r.RDB == nil {
+		r.Connect()
+	}
+
+	if err := r.RDB.Set(ctx, key, value, resetPasswordTokenExpirationTime).Err(); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil
 }
 
-// GetResetPasswordTokenUserID get the userID value from a given reset password token key from redis.
-func GetResetPasswordTokenUserID(ctx *fiber.Ctx, resetPasswordToken string) (string, error) {
-	rdb := redis.NewClient(&redis.Options{
-		Addr:     os.Getenv("REDIS_URL") + ":" + os.Getenv("REDIS_PORT"),
-		Password: "",
-		DB:       2,
-	})
+// Read get the userID value from a given reset password token key from redis.
+func (r *ResetPasswordTokenData) Read(ctx context.Context, key string) (string, error) {
+	if r.RDB == nil {
+		r.Connect()
+	}
 
-	userID, err := rdb.Get(ctx.Context(), resetPasswordToken).Result()
+	value, err := r.RDB.Get(ctx, key).Result()
 	if err != nil {
 		return "", data.NewHTTPErrorInfo(fiber.StatusUnauthorized, err.Error())
 	}
-	return userID, nil
+	return value, nil
 }
 
-// DeleteResetPasswordToken delete the given reset password token from redis.
-func DeleteResetPasswordToken(ctx *fiber.Ctx, resetPasswordToken string) error {
-	rdb := redis.NewClient(&redis.Options{
-		Addr:     os.Getenv("REDIS_URL") + ":" + os.Getenv("REDIS_PORT"),
-		Password: "",
-		DB:       2,
-	})
-
-	iter := rdb.Scan(ctx.Context(), 0, resetPasswordToken, 0).Iterator()
-	for iter.Next(ctx.Context()) {
-		err := rdb.Del(ctx.Context(), iter.Val()).Err()
-		if err != nil {
-			return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
-		}
+// Delete delete the given reset password token key from redis.
+func (r *ResetPasswordTokenData) Delete(ctx context.Context, key string) error {
+	if r.RDB == nil {
+		r.Connect()
 	}
-	if err := iter.Err(); err != nil {
+
+	if err := r.RDB.Del(ctx, key).Err(); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil

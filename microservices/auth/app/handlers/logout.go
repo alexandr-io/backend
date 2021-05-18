@@ -31,7 +31,7 @@ func Logout(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	if err := redis.StoreAuthTokenBlackList(ctx, jwt.Raw, exp); err != nil {
+	if err := redis.AuthTokenBlackList.Create(ctx.Context(), jwt.Raw, exp); err != nil {
 		return err
 	}
 
