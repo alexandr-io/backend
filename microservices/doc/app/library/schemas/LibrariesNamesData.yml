@@ -12,4 +12,6 @@ components:
         description:
           example: General library
           type: string
+        invited_by:
+          example: 9ef5a2[...]72a7c90
       type: object
