@@ -14,6 +14,7 @@ type Library struct {
 	InvitedBy   primitive.ObjectID `json:"invited_by,omitempty" bson:"invited_by,omitempty"`
 }
 
+// Libraries define the structure for the API list of a user's libraries
 type Libraries struct {
 	HasAccess *[]Library `json:"has_access"`
 	IsInvited *[]Library `json:"is_invited"`
@@ -29,6 +30,7 @@ type UserLibrary struct {
 	InvitedBy   primitive.ObjectID            `json:"invited_by,omitempty" bson: "invited_by,omitempty"`
 }
 
+// LibraryInvite is the structure of the data to invite a user to a library
 type LibraryInvite struct {
 	Login       string                        `json:"login,required"`
 	Permissions permissions.PermissionLibrary `json:"permissions,omitempty"`
