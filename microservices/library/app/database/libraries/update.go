@@ -2,7 +2,6 @@ package libraries
 
 import (
 	"context"
-	"time"
 
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
@@ -15,13 +14,8 @@ import (
 
 // Update a user's library.
 func Update(library data.UserLibrary) (*data.UserLibrary, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	collection := database.Instance.Db.Collection(database.CollectionLibraries)
-
 	filters := bson.D{{"user_id", library.UserID}, {"library_id", library.LibraryID}}
-	if err := collection.FindOneAndUpdate(ctx, filters, bson.D{{"$set", library}}, options.FindOneAndUpdate().SetReturnDocument(1)).Decode(&library); err != nil {
+	if err := database.LibrariesCollection.FindOneAndUpdate(context.Background(), filters, bson.D{{"$set", library}}, options.FindOneAndUpdate().SetReturnDocument(1)).Decode(&library); err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, "User's library not found.")
 		}

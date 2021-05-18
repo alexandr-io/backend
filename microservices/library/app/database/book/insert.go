@@ -2,7 +2,6 @@ package book
 
 import (
 	"context"
-	"time"
 
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
@@ -12,12 +11,7 @@ import (
 
 // Insert insert on the database a new book in a library.
 func Insert(bookData data.Book) (*data.Book, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	collection := database.Instance.Db.Collection(database.CollectionBook)
-
-	result, err := collection.InsertOne(ctx, bookData)
+	result, err := database.BookCollection.InsertOne(context.Background(), bookData)
 	if err != nil {
 		return nil, err
 	}

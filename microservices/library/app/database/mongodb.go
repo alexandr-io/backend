@@ -51,4 +51,10 @@ func ConnectToMongo() {
 		Client: client,
 		Db:     db,
 	}
+
+	BookCollection = db.Collection(CollectionBook)
+	LibrariesCollection = db.Collection(CollectionLibraries)
+	LibraryCollection = db.Collection(CollectionLibrary)
+	BookProgressCollection = db.Collection(CollectionBookProgress)
+	GroupCollection = db.Collection(CollectionGroup)
 }

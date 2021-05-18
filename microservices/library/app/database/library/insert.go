@@ -2,8 +2,6 @@ package library
 
 import (
 	"context"
-	"time"
-
 	"github.com/alexandr-io/backend/common/typeconv"
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/data/permissions"
@@ -17,12 +15,7 @@ import (
 
 // Insert insert on the database a new library in the user's libraries.
 func Insert(userIDStr string, libraryData data.Library) (*data.Library, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	collection := database.Instance.Db.Collection(database.CollectionLibrary)
-
-	insertedResult, err := collection.InsertOne(ctx, libraryData)
+	insertedResult, err := database.LibraryCollection.InsertOne(context.Background(), libraryData)
 	if err != nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
