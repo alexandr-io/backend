@@ -3,13 +3,13 @@ package client
 import (
 	"context"
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/alexandr-io/backend/grpc"
 	grpclibrary "github.com/alexandr-io/backend/grpc/library"
 	"github.com/alexandr-io/backend/media/data"
 
 	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // UploadAuthorization grpc Client to check if a user can upload to a library

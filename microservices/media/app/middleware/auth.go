@@ -37,6 +37,7 @@ func Protected() func(*fiber.Ctx) error {
 	}
 }
 
+// RetrieveAuthInfos fill a AuthInfo struct out of the logged user info in the header set by the auth middleware
 func RetrieveAuthInfos(ctx *fiber.Ctx) data.AuthInfo {
 	id, err := primitive.ObjectIDFromHex(string(ctx.Request().Header.Peek("ID")))
 	if err != nil {

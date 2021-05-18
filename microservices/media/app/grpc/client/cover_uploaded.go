@@ -3,10 +3,11 @@ package client
 import (
 	"context"
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/alexandr-io/backend/grpc"
 	grpclibrary "github.com/alexandr-io/backend/grpc/library"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // CoverUploaded grpc Client to store uploaded cover URL in library book metadata
