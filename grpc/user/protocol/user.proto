@@ -15,6 +15,8 @@ service User {
   rpc UpdatePassword (UpdatePasswordRequest) returns (UserReply) {}
   // UpdatePasswordLogged changed a logged user's password in DB.
   rpc UpdatePasswordLogged (UpdatePasswordLoggedRequest) returns (UserReply) {}
+  // UserFromLogin retrieve a user from a username or email.
+  rpc UserFromLogin (UserFromLoginRequest) returns (UserReply) {}
 }
 
 // Only one field must be filled. If both are sent, the user will be retrieved by it's ID.
@@ -49,4 +51,8 @@ message UpdatePasswordLoggedRequest {
   string ID = 1;
   string CurrentPassword = 2;
   string NewPassword = 3;
+}
+
+message UserFromLoginRequest {
+  string Login = 1;
 }
