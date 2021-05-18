@@ -13,9 +13,18 @@ func LibrariesRetrieve(ctx *fiber.Ctx) error {
 
 	userID := string(ctx.Request().Header.Peek("ID"))
 
-	result, err := libraries.GetFromUserID(userID)
+	libraryHasAccess, err := libraries.GetFromUserID(userID)
 	if err != nil {
 		return err
+	}
+	libraryIsInvited, err := libraries.GetInvitedToFromUserID(userID)
+	if err != nil {
+		return err
+	}
+
+	result := data.Libraries{
+		HasAccess: libraryHasAccess,
+		IsInvited: libraryIsInvited,
 	}
 
 	// Return the new library to the user

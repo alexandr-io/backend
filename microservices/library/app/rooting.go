@@ -33,6 +33,7 @@ func createRoute(app *fiber.App) {
 	app.Post("/library", userMiddleware.Protected(), handlers.LibraryCreation)
 	app.Get("/library/:library_id", userMiddleware.Protected(), handlers.LibraryRetrieve)
 	app.Delete("/library/:library_id", userMiddleware.Protected(), handlers.LibraryDelete)
+	app.Post("/library/:library_id/invite", userMiddleware.Protected(), handlers.LibraryInvite)
 
 	// Books relatives URLs
 	app.Get("/library/:library_id/books", userMiddleware.Protected(), handlers.BooksRetrieve)
