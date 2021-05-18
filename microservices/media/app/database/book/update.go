@@ -13,11 +13,9 @@ import (
 )
 
 // Update take a data.Book to update a book in database
-func Update(ctx context.Context, book data.Book) (*data.Book, error) {
-	bookCollection := database.Instance.Db.Collection(database.CollectionBook)
-
-	if err := bookCollection.FindOneAndUpdate(
-		ctx,
+func Update(book data.Book) (*data.Book, error) {
+	if err := database.BookCollection.FindOneAndUpdate(
+		context.Background(),
 		bson.D{
 			{"book_id", book.ID},
 			{"library_id", book.LibraryID},

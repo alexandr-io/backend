@@ -3,15 +3,16 @@ package client
 import (
 	"context"
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/alexandr-io/backend/grpc"
 	grpclibrary "github.com/alexandr-io/backend/grpc/library"
 )
 
 // CoverUploaded grpc Client to store uploaded cover URL in library book metadata
-func CoverUploaded(ctx context.Context, BookID string, CoverURL string) error {
+func CoverUploaded(ctx context.Context, BookID primitive.ObjectID, CoverURL string) error {
 	coverUploaded := grpclibrary.CoverUploadedRequest{
-		BookID:   BookID,
+		BookID:   BookID.Hex(),
 		CoverURL: CoverURL,
 	}
 	fmt.Printf("[gRPC]: Cover uploaded sent: %+v\n", coverUploaded.String())

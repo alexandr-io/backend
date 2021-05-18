@@ -3,6 +3,7 @@ package middleware
 import (
 	"github.com/alexandr-io/backend/media/data"
 	grpcclient "github.com/alexandr-io/backend/media/grpc/client"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -34,5 +35,16 @@ func Protected() func(*fiber.Ctx) error {
 		ctx.Request().Header.Set("Email", user.Email)
 		return ctx.Next()
 	}
+}
 
+func RetrieveAuthInfos(ctx *fiber.Ctx) data.AuthInfo {
+	id, err := primitive.ObjectIDFromHex(string(ctx.Request().Header.Peek("ID")))
+	if err != nil {
+		id = primitive.NilObjectID
+	}
+	return data.AuthInfo{
+		ID:       id,
+		Username: string(ctx.Request().Header.Peek("Username")),
+		Email:    string(ctx.Request().Header.Peek("Email")),
+	}
 }
