@@ -26,7 +26,7 @@ require (
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/stretchr/testify v1.7.0
 	github.com/valyala/fasthttp v1.18.0
-	go.mongodb.org/mongo-driver v1.4.4
+	go.mongodb.org/mongo-driver v1.5.2
 	golang.org/x/crypto v0.0.0-20201208171446-5f87f3452ae9
 	google.golang.org/grpc v1.35.0
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect

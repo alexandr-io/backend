@@ -2,11 +2,11 @@ package group
 
 import (
 	"context"
-	"github.com/alexandr-io/backend/library/database/libraries"
 
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/data/permissions"
 	"github.com/alexandr-io/backend/library/database"
+	"github.com/alexandr-io/backend/library/database/libraries"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
