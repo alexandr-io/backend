@@ -27,8 +27,11 @@ func Delete(bookID primitive.ObjectID) error {
 		return data.NewHTTPErrorInfo(fiber.StatusNotFound, "can't find book to delete")
 	}
 
-	_ = bookprogress.Delete(data.BookProgressData{
+	// TODO: create logic so that when book progress delete failed, the book previously deleted in restored
+	if err = bookprogress.Delete(data.BookProgressData{
 		BookID: bookID,
-	})
+	}); err != nil {
+		return err
+	}
 	return nil
 }

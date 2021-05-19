@@ -29,7 +29,7 @@ func BooksRetrieve(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "You are not allowed to see books in this library")
 	}
 
-	result, err := book.GetListFromLibraryID(libraryID)
+	result, err := book.GetBooksFromLibraryID(libraryID)
 	if err != nil {
 		return err
 	}

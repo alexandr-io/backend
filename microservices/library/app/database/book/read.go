@@ -2,7 +2,6 @@ package book
 
 import (
 	"context"
-
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
 
@@ -26,9 +25,10 @@ func GetFromID(bookID primitive.ObjectID) (*data.Book, error) {
 	return &bookData, nil
 }
 
-// GetListFromLibraryID get the list of books in the given library
+// GetBooksFromLibraryID get the list of books in the given library
 // TODO: pagination
-func GetListFromLibraryID(libraryID primitive.ObjectID) (*[]data.Book, error) {
+// TODO: add not found error
+func GetBooksFromLibraryID(libraryID primitive.ObjectID) (*[]data.Book, error) {
 	var bookData []data.Book
 
 	bookFilter := bson.D{{Key: "library_id", Value: libraryID}}

@@ -19,7 +19,8 @@ require (
 	github.com/kr/text v0.2.0 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
-	go.mongodb.org/mongo-driver v1.4.5
+	github.com/stretchr/testify v1.7.0 // indirect
+	go.mongodb.org/mongo-driver v1.5.2
 	google.golang.org/grpc v1.35.0
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
