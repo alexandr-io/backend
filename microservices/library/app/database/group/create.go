@@ -14,8 +14,17 @@ import (
 
 // Insert on the database a new book in a library.
 func Insert(group permissions.Group) (*permissions.Group, error) {
-	groupUpperFilter := bson.D{{"priority", bson.D{{"$gte", group.Priority}}}, {"library_id", group.LibraryID}}
-	if _, err := database.GroupCollection.UpdateMany(context.Background(), groupUpperFilter, bson.D{{"$inc", bson.D{{"priority", 1}}}}); err != nil {
+	groupUpperFilter := bson.D{
+		{"priority", bson.D{
+			{"$gte", group.Priority},
+		}},
+		{"library_id", group.LibraryID},
+	}
+	if _, err := database.GroupCollection.UpdateMany(
+		context.Background(),
+		groupUpperFilter,
+		bson.D{{"$inc", bson.D{{"priority", 1}}}},
+	); err != nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 

@@ -51,9 +51,9 @@ func TestRead(t *testing.T) {
 				ID: primitive.NewObjectID(),
 			}
 
-			user, err := GetFromID(sentBook.ID)
+			book, err := GetFromID(sentBook.ID)
 			assert.NotNil(t, err)
-			assert.Nil(t, user)
+			assert.Nil(t, book)
 
 			e, ok := err.(*fiber.Error)
 			assert.True(t, ok)
@@ -69,9 +69,9 @@ func TestRead(t *testing.T) {
 					{string(mtest.FirstBatch), bson.A{}},
 				}},
 			})
-			user, err := GetFromID(primitive.NewObjectID())
+			book, err := GetFromID(primitive.NewObjectID())
 			assert.NotNil(t, err)
-			assert.Nil(t, user)
+			assert.Nil(t, book)
 
 			e, ok := err.(*fiber.Error)
 			assert.True(t, ok)
@@ -116,9 +116,9 @@ func TestRead(t *testing.T) {
 		mt.Run("find error", func(t *mtest.T) {
 			database.BookCollection = mt.Coll
 
-			user, err := GetBooksFromLibraryID(primitive.NewObjectID())
+			book, err := GetBooksFromLibraryID(primitive.NewObjectID())
 			assert.NotNil(t, err)
-			assert.Nil(t, user)
+			assert.Nil(t, book)
 
 			e, ok := err.(*fiber.Error)
 			assert.True(t, ok)
@@ -128,9 +128,9 @@ func TestRead(t *testing.T) {
 			database.BookCollection = mt.Coll
 
 			mt.AddMockResponses(mtest.CreateCursorResponse(1, "foo.bar", mtest.FirstBatch, bson.D{}))
-			user, err := GetBooksFromLibraryID(primitive.NewObjectID())
+			book, err := GetBooksFromLibraryID(primitive.NewObjectID())
 			assert.NotNil(t, err)
-			assert.Nil(t, user)
+			assert.Nil(t, book)
 
 			e, ok := err.(*fiber.Error)
 			assert.True(t, ok)

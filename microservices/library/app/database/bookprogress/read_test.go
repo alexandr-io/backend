@@ -41,9 +41,9 @@ func TestRead(t *testing.T) {
 		mt.Run("error", func(t *mtest.T) {
 			database.BookProgressCollection = mt.Coll
 
-			user, err := RetrieveFromIDs(primitive.NilObjectID, primitive.NilObjectID, primitive.NilObjectID)
+			book, err := RetrieveFromIDs(primitive.NilObjectID, primitive.NilObjectID, primitive.NilObjectID)
 			assert.NotNil(t, err)
-			assert.Nil(t, user)
+			assert.Nil(t, book)
 
 			e, ok := err.(*fiber.Error)
 			assert.True(t, ok)
