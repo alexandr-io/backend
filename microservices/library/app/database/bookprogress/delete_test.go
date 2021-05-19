@@ -1,8 +1,10 @@
-package book
+package bookprogress
 
 import (
 	"testing"
+	"time"
 
+	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
 
 	"github.com/gofiber/fiber/v2"
@@ -19,19 +21,25 @@ func TestDelete(t *testing.T) {
 	mt.RunOpts("delete one", mtest.NewOptions().ClientType(mtest.Mock).CreateClient(true), func(mt *mtest.T) {
 		database.Instance.Db = mt.DB
 		mt.Run("success", func(mt *mtest.T) {
-			database.BookCollection = mt.Coll
 			database.BookProgressCollection = mt.Coll
-			id := primitive.NewObjectID()
+
+			sentBookProgress := data.BookProgressData{
+				UserID:       primitive.NewObjectID(),
+				BookID:       primitive.NewObjectID(),
+				LibraryID:    primitive.NewObjectID(),
+				Progress:     "42",
+				LastReadDate: time.Time{},
+			}
+
 			mt.AddMockResponses(bson.D{{"ok", 1}, {"acknowledged", true}, {"n", 1}})
-			mt.AddMockResponses(bson.D{{"ok", 1}, {"acknowledged", true}, {"n", 1}})
-			err := Delete(id)
+			err := Delete(sentBookProgress)
 			assert.Nil(t, err)
 		})
 		mt.Run("not found", func(t *mtest.T) {
-			database.BookCollection = mt.Coll
-			id := primitive.NewObjectID()
+			database.BookProgressCollection = mt.Coll
+
 			mt.AddMockResponses(bson.D{{"ok", 1}, {"acknowledged", true}, {"n", 0}})
-			err := Delete(id)
+			err := Delete(data.BookProgressData{})
 			assert.NotNil(t, err)
 
 			e, ok := err.(*fiber.Error)
@@ -39,23 +47,10 @@ func TestDelete(t *testing.T) {
 			assert.Equal(t, fiber.StatusNotFound, e.Code)
 		})
 		mt.Run("error", func(t *mtest.T) {
-			database.BookCollection = mt.Coll
-			id := primitive.NewObjectID()
-			mt.AddMockResponses(bson.D{{"ok", 0}})
-			err := Delete(id)
-			assert.NotNil(t, err)
-
-			e, ok := err.(*fiber.Error)
-			assert.True(t, ok)
-			assert.Equal(t, fiber.StatusInternalServerError, e.Code)
-		})
-		mt.Run("error book progress", func(t *mtest.T) {
-			database.BookCollection = mt.Coll
 			database.BookProgressCollection = mt.Coll
-			id := primitive.NewObjectID()
-			mt.AddMockResponses(bson.D{{"ok", 1}, {"acknowledged", true}, {"n", 1}})
+
 			mt.AddMockResponses(bson.D{{"ok", 0}})
-			err := Delete(id)
+			err := Delete(data.BookProgressData{})
 			assert.NotNil(t, err)
 
 			e, ok := err.(*fiber.Error)
