@@ -2,13 +2,13 @@ package userdata
 
 import (
 	"context"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
 
 	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
