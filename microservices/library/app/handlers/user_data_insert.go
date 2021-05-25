@@ -7,21 +7,25 @@ import (
 	"github.com/alexandr-io/backend/library/database/userdata"
 
 	"github.com/gofiber/fiber/v2"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
+
+func validateUserDataType(userType string) error {
+	for _, dataType := range data.UserDataTypes {
+		if userType == dataType {
+			return nil
+		}
+	}
+	return data.NewHTTPErrorInfo(fiber.StatusBadRequest,
+		"type parameter must be one of: "+strings.Join(data.UserDataTypes[:], ", "))
+}
 
 // parseUserDataRequest parses and handles error for creating a user_data
 func parseUserDataRequest(ctx *fiber.Ctx, userData *data.UserData) error {
-	if err := ParseBodyJSON(ctx, &userData); err != nil {
+	if err := ParseBodyJSON(ctx, userData); err != nil {
 		return err
 	}
-
-	for _, dataType := range data.UserDataTypes {
-		if userData.Type == dataType {
-			break
-		}
-		return data.NewHTTPErrorInfo(fiber.StatusBadRequest,
-			"type parameter must be one of: "+strings.Join(data.UserDataTypes[:], ", "))
+	if err := validateUserDataType(userData.Type); err != nil {
+		return err
 	}
 
 	if userData.Name == "" {
@@ -49,10 +53,6 @@ func UserDataCreate(ctx *fiber.Ctx) error {
 	libraryID, bookID, err := getLibraryBookIDFromParams(ctx)
 	if err != nil {
 		return err
-	}
-	_, err = primitive.ObjectIDFromHex(ctx.Params("data_id"))
-	if err != nil {
-		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, err.Error())
 	}
 
 	userDataRequest := data.UserData{

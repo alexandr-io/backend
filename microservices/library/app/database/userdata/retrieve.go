@@ -35,6 +35,7 @@ func RetrieveOneFromIDs(userID, libraryID, bookID, dataID primitive.ObjectID) (*
 		}
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
+	result.ID = userID
 
 	return &result, nil
 }
