@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/alexandr-io/backend/library/data"
+	"github.com/alexandr-io/backend/library/database/userdata"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -54,14 +55,24 @@ func UserDataCreate(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, err.Error())
 	}
 
-	userData := data.UserData{
+	userDataRequest := data.UserData{
 		UserID:    userID,
 		LibraryID: libraryID,
 		BookID:    bookID,
 	}
 
-	if err := parseRequest(ctx, &userData); err != nil {
+	if err := parseRequest(ctx, &userDataRequest); err != nil {
 		return err
 	}
+
+	userData, err := userdata.Insert(userDataRequest)
+	if err != nil {
+		return err
+	}
+
+	if err = ctx.Status(fiber.StatusOK).JSON(userData); err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+
 	return nil
 }

@@ -12,7 +12,6 @@ import (
 )
 
 // Update updates the user's book progress in the database
-// If no document is found in the library, a new document is created
 func Update(ctx context.Context, userData data.UserData) (*data.UserData, error) {
 	collection := database.Instance.Db.Collection(database.CollectionUserData)
 
@@ -23,7 +22,7 @@ func Update(ctx context.Context, userData data.UserData) (*data.UserData, error)
 	}
 
 	if err := collection.FindOneAndUpdate(ctx, filter, bson.D{{"$set", userData}},
-		options.FindOneAndUpdate().SetUpsert(true).SetReturnDocument(1),
+		options.FindOneAndUpdate().SetReturnDocument(1),
 	).Decode(&userData); err != nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
