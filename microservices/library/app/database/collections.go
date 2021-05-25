@@ -17,6 +17,9 @@ const CollectionBookProgress = "book_progress"
 // CollectionGroup is the name of the group collection in mongodb
 const CollectionGroup = "group"
 
+// CollectionUserData is the name of the user data collection in the database
+const CollectionUserData = "user_data"
+
 // BookCollection collection for book
 var BookCollection *mongo.Collection
 
