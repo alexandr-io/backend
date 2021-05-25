@@ -2,49 +2,38 @@ package handlers
 
 import (
 	"github.com/alexandr-io/backend/library/data"
-	"github.com/alexandr-io/backend/library/database/library"
 	"github.com/alexandr-io/backend/library/database/userdata"
 
 	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // UserDataGet returns the user's data on a book
 func UserDataGet(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
-	userDataRetrieve := data.APIUserData{
-		UserID:    string(ctx.Request().Header.Peek("ID")),
-		LibraryID: ctx.Params("library_id"),
-		BookID:    ctx.Params("book_id"),
-		ID:        ctx.Params("data_id"),
-	}
-
-	if userDataRetrieve.ID == "" {
-		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, "Missing mandatory parameter: data_id")
-	}
-	if userDataRetrieve.BookID == "" {
-		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, "Missing mandatory parameter: book_id")
-	}
-	if userDataRetrieve.LibraryID == "" {
-		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, "Missing mandatory parameter: library_id")
-	}
-
-	user := data.User{ID: userDataRetrieve.UserID}
-
-	if err := library.GetPermissionFromUserAndLibraryID(&user, userDataRetrieve.LibraryID); err != nil {
+	// Get data from header and params
+	userID, err := userIDFromHeader(ctx)
+	if err != nil {
 		return err
 	}
-	if !user.CanReadBooks() {
-		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "User cannot access this book")
+	libraryID, bookID, err := getLibraryBookIDFromParams(ctx)
+	if err != nil {
+		return err
+	}
+	dataID, err := primitive.ObjectIDFromHex(ctx.Params("data_id"))
+	if err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, err.Error())
 	}
 
-	userData, err := userdata.Retrieve(ctx.Context(), userDataRetrieve.ID)
+	userData, err := userdata.RetrieveOneFromIDs(userID, libraryID, bookID, dataID)
 	if err != nil {
 		return err
 	}
 
-	if err := ctx.Status(fiber.StatusOK).JSON(userData); err != nil {
+	if err = ctx.Status(fiber.StatusOK).JSON(userData); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
+
 	return nil
 }

@@ -17,14 +17,13 @@ func Update(ctx context.Context, userData data.UserData) (*data.UserData, error)
 	collection := database.Instance.Db.Collection(database.CollectionUserData)
 
 	filter := bson.D{
-		{"_id", userData.ID},
-		//{"user_id", userData.UserID},
-		//{"book_id", userData.BookID},
-		//{"library_id", userData.LibraryID},
+		{"user_id", userData.UserID},
+		{"book_id", userData.BookID},
+		{"library_id", userData.LibraryID},
 	}
 
 	if err := collection.FindOneAndUpdate(ctx, filter, bson.D{{"$set", userData}},
-		options.FindOneAndUpdate().SetReturnDocument(1),
+		options.FindOneAndUpdate().SetUpsert(true).SetReturnDocument(1),
 	).Decode(&userData); err != nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}

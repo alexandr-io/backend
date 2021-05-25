@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"strings"
 
 	"github.com/alexandr-io/backend/library/data"
@@ -8,7 +9,7 @@ import (
 )
 
 // parseRequest parses and handles error for creating a user_data
-func parseRequest(ctx *fiber.Ctx, userData *data.APIUserData) error {
+func parseRequest(ctx *fiber.Ctx, userData *data.UserData) error {
 	if err := ParseBodyJSON(ctx, &userData); err != nil {
 		return err
 	}
@@ -24,24 +25,38 @@ func parseRequest(ctx *fiber.Ctx, userData *data.APIUserData) error {
 	if userData.Name == "" {
 		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, "Missing required parameter: name")
 	}
-	if userData.Offset == 0 {
+	if userData.Offset == "" {
 		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, "Missing required parameter: offset")
 	}
-	if userData.Type == "highlight" && userData.OffsetEnd == 0 {
+	if userData.Type == "highlight" && userData.OffsetEnd == "" {
 		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, "Missing required parameter for highlights: offset_end")
 	}
 
 	return nil
 }
 
-// UserDataInsert creates a UserData in the database.
-func UserDataInsert(ctx *fiber.Ctx) error {
+// UserDataCreate creates a UserData in the database.
+func UserDataCreate(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
-	userData := data.APIUserData{
-		UserID:    string(ctx.Request().Header.Peek("ID")),
-		LibraryID: ctx.Params("library_id"),
-		BookID:    ctx.Params("book_id"),
+	// Get data from header and params
+	userID, err := userIDFromHeader(ctx)
+	if err != nil {
+		return err
+	}
+	libraryID, bookID, err := getLibraryBookIDFromParams(ctx)
+	if err != nil {
+		return err
+	}
+	_, err = primitive.ObjectIDFromHex(ctx.Params("data_id"))
+	if err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, err.Error())
+	}
+
+	userData := data.UserData{
+		UserID:    userID,
+		LibraryID: libraryID,
+		BookID:    bookID,
 	}
 
 	if err := parseRequest(ctx, &userData); err != nil {
