@@ -11,8 +11,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// ProgressUpdate updates the user's progression on a book
-func ProgressUpdate(ctx *fiber.Ctx) error {
+// ProgressUpsert updates the user's progression on a book
+func ProgressUpsert(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
 	// Parse data
