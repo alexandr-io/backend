@@ -19,6 +19,7 @@ func Update(ctx context.Context, userData data.UserData) (*data.UserData, error)
 		{"user_id", userData.UserID},
 		{"book_id", userData.BookID},
 		{"library_id", userData.LibraryID},
+		{"_id", userData.ID},
 	}
 
 	if err := collection.FindOneAndUpdate(ctx, filter, bson.D{{"$set", userData}},

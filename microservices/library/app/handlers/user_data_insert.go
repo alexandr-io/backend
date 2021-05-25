@@ -10,8 +10,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// parseRequest parses and handles error for creating a user_data
-func parseRequest(ctx *fiber.Ctx, userData *data.UserData) error {
+// parseUserDataRequest parses and handles error for creating a user_data
+func parseUserDataRequest(ctx *fiber.Ctx, userData *data.UserData) error {
 	if err := ParseBodyJSON(ctx, &userData); err != nil {
 		return err
 	}
@@ -60,8 +60,7 @@ func UserDataCreate(ctx *fiber.Ctx) error {
 		LibraryID: libraryID,
 		BookID:    bookID,
 	}
-
-	if err := parseRequest(ctx, &userDataRequest); err != nil {
+	if err := parseUserDataRequest(ctx, &userDataRequest); err != nil {
 		return err
 	}
 
