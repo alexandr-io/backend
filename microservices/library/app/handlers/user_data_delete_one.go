@@ -8,8 +8,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// UserDataDelete deletes a UserData from the database.
-func UserDataDelete(ctx *fiber.Ctx) error {
+// UserDataDeleteOne deletes a UserData from the database.
+func UserDataDeleteOne(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
 	userID, err := userIDFromHeader(ctx)

@@ -49,7 +49,7 @@ func createRoute(app *fiber.App) {
 	app.Post("/library/:library_id/book/:book_id/data", userMiddleware.Protected(), handlers.UserDataCreate)
 	app.Get("/library/:library_id/book/:book_id/data/:data_id", userMiddleware.Protected(), handlers.UserDataGet)
 	app.Post("/library/:library_id/book/:book_id/data/:data_id", userMiddleware.Protected(), handlers.UserDataUpdate)
-	app.Delete("/library/:library_id/book/:book_id/data/:data_id", userMiddleware.Protected(), handlers.UserDataDelete)
+	app.Delete("/library/:library_id/book/:book_id/data/:data_id", userMiddleware.Protected(), handlers.UserDataDeleteOne)
 
 	// Permissions relative URLs
 	//
