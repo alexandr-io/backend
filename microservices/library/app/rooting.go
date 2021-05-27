@@ -64,10 +64,6 @@ func createRoute(app *fiber.App) {
 
 	app.Get("/library/:library_id/permissions", userMiddleware.Protected(), handlers.UserLibraryPermissionRetrieve)
 
-	app.Get("/library/:library_id/book/:book_id/data/:data_id", userMiddleware.Protected(), handlers.UserDataGet)
-	app.Delete("/library/:library_id/book/:book_id/data/:data_id", userMiddleware.Protected(), handlers.UserDataDelete)
-	app.Post("/library/:library_id/book/:book_id/data/:data_id", userMiddleware.Protected(), handlers.UserDataUpdate)
-
 	// Ping route used for testing that the service is up and running
 	app.Get("/ping", func(c *fiber.Ctx) error {
 		return c.SendString("pong")
