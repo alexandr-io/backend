@@ -15,8 +15,6 @@ import (
 
 // RetrieveOneFromIDs retrieves the user's book data from the mongo database
 func RetrieveOneFromIDs(userID, libraryID, bookID, dataID primitive.ObjectID) (*data.UserData, error) {
-	/* TODO: Retrieve list? */
-
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -35,7 +33,34 @@ func RetrieveOneFromIDs(userID, libraryID, bookID, dataID primitive.ObjectID) (*
 		}
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
-	result.ID = userID
+	result.ID = dataID
+
+	return &result, nil
+}
+
+// RetrieveManyFromIDs retrieves the user's book data from the mongo database
+func RetrieveManyFromIDs(userID, libraryID, bookID primitive.ObjectID) (*[]data.UserData, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	collection := database.Instance.Db.Collection(database.CollectionUserData)
+
+	filter := bson.D{
+		{"user_id", userID},
+		{"book_id", bookID},
+		{"library_id", libraryID},
+	}
+	var result []data.UserData
+	cursor, err := collection.Find(ctx, filter)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, "User data not found")
+		}
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+	if err = cursor.All(ctx, &result); err != nil {
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
 
 	return &result, nil
 }
