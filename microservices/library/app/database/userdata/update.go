@@ -25,7 +25,7 @@ func Update(ctx context.Context, userData data.UserData) (*data.UserData, error)
 	if err := collection.FindOneAndUpdate(ctx, filter, bson.D{{"$set", userData}},
 		options.FindOneAndUpdate().SetReturnDocument(1),
 	).Decode(&userData); err != nil {
-		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, err.Error())
 	}
 
 	return &userData, nil

@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"time"
+
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database/userdata"
 
@@ -27,10 +29,11 @@ func UserDataUpdate(ctx *fiber.Ctx) error {
 	}
 
 	userDataRequest := data.UserData{
-		UserID:    userID,
-		LibraryID: libraryID,
-		BookID:    bookID,
-		ID:        dataID,
+		UserID:           userID,
+		LibraryID:        libraryID,
+		BookID:           bookID,
+		ID:               dataID,
+		LastModifiedDate: time.Now(),
 	}
 	if err := parseUserDataRequest(ctx, &userDataRequest); err != nil {
 		return err

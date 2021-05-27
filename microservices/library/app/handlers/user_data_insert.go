@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"strings"
+	"time"
 
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database/userdata"
@@ -55,10 +56,13 @@ func UserDataCreate(ctx *fiber.Ctx) error {
 		return err
 	}
 
+	now := time.Now()
 	userDataRequest := data.UserData{
-		UserID:    userID,
-		LibraryID: libraryID,
-		BookID:    bookID,
+		UserID:           userID,
+		LibraryID:        libraryID,
+		BookID:           bookID,
+		CreationDate:     now,
+		LastModifiedDate: now,
 	}
 	if err := parseUserDataRequest(ctx, &userDataRequest); err != nil {
 		return err
