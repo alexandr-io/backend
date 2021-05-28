@@ -30,5 +30,8 @@ func UserDataDeleteOne(ctx *fiber.Ctx) error {
 		return err
 	}
 
+	if err := ctx.SendStatus(fiber.StatusNoContent); err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
 	return nil
 }

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database/userdata"
 
 	"github.com/gofiber/fiber/v2"
@@ -24,5 +25,8 @@ func UserDataDeleteAllIn(ctx *fiber.Ctx) error {
 		return err
 	}
 
+	if err := ctx.SendStatus(fiber.StatusNoContent); err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
 	return nil
 }
