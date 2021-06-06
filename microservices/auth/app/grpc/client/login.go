@@ -15,10 +15,8 @@ import (
 // Login get a data.User containing an ID or an email and return the complete user data
 func Login(login data.UserLogin) (*data.User, error) {
 	if userClient == nil {
-		InitClients()
-		if userClient == nil {
-			return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, "gRPC user client not initialized")
-		}
+		go InitClients()
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, "gRPC user client not initialized")
 	}
 
 	loginRequest := grpcuser.LoginRequest{

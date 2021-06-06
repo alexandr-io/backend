@@ -72,4 +72,15 @@ func TestLogin(t *testing.T) {
 		assert.True(t, ok)
 		assert.Equal(t, fiber.StatusUnauthorized, e.Code)
 	})
+
+	t.Run("nil user gRPC client", func(t *testing.T) {
+		userClient = nil
+		user, err := Login(data.UserLogin{})
+		assert.Nil(t, user)
+		assert.NotNil(t, err)
+
+		e, ok := err.(*fiber.Error)
+		assert.True(t, ok)
+		assert.Equal(t, fiber.StatusInternalServerError, e.Code)
+	})
 }

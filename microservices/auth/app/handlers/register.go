@@ -45,7 +45,7 @@ func Register(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	if err := grpcclient.CreateLibrary(ctx.Context(), userData.ID); err != nil {
+	if err := grpcclient.CreateLibrary(userData.ID); err != nil {
 		return err
 	}
 
