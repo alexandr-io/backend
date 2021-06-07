@@ -13,8 +13,9 @@ import (
 )
 
 // Register send new user info to user MS to create a user entry in database.
-func Register(ctx context.Context, register data.UserRegister) (*data.User, error) {
+func Register(register data.UserRegister) (*data.User, error) {
 	if userClient == nil {
+		go InitClients()
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, "gRPC user client not initialized")
 	}
 
@@ -24,7 +25,7 @@ func Register(ctx context.Context, register data.UserRegister) (*data.User, erro
 		Password: register.Password,
 	}
 	fmt.Printf("[gRPC]: Register sent: %+v\n", regex.Hide(registerRequest.String()))
-	userReply, err := userClient.Register(ctx, &registerRequest)
+	userReply, err := userClient.Register(context.Background(), &registerRequest)
 	if err != nil {
 		return nil, grpc.ErrorToFiber(err)
 	}
