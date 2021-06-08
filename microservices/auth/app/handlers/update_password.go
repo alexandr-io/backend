@@ -24,7 +24,7 @@ func UpdatePassword(ctx *fiber.Ctx) error {
 	}
 
 	// gRPC request to user to update password in DB
-	userData, err := grpcclient.UpdatePasswordLogged(ctx.Context(), data.UserUpdatePassword{
+	userData, err := grpcclient.UpdatePasswordLogged(data.UserUpdatePassword{
 		UserID:          user.ID,
 		CurrentPassword: updatePassword.CurrentPassword,
 		NewPassword:     hashAndSalt(updatePassword.NewPassword),

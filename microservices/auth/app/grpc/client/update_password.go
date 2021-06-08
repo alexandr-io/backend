@@ -13,8 +13,9 @@ import (
 )
 
 // UpdatePassword update a user's password by sending info to user MS
-func UpdatePassword(ctx context.Context, id string, password string) (*data.User, error) {
+func UpdatePassword(id string, password string) (*data.User, error) {
 	if userClient == nil {
+		go InitClients()
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, "gRPC user client not initialized")
 	}
 
@@ -23,7 +24,7 @@ func UpdatePassword(ctx context.Context, id string, password string) (*data.User
 		Password: password,
 	}
 	fmt.Printf("[gRPC]: Update password sent: %+v\n", regex.Hide(updatePasswordRequest.String()))
-	userReply, err := userClient.UpdatePassword(ctx, &updatePasswordRequest)
+	userReply, err := userClient.UpdatePassword(context.Background(), &updatePasswordRequest)
 	if err != nil {
 		return nil, grpc.ErrorToFiber(err)
 	}

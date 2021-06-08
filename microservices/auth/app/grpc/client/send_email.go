@@ -12,8 +12,9 @@ import (
 )
 
 // SendEmail create and send an email from the given information
-func SendEmail(ctx context.Context, email data.Email) error {
+func SendEmail(email data.Email) error {
 	if emailClient == nil {
+		go InitClients()
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, "gRPC email client not initialized")
 	}
 
@@ -24,7 +25,7 @@ func SendEmail(ctx context.Context, email data.Email) error {
 		Data:     email.Data,
 	}
 	fmt.Printf("[gRPC]: Send email sent: %+v\n", sendEmailRequest.String())
-	_, err := emailClient.SendEmail(ctx, &sendEmailRequest)
+	_, err := emailClient.SendEmail(context.Background(), &sendEmailRequest)
 	if err != nil {
 		return grpc.ErrorToFiber(err)
 	}

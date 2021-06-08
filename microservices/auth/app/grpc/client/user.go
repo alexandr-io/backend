@@ -12,8 +12,9 @@ import (
 )
 
 // User get a data.User containing an ID or an email and return the complete user data
-func User(ctx context.Context, user data.User) (*data.User, error) {
+func User(user data.User) (*data.User, error) {
 	if userClient == nil {
+		go InitClients()
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, "gRPC user client not initialized")
 	}
 
@@ -22,7 +23,7 @@ func User(ctx context.Context, user data.User) (*data.User, error) {
 		Email: user.Email,
 	}
 	fmt.Printf("[gRPC]: User sent: %+v\n", userRequest.String())
-	userReply, err := userClient.User(ctx, &userRequest)
+	userReply, err := userClient.User(context.Background(), &userRequest)
 	if err != nil {
 		return nil, grpc.ErrorToFiber(err)
 	}

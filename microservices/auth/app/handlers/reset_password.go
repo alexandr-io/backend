@@ -20,7 +20,7 @@ func SendResetPasswordEmail(ctx *fiber.Ctx) error {
 	}
 
 	// Kafka request to user
-	userData, err := grpcclient.User(ctx.Context(), data.User{Email: userEmail.Email})
+	userData, err := grpcclient.User(data.User{Email: userEmail.Email})
 	if err != nil {
 		return err
 	}
@@ -32,7 +32,7 @@ func SendResetPasswordEmail(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	go grpcclient.SendEmail(ctx.Context(), data.Email{
+	go grpcclient.SendEmail(data.Email{
 		Email:    userData.Email,
 		Username: userData.Username,
 		Type:     data.ResetPassword,
@@ -62,7 +62,7 @@ func ResetPasswordInfoFromToken(ctx *fiber.Ctx) error {
 	}
 
 	// Kafka request to user
-	userData, err := grpcclient.User(ctx.Context(), data.User{ID: userID})
+	userData, err := grpcclient.User(data.User{ID: userID})
 	if err != nil {
 		return err
 	}
@@ -97,7 +97,7 @@ func ResetPassword(ctx *fiber.Ctx) error {
 	// Hash new password
 	password := hashAndSalt(resetData.NewPassword)
 
-	userData, err := grpcclient.UpdatePassword(ctx.Context(), userID, password)
+	userData, err := grpcclient.UpdatePassword(userID, password)
 	if err != nil {
 		return err
 	}
