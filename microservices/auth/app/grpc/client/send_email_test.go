@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/alexandr-io/backend/auth/data"
-	usermock "github.com/alexandr-io/backend/grpc/email/mock"
+	emailmock "github.com/alexandr-io/backend/grpc/email/mock"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang/mock/gomock"
@@ -17,7 +17,7 @@ import (
 func TestSendEmail(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	mockEmailClient := usermock.NewMockEmailClient(ctrl)
+	mockEmailClient := emailmock.NewMockEmailClient(ctrl)
 	emailClient = mockEmailClient
 
 	t.Run("success", func(t *testing.T) {
@@ -49,7 +49,7 @@ func TestSendEmail(t *testing.T) {
 		assert.Equal(t, fiber.StatusInternalServerError, e.Code)
 	})
 
-	t.Run("nil user gRPC client", func(t *testing.T) {
+	t.Run("nil email gRPC client", func(t *testing.T) {
 		emailClient = nil
 		err := SendEmail(data.Email{})
 		assert.NotNil(t, err)

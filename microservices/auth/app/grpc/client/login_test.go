@@ -59,20 +59,6 @@ func TestLogin(t *testing.T) {
 		assert.Equal(t, fiber.StatusNotFound, e.Code)
 	})
 
-	t.Run("unauthorized", func(t *testing.T) {
-		mockUserClient.EXPECT().Login(
-			gomock.Any(),
-			gomock.Any(),
-		).Return(nil, status.Error(codes.PermissionDenied, ""))
-		user, err := Login(data.UserLogin{})
-		assert.Nil(t, user)
-		assert.NotNil(t, err)
-
-		e, ok := err.(*fiber.Error)
-		assert.True(t, ok)
-		assert.Equal(t, fiber.StatusUnauthorized, e.Code)
-	})
-
 	t.Run("nil user gRPC client", func(t *testing.T) {
 		userClient = nil
 		user, err := Login(data.UserLogin{})
