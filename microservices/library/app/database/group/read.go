@@ -2,7 +2,6 @@ package group
 
 import (
 	"context"
-	"time"
 
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/data/permissions"
@@ -17,11 +16,6 @@ import (
 
 // GetFromIDAndLibraryID retrieve a group from its ID and the library ID
 func GetFromIDAndLibraryID(groupID string, libraryID string) (*permissions.Group, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	collection := database.Instance.Db.Collection(database.CollectionGroup)
-
 	var group permissions.Group
 
 	groupObjID, err := primitive.ObjectIDFromHex(groupID)
@@ -35,7 +29,7 @@ func GetFromIDAndLibraryID(groupID string, libraryID string) (*permissions.Group
 	}
 
 	libraryFilter := bson.D{{Key: "_id", Value: groupObjID}, {"library_id", libraryObjID}}
-	if err := collection.FindOne(ctx, libraryFilter).Decode(&group); err != nil {
+	if err := database.GroupCollection.FindOne(context.Background(), libraryFilter).Decode(&group); err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, "Group not found.")
 		}
@@ -46,11 +40,6 @@ func GetFromIDAndLibraryID(groupID string, libraryID string) (*permissions.Group
 
 // GetFromIDListAndLibraryID retrieve a list of groups from a list of group IDs and the library ID
 func GetFromIDListAndLibraryID(groupIDs []primitive.ObjectID, libraryID string) (*[]permissions.Group, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	collection := database.Instance.Db.Collection(database.CollectionGroup)
-
 	var group []permissions.Group
 
 	libraryObjID, err := primitive.ObjectIDFromHex(libraryID)
@@ -65,11 +54,11 @@ func GetFromIDListAndLibraryID(groupIDs []primitive.ObjectID, libraryID string) 
 		filter = bson.D{{"priority", 0}, {"library_id", libraryObjID}}
 	}
 
-	cursor, err := collection.Find(ctx, filter, options.Find().SetSort(bson.D{{"priority", -1}}))
+	cursor, err := database.GroupCollection.Find(context.Background(), filter, options.Find().SetSort(bson.D{{"priority", -1}}))
 	if err != nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
-	if err := cursor.All(ctx, &group); err != nil {
+	if err := cursor.All(context.Background(), &group); err != nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return &group, nil

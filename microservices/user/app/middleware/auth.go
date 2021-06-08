@@ -29,7 +29,7 @@ func Protected() func(*fiber.Ctx) error {
 		if err != nil {
 			return err
 		}
-		ctx.Request().Header.Set("ID", user.ID)
+		ctx.Request().Header.Set("ID", user.ID.Hex())
 		ctx.Request().Header.Set("Username", user.Username)
 		ctx.Request().Header.Set("Email", user.Email)
 		return ctx.Next()

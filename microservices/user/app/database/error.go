@@ -19,8 +19,3 @@ func IsMongoDupKey(err error) bool {
 	}
 	return false
 }
-
-// IsMongoNoDocument is checking whether th given error is equal to a mongo no document found error
-func IsMongoNoDocument(err error) bool {
-	return err.Error() == mongo.ErrNoDocuments.Error()
-}

@@ -8,10 +8,11 @@ import (
 	grpcclient "github.com/alexandr-io/backend/user/grpc/client"
 
 	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // UpdatePasswordLogged is the internal logic function used to update the password of a logged user.
-func UpdatePasswordLogged(ctx context.Context, id string, currentPassword string, newPassword string) (*data.User, error) {
+func UpdatePasswordLogged(ctx context.Context, id primitive.ObjectID, currentPassword string, newPassword string) (*data.User, error) {
 	userData, err := user.FromID(id)
 	if err != nil {
 		return nil, err

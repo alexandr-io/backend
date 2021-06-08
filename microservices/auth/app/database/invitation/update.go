@@ -14,8 +14,7 @@ import (
 
 // Update take a data.Invitation to update an invitation in database
 func Update(invitationData data.Invitation) (*data.Invitation, error) {
-	invitationCollection := database.Instance.Db.Collection(database.CollectionInvitation)
-	if err := invitationCollection.FindOneAndUpdate(
+	if err := database.InvitationCollection.FindOneAndUpdate(
 		context.Background(),
 		bson.D{
 			{"token", invitationData.Token},

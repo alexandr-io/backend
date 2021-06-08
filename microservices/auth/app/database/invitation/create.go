@@ -2,7 +2,6 @@ package invitation
 
 import (
 	"context"
-	"time"
 
 	"github.com/alexandr-io/backend/auth/data"
 	"github.com/alexandr-io/backend/auth/database"
@@ -13,16 +12,11 @@ import (
 
 // Insert insert a new invitation into the database.
 func Insert(invitationData data.Invitation) (*data.Invitation, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	invitationCollection := database.Instance.Db.Collection(database.CollectionInvitation)
-
-	insertedResult, err := invitationCollection.InsertOne(ctx, invitationData)
+	insertedResult, err := database.InvitationCollection.InsertOne(context.Background(), invitationData)
 	if err != nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
-	invitationData.ID = insertedResult.InsertedID.(primitive.ObjectID).Hex()
+	invitationData.ID = insertedResult.InsertedID.(primitive.ObjectID)
 	return &invitationData, nil
 }

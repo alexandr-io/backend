@@ -1,11 +1,35 @@
 package user
 
 import (
+	"context"
 	"errors"
 
 	"github.com/alexandr-io/backend/user/data"
+	"github.com/alexandr-io/backend/user/database"
 	"github.com/alexandr-io/berrors"
+
+	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
+
+// Insert insert a new user into the database.
+func Insert(user data.User) (*data.User, error) {
+	insertedResult, err := database.UserCollection.InsertOne(context.Background(), user)
+	if database.IsMongoDupKey(err) {
+		// If the mongo db error is a duplication error, return the proper error
+		e := checkRegisterFieldDuplication(user)
+		var badInput *data.BadInputError
+		if errors.As(e, &badInput) {
+			return nil, data.NewHTTPErrorInfo(fiber.StatusBadRequest, badInput.Error())
+		}
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	} else if err != nil {
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+
+	user.ID = insertedResult.InsertedID.(primitive.ObjectID)
+	return &user, nil
+}
 
 // checkRegisterFieldDuplication check which field is a duplication on a register call.
 // The function should only be called when an insertion return a duplication error. This can be checked by isMongoDupKey.

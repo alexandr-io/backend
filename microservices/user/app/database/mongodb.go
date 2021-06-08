@@ -51,6 +51,8 @@ func ConnectToMongo() {
 		Client: client,
 		Db:     db,
 	}
+
+	UserCollection = db.Collection(CollectionUser)
 }
 
 // InitCollections call the functions that init the collections.

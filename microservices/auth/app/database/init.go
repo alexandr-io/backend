@@ -10,8 +10,7 @@ import (
 )
 
 func initInvitationCollection() {
-	invitationCollection := Instance.Db.Collection(CollectionInvitation)
-	_, err := invitationCollection.Indexes().CreateOne(
+	_, err := InvitationCollection.Indexes().CreateOne(
 		context.Background(),
 		mongo.IndexModel{
 			Keys:    bsonx.Doc{{"token", bsonx.Int32(1)}},
@@ -19,7 +18,7 @@ func initInvitationCollection() {
 		},
 	)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Invitation indexes creation error: ", err)
 	}
 }
 

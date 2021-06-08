@@ -2,7 +2,6 @@ package libraries
 
 import (
 	"context"
-	"time"
 
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
@@ -13,11 +12,7 @@ import (
 
 // Insert create a document in the user_library collection
 func Insert(DBLibrary data.UserLibrary) (*data.UserLibrary, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	collection := database.Instance.Db.Collection(database.CollectionLibraries)
-	insertedResult, err := collection.InsertOne(ctx, DBLibrary)
+	insertedResult, err := database.LibrariesCollection.InsertOne(context.Background(), DBLibrary)
 	if err != nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}

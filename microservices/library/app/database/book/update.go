@@ -14,8 +14,7 @@ import (
 
 // Update update a book in a library.
 func Update(bookData data.Book) (*data.Book, error) {
-	invitationCollection := database.Instance.Db.Collection(database.CollectionBook)
-	if err := invitationCollection.FindOneAndUpdate(
+	if err := database.BookCollection.FindOneAndUpdate(
 		context.Background(),
 		bson.D{
 			{"_id", bookData.ID},

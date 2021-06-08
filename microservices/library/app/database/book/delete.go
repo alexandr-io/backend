@@ -14,9 +14,7 @@ import (
 
 // Delete delete a book corresponding to the given invitation token
 func Delete(bookID primitive.ObjectID) error {
-	bookCollection := database.Instance.Db.Collection(database.CollectionBook)
-
-	result, err := bookCollection.DeleteOne(
+	result, err := database.BookCollection.DeleteOne(
 		context.Background(),
 		bson.D{
 			{Key: "_id", Value: bookID},
@@ -29,8 +27,11 @@ func Delete(bookID primitive.ObjectID) error {
 		return data.NewHTTPErrorInfo(fiber.StatusNotFound, "can't find book to delete")
 	}
 
-	_ = bookprogress.Delete(context.Background(), data.BookProgressData{
+	// TODO: create logic so that when book progress delete failed, the book previously deleted in restored
+	if err = bookprogress.Delete(data.BookProgressData{
 		BookID: bookID,
-	})
+	}); err != nil {
+		return err
+	}
 	return nil
 }

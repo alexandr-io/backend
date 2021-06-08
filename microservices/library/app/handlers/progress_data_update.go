@@ -50,7 +50,7 @@ func ProgressUpdate(ctx *fiber.Ctx) error {
 	}
 
 	// Update / Insert data
-	userData, err := bookprogress.Upsert(ctx.Context(), progressData)
+	userData, err := bookprogress.Upsert(progressData)
 	if err != nil {
 		return err
 	}

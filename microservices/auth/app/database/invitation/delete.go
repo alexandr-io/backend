@@ -12,9 +12,7 @@ import (
 
 // Delete delete an invitation corresponding to the given invitation token
 func Delete(token string) error {
-	invitationCollection := database.Instance.Db.Collection(database.CollectionInvitation)
-
-	result, err := invitationCollection.DeleteOne(
+	result, err := database.InvitationCollection.DeleteOne(
 		context.Background(),
 		bson.D{
 			{Key: "token", Value: token},

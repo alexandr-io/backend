@@ -51,4 +51,6 @@ func ConnectToMongo() {
 		Client: client,
 		Db:     db,
 	}
+
+	InvitationCollection = db.Collection(CollectionInvitation)
 }

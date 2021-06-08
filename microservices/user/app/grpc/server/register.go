@@ -24,7 +24,7 @@ func (s *server) Register(ctx context.Context, in *grpcuser.RegisterRequest) (*g
 	}
 
 	return &grpcuser.UserReply{
-		ID:       user.ID,
+		ID:       user.ID.Hex(),
 		Username: user.Username,
 		Email:    user.Email,
 	}, nil

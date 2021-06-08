@@ -19,7 +19,7 @@ func (s *server) Login(_ context.Context, in *grpcuser.LoginRequest) (*grpcuser.
 	}
 
 	return &grpcuser.UserReply{
-		ID:       user.ID,
+		ID:       user.ID.Hex(),
 		Username: user.Username,
 		Email:    user.Email,
 	}, nil

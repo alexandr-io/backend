@@ -12,17 +12,11 @@ import (
 )
 
 // Delete user delete a user corresponding to the given user id
-func Delete(id string) error {
-	userCollection := database.Instance.Db.Collection(database.CollectionUser)
-	objectID, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
-	}
-
-	result, err := userCollection.DeleteOne(
+func Delete(id primitive.ObjectID) error {
+	result, err := database.UserCollection.DeleteOne(
 		context.Background(),
 		bson.D{
-			{Key: "_id", Value: objectID},
+			{Key: "_id", Value: id},
 		},
 	)
 	if err != nil {

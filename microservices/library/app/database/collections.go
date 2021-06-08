@@ -1,5 +1,7 @@
 package database
 
+import "go.mongodb.org/mongo-driver/mongo"
+
 // CollectionBook is the name of the book collection in the database
 const CollectionBook = "book"
 
@@ -14,3 +16,18 @@ const CollectionBookProgress = "book_progress"
 
 // CollectionGroup is the name of the group collection in mongodb
 const CollectionGroup = "group"
+
+// BookCollection collection for book
+var BookCollection *mongo.Collection
+
+// LibrariesCollection collection for libraries
+var LibrariesCollection *mongo.Collection
+
+// LibraryCollection collection for library
+var LibraryCollection *mongo.Collection
+
+// BookProgressCollection collection for book progress
+var BookProgressCollection *mongo.Collection
+
+// GroupCollection collection for groups
+var GroupCollection *mongo.Collection

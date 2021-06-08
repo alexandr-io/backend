@@ -2,7 +2,6 @@ package book
 
 import (
 	"context"
-	"time"
 
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
@@ -15,15 +14,10 @@ import (
 
 // GetFromID retrieve a book from its ID
 func GetFromID(bookID primitive.ObjectID) (*data.Book, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	collection := database.Instance.Db.Collection(database.CollectionBook)
-
 	var bookData data.Book
 
 	libraryFilter := bson.D{{Key: "_id", Value: bookID}}
-	if err := collection.FindOne(ctx, libraryFilter).Decode(&bookData); err != nil {
+	if err := database.BookCollection.FindOne(context.Background(), libraryFilter).Decode(&bookData); err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, "Book not found.")
 		}
@@ -32,22 +26,18 @@ func GetFromID(bookID primitive.ObjectID) (*data.Book, error) {
 	return &bookData, nil
 }
 
-// GetListFromLibraryID get the list of books in the given library
+// GetBooksFromLibraryID get the list of books in the given library
 // TODO: pagination
-func GetListFromLibraryID(libraryID primitive.ObjectID) (*[]data.Book, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	collection := database.Instance.Db.Collection(database.CollectionBook)
-
+// TODO: add not found error
+func GetBooksFromLibraryID(libraryID primitive.ObjectID) (*[]data.Book, error) {
 	var bookData []data.Book
 
 	bookFilter := bson.D{{Key: "library_id", Value: libraryID}}
-	cursor, err := collection.Find(ctx, bookFilter)
+	cursor, err := database.BookCollection.Find(context.Background(), bookFilter)
 	if err != nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
-	if err = cursor.All(ctx, &bookData); err != nil {
+	if err = cursor.All(context.Background(), &bookData); err != nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return &bookData, nil
