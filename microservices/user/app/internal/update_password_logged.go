@@ -32,7 +32,7 @@ func UpdatePasswordLogged(ctx context.Context, id primitive.ObjectID, currentPas
 		return nil, err
 	}
 
-	grpcclient.SendEmail(ctx, data.Email{
+	grpcclient.SendEmail(data.Email{
 		Email:    userData.Email,
 		Username: userData.Username,
 		Type:     data.UpdatedPassword,

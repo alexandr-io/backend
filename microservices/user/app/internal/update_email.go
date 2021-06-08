@@ -35,7 +35,7 @@ func VerifyEmailCreation(ctx context.Context, user *data.User) error {
 	}
 	verifyEmailURL := os.Getenv("USER_URI") + "/verify?token=" + verifyEmailToken
 
-	if err := grpcclient.SendEmail(ctx, data.Email{
+	if err := grpcclient.SendEmail(data.Email{
 		Email:    user.Email,
 		Username: user.Username,
 		Type:     data.VerifyEmail,
@@ -56,7 +56,7 @@ func VerifyEmailUpdate(ctx context.Context, user *data.User, newEmail string) er
 	verifyEmailURL := os.Getenv("USER_URI") + "/verify/update?token=" + verifyEmailToken
 	cancelEmailUpdateURL := os.Getenv("USER_URI") + "/email/cancel?token=" + verifyEmailToken
 
-	if err := grpcclient.SendEmail(ctx, data.Email{
+	if err := grpcclient.SendEmail(data.Email{
 		Email:    newEmail,
 		Username: user.Username,
 		Type:     data.UpdateEmailVerify,
@@ -75,7 +75,7 @@ func VerifyEmailUpdate(ctx context.Context, user *data.User, newEmail string) er
 	if err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
-	if err := grpcclient.SendEmail(ctx, data.Email{
+	if err := grpcclient.SendEmail(data.Email{
 		Email:    user.Email,
 		Username: user.Username,
 		Type:     data.UpdateEmailOldEmail,
