@@ -27,7 +27,7 @@ type UserLibrary struct {
 	LibraryID   primitive.ObjectID            `json:"library_id,omitempty" bson:"library_id,omitempty"`
 	Permissions permissions.PermissionLibrary `json:"permissions,omitempty" bson:"permissions,omitempty"`
 	Groups      []primitive.ObjectID          `json:"groups,omitempty" bson:"groups,omitempty"`
-	InvitedBy   primitive.ObjectID            `json:"invited_by,omitempty" bson: "invited_by,omitempty"`
+	InvitedBy   primitive.ObjectID            `json:"invited_by,omitempty" bson:"invited_by,omitempty"`
 }
 
 // LibraryInvite is the structure of the data to invite a user to a library

@@ -8,6 +8,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -21,5 +22,24 @@ func Update(library data.UserLibrary) (*data.UserLibrary, error) {
 		}
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
+	return &library, nil
+}
+
+// AcceptInvitation remove the 'invited_by' field in the database
+func AcceptInvitation(userID primitive.ObjectID, libraryID primitive.ObjectID) (*data.UserLibrary, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	var library data.UserLibrary
+
+	collection := database.Instance.Db.Collection(database.CollectionLibraries)
+	filters := bson.D{{"user_id", userID}, {"library_id", libraryID}}
+	if err := collection.FindOneAndUpdate(ctx, filters, bson.D{{"$unset", bson.D{{"invited_by", ""}}}}, options.FindOneAndUpdate().SetReturnDocument(1)).Decode(&library); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, "User's library not found.")
+		}
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+
 	return &library, nil
 }
