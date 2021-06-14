@@ -27,14 +27,10 @@ func Update(library data.UserLibrary) (*data.UserLibrary, error) {
 
 // AcceptInvitation remove the 'invited_by' field in the database
 func AcceptInvitation(userID primitive.ObjectID, libraryID primitive.ObjectID) (*data.UserLibrary, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
 	var library data.UserLibrary
 
-	collection := database.Instance.Db.Collection(database.CollectionLibraries)
 	filters := bson.D{{"user_id", userID}, {"library_id", libraryID}}
-	if err := collection.FindOneAndUpdate(ctx, filters, bson.D{{"$unset", bson.D{{"invited_by", ""}}}}, options.FindOneAndUpdate().SetReturnDocument(1)).Decode(&library); err != nil {
+	if err := database.LibrariesCollection.FindOneAndUpdate(context.Background(), filters, bson.D{{"$unset", bson.D{{"invited_by", ""}}}}, options.FindOneAndUpdate().SetReturnDocument(1)).Decode(&library); err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, "User's library not found.")
 		}

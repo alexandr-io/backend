@@ -2,7 +2,6 @@ package libraries
 
 import (
 	"context"
-	"time"
 
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
