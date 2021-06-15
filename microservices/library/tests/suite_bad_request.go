@@ -75,6 +75,80 @@ var badRequestTests = []test{
 		ExpectedResponse: nil,
 		CustomEndFunc:    nil,
 	},
+	{
+		TestSuite:  badRequestSuite,
+		HTTPMethod: http.MethodPost,
+		URL:        func() string { return "/library/" + libraryID + "/book/" + bookID + "/data" },
+		AuthJWT:    &authToken,
+		Body: data.UserData{
+			Type:    "highlight",
+			Name:    "My data",
+			Content: "Hello world",
+			Tags:    nil,
+			Offset:  "there",
+			// OffsetEnd missing on purpose
+		},
+		ExpectedHTTPCode: http.StatusBadRequest,
+		ExpectedResponse: nil,
+		CustomEndFunc:    nil,
+	},
+	{
+		TestSuite:  badRequestSuite,
+		HTTPMethod: http.MethodPost,
+		URL:        func() string { return "/library/" + libraryID + "/book/" + bookID + "/data" },
+		AuthJWT:    &authToken,
+		Body: data.UserData{
+			Type:      "invalid",
+			Name:      "My data",
+			Content:   "Hello world",
+			Tags:      nil,
+			Offset:    "there",
+			OffsetEnd: "",
+		},
+		ExpectedHTTPCode: http.StatusBadRequest,
+		ExpectedResponse: nil,
+		CustomEndFunc:    nil,
+	},
+	{
+		TestSuite:  badRequestSuite,
+		HTTPMethod: http.MethodPost,
+		URL:        func() string { return "/library/" + libraryID + "/book/" + bookID + "/data" },
+		AuthJWT:    &authToken,
+		Body: data.UserData{
+			Type: "note",
+			// Name missing on purpose
+			Content: "Hello world",
+			Offset:  "there",
+		},
+		ExpectedHTTPCode: http.StatusBadRequest,
+		ExpectedResponse: nil,
+		CustomEndFunc:    nil,
+	},
+	{
+		TestSuite:  badRequestSuite,
+		HTTPMethod: http.MethodPost,
+		URL:        func() string { return "/library/" + libraryID + "/book/" + bookID + "/data/" + dataID },
+		AuthJWT:    &authToken,
+		Body: data.UserData{
+			Type:    "note",
+			Name:    "Edited",
+			Content: "yey",
+			// missing Offset on purpose
+		},
+		ExpectedHTTPCode: http.StatusBadRequest,
+		ExpectedResponse: nil,
+		CustomEndFunc:    nil,
+	},
+	{
+		TestSuite:        badRequestSuite,
+		HTTPMethod:       http.MethodGet,
+		URL:              func() string { return "/library/" + libraryID + "/book/" + bookID + "/data/000000000000000000000000" },
+		AuthJWT:          &authToken,
+		Body:             nil,
+		ExpectedHTTPCode: http.StatusNotFound,
+		ExpectedResponse: nil,
+		CustomEndFunc:    nil,
+	},
 }
 
 // ExecLibraryBadRequestTests execute bad request library tests.

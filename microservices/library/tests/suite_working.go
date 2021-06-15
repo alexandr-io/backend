@@ -1,11 +1,10 @@
 package tests
 
 import (
-	"net/http"
-
 	"github.com/alexandr-io/backend/common/typeconv"
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/data/permissions"
+	"net/http"
 )
 
 const (
@@ -25,6 +24,7 @@ var (
 	libraryID string
 	groupID   string
 	bookID    string
+	dataID    string
 )
 
 var workingTests = []test{
@@ -264,6 +264,30 @@ var workingTests = []test{
 			UserPermissionManage: false,
 		},
 		CustomEndFunc: nil,
+	},
+	{
+		TestSuite:        workingSuite,
+		HTTPMethod:       http.MethodGet,
+		URL:              func() string { return "/library/" + libraryID + "/book/" + bookID + "/data/" + dataID },
+		AuthJWT:          &authToken,
+		Body:             nil,
+		ExpectedHTTPCode: http.StatusOK,
+		ExpectedResponse: nil,
+		CustomEndFunc:    nil,
+	},
+	{
+		TestSuite:  workingSuite,
+		HTTPMethod: http.MethodPost,
+		URL:        func() string { return "/library/" + libraryID + "/book/" + bookID + "/data/" + dataID },
+		AuthJWT:    &authToken,
+		Body: data.UserData{
+			Type:   "note",
+			Name:   "new name",
+			Offset: "new offset",
+		},
+		ExpectedHTTPCode: http.StatusCreated,
+		ExpectedResponse: nil,
+		CustomEndFunc:    nil,
 	},
 	{
 		TestSuite:        workingSuite,
