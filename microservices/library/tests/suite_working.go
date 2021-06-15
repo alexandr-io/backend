@@ -1,10 +1,11 @@
 package tests
 
 import (
+	"net/http"
+
 	"github.com/alexandr-io/backend/common/typeconv"
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/data/permissions"
-	"net/http"
 )
 
 const (
