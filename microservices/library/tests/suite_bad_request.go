@@ -23,7 +23,7 @@ var badRequestTests = []test{
 			Name:        libraryName,
 			Description: libraryDescription,
 		},
-		CustomEndFunc: LibrayCreateEndFunction,
+		CustomEndFunc: LibraryCreateEndFunction,
 	},
 	{
 		TestSuite:        badRequestSuite,
