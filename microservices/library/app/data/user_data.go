@@ -18,11 +18,10 @@ type UserData struct {
 	BookID           primitive.ObjectID `json:"book_id,omitempty" bson:"book_id,omitempty"`
 	Type             string             `json:"type,omitempty" bson:"type,omitempty" validate:"required"`
 	Name             string             `json:"name,omitempty" bson:"name,omitempty" validate:"required"`
-	Description      string             `json:"description,omitempty" bson:"description,omitempty"`
+	Content          string             `json:"content,omitempty" bson:"content,omitempty"`
 	Tags             []string           `json:"tags,omitempty" bson:"tags,omitempty"`
 	Offset           string             `json:"offset,omitempty" bson:"offset,omitempty" validate:"required"`
 	OffsetEnd        string             `json:"offset_end,omitempty" bson:"offset_end,omitempty"` // for highlights
-	CreationDate     time.Time          `json:"creation_date,omitempty" bson:"creation_date,omitempty"`
 	LastModifiedDate time.Time          `json:"last_modified_date,omitempty" bson:"last_modified_date,omitempty"`
 }
 
@@ -35,7 +34,7 @@ func (userData UserData) MarshalJSON() ([]byte, error) {
 		BookID           string    `json:"book_id,omitempty"`
 		Type             string    `json:"type,omitempty" validate:"required"`
 		Name             string    `json:"name,omitempty" validate:"required"`
-		Description      string    `json:"description,omitempty"`
+		Content          string    `json:"content,omitempty"`
 		Tags             []string  `json:"tags,omitempty"`
 		Offset           string    `json:"offset,omitempty" validate:"required"`
 		OffsetEnd        string    `json:"offset_end,omitempty"` // for highlights
@@ -48,11 +47,11 @@ func (userData UserData) MarshalJSON() ([]byte, error) {
 		BookID:           userData.BookID.Hex(),
 		Type:             userData.Type,
 		Name:             userData.Name,
-		Description:      userData.Description,
+		Content:          userData.Content,
 		Tags:             userData.Tags,
 		Offset:           userData.Offset,
 		OffsetEnd:        userData.OffsetEnd,
-		CreationDate:     userData.CreationDate,
+		CreationDate:     userData.ID.Timestamp(),
 		LastModifiedDate: userData.LastModifiedDate,
 	})
 }

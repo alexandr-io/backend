@@ -17,7 +17,7 @@ func UserDataGet(ctx *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	libraryID, bookID, err := getLibraryBookIDFromParams(ctx)
+	_, bookID, err := getLibraryBookIDFromParams(ctx)
 	if err != nil {
 		return err
 	}
@@ -26,7 +26,7 @@ func UserDataGet(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, err.Error())
 	}
 
-	userData, err := userdata.RetrieveOneFromIDs(userID, libraryID, bookID, dataID)
+	userData, err := userdata.RetrieveOneFromIDs(userID, bookID, dataID)
 	if err != nil {
 		return err
 	}

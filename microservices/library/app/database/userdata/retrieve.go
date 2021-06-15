@@ -14,7 +14,7 @@ import (
 )
 
 // RetrieveOneFromIDs retrieves the user's book data from the mongo database
-func RetrieveOneFromIDs(userID, libraryID, bookID, dataID primitive.ObjectID) (*data.UserData, error) {
+func RetrieveOneFromIDs(userID, bookID, dataID primitive.ObjectID) (*data.UserData, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -23,7 +23,6 @@ func RetrieveOneFromIDs(userID, libraryID, bookID, dataID primitive.ObjectID) (*
 	filter := bson.D{
 		{"user_id", userID},
 		{"book_id", bookID},
-		{"library_id", libraryID},
 		{"_id", dataID},
 	}
 	var result data.UserData
@@ -38,8 +37,8 @@ func RetrieveOneFromIDs(userID, libraryID, bookID, dataID primitive.ObjectID) (*
 	return &result, nil
 }
 
-// RetrieveManyFromIDs retrieves the user's book data from the mongo database
-func RetrieveManyFromIDs(userID, libraryID, bookID primitive.ObjectID) (*[]data.UserData, error) {
+// RetrieveAll retrieves the user's book data from the mongo database
+func RetrieveAll(userID, libraryID, bookID primitive.ObjectID) (*[]data.UserData, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 

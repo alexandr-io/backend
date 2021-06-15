@@ -21,7 +21,7 @@ func UserDataList(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	userData, err := userdata.RetrieveManyFromIDs(userID, libraryID, bookID)
+	userData, err := userdata.RetrieveAll(userID, libraryID, bookID)
 	if err != nil {
 		return err
 	}

@@ -29,12 +29,6 @@ func parseUserDataRequest(ctx *fiber.Ctx, userData *data.UserData) error {
 		return err
 	}
 
-	if userData.Name == "" {
-		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, "Missing required parameter: name")
-	}
-	if userData.Offset == "" {
-		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, "Missing required parameter: offset")
-	}
 	if userData.Type == "highlight" && userData.OffsetEnd == "" {
 		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, "Missing required parameter for highlights: offset_end")
 	}
@@ -61,7 +55,6 @@ func UserDataCreate(ctx *fiber.Ctx) error {
 		UserID:           userID,
 		LibraryID:        libraryID,
 		BookID:           bookID,
-		CreationDate:     now,
 		LastModifiedDate: now,
 	}
 	if err := parseUserDataRequest(ctx, &userDataRequest); err != nil {

@@ -48,7 +48,7 @@ func createRoute(app *fiber.App) {
 	// Userdata relative URLs
 	app.Get("/library/:library_id/book/:book_id/data", userMiddleware.Protected(), handlers.UserDataList)
 	app.Post("/library/:library_id/book/:book_id/data", userMiddleware.Protected(), handlers.UserDataCreate)
-	app.Delete("/library/:library_id/book/:book_id/data", userMiddleware.Protected(), handlers.UserDataDeleteAllIn)
+	app.Delete("/library/:library_id/book/:book_id/data", userMiddleware.Protected(), handlers.UserDataDeleteAllInBook)
 	app.Get("/library/:library_id/book/:book_id/data/:data_id", userMiddleware.Protected(), handlers.UserDataGet)
 	app.Post("/library/:library_id/book/:book_id/data/:data_id", userMiddleware.Protected(), handlers.UserDataUpdate)
 	app.Delete("/library/:library_id/book/:book_id/data/:data_id", userMiddleware.Protected(), handlers.UserDataDeleteOne)
