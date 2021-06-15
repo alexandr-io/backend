@@ -66,7 +66,7 @@ func UserDataCreate(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	if err = ctx.Status(fiber.StatusOK).JSON(userData); err != nil {
+	if err = ctx.Status(fiber.StatusCreated).JSON(userData); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
