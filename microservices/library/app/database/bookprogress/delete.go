@@ -10,8 +10,8 @@ import (
 )
 
 // Delete deletes the user's book progress data entry in the database
-func Delete(bookUserData data.BookProgressData) error {
-	if result, err := database.BookProgressCollection.DeleteOne(context.Background(), bookUserData); err != nil {
+func Delete(bookProgressData data.BookProgressData) error {
+	if result, err := database.BookProgressCollection.DeleteOne(context.Background(), bookProgressData); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	} else if result.DeletedCount == 0 {
 		return data.NewHTTPErrorInfo(fiber.StatusNotFound, "Progress not found.")
