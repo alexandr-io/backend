@@ -32,7 +32,7 @@ var unauthorisedTests = []test{
 			Name:        libraryName,
 			Description: libraryDescription,
 		},
-		CustomEndFunc: LibrayCreateEndFunction,
+		CustomEndFunc: LibraryCreateEndFunction,
 	},
 	{
 		TestSuite:  unauthorisedSuite,
