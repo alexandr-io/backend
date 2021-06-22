@@ -1,9 +1,9 @@
 ---
 paths:
-  /library/{library_id}/book/{book_id}/progress:
-    get:
-      summary: Get book progress
-      description: Retreive book progress
+  /library/{library_id}/book/{book_id}/data/{data_id}:
+    post:
+      summary: Update user data
+      description: Updates a specific user data
       parameters:
         - in: path
           name: library_id
@@ -16,10 +16,21 @@ paths:
           required: true
           schema:
             type: string
-          description: The ID of the book to update the progress for
+          description: The ID of the book
+        - in: path
+          name: data_id
+          required: true
+          schema:
+            type: string
+          description: The data ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserDataRequest"
       responses:
         "200":
-          $ref: '#/components/schemas/ProgressGetResponse'
+          $ref: '#/components/schemas/UserDataResponse'
         "400":
           $ref: '#/components/schemas/BadRequestErrorResponse'
         "401":
@@ -34,4 +45,4 @@ paths:
         - url: //library.preprod.alexandrio.cloud
           description: Preprod server
       tags:
-        - BOOK PROGRESS DATA
+        - BOOK USER DATA

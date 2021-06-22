@@ -8,18 +8,18 @@ import (
 	"github.com/alexandr-io/backend/library/data"
 )
 
-// LibraryCreateEndFunction is a function called at the end of a library create test
-func LibraryCreateEndFunction(res *http.Response) error {
+// UserDataCreateEndFunction is a function called at the end of a user data create test
+func UserDataCreateEndFunction(res *http.Response) error {
 	// Read response Body
 	resBody, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return err
 	}
 	// Parse response Body
-	var libraryData data.Library
-	if err = json.Unmarshal(resBody, &libraryData); err != nil {
+	var userData data.UserData
+	if err = json.Unmarshal(resBody, &userData); err != nil {
 		return err
 	}
-	libraryID = libraryData.ID
+	dataID = userData.ID.Hex()
 	return nil
 }

@@ -39,4 +39,4 @@ paths:
         - url: //library.preprod.alexandrio.cloud
           description: Preprod server
       tags:
-        - BOOK USER DATA
+        - BOOK PROGRESS DATA

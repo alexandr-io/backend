@@ -1,0 +1,35 @@
+---
+components:
+  schemas:
+    UserDataRequest:
+      properties:
+        type:
+          description: The type of user data, must be "highlight", "bookmark" or "note"
+          example: highlight
+          type: string
+        name:
+          description: Name or title of the user data
+          example: This is an important definition
+          type: string
+        description:
+          description: Description of the user data
+          example: This quote is important for the author
+          type: string
+        tags:
+          description: Tags associated with the user data
+          example: [ "quote", "important" ]
+          type: array
+        offset:
+          description: String representation of user progress (percentage, EPUB CFI, ...) where the data is located
+          example: "some progress indicator"
+          type: string
+        offset_end:
+          description: String representation of user progress (percentage, EPUB CFI, ...) where the data ends, for highlights
+          example: "some progress indicator"
+          type: string
+
+      required:
+        - type
+        - name
+        - offset
+      type: object
