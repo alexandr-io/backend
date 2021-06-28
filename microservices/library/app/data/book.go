@@ -40,10 +40,10 @@ func (book Book) MarshalJSON() ([]byte, error) {
 		LibraryID  string `json:"library_id,omitempty"`
 		UploaderID string `json:"uploader_id"`
 
-		Title       string
-		Author      string
-		Description string
-		Categories  []string
+		Title       string   `json:"title,omitempty"`
+		Author      string   `json:"author,omitempty"`
+		Description string   `json:"description,omitempty"`
+		Categories  []string `json:"categories,omitempty"`
 
 		Thumbnails          []string             `json:"thumbnails,omitempty"`
 		PublishedDate       string               `json:"published_date,omitempty"` // TODO: This may be a time.date
