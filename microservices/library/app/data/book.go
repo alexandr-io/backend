@@ -23,13 +23,16 @@ type Book struct {
 	Description string   `json:"description,omitempty" bson:"description,omitempty"`
 	Categories  []string `json:"categories,omitempty" bson:"categories,omitempty"`
 
+	// from media MS
+	FileType string `json:"file_type,omitempty" bson:"file_type,omitempty"`
+
 	// for metadata MS
 	Thumbnails          []string             `json:"-" bson:"thumbnails,omitempty"`
 	Publisher           string               `json:"-" bson:"publisher,omitempty"`
 	PublishedDate       string               `json:"-" bson:"published_date,omitempty"` // TODO: This may be a time.date
 	MaturityRating      string               `json:"-" bson:"maturity_rating,omitempty"`
 	Language            string               `json:"-" bson:"language,omitempty"`
-	IndustryIdentifiers *IndustryIdentifiers `json:"-" bson:"industry_identifiers"`
+	IndustryIdentifiers *IndustryIdentifiers `json:"-" bson:"industry_identifiers,omitempty"`
 	PageCount           int                  `json:"-" bson:"page_count,omitempty"`
 }
 
@@ -40,10 +43,12 @@ func (book Book) MarshalJSON() ([]byte, error) {
 		LibraryID  string `json:"library_id,omitempty"`
 		UploaderID string `json:"uploader_id"`
 
-		Title       string
-		Author      string
-		Description string
-		Categories  []string
+		Title       string   `json:"title,omitempty"`
+		Author      string   `json:"author,omitempty"`
+		Description string   `json:"description,omitempty"`
+		Categories  []string `json:"categories,omitempty"`
+
+		FileType string `json:"file_type,omitempty"`
 
 		Thumbnails          []string             `json:"thumbnails,omitempty"`
 		PublishedDate       string               `json:"published_date,omitempty"` // TODO: This may be a time.date
@@ -60,6 +65,7 @@ func (book Book) MarshalJSON() ([]byte, error) {
 		Author:              book.Author,
 		Description:         book.Description,
 		Categories:          book.Categories,
+		FileType:            book.FileType,
 		Thumbnails:          book.Thumbnails,
 		Publisher:           book.Publisher,
 		PublishedDate:       book.PublishedDate,
