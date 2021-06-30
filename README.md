@@ -16,11 +16,11 @@ Stop all dev services:
 cd tests/integration
 go run . {environment}
 ```
-environments are {local, preprod, prod}
-more options are available and documented my running `go run . -h`
+Possible environments include `[local, preprod, prod]`.
+More options are available and documented by running `go run . -h`.
 
 ## Run unit tests
-Nothing is made yet to run all unit tests at once. For know tests can only be executed from each service folder.
+Nothing is made yet to run all unit tests at once. For now tests can only be executed from each service folder.
 ```shell
 cd microservices/auth/app 
 go test ./...
