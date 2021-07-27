@@ -37,6 +37,26 @@ func (m *MockLibraryClient) EXPECT() *MockLibraryClientMockRecorder {
 	return m.recorder
 }
 
+// BookUploaded mocks base method.
+func (m *MockLibraryClient) BookUploaded(ctx context.Context, in *grpclibrary.BookUploadedRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, in}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "BookUploaded", varargs...)
+	ret0, _ := ret[0].(*emptypb.Empty)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// BookUploaded indicates an expected call of BookUploaded.
+func (mr *MockLibraryClientMockRecorder) BookUploaded(ctx, in interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, in}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BookUploaded", reflect.TypeOf((*MockLibraryClient)(nil).BookUploaded), varargs...)
+}
+
 // CoverUploaded mocks base method.
 func (m *MockLibraryClient) CoverUploaded(ctx context.Context, in *grpclibrary.CoverUploadedRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	m.ctrl.T.Helper()
@@ -118,6 +138,21 @@ func NewMockLibraryServer(ctrl *gomock.Controller) *MockLibraryServer {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockLibraryServer) EXPECT() *MockLibraryServerMockRecorder {
 	return m.recorder
+}
+
+// BookUploaded mocks base method.
+func (m *MockLibraryServer) BookUploaded(arg0 context.Context, arg1 *grpclibrary.BookUploadedRequest) (*emptypb.Empty, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "BookUploaded", arg0, arg1)
+	ret0, _ := ret[0].(*emptypb.Empty)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// BookUploaded indicates an expected call of BookUploaded.
+func (mr *MockLibraryServerMockRecorder) BookUploaded(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BookUploaded", reflect.TypeOf((*MockLibraryServer)(nil).BookUploaded), arg0, arg1)
 }
 
 // CoverUploaded mocks base method.

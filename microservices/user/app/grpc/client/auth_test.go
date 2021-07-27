@@ -10,6 +10,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -21,7 +22,7 @@ func TestAuth(t *testing.T) {
 	authClient = mockAuthClient
 
 	authExpectedData := data.User{
-		ID:       "42",
+		ID:       primitive.NewObjectID(),
 		Username: "test",
 		Email:    "test@test.test",
 	}
@@ -31,12 +32,12 @@ func TestAuth(t *testing.T) {
 			gomock.Any(),
 			gomock.Any(),
 		).Return(&grpcauth.AuthReply{
-			ID:       authExpectedData.ID,
+			ID:       authExpectedData.ID.Hex(),
 			Username: authExpectedData.Username,
 			Email:    authExpectedData.Email,
 		}, nil)
 
-		user, err := Auth(authExpectedData.ID)
+		user, err := Auth(authExpectedData.ID.Hex())
 		assert.Nil(t, err)
 		assert.Equal(t, &authExpectedData, user)
 	})
