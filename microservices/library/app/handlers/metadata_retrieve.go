@@ -13,7 +13,7 @@ func MetadataRetrieve(ctx *fiber.Ctx) error {
 
 	title := ctx.Query("title")
 	authors := ctx.Query("authors")
-	response, err := grpcclient.Metadata(ctx.Context(), title, authors)
+	response, err := grpcclient.Metadata(title, authors)
 	if err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}

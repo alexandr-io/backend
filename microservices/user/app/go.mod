@@ -17,6 +17,7 @@ require (
 	github.com/go-redis/redismock/v8 v8.0.6
 	github.com/gofiber/fiber/v2 v2.5.0
 	github.com/gofiber/template v1.6.7
+	github.com/golang/mock v1.5.0
 	github.com/golang/snappy v0.0.2 // indirect
 	github.com/klauspost/compress v1.11.3 // indirect
 	github.com/stretchr/testify v1.7.0
@@ -25,6 +26,7 @@ require (
 	go.mongodb.org/mongo-driver v1.5.2
 	golang.org/x/crypto v0.0.0-20201124201722-c8d3bf9c5392
 	google.golang.org/grpc v1.35.0
+	google.golang.org/protobuf v1.26.0
 	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 // indirect
 )

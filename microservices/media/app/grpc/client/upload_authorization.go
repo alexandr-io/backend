@@ -14,7 +14,7 @@ import (
 
 // UploadAuthorization grpc Client to check if a user can upload to a library
 func UploadAuthorization(ctx context.Context, userID primitive.ObjectID, libraryID primitive.ObjectID) (bool, error) {
-	if authClient == nil {
+	if libraryClient == nil {
 		return false, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, "gRPC library client not initialized")
 	}
 

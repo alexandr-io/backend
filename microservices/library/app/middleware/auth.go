@@ -24,7 +24,7 @@ func Protected() func(*fiber.Ctx) error {
 		if err != nil {
 			return err
 		}
-		user, err := grpcclient.Auth(ctx.Context(), token)
+		user, err := grpcclient.Auth(token)
 		if err != nil {
 			return err
 		}

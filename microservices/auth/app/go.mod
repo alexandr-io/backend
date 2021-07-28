@@ -20,6 +20,7 @@ require (
 	github.com/go-redis/redismock/v8 v8.0.6
 	github.com/gofiber/fiber/v2 v2.5.0
 	github.com/gofiber/jwt/v2 v2.1.0
+	github.com/golang/mock v1.5.0
 	github.com/klauspost/compress v1.11.3 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
@@ -29,6 +30,7 @@ require (
 	go.mongodb.org/mongo-driver v1.5.2
 	golang.org/x/crypto v0.0.0-20201208171446-5f87f3452ae9
 	google.golang.org/grpc v1.35.0
+	google.golang.org/protobuf v1.26.0
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0

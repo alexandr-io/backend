@@ -14,14 +14,15 @@ import (
 )
 
 // Auth grpc Client to check jwt and get corresponding user data
-func Auth(ctx context.Context, jwt string) (*data.User, error) {
+func Auth(jwt string) (*data.User, error) {
 	if authClient == nil {
+		go InitClients()
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, "gRPC auth client not initialized")
 	}
 
 	authRequest := grpcauth.AuthRequest{JWT: jwt}
 	fmt.Printf("[gRPC]: Auth send: %+v\n", regex.Hide(authRequest.String()))
-	authReply, err := authClient.Auth(ctx, &authRequest)
+	authReply, err := authClient.Auth(context.Background(), &authRequest)
 	if err != nil {
 		return nil, grpc.ErrorToFiber(err)
 	}

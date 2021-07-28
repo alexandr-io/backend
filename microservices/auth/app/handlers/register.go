@@ -40,12 +40,12 @@ func Register(ctx *fiber.Ctx) error {
 
 	userRegister.Password = hashAndSalt(userRegister.Password)
 
-	userData, err := grpcclient.Register(ctx.Context(), userRegister)
+	userData, err := grpcclient.Register(userRegister)
 	if err != nil {
 		return err
 	}
 
-	if err := grpcclient.CreateLibrary(ctx.Context(), userData.ID); err != nil {
+	if err := grpcclient.CreateLibrary(userData.ID); err != nil {
 		return err
 	}
 

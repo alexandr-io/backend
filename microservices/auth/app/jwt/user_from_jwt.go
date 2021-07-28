@@ -1,8 +1,6 @@
 package jwt
 
 import (
-	"context"
-
 	"github.com/alexandr-io/backend/auth/data"
 	grpcclient "github.com/alexandr-io/backend/auth/grpc/client"
 
@@ -18,7 +16,7 @@ func GetUserFromContextJWT(ctx *fiber.Ctx) (*data.User, error) {
 	}
 
 	// Get the user from user MS using grpc
-	userData, err := grpcclient.User(context.Background(), data.User{ID: userID})
+	userData, err := grpcclient.User(data.User{ID: userID})
 	if err != nil {
 		return nil, err
 	}

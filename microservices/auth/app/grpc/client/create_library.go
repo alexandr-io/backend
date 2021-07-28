@@ -12,8 +12,9 @@ import (
 )
 
 // CreateLibrary get a data.User containing an ID or an email and return the complete user data
-func CreateLibrary(ctx context.Context, userID string) error {
+func CreateLibrary(userID string) error {
 	if libraryClient == nil {
+		go InitClients()
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, "gRPC library client not initialized")
 	}
 
@@ -21,7 +22,7 @@ func CreateLibrary(ctx context.Context, userID string) error {
 		UserID: userID,
 	}
 	fmt.Printf("[gRPC]: Login sent: %+v\n", createLibraryRequest.String())
-	_, err := libraryClient.CreateLibrary(ctx, &createLibraryRequest)
+	_, err := libraryClient.CreateLibrary(context.Background(), &createLibraryRequest)
 	if err != nil {
 		return grpc.ErrorToFiber(err)
 	}
