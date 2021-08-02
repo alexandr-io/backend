@@ -1,4 +1,4 @@
-package user_library
+package userlibrary
 
 import (
 	"github.com/alexandr-io/backend/library/data"

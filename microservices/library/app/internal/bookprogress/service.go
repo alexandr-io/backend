@@ -1,4 +1,4 @@
-package book_progress
+package bookprogress
 
 import (
 	"time"

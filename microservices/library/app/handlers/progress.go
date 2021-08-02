@@ -3,7 +3,7 @@ package handlers
 import (
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
-	bookProgressServ "github.com/alexandr-io/backend/library/internal/book_progress"
+	bookProgressServ "github.com/alexandr-io/backend/library/internal/bookprogress"
 	permissionServ "github.com/alexandr-io/backend/library/internal/permission"
 	userMiddleware "github.com/alexandr-io/backend/library/middleware"
 

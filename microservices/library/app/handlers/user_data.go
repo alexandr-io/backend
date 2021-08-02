@@ -5,7 +5,7 @@ import (
 
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/database"
-	userDataServ "github.com/alexandr-io/backend/library/internal/user_data"
+	userDataServ "github.com/alexandr-io/backend/library/internal/userdata"
 	userMiddleware "github.com/alexandr-io/backend/library/middleware"
 
 	"github.com/gofiber/fiber/v2"

@@ -2,7 +2,7 @@ package group
 
 import (
 	"github.com/alexandr-io/backend/library/data/permissions"
-	userLibraryServ "github.com/alexandr-io/backend/library/internal/user_library"
+	userLibraryServ "github.com/alexandr-io/backend/library/internal/userlibrary"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )

@@ -1,4 +1,4 @@
-package _interface
+package bookinterface
 
 import (
 	"github.com/alexandr-io/backend/library/data"

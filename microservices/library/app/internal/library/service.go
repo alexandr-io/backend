@@ -4,9 +4,9 @@ import (
 	"github.com/alexandr-io/backend/common/typeconv"
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/alexandr-io/backend/library/data/permissions"
-	bookProgressServ "github.com/alexandr-io/backend/library/internal/book_progress"
+	bookProgressServ "github.com/alexandr-io/backend/library/internal/bookprogress"
 	groupServ "github.com/alexandr-io/backend/library/internal/group"
-	userLibraryServ "github.com/alexandr-io/backend/library/internal/user_library"
+	userLibraryServ "github.com/alexandr-io/backend/library/internal/userlibrary"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson/primitive"

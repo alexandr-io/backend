@@ -3,7 +3,7 @@ package book
 import (
 	"github.com/alexandr-io/backend/library/data"
 	BookServ "github.com/alexandr-io/backend/library/internal/book/interface"
-	bookProgressServ "github.com/alexandr-io/backend/library/internal/book_progress"
+	bookProgressServ "github.com/alexandr-io/backend/library/internal/bookprogress"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

@@ -1,4 +1,4 @@
-package book_progress
+package bookprogress
 
 import (
 	"github.com/alexandr-io/backend/library/data"
