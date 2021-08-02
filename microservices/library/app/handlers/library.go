@@ -95,6 +95,7 @@ func libraryDelete(ctx *fiber.Ctx) error {
 	return nil
 }
 
+// CreateLibraryHandlers create handlers for Library
 func CreateLibraryHandlers(app *fiber.App) {
 	libraryServ.NewService(database.LibraryDB, database.UserLibraryDB, database.GroupDB, database.BookProgressDB)
 	app.Post("/library", userMiddleware.Protected(), libraryCreate)

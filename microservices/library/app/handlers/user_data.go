@@ -209,6 +209,7 @@ func userDataDeleteAllInBook(ctx *fiber.Ctx) error {
 	return nil
 }
 
+// CreateUserDataHandlers create handlers for UserData
 func CreateUserDataHandlers(app *fiber.App) {
 	userDataServ.NewService(database.UserDataDB)
 	app.Get("/library/:library_id/book/:book_id/data", userMiddleware.Protected(), userDataList)

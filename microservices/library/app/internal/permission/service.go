@@ -8,18 +8,22 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// Serv instance of permission service
 var Serv *Service
 
+// Service is the struct containing database repository needed for permission methods of the interface
 type Service struct {
 	userLibraryRepo userLibraryServ.Repository
 	groupRepo       groupServ.Repository
 }
 
+// NewService create and set instance of Service
 func NewService(userLibrary userLibraryServ.Repository, group groupServ.Repository) *Service {
 	Serv = &Service{userLibraryRepo: userLibrary, groupRepo: group}
 	return Serv
 }
 
+// getGroupHigherPermission return higher permission of a group
 func getGroupHigherPermission(groups []permissions.Group, userPermissions permissions.PermissionLibrary) *permissions.PermissionLibrary {
 
 	for _, currGroup := range groups {

@@ -208,6 +208,7 @@ func groupsRetrieveUser(ctx *fiber.Ctx) error {
 	return nil
 }
 
+// CreateGroupHandlers create handlers for Group
 func CreateGroupHandlers(app *fiber.App) {
 	groupServ.NewService(database.GroupDB, database.UserLibraryDB)
 	app.Post("/library/:library_id/group", userMiddleware.Protected(), groupCreate)

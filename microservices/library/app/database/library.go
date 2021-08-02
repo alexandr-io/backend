@@ -10,14 +10,17 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+// LibraryDB instance of LibraryCollection
 var LibraryDB *LibraryCollection
 
+// LibraryCollection contain the db collection for the library interface
 type LibraryCollection struct {
 	collection *mongo.Collection
 }
 
 const libraryCollectionName = "library"
 
+// NewLibraryCollection create a LibraryCollection
 func NewLibraryCollection(db *mongo.Database) *LibraryCollection {
 	return &LibraryCollection{collection: db.Collection(libraryCollectionName)}
 }

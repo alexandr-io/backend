@@ -12,14 +12,17 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// UserLibraryDB instance of UserLibraryCollection
 var UserLibraryDB *UserLibraryCollection
 
+// UserLibraryCollection contain the db collection for the user library interface
 type UserLibraryCollection struct {
 	collection *mongo.Collection
 }
 
 const userLibraryCollectionName = "user_library"
 
+// NewUserLibraryCollection create a UserLibraryCollection
 func NewUserLibraryCollection(db *mongo.Database) *UserLibraryCollection {
 	return &UserLibraryCollection{collection: db.Collection(userLibraryCollectionName)}
 }

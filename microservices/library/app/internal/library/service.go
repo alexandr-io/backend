@@ -12,8 +12,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// Serv instance of library service
 var Serv *Service
 
+// Service is the struct containing database repository needed for library methods of the interface
 type Service struct {
 	repo             Repository
 	userLibraryRepo  userLibraryServ.Repository
@@ -21,11 +23,13 @@ type Service struct {
 	bookProgressRepo bookProgressServ.Repository
 }
 
+// NewService create and set instance of Service
 func NewService(repo Repository, userLibrary userLibraryServ.Repository, group groupServ.Repository, bookProgress bookProgressServ.Repository) *Service {
 	Serv = &Service{repo: repo, userLibraryRepo: userLibrary, groupRepo: group, bookProgressRepo: bookProgress}
 	return Serv
 }
 
+// CreateLibrary create a library
 func (s *Service) CreateLibrary(library data.Library, userID primitive.ObjectID) (*data.Library, error) {
 	// insert library
 	insertedLibrary, err := s.repo.Create(library)
@@ -74,6 +78,7 @@ func (s *Service) CreateLibrary(library data.Library, userID primitive.ObjectID)
 	return insertedLibrary, nil
 }
 
+// CreateDefaultLibrary create a default library
 func (s *Service) CreateDefaultLibrary(userID primitive.ObjectID) error {
 	library := data.Library{
 		Name:        "Bookshelf",
@@ -85,10 +90,12 @@ func (s *Service) CreateDefaultLibrary(userID primitive.ObjectID) error {
 	return nil
 }
 
+// ReadLibrary read a library
 func (s *Service) ReadLibrary(libraryID primitive.ObjectID) (*data.Library, error) {
 	return s.repo.Read(libraryID)
 }
 
+// DeleteLibrary delete a library
 func (s *Service) DeleteLibrary(libraryID primitive.ObjectID) error {
 	// TODO: create logic so that when library delete failed, the book previously deleted in restored
 	if err := s.repo.Delete(libraryID); err != nil {

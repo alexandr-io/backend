@@ -33,6 +33,7 @@ func userLibraryPermissionRetrieve(ctx *fiber.Ctx) error {
 	return nil
 }
 
+// CreatePermissionHandlers create handlers for Permission
 func CreatePermissionHandlers(app *fiber.App) {
 	permissionServ.NewService(database.UserLibraryDB, database.GroupDB)
 	app.Get("/library/:library_id/permissions", userMiddleware.Protected(), userLibraryPermissionRetrieve)

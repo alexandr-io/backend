@@ -12,14 +12,17 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// BookDB instance of BookCollection
 var BookDB *BookCollection
 
+// BookCollection contain the db collection for the book interface
 type BookCollection struct {
 	collection *mongo.Collection
 }
 
 const bookCollectionName = "book"
 
+// NewBookCollection create a BookCollection
 func NewBookCollection(db *mongo.Database) *BookCollection {
 	return &BookCollection{collection: db.Collection(bookCollectionName)}
 }

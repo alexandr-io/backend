@@ -83,6 +83,7 @@ func progressRead(ctx *fiber.Ctx) error {
 	return nil
 }
 
+// CreateBookProgressHandlers create handlers for BookProgress
 func CreateBookProgressHandlers(app *fiber.App) {
 	bookProgressServ.NewService(database.BookProgressDB, database.BookDB)
 	app.Get("/library/:library_id/book/:book_id/progress", userMiddleware.Protected(), progressRead)

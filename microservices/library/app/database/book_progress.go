@@ -12,14 +12,17 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// BookProgressDB instance of BookProgressCollection
 var BookProgressDB *BookProgressCollection
 
+// BookProgressCollection contain the db collection for the book progress interface
 type BookProgressCollection struct {
 	collection *mongo.Collection
 }
 
 const bookProgressCollectionName = "book_progress"
 
+// NewBookProgressCollection create a BookProgressCollection
 func NewBookProgressCollection(db *mongo.Database) *BookProgressCollection {
 	return &BookProgressCollection{collection: db.Collection(bookProgressCollectionName)}
 }

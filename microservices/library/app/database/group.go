@@ -13,14 +13,17 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// GroupDB instance of GroupCollection
 var GroupDB *GroupCollection
 
+// GroupCollection contain the db collection for the group interface
 type GroupCollection struct {
 	collection *mongo.Collection
 }
 
 const groupCollectionName = "group"
 
+// NewGroupCollection create a GroupCollection
 func NewGroupCollection(db *mongo.Database) *GroupCollection {
 	return &GroupCollection{collection: db.Collection(groupCollectionName)}
 }

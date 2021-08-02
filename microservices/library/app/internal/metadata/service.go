@@ -5,10 +5,13 @@ import (
 	grpcclient "github.com/alexandr-io/backend/library/grpc/client"
 )
 
+// Serv instance of metadata service
 var Serv *Service
 
+// Service is the struct containing database repository needed for metadata methods of the interface
 type Service struct{}
 
+// NewService create and set instance of Service
 func NewService() *Service {
 	Serv = &Service{}
 	return Serv

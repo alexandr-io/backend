@@ -27,6 +27,7 @@ func retrieveUserLibraries(ctx *fiber.Ctx) error {
 	return nil
 }
 
+// CreateUserLibraryHandlers create handlers for UserLibrary
 func CreateUserLibraryHandlers(app *fiber.App) {
 	userLibraryServ.NewService(database.UserLibraryDB)
 	app.Get("/libraries", userMiddleware.Protected(), retrieveUserLibraries)

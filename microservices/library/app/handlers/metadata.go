@@ -26,6 +26,7 @@ func metadataRetrieve(ctx *fiber.Ctx) error {
 	return nil
 }
 
+// CreateMetadataHandlers create handlers for Metadata
 func CreateMetadataHandlers(app *fiber.App) {
 	metadataServ.NewService()
 	app.Get("/metadata", userMiddleware.Protected(), metadataRetrieve)

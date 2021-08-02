@@ -184,6 +184,7 @@ func bookDelete(ctx *fiber.Ctx) error {
 	return nil
 }
 
+// CreateBookHandlers create handlers for Book
 func CreateBookHandlers(app *fiber.App) {
 	bookServ.NewService(database.BookDB, database.BookProgressDB)
 	app.Post("/library/:library_id/book", userMiddleware.Protected(), bookCreate)

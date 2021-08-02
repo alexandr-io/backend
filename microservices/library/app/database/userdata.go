@@ -12,14 +12,17 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// UserDataDB instance of UserDataCollection
 var UserDataDB *UserDataCollection
 
+// UserDataCollection contain the db collection for the user data interface
 type UserDataCollection struct {
 	collection *mongo.Collection
 }
 
 const userDataCollectionName = "user_data"
 
+// NewUserDataCollection create a UserDataCollection
 func NewUserDataCollection(db *mongo.Database) *UserDataCollection {
 	return &UserDataCollection{collection: db.Collection(userDataCollectionName)}
 }
