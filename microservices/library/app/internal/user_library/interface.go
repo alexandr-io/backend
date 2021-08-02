@@ -1,0 +1,31 @@
+package user_library
+
+import (
+	"github.com/alexandr-io/backend/library/data"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
+
+type Reader interface {
+	ReadFromUserID(userID string) (*[]data.Library, error)
+	ReadFromUserIDAndLibraryID(userID primitive.ObjectID, libraryID primitive.ObjectID) (*data.UserLibrary, error)
+}
+
+type Writer interface {
+	Create(userLibrary data.UserLibrary) (*data.UserLibrary, error)
+	Update(library data.UserLibrary) (*data.UserLibrary, error)
+	Delete(id primitive.ObjectID) error
+}
+
+type Repository interface {
+	Reader
+	Writer
+}
+
+type Internal interface {
+	CreateUserLibrary(userLibrary data.UserLibrary) (*data.UserLibrary, error)
+	ReadUserLibraryFromUserID(userID string) (*[]data.Library, error)
+	ReadUserLibraryFromUserIDAndLibraryID(userID primitive.ObjectID, libraryID primitive.ObjectID) (*data.UserLibrary, error)
+	UpdateUserLibrary(library data.UserLibrary) (*data.UserLibrary, error)
+	DeleteUserLibrary(id primitive.ObjectID) error
+}

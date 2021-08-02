@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/alexandr-io/backend/grpc"
 	grpcmetadata "github.com/alexandr-io/backend/grpc/metadata"
 	"github.com/alexandr-io/backend/library/data"
 
@@ -23,7 +24,7 @@ func Metadata(title string, author string) (*data.Book, error) {
 	fmt.Printf("[gRPC]: Metadata send: %+v\n", metadataRequest.String())
 	metadataReply, err := metadataClient.Metadata(context.Background(), &metadataRequest)
 	if err != nil {
-		return nil, err
+		return nil, grpc.ErrorToFiber(err)
 	}
 
 	return &data.Book{
@@ -38,5 +39,5 @@ func Metadata(title string, author string) (*data.Book, error) {
 		Language:       metadataReply.Language,
 		//IndustryIdentifiers:
 		PageCount: func() int { pageCount, _ := strconv.Atoi(metadataReply.PageCount); return pageCount }(),
-	}, err
+	}, nil
 }

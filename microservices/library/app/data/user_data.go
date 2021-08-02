@@ -2,13 +2,15 @@ package data
 
 import (
 	"encoding/json"
+	"strings"
 	"time"
 
+	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// UserDataTypes is an array of all possible UserData types
-var UserDataTypes = [...]string{"bookmark", "highlight", "note"}
+// userDataTypes is an array of all possible UserData types
+var userDataTypes = [...]string{"bookmark", "highlight", "note"}
 
 // UserData defines the structure for a bookmark, note or highlight
 type UserData struct {
@@ -54,4 +56,15 @@ func (userData UserData) MarshalJSON() ([]byte, error) {
 		CreationDate:     userData.ID.Timestamp(),
 		LastModifiedDate: userData.LastModifiedDate,
 	})
+}
+
+// ValidateUserDataType check if the userData.Type is in userDataTypes
+func (userData UserData) ValidateUserDataType() error {
+	for _, dataType := range userDataTypes {
+		if userData.Type == dataType {
+			return nil
+		}
+	}
+	return NewHTTPErrorInfo(fiber.StatusBadRequest,
+		"type parameter must be one of: "+strings.Join(userDataTypes[:], ", "))
 }
