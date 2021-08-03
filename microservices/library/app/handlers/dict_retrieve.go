@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	
+
 	"github.com/alexandr-io/backend/library/data"
 	"github.com/gofiber/fiber/v2"
 )
