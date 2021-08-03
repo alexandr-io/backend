@@ -1,0 +1,8 @@
+---
+components:
+  schemas:
+    DictionaryRetrieveResponse:
+      description: A complex dictionary response, of which an example can be accessed here https://dictionaryapi.dev/
+      content:
+        application/json:
+          schema:
