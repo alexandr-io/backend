@@ -2,10 +2,11 @@ package handlers
 
 import (
 	"encoding/json"
-	"github.com/alexandr-io/backend/library/data"
-	"github.com/gofiber/fiber/v2"
 	"io/ioutil"
 	"net/http"
+	
+	"github.com/alexandr-io/backend/library/data"
+	"github.com/gofiber/fiber/v2"
 )
 
 // DictionaryRetrieve gets the definition of a queried word with a queried language
