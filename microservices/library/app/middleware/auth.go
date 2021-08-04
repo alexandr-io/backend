@@ -3,8 +3,12 @@ package middleware
 import (
 	"github.com/alexandr-io/backend/library/data"
 	grpcclient "github.com/alexandr-io/backend/library/grpc/client"
+
 	"github.com/gofiber/fiber/v2"
 )
+
+// Test is set to true in unit test to skip auth protection
+var Test bool
 
 // extractJWTFromContext extract a jwt from the context.
 func extractJWTFromContext(ctx *fiber.Ctx) (string, error) {
@@ -20,6 +24,12 @@ func extractJWTFromContext(ctx *fiber.Ctx) (string, error) {
 // Protected is a middleware calling the grpc logic to verify the token and get user info
 func Protected() func(*fiber.Ctx) error {
 	return func(ctx *fiber.Ctx) error {
+		if Test {
+			ctx.Request().Header.Set("ID", "42")
+			ctx.Request().Header.Set("Username", "42")
+			ctx.Request().Header.Set("Email", "42@test.test")
+			return ctx.Next()
+		}
 		token, err := extractJWTFromContext(ctx)
 		if err != nil {
 			return err

@@ -8,7 +8,7 @@ import (
 )
 
 // Serv instance of group service
-var Serv *Service
+var Serv Internal
 
 // Service is the struct containing database repository needed for group methods of the interface
 type Service struct {
@@ -18,8 +18,7 @@ type Service struct {
 
 // NewService create and set instance of Service
 func NewService(repo Repository, userLibrary userLibraryServ.Repository) *Service {
-	Serv = &Service{repo: repo, userLibraryRepo: userLibrary}
-	return Serv
+	return &Service{repo: repo, userLibraryRepo: userLibrary}
 }
 
 // CreateGroup create a group
