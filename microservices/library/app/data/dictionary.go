@@ -15,7 +15,7 @@ type Definitions struct {
 
 // Meanings contain broader information including definitions
 type Meanings struct {
-	PartOfSpeech string         `json:"partOfSpeech"`
+	PartOfSpeech string         `json:"part_of_speech"`
 	Definitions  []*Definitions `json:"definitions"`
 }
 
