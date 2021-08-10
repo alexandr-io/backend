@@ -66,6 +66,9 @@ func createRoute(app *fiber.App) {
 
 	app.Get("/library/:library_id/permissions", userMiddleware.Protected(), handlers.UserLibraryPermissionRetrieve)
 
+	// Retrieve definitions from dictionary API
+	app.Get("/dictionary/definition/:lang/:queried_word", userMiddleware.Protected(), handlers.DictionaryRetrieve)
+
 	// Ping route used for testing that the service is up and running
 	app.Get("/ping", func(c *fiber.Ctx) error {
 		return c.SendString("pong")

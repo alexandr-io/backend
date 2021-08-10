@@ -1,0 +1,31 @@
+---
+paths:
+  /dictionary/definition/{lang}/{queried_word}:
+    get:
+      description: Retrieve a definition
+      summary: Retrieve a definition
+      parameters:
+        - in: path
+          name: lang
+          required: true
+          schema:
+            type: string
+          description: The language of the queried word
+        - in: path
+          name: queried_word
+          required: true
+          schema:
+            type: string
+          description: The word to retrieve
+      responses:
+        "200":
+          $ref: '#/components/schemas/DictionaryRetrieveResponse'
+      security:
+        - bearerAuth: [ ]
+      servers:
+        - url: //library.alexandrio.cloud
+          description: Production server
+        - url: //library.preprod.alexandrio.cloud
+          description: Preprod server
+      tags:
+        - DICTIONARY
