@@ -8,7 +8,7 @@ import (
 	"github.com/alexandr-io/backend/grpc"
 	grpclibrary "github.com/alexandr-io/backend/grpc/library"
 	"github.com/alexandr-io/backend/library/data"
-	"github.com/alexandr-io/backend/library/database/book"
+	bookserv "github.com/alexandr-io/backend/library/internal/book"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang/protobuf/ptypes/empty"
@@ -23,7 +23,7 @@ func (s *server) CoverUploaded(_ context.Context, in *grpclibrary.CoverUploadedR
 	if err != nil {
 		return nil, grpc.FiberErrorToGRPC(data.NewHTTPErrorInfo(fiber.StatusBadRequest, "Book ID is incorrect"))
 	}
-	bookData, err := book.GetFromID(bookID)
+	bookData, err := bookserv.Serv.ReadFromID(bookID)
 	if err != nil {
 		return nil, grpc.FiberErrorToGRPC(err)
 	}
@@ -46,7 +46,7 @@ func (s *server) CoverUploaded(_ context.Context, in *grpclibrary.CoverUploadedR
 	coverURLS = append(coverURLS, in.GetCoverURL())
 
 	fmt.Println(coverURLS)
-	if _, err = book.Update(data.Book{ID: bookID, Thumbnails: coverURLS}); err != nil {
+	if _, err = bookserv.Serv.UpdateBook(data.Book{ID: bookID, Thumbnails: coverURLS}); err != nil {
 		return nil, grpc.FiberErrorToGRPC(err)
 	}
 

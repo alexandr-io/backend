@@ -39,7 +39,8 @@ func ConnectToMongo() {
 		log.Println(mongoURI)
 		log.Fatal(err)
 	}
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 	err = client.Connect(ctx)
 	if err != nil {
 		log.Fatal(err)
@@ -52,9 +53,10 @@ func ConnectToMongo() {
 		Db:     db,
 	}
 
-	BookCollection = db.Collection(CollectionBook)
-	LibrariesCollection = db.Collection(CollectionLibraries)
-	LibraryCollection = db.Collection(CollectionLibrary)
-	BookProgressCollection = db.Collection(CollectionBookProgress)
-	GroupCollection = db.Collection(CollectionGroup)
+	BookDB = NewBookCollection(db)
+	UserLibraryDB = NewUserLibraryCollection(db)
+	LibraryDB = NewLibraryCollection(db)
+	BookProgressDB = NewBookProgressCollection(db)
+	GroupDB = NewGroupCollection(db)
+	UserDataDB = NewUserDataCollection(db)
 }

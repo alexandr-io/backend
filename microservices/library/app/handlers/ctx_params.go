@@ -31,3 +31,21 @@ func getLibraryBookIDFromParams(ctx *fiber.Ctx) (libraryID primitive.ObjectID, b
 	}
 	return
 }
+
+func getGroupIDFromParams(ctx *fiber.Ctx) (primitive.ObjectID, error) {
+	ID := ctx.Params("group_id")
+	groupID, err := primitive.ObjectIDFromHex(ID)
+	if err != nil {
+		return groupID, data.NewHTTPErrorInfo(fiber.StatusBadRequest, err.Error())
+	}
+	return groupID, nil
+}
+
+func getDataIDFromParams(ctx *fiber.Ctx) (primitive.ObjectID, error) {
+	ID := ctx.Params("data_id")
+	dataID, err := primitive.ObjectIDFromHex(ID)
+	if err != nil {
+		return dataID, data.NewHTTPErrorInfo(fiber.StatusBadRequest, err.Error())
+	}
+	return dataID, nil
+}
