@@ -5,10 +5,10 @@ package grpclibrary
 import (
 	context "context"
 
+	empty "github.com/golang/protobuf/ptypes/empty"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -21,13 +21,13 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LibraryClient interface {
 	// CreateLibrary is used to create the default library after a user creation
-	CreateLibrary(ctx context.Context, in *CreateLibraryRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateLibrary(ctx context.Context, in *CreateLibraryRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 	// UploadAuthorization check if a user can upload a book to a library
 	UploadAuthorization(ctx context.Context, in *UploadAuthorizationRequest, opts ...grpc.CallOption) (*UploadAuthorizationReply, error)
 	// BookUploaded set the file type of the uploaded book in the book metadata
-	BookUploaded(ctx context.Context, in *BookUploadedRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	BookUploaded(ctx context.Context, in *BookUploadedRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 	// CoverUploaded set the url of the uploaded cover in the book metadata
-	CoverUploaded(ctx context.Context, in *CoverUploadedRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CoverUploaded(ctx context.Context, in *CoverUploadedRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 }
 
 type libraryClient struct {
@@ -38,8 +38,8 @@ func NewLibraryClient(cc grpc.ClientConnInterface) LibraryClient {
 	return &libraryClient{cc}
 }
 
-func (c *libraryClient) CreateLibrary(ctx context.Context, in *CreateLibraryRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
+func (c *libraryClient) CreateLibrary(ctx context.Context, in *CreateLibraryRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
 	err := c.cc.Invoke(ctx, "/library.Library/CreateLibrary", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -56,8 +56,8 @@ func (c *libraryClient) UploadAuthorization(ctx context.Context, in *UploadAutho
 	return out, nil
 }
 
-func (c *libraryClient) BookUploaded(ctx context.Context, in *BookUploadedRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
+func (c *libraryClient) BookUploaded(ctx context.Context, in *BookUploadedRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
 	err := c.cc.Invoke(ctx, "/library.Library/BookUploaded", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -65,8 +65,8 @@ func (c *libraryClient) BookUploaded(ctx context.Context, in *BookUploadedReques
 	return out, nil
 }
 
-func (c *libraryClient) CoverUploaded(ctx context.Context, in *CoverUploadedRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
+func (c *libraryClient) CoverUploaded(ctx context.Context, in *CoverUploadedRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
 	err := c.cc.Invoke(ctx, "/library.Library/CoverUploaded", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -79,13 +79,13 @@ func (c *libraryClient) CoverUploaded(ctx context.Context, in *CoverUploadedRequ
 // for forward compatibility
 type LibraryServer interface {
 	// CreateLibrary is used to create the default library after a user creation
-	CreateLibrary(context.Context, *CreateLibraryRequest) (*emptypb.Empty, error)
+	CreateLibrary(context.Context, *CreateLibraryRequest) (*empty.Empty, error)
 	// UploadAuthorization check if a user can upload a book to a library
 	UploadAuthorization(context.Context, *UploadAuthorizationRequest) (*UploadAuthorizationReply, error)
 	// BookUploaded set the file type of the uploaded book in the book metadata
-	BookUploaded(context.Context, *BookUploadedRequest) (*emptypb.Empty, error)
+	BookUploaded(context.Context, *BookUploadedRequest) (*empty.Empty, error)
 	// CoverUploaded set the url of the uploaded cover in the book metadata
-	CoverUploaded(context.Context, *CoverUploadedRequest) (*emptypb.Empty, error)
+	CoverUploaded(context.Context, *CoverUploadedRequest) (*empty.Empty, error)
 	mustEmbedUnimplementedLibraryServer()
 }
 
@@ -93,16 +93,16 @@ type LibraryServer interface {
 type UnimplementedLibraryServer struct {
 }
 
-func (UnimplementedLibraryServer) CreateLibrary(context.Context, *CreateLibraryRequest) (*emptypb.Empty, error) {
+func (UnimplementedLibraryServer) CreateLibrary(context.Context, *CreateLibraryRequest) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateLibrary not implemented")
 }
 func (UnimplementedLibraryServer) UploadAuthorization(context.Context, *UploadAuthorizationRequest) (*UploadAuthorizationReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UploadAuthorization not implemented")
 }
-func (UnimplementedLibraryServer) BookUploaded(context.Context, *BookUploadedRequest) (*emptypb.Empty, error) {
+func (UnimplementedLibraryServer) BookUploaded(context.Context, *BookUploadedRequest) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BookUploaded not implemented")
 }
-func (UnimplementedLibraryServer) CoverUploaded(context.Context, *CoverUploadedRequest) (*emptypb.Empty, error) {
+func (UnimplementedLibraryServer) CoverUploaded(context.Context, *CoverUploadedRequest) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CoverUploaded not implemented")
 }
 func (UnimplementedLibraryServer) mustEmbedUnimplementedLibraryServer() {}
