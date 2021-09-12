@@ -6,7 +6,6 @@ import (
 	bookProgressServ "github.com/alexandr-io/backend/library/internal/bookprogress"
 	permissionServ "github.com/alexandr-io/backend/library/internal/permission"
 	userMiddleware "github.com/alexandr-io/backend/library/middleware"
-
 	"github.com/gofiber/fiber/v2"
 )
 

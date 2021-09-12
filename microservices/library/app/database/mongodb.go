@@ -59,4 +59,5 @@ func ConnectToMongo() {
 	BookProgressDB = NewBookProgressCollection(db)
 	GroupDB = NewGroupCollection(db)
 	UserDataDB = NewUserDataCollection(db)
+	ProgressSpeedDB = NewProgressSpeedCollection(db)
 }
