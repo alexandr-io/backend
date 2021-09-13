@@ -50,7 +50,14 @@ func (s *Service) UpdateBook(book data.Book) (*data.Book, error) {
 
 // DeleteBook delete a book
 func (s *Service) DeleteBook(id primitive.ObjectID) error {
-	// TODO: create logic so that when book progress delete failed, the book previously deleted in restored
+	// Check if all data exist before deleting
+	if _, err := s.repo.Read(bson.D{{Key: "_id", Value: id}}); err != nil {
+		return err
+	}
+	if _, err := s.bookProgressRepo.ReadFromBookID(id); err != nil {
+		return err
+	}
+
 	if err := s.repo.Delete(id); err != nil {
 		return err
 	}

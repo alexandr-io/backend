@@ -82,6 +82,20 @@ func (c *UserLibraryCollection) ReadFromUserIDAndLibraryID(userID primitive.Obje
 	return &object, nil
 }
 
+// ReadFromLibraryID retrieve a user library from the library's ID
+func (c *UserLibraryCollection) ReadFromLibraryID(libraryID primitive.ObjectID) (*data.UserLibrary, error) {
+	var object data.UserLibrary
+
+	filters := bson.D{{"library_id", libraryID}}
+	if err := c.collection.FindOne(context.Background(), filters).Decode(&object); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, "Library not found")
+		}
+		return nil, data.NewHTTPErrorInfo(fiber.StatusUnauthorized, err.Error())
+	}
+	return &object, nil
+}
+
 // Update a user library.
 func (c *UserLibraryCollection) Update(library data.UserLibrary) (*data.UserLibrary, error) {
 	filters := bson.D{{"user_id", library.UserID}, {"library_id", library.LibraryID}}

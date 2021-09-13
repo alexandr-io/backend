@@ -97,11 +97,20 @@ func (s *Service) ReadLibrary(libraryID primitive.ObjectID) (*data.Library, erro
 
 // DeleteLibrary delete a library
 func (s *Service) DeleteLibrary(libraryID primitive.ObjectID) error {
-	// TODO: create logic so that when library delete failed, the book previously deleted in restored
+	// Check if all data exist before deleting
+	if _, err := s.repo.Read(libraryID); err != nil {
+		return err
+	}
+	if _, err := s.userLibraryRepo.ReadFromLibraryID(libraryID); err != nil {
+		return err
+	}
+
 	if err := s.repo.Delete(libraryID); err != nil {
 		return err
 	}
-	s.userLibraryRepo.Delete(libraryID)
-	s.bookProgressRepo.Delete(data.BookProgressData{LibraryID: libraryID})
+	if err := s.userLibraryRepo.Delete(libraryID); err != nil {
+		return err
+	}
+	_ = s.bookProgressRepo.Delete(data.BookProgressData{LibraryID: libraryID})
 	return nil
 }

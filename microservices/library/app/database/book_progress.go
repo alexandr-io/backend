@@ -45,6 +45,40 @@ func (c *BookProgressCollection) Upsert(bookProgress data.BookProgressData) (*da
 	return &bookProgress, nil
 }
 
+// ReadFromBookID retrieves the user's book progress from the mongo database
+func (c *BookProgressCollection) ReadFromBookID(bookID primitive.ObjectID) (*data.BookProgressData, error) {
+	filter := bson.D{
+		{"book_id", bookID},
+	}
+
+	var result data.BookProgressData
+	if err := c.collection.FindOne(context.Background(), filter).Decode(&result); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, "User data not found")
+		}
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return &result, nil
+}
+
+// ReadFromLibraryID retrieves the user's book progress from the mongo database
+func (c *BookProgressCollection) ReadFromLibraryID(libraryID primitive.ObjectID) (*data.BookProgressData, error) {
+	filter := bson.D{
+		{"library_id", libraryID},
+	}
+
+	var result data.BookProgressData
+	if err := c.collection.FindOne(context.Background(), filter).Decode(&result); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, data.NewHTTPErrorInfo(fiber.StatusNotFound, "User data not found")
+		}
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return &result, nil
+}
+
 // ReadFromIDs retrieves the user's book progress from the mongo database
 func (c *BookProgressCollection) ReadFromIDs(userID primitive.ObjectID, bookID primitive.ObjectID, libraryID primitive.ObjectID) (*data.BookProgressData, error) {
 	filter := bson.D{
