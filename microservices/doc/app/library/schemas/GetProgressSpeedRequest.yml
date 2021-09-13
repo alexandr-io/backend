@@ -4,7 +4,7 @@ components:
     GetProgressSpeedRequest:
       properties:
         word_count:
-          description: Number of word to get the reading speed estimation for
+          description: Number of words to get the reading speed estimation for
           example: 100
           type: int
         language:
