@@ -6,4 +6,11 @@ mock:
 	mockgen -source=./email/email_grpc.pb.go EmailClient > email/mock/email_mock.go
 	mockgen -source=./metadata/metadata_grpc.pb.go MetadataClient > metadata/mock/metadata_mock.go
 
-.PHONY: mock
+build:
+	$(MAKE) -C library
+	$(MAKE) -C email
+	$(MAKE) -C auth
+	$(MAKE) -C user
+	$(MAKE) -C metadata
+
+.PHONY: mock build
