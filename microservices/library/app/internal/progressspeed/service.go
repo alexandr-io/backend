@@ -25,7 +25,7 @@ func NewService(repo Repository) *Service {
 }
 
 // UpsertProgressSpeed upsert new reading speed blocks
-func (s *Service) UpsertProgressSpeed(userID primitive.ObjectID, language string, wordNumber int) error {
+func (s *Service) UpsertProgressSpeed(userID primitive.ObjectID, language string, wordCount int) error {
 	now := time.Now()
 
 	currentProgressSpeed, err := s.repo.Read(userID, language)
@@ -38,11 +38,11 @@ func (s *Service) UpsertProgressSpeed(userID primitive.ObjectID, language string
 	}
 
 	var progressBlock []data.ProgressHistory
-	readingTime10s := now.Sub(currentProgressSpeed.LastUpdate).Seconds() / math.Floor(float64(wordNumber)/10.0)
-	for i := 0; i < wordNumber/10; i++ {
+	readingTime10s := now.Sub(currentProgressSpeed.LastUpdate).Seconds() / math.Floor(float64(wordCount)/10.0)
+	for i := 0; i < wordCount/10; i++ {
 		progressBlock = append(progressBlock, data.ProgressHistory{
-			WordNumber: 10,
-			Time:       readingTime10s,
+			WordCount: 10,
+			Time:      readingTime10s,
 		})
 	}
 
@@ -61,7 +61,7 @@ func (s *Service) UpsertProgressSpeed(userID primitive.ObjectID, language string
 }
 
 // ReadReadingSpeed read a reading speed for a number of word in a specific language
-func (s *Service) ReadReadingSpeed(userID primitive.ObjectID, language string, wordNumber int) (*data.ReadingSpeed, error) {
+func (s *Service) ReadReadingSpeed(userID primitive.ObjectID, language string, wordCount int) (*data.ReadingSpeed, error) {
 	currentProgressSpeed, err := s.repo.Read(userID, language)
 	if err != nil {
 		return nil, err
@@ -74,5 +74,5 @@ func (s *Service) ReadReadingSpeed(userID primitive.ObjectID, language string, w
 		i++
 	}
 
-	return &data.ReadingSpeed{Speed: total / float64(i) / 10 * float64(wordNumber)}, nil
+	return &data.ReadingSpeed{Speed: total / float64(i) / 10 * float64(wordCount)}, nil
 }

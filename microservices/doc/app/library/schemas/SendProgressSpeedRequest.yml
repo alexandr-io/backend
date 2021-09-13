@@ -3,7 +3,7 @@ components:
   schemas:
     SendProgressSpeedRequest:
       properties:
-        word_number:
+        word_count:
           description: Number of word read for this update
           example: 100
           type: int
@@ -13,6 +13,6 @@ components:
           type: string
 
       required:
-        - word_number
+        - word_count
         - language
       type: object

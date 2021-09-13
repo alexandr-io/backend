@@ -24,6 +24,6 @@ type Repository interface {
 
 // Internal book progress service interface
 type Internal interface {
-	UpsertProgressSpeed(userID primitive.ObjectID, language string, wordNumber int) error
-	ReadReadingSpeed(userID primitive.ObjectID, language string, wordNumber int) (*data.ReadingSpeed, error)
+	UpsertProgressSpeed(userID primitive.ObjectID, language string, wordCount int) error
+	ReadReadingSpeed(userID primitive.ObjectID, language string, wordCount int) (*data.ReadingSpeed, error)
 }

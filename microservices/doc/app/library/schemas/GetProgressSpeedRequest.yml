@@ -3,7 +3,7 @@ components:
   schemas:
     GetProgressSpeedRequest:
       properties:
-        word_number:
+        word_count:
           description: Number of word to get the reading speed estimation for
           example: 100
           type: int
@@ -13,6 +13,6 @@ components:
           type: string
 
       required:
-        - word_number
+        - word_count
         - language
       type: object

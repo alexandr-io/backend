@@ -8,8 +8,8 @@ import (
 
 // ProgressHistory is the data for single progress block
 type ProgressHistory struct {
-	WordNumber int     `json:"-" bson:"word_number,omitempty"`
-	Time       float64 `json:"-" bson:"time,omitempty"`
+	WordCount int     `json:"-" bson:"word_count,omitempty"`
+	Time      float64 `json:"-" bson:"time,omitempty"`
 }
 
 // ProgressSpeed contain the information to get the reading speed of a language by a user
@@ -23,14 +23,14 @@ type ProgressSpeed struct {
 
 // NewProgress is the data used to send new progress blocks
 type NewProgress struct {
-	WordNumber int    `json:"word_number,omitempty" bson:"-"`
-	Language   string `json:"language,omitempty" bson:"-"`
+	WordCount int    `json:"word_count,omitempty" bson:"-"`
+	Language  string `json:"language,omitempty" bson:"-"`
 }
 
 // GetReadingSpeed is the data used to retrieve a reading speed for a number of word in a specific language
 type GetReadingSpeed struct {
-	WordNumber int    `json:"word_number,omitempty" bson:"-"`
-	Language   string `json:"language,omitempty" bson:"-"`
+	WordCount int    `json:"word_count,omitempty" bson:"-"`
+	Language  string `json:"language,omitempty" bson:"-"`
 }
 
 // ReadingSpeed is the data sent back to give the reading speed requested

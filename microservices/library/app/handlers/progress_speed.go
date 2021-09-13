@@ -22,7 +22,7 @@ func progressMade(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	if err = progressSpeedServ.Serv.UpsertProgressSpeed(userID, newProgress.Language, newProgress.WordNumber); err != nil {
+	if err = progressSpeedServ.Serv.UpsertProgressSpeed(userID, newProgress.Language, newProgress.WordCount); err != nil {
 		return err
 	}
 
@@ -45,7 +45,7 @@ func readingSpeed(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	readingSpeed, err := progressSpeedServ.Serv.ReadReadingSpeed(userID, getReadingSpeed.Language, getReadingSpeed.WordNumber)
+	readingSpeed, err := progressSpeedServ.Serv.ReadReadingSpeed(userID, getReadingSpeed.Language, getReadingSpeed.WordCount)
 	if err != nil {
 		return err
 	}
