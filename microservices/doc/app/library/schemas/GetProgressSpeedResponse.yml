@@ -8,7 +8,7 @@ components:
           schema:
             properties:
               speed:
-                description: The reading speed estimation requested
+                description: The reading speed estimation requested (in seconds)
                 example: 6.222
                 type: float
             type: object
