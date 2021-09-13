@@ -12,7 +12,7 @@ type ProgressHistory struct {
 	Time       float64 `json:"-" bson:"time,omitempty"`
 }
 
-// ProgressSpeed contain the information to get the reading speed of a language by an user
+// ProgressSpeed contain the information to get the reading speed of a language by a user
 type ProgressSpeed struct {
 	ID         primitive.ObjectID `json:"-" bson:"_id,omitempty"`
 	UserID     primitive.ObjectID `json:"-" bson:"user_id,omitempty"`

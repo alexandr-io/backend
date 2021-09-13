@@ -44,7 +44,7 @@ func (c *ProgressSpeedCollection) Read(userID primitive.ObjectID, language strin
 	return &result, nil
 }
 
-// Upsert updates the user's progress speed in the database
+// Upsert the user's progress speed in the database
 // If no document is found, a new document is created
 func (c *ProgressSpeedCollection) Upsert(progressSpeed *data.ProgressSpeed) error {
 	filter := bson.D{
