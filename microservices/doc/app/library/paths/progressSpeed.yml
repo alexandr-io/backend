@@ -30,7 +30,7 @@ paths:
 
     get:
       summary: Get reading speed
-      description: Get reading speed for x words in specified language
+      description: Get reading speed for x words in the specified language
       requestBody:
         content:
           application/json:
