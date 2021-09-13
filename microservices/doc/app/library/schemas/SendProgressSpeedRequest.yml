@@ -4,7 +4,7 @@ components:
     SendProgressSpeedRequest:
       properties:
         word_count:
-          description: Number of word read for this update
+          description: Number of words read since last update
           example: 100
           type: int
         language:
