@@ -1,0 +1,56 @@
+---
+paths:
+  /progress/speed:
+    post:
+      summary: Send reading speed
+      description: Send reading speed of x words
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SendProgressSpeedRequest"
+      responses:
+        "204":
+          $ref: '#/components/schemas/NoContentResponse'
+        "400":
+          $ref: '#/components/schemas/BadRequestErrorResponse'
+        "401":
+          $ref: '#/components/schemas/UnauthorizedErrorResponse'
+        "404":
+          $ref: '#/components/schemas/NotFoundErrorResponse'
+      security:
+        - bearerAuth: []
+      servers:
+        - url: //library.alexandrio.cloud
+          description: Production server
+        - url: //library.preprod.alexandrio.cloud
+          description: Preprod server
+      tags:
+        - READING SPEED
+
+    get:
+      summary: Get reading speed
+      description: Get reading speed for x words in specified language
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetProgressSpeedRequest"
+      responses:
+        "200":
+          $ref: '#/components/schemas/GetProgressSpeedResponse'
+        "400":
+          $ref: '#/components/schemas/BadRequestErrorResponse'
+        "401":
+          $ref: '#/components/schemas/UnauthorizedErrorResponse'
+        "404":
+          $ref: '#/components/schemas/NotFoundErrorResponse'
+      security:
+        - bearerAuth: [ ]
+      servers:
+        - url: //library.alexandrio.cloud
+          description: Production server
+        - url: //library.preprod.alexandrio.cloud
+          description: Preprod server
+      tags:
+        - READING SPEED
