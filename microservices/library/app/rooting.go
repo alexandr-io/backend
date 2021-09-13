@@ -38,6 +38,7 @@ func createRoute(app *fiber.App) {
 	handlers.CreateGroupHandlers(app)
 	handlers.CreatePermissionHandlers(app)
 	handlers.CreateMetadataHandlers(app)
+	handlers.CreateProgressSpeedHandlers(app)
 
 	// Retrieve definitions from dictionary API
 	app.Get("/dictionary/definition/:lang/:queried_word", userMiddleware.Protected(), handlers.DictionaryRetrieve)

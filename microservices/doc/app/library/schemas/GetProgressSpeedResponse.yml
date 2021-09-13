@@ -1,0 +1,14 @@
+---
+components:
+  schemas:
+    GetProgressSpeedResponse:
+      description: Reading speed estimation
+      content:
+        application/json:
+          schema:
+            properties:
+              speed:
+                description: The reading speed estimation requested (in seconds)
+                example: 6.222
+                type: float
+            type: object

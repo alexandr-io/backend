@@ -1,0 +1,18 @@
+---
+components:
+  schemas:
+    SendProgressSpeedRequest:
+      properties:
+        word_count:
+          description: Number of words read since last update
+          example: 100
+          type: int
+        language:
+          description: Language of the words read
+          example: fr
+          type: string
+
+      required:
+        - word_count
+        - language
+      type: object
