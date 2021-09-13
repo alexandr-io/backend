@@ -8,6 +8,8 @@ import (
 
 // Reader composition of Repository interface
 type Reader interface {
+	ReadFromBookID(bookID primitive.ObjectID) (*data.BookProgressData, error)
+	ReadFromLibraryID(libraryID primitive.ObjectID) (*data.BookProgressData, error)
 	ReadFromIDs(userID primitive.ObjectID, bookID primitive.ObjectID, libraryID primitive.ObjectID) (*data.BookProgressData, error)
 }
 

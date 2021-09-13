@@ -10,6 +10,7 @@ import (
 type Reader interface {
 	ReadFromUserID(userID string) (*[]data.Library, error)
 	ReadFromUserIDAndLibraryID(userID primitive.ObjectID, libraryID primitive.ObjectID) (*data.UserLibrary, error)
+	ReadFromLibraryID(libraryID primitive.ObjectID) (*data.UserLibrary, error)
 }
 
 // Writer composition of Repository interface
