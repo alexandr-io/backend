@@ -2,8 +2,8 @@
 paths:
   /progress/speed:
     post:
-      summary: Send reading speed
-      description: Send reading speed of x words
+      summary: Set reading speed
+      description: Set reading speed of x words
       requestBody:
         content:
           application/json:
