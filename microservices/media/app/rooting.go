@@ -1,10 +1,13 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/alexandr-io/backend/media/handlers"
 	mediaMiddleware "github.com/alexandr-io/backend/media/middleware"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/gofiber/fiber/v2/middleware/recover"
@@ -26,6 +29,8 @@ func createRoute(app *fiber.App) {
 		},
 	}))
 	app.Get("/dashboard", monitor.New())
+
+	app.Use(filesystem.New(filesystem.Config{Root: http.Dir("/media")}))
 
 	app.Post("/book/upload", mediaMiddleware.Protected(), handlers.UploadBook)
 	app.Get("/book/:book_id/download", mediaMiddleware.Protected(), handlers.DownloadBook)
