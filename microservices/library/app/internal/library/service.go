@@ -84,7 +84,7 @@ func (s *Service) CreateDefaultLibrary(userID primitive.ObjectID) error {
 		Name:        "Bookshelf",
 		Description: "The default library",
 	}
-	if _, err := s.repo.Create(library); err != nil {
+	if _, err := s.CreateLibrary(library, userID); err != nil {
 		return err
 	}
 	return nil
