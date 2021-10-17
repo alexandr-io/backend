@@ -25,6 +25,5 @@ require (
 	github.com/sendgrid/sendgrid-go v3.7.2+incompatible
 	github.com/vanng822/go-premailer v1.9.0 // indirect
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad // indirect
-	golang.org/x/net v0.0.0-20201216054612-986b41b23924 // indirect
 	google.golang.org/grpc v1.36.0
 )

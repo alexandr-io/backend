@@ -138,6 +138,28 @@ services:
     - "./grpc:/grpc"
     - "./common:/common"
 
+  # Payment service
+  payment:
+    container_name: payment
+    build:
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile-dev
+      args:
+        microservice: payment
+    depends_on:
+      - mongodb
+    env_file: .env-dev
+    environment:
+      USER_URL: user
+      MONGO_URL: mongodb
+      AUTH_URL: auth
+    ports:
+      - "3003:3000"
+    volumes:
+      - "./microservices/payment/app:/microservices/payment/app"
+      - "./grpc:/grpc"
+      - "./common:/common"
+
   # Email service
   email:
     container_name: email

@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: payment
+  labels:
+    app: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+        - name: api
+          image: ghcr.io/alexandr-io/backend/payment:latest-preprod
+          imagePullPolicy: Always
+          env:
+            - name: MONGO_URL
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: url
+
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: username
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: password
+
+            - name: AUTH_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: microservices-dns
+                  key: AUTH_URL
+            - name: LIBRARY_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: microservices-dns
+                  key: LIBRARY_URL
+            - name: GRPC_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: grpc-port
+                  key: PORT
+
+      imagePullSecrets:
+        - name: regcred
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+  namespace: payment
+spec:
+  selector:
+    app: api
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 3000
+    - name: grpc
+      port: 5051
+      protocol: TCP
+      targetPort: 5051
