@@ -2,10 +2,12 @@
 
 name: CD preproduction
 
-on:
-  push:
-    tags:
-      - v*-preprod
+# on:
+#   push:
+#     tags:
+#       - v*-preprod
+
+on: push
 
 jobs:
   build-push-preprod:
@@ -14,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        microservice: [ "auth", "email", "library", "media", "user" ]
+        microservice: [ "auth", "email", "library", "media", "user", "metadata" ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2

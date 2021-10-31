@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        microservice: [ "auth", "doc", "email", "library", "media", "user" ]
+        microservice: [ "auth", "doc", "email", "library", "media", "user", "metadata" ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
