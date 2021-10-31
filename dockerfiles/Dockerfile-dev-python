@@ -1,9 +1,10 @@
 FROM python:3
 
 ARG microservice
+ARG path=microservices/${microservice}/app
 
 WORKDIR /app
-COPY ./microservices/${microservice}/app .
+COPY ./${path} .
 COPY ./grpc/${microservice}/*.py ./
 RUN pip install --only-binary ":all:" requests grpcio protobuf 
-CMD [ "python", "./${microservice}_grpc.py" ]
+CMD python ./server.py
