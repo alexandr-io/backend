@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        microservice: [ "auth", "email", "library", "media", "user" ]
+        microservice: [ "metadata" ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -42,7 +42,7 @@ jobs:
         with:
           builder: ${{ steps.builder.outputs.name }}
           context: .
-          file: ./dockerfiles/Dockerfile
+          file: ./dockerfiles/Dockerfile-python
           build-args: |
             microservice=${{ matrix.microservice }}
           tags: ${{ steps.docker_meta.outputs.tags }}

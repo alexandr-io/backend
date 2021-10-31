@@ -1,20 +1,22 @@
-# This workflow is triggered on tag push not ending with '-*', like '-preprod'
+# This workflow is triggered on tag push finishing with '-preprod'
 
-name: CD production
+name: CD preproduction
 
-on:
-  push:
-    tags-ignore:
-      - 'v*-*'
+# on:
+#   push:
+#     tags:
+#       - v*-preprod
+
+on: push
 
 jobs:
-  build-push-prod:
+  build-push-preprod:
     name: Build push image ${{ matrix.microservice }}
     runs-on: ubuntu-18.04
     strategy:
       fail-fast: false
       matrix:
-        microservice: [ "auth", "email", "library", "media", "user" ]
+        microservice: [ "metadata" ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -35,14 +37,15 @@ jobs:
         uses: crazy-max/ghaction-docker-meta@v1.11.0
         with:
           images: ghcr.io/${{ github.repository }}/${{ matrix.microservice }}
-          tag-latest: true
+          tag-custom: "latest-preprod"
+          tag-latest: false
 
       - name: Build and push ${{ matrix.microservice }} Docker image
         uses: docker/build-push-action@v2.2.2
         with:
           builder: ${{ steps.builder.outputs.name }}
           context: .
-          file: ./dockerfiles/Dockerfile
+          file: ./dockerfiles/Dockerfile-python
           build-args: |
             microservice=${{ matrix.microservice }}
           tags: ${{ steps.docker_meta.outputs.tags }}
@@ -51,7 +54,7 @@ jobs:
       - name: Deploy or redeploy ${{ matrix.microservice }} app
         uses: cross-the-world/ssh-pipeline@master
         with:
-          host: ${{ secrets.HOST_PROD }}
-          user: ${{ secrets.HOST_PROD_USERNAME }}
-          pass: ${{ secrets.HOST_PROD_PASSWORD }}
+          host: ${{ secrets.HOST_PREPROD }}
+          user: ${{ secrets.HOST_PREPROD_USERNAME }}
+          pass: ${{ secrets.HOST_PREPROD_PASSWORD }}
           script: /kubernetes/app-deployment.sh ${{ matrix.microservice }}
