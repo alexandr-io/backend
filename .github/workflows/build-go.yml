@@ -6,7 +6,7 @@ name: Microservice CI Build
 on:
   push:
     paths:
-      - '.github/workflows/build-ms.yml'  # if this workflow changes, re-run CI on all microservices
+      - '.github/workflows/build-go.yml'  # if this workflow changes, re-run CI on all microservices
       - 'microservices/*/app/**'
     branches-ignore:
       - master
@@ -35,7 +35,7 @@ jobs:
             microservice:
               - 'microservices/${{ matrix.microservice }}/app/**'
             workflow:
-              - '.github/workflows/build-ms.yml'
+              - '.github/workflows/build-go.yml'
 
       - name: Build ${{ matrix.microservice }} image
         # Official docker action: https://github.com/docker/build-push-action
