@@ -1,12 +1,12 @@
 package handlers
 
 import (
+	"log"
+
 	"github.com/alexandr-io/backend/payment/data"
 	"github.com/alexandr-io/backend/payment/database/customer"
 	"github.com/alexandr-io/backend/payment/internal"
-	customer2 "github.com/alexandr-io/backend/payment/stripe/customer"
-	"github.com/alexandr-io/backend/payment/stripe/paymentmethod"
-	"github.com/alexandr-io/backend/payment/stripe/product"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -17,8 +17,8 @@ func Subscribe(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	var Subscription data.Subscribe
-	err = ParseBodyJSON(ctx, &Subscription)
+	var Customer data.Customer
+	err = ParseBodyJSON(ctx, &Customer)
 	if err != nil {
 		return err
 	}
@@ -30,7 +30,7 @@ func Subscribe(ctx *fiber.Ctx) error {
 			// Override status code if fiber.Error type
 			if e.Code == fiber.StatusNotFound {
 
-				localCustomer, err = internal.CreateStripeCustomerForUser(user, Subscription.Customer)
+				localCustomer, err = internal.CreateStripeCustomerForUser(user, Customer)
 				if err != nil {
 					return err
 				}
@@ -42,32 +42,9 @@ func Subscribe(ctx *fiber.Ctx) error {
 		}
 	}
 
-	if Subscription.CreditCard.ID == "" {
-		resultCard, err := paymentmethod.Create(Subscription.CreditCard)
-		if err != nil {
-			return err
-		}
-		Subscription.CreditCard.ID = resultCard.ID
-
-		err = paymentmethod.Attach(localCustomer.StripeID, resultCard.ID)
-		if err != nil {
-			return err
-		}
-	} else {
-		_, err := paymentmethod.GetFromID(Subscription.CreditCard.ID)
-		if err != nil {
-			return err
-		}
-	}
-
-	_, err = customer2.UpdateDefaultPaymentMethod(localCustomer.StripeID, Subscription.CreditCard.ID)
-	if err != nil {
-		return err
-	}
-
-	_, err = product.Subscribe(localCustomer)
-	if err != nil {
-		return err
-	}
+	log.Println(localCustomer)
+	// TODO: CREATE LINK TO PAY ON STRIPE
+	//
+	// Should use localCustomer
 	return nil
 }

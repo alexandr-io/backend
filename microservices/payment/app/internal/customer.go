@@ -4,9 +4,9 @@ import (
 	"github.com/alexandr-io/backend/payment/data"
 	"github.com/alexandr-io/backend/payment/database/customer"
 	scustomer "github.com/alexandr-io/backend/payment/stripe/customer"
+
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"log"
 )
 
 func CreateStripeCustomerForUser(user *data.User, customerData data.Customer) (*data.Customer, error) {
@@ -18,7 +18,6 @@ func CreateStripeCustomerForUser(user *data.User, customerData data.Customer) (*
 	customerData.Email = user.Email
 	customerData.Username = user.Username
 
-	log.Printf("%+v\n", customerData)
 	stripeCustomer, err := scustomer.Create(customerData)
 	if err != nil {
 		return nil, err

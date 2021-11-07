@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/alexandr-io/backend/payment/handlers"
 	"github.com/alexandr-io/backend/payment/middleware"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -26,8 +27,6 @@ func createRoute(app *fiber.App) {
 
 	app.Get("/subscriptions", handlers.ListSubscriptions)
 	app.Post("/subscribe", middleware.Protected(), handlers.Subscribe)
-
-	app.Get("/cards", middleware.Protected(), handlers.ListCards)
 
 	// Ping route used for testing that the service is up and running
 	app.Get("/ping", func(c *fiber.Ctx) error {

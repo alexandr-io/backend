@@ -19,5 +19,5 @@ type Customer struct {
 	Phone        string             `json:"phone"`
 	Address      Address            `json:"address"`
 	StripeID     string             `json:"-" bson:"stripe_id"`
-	Subscription SubscriptionNew `json:"subscription"`
+	Subscription SubscriptionNew    `json:"subscription"`
 }

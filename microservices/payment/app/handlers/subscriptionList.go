@@ -3,6 +3,7 @@ package handlers
 import (
 	"github.com/alexandr-io/backend/payment/data"
 	"github.com/alexandr-io/backend/payment/internal"
+
 	"github.com/gofiber/fiber/v2"
 )
 

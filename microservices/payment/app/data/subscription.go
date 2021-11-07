@@ -5,14 +5,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type Subscribe struct {
-	CreditCard   CreditCard         `json:"credit_card,omitempty" validate:"required"`
-	Customer     Customer           `json:"customer,omitempty" validate:"required"`
-}
-
 type SubscriptionNew struct {
 	ID    primitive.ObjectID `json:"id"`
-	Price string `json:"price_id"`
+	Price string             `json:"price_id"`
 }
 
 type Subscription struct {

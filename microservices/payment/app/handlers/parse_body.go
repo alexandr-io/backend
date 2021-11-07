@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/alexandr-io/backend/payment/data"
+
 	"github.com/fatih/structtag"
 	"github.com/gofiber/fiber/v2"
 	"gopkg.in/go-playground/validator.v9"
@@ -78,12 +79,6 @@ func badInputsJSON(fields map[string]string) []byte {
 
 	jsonData, _ := json.Marshal(badInputData)
 	return jsonData
-}
-
-// badInputJSON is simply a call to BadInputsJSON to create a single bad input error.
-// It returns the JSON of the struct BadInput in []byte.
-func badInputJSON(name string, reason string) []byte {
-	return badInputsJSON(map[string]string{name: reason})
 }
 
 // badInputsJSONFromType create a BadInput JSON from a key and a value corresponding to an ErrorType.
