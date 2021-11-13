@@ -1,0 +1,38 @@
+---
+components:
+  schemas:
+    FeedbackResponse:
+      description: Feedback response
+      content:
+        application/json:
+          schema:
+            description: Feedback data
+            properties:
+              title:
+                description: Title of the feedback
+                example: This app is amazing
+                type: string
+              content:
+                description: More detailed message
+                example: Wow I cannot believe my eyes, this app is beyond amazing, I cannot chose words appropriate to describe how much I love everything about this service. I would pay millions of dollars to the devs if I could. Thank you!
+                type: string
+              anonymous:
+                description: Whether or not to sensor user information, if false, author_email and author_device_info are required.
+                example: true
+                type: boolean
+              author_email:
+                description: Email of the author if they wish to be contacted back about feedback
+                example: john.smith@example.com
+                type: string
+              author_device_info:
+                description: Device information of the user, could be OS, app version, anything that could help diagnose issues
+                example: "macOS, app version: v1.42.0"
+                type: string
+              timestamp:
+                description: ISO 8601 string that represents the date and time of last progress update
+                example: 2021-02-12T11:30:34.452Z
+                type: string
+            required:
+              - title
+              - content
+            type: object
