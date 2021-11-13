@@ -10,7 +10,7 @@ import (
 
 // LibrariesGetEndFunction is a function called at the end of a library get test
 func LibrariesGetEndFunction(res *http.Response) error {
-	var librariesData data.Libraries
+	var librariesData []data.Library
 	// Read response Body
 	resBody, err := ioutil.ReadAll(res.Body)
 	if err != nil {
@@ -21,7 +21,7 @@ func LibrariesGetEndFunction(res *http.Response) error {
 		return err
 	}
 
-	for _, library := range *librariesData.HasAccess {
+	for _, library := range librariesData {
 		if library.Name == libraryName {
 			libraryID = library.ID
 			break

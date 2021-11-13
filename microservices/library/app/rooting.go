@@ -25,42 +25,6 @@ func createRoute(app *fiber.App) {
 		},
 	}))
 
-	app.Get("/metadata", userMiddleware.Protected(), handlers.MetadataRetrieve)
-
-	app.Get("/libraries", userMiddleware.Protected(), handlers.LibrariesRetrieve)
-
-	// Library relatives URLs
-	app.Post("/library", userMiddleware.Protected(), handlers.LibraryCreation)
-	app.Get("/library/:library_id", userMiddleware.Protected(), handlers.LibraryRetrieve)
-	app.Delete("/library/:library_id", userMiddleware.Protected(), handlers.LibraryDelete)
-	app.Post("/library/:library_id/invite", userMiddleware.Protected(), handlers.LibraryInvite)
-	app.Post("/library/:library_id/invite/accept", userMiddleware.Protected(), handlers.LibraryInviteAccept)
-	app.Post("/library/:library_id/invite/decline", userMiddleware.Protected(), handlers.LibraryInviteDecline)
-
-	// Books relatives URLs
-	app.Get("/library/:library_id/books", userMiddleware.Protected(), handlers.BooksRetrieve)
-	app.Post("/library/:library_id/book", userMiddleware.Protected(), handlers.BookCreation)
-	app.Get("/library/:library_id/book/:book_id", userMiddleware.Protected(), handlers.BookRetrieve)
-	app.Post("/library/:library_id/book/:book_id", userMiddleware.Protected(), handlers.BookUpdate)
-	app.Delete("/library/:library_id/book/:book_id", userMiddleware.Protected(), handlers.BookDelete)
-
-	// Book progress relatives URLs
-	app.Get("/library/:library_id/book/:book_id/progress", userMiddleware.Protected(), handlers.ProgressRetrieve)
-	app.Post("/library/:library_id/book/:book_id/progress", userMiddleware.Protected(), handlers.ProgressUpdate)
-
-	// Permissions relative URLs
-	//
-	// Group relative URLs
-	app.Post("/library/:library_id/group", userMiddleware.Protected(), handlers.GroupCreate)
-	app.Get("/library/:library_id/group/:group_id", userMiddleware.Protected(), handlers.GroupRetrieve)
-	app.Post("/library/:library_id/group/:group_id", userMiddleware.Protected(), handlers.GroupUpdate)
-	app.Delete("/library/:library_id/group/:group_id", userMiddleware.Protected(), handlers.GroupDelete)
-
-	app.Post("/library/:library_id/group/:group_id/join", userMiddleware.Protected(), handlers.GroupAddUser)
-	app.Get("/library/:library_id/user/groups", userMiddleware.Protected(), handlers.GroupsRetrieveUser)
-
-	app.Get("/library/:library_id/permissions", userMiddleware.Protected(), handlers.UserLibraryPermissionRetrieve)
-
 	// Ping route used for testing that the service is up and running
 	app.Get("/ping", func(c *fiber.Ctx) error {
 		return c.SendString("pong")
