@@ -52,6 +52,11 @@ spec:
               configMapKeyRef:
                 name: grpc-port
                 key: PORT
+          - name: DISCORD_FEEDBACK_WEBHOOK
+            valueFrom:
+              configMapKeyRef:
+                name: discord-feedback-webhook
+                key: DISCORD_FEEDBACK_WEBHOOK
           - name: REDIS_URL
             value: redis
           - name: REDIS_PORT

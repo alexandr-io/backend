@@ -32,6 +32,8 @@ func createRoute(app *fiber.App) {
 	app.Put("/user", userMiddleware.Protected(), handlers.UpdateUser)
 	app.Delete("/user", userMiddleware.Protected(), handlers.DeleteUser)
 
+	app.Post("/feedback", userMiddleware.Protected(), handlers.UserFeedback)
+
 	app.Get("/verify", handlers.VerifyEmail)
 	app.Get("/verify/update", handlers.VerifyUpdateEmail)
 	app.Get("/email/cancel", handlers.CancelEmailUpdate)
