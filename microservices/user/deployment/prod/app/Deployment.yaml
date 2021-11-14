@@ -37,6 +37,12 @@ spec:
                 name: mongo-secret
                 key: password
 
+          - name: DISCORD_FEEDBACK_WEBHOOK
+              valueFrom:
+                secretKeyRef:
+                  name: discord-webhook-secret
+                  key: webhookurl
+
           - name: AUTH_URL
             valueFrom:
               configMapKeyRef:
