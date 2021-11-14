@@ -10,6 +10,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// Subscribe get a URL for a payment instance for a given produce and price
 func Subscribe(ctx *fiber.Ctx) error {
 	user := userFromHeader(ctx)
 	userID, err := userIDFromHeader(ctx)

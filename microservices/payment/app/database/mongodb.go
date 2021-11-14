@@ -52,7 +52,7 @@ func ConnectToMongo() {
 		Db:     db,
 	}
 
-	SubscriptionsCollection	= db.Collection(CollectionSubscriptions)
+	SubscriptionsCollection = db.Collection(CollectionSubscriptions)
 	CustomerCollection = db.Collection(CollectionCustomer)
 }
 

@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// CreateStripeCustomerForUser create a customer on stripe for the given user
 func CreateStripeCustomerForUser(user *data.User, customerData data.Customer) (*data.Customer, error) {
 	userID, err := primitive.ObjectIDFromHex(user.ID)
 	if err != nil {

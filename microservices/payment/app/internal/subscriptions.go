@@ -6,6 +6,7 @@ import (
 	"github.com/alexandr-io/backend/payment/stripe/product"
 )
 
+// GetMergedSubscriptions get the subscriptions from stripe and the database and merge them
 func GetMergedSubscriptions() (*[]data.Subscription, error) {
 	var result []data.Subscription
 
@@ -24,21 +25,21 @@ func GetMergedSubscriptions() (*[]data.Subscription, error) {
 		var pricesFormat []data.Price
 		for _, price := range prices {
 			pricesFormat = append(pricesFormat, data.Price{
-				ID: price.ID,
-				Currency:  price.Currency,
+				ID:       price.ID,
+				Currency: price.Currency,
 				Recurring: data.Recurring{
 					Interval:      price.Recurring.Interval,
 					IntervalCount: price.Recurring.IntervalCount,
 				},
-				Price:     price.UnitAmount,
+				Price: price.UnitAmount,
 			})
 		}
 
 		result = append(result, data.Subscription{
-			ID: localProductIter.ID,
+			ID:          localProductIter.ID,
 			Name:        stripeProduct.Name,
 			Description: stripeProduct.Description,
-			Prices: pricesFormat,
+			Prices:      pricesFormat,
 		})
 	}
 	return &result, nil

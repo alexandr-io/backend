@@ -6,9 +6,10 @@ import (
 	scustomer "github.com/stripe/stripe-go/v72/customer"
 )
 
+// Create a stripe customer for a user
 func Create(customer data.Customer) (*stripe.Customer, error) {
 	params := &stripe.CustomerParams{
-		Email:       stripe.String(customer.Email),
+		Email: stripe.String(customer.Email),
 		Address: &stripe.AddressParams{
 			City:       stripe.String(customer.Address.City),
 			Country:    stripe.String(customer.Address.Country),

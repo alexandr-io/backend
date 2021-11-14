@@ -18,8 +18,8 @@ func userIDFromHeader(ctx *fiber.Ctx) (primitive.ObjectID, error) {
 
 func userFromHeader(ctx *fiber.Ctx) *data.User {
 	return &data.User{
-		ID: string(ctx.Request().Header.Peek("ID")),
+		ID:       string(ctx.Request().Header.Peek("ID")),
 		Username: string(ctx.Request().Header.Peek("Username")),
-		Email: string(ctx.Request().Header.Peek("Email")),
+		Email:    string(ctx.Request().Header.Peek("Email")),
 	}
 }

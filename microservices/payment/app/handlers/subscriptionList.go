@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// ListSubscriptions list all subscriptions from stripe and the database and merge them
 func ListSubscriptions(ctx *fiber.Ctx) error {
 
 	result, err := internal.GetMergedSubscriptions()

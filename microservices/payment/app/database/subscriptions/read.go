@@ -10,11 +10,12 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+// GetAll retrieve a list of every subscription available
 func GetAll() ([]data.Subscription, error) {
 	var subscriptions []data.Subscription
 
 	cursor, err := database.SubscriptionsCollection.Find(context.Background(), bson.D{})
-	if  err != nil {
+	if err != nil {
 		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, "Cannot fetch data")
 	}
 

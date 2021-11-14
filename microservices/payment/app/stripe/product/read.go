@@ -9,6 +9,7 @@ import (
 	"github.com/stripe/stripe-go/v72/product"
 )
 
+// GetFromID get a product from its ID on stripe
 func GetFromID(stripeID string) (*stripe.Product, error) {
 	result, err := product.Get(stripeID, nil)
 	if err != nil {
@@ -17,12 +18,13 @@ func GetFromID(stripeID string) (*stripe.Product, error) {
 	return result, nil
 }
 
+// GetProductPrices get the prices for a product
 func GetProductPrices(stripeID string) []stripe.Price {
 	var prices []stripe.Price
 
 	params := &stripe.PriceListParams{
-		Active:       typeconv.BoolPtr(true),
-		Product:      &stripeID,
+		Active:  typeconv.BoolPtr(true),
+		Product: &stripeID,
 	}
 	result := price.List(params)
 	for result.Next() {

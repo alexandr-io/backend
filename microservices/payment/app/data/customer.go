@@ -2,6 +2,7 @@ package data
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
+// Address of a customer
 type Address struct {
 	City       string `json:"city"`
 	Country    string `json:"country"`
@@ -11,6 +12,7 @@ type Address struct {
 	State      string `json:"state"`
 }
 
+// Customer to send to stripe
 type Customer struct {
 	ID           primitive.ObjectID `bson:"_id,omitempty"`
 	UserID       primitive.ObjectID `json:"-" bson:"user_id"`
