@@ -6,6 +6,15 @@ components:
       content:
         application/json:
           schema:
-            type: array
-            items:
-              $ref: "#/components/schemas/LibrariesNamesData"
+            properties:
+              has_access:
+                description: The library the user has access to
+                type: array
+                items:
+                  $ref: "#/components/schemas/LibrariesNamesData"
+              is_invited:
+                description: The library the user is invited to
+                type: array
+                items:
+                  $ref: "#/components/schemas/LibrariesNamesData"
+
