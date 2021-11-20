@@ -27,6 +27,7 @@ func createRoute(app *fiber.App) {
 
 	app.Get("/subscriptions", handlers.ListSubscriptions)
 	app.Post("/subscribe", middleware.Protected(), handlers.Subscribe)
+	app.Get("/subscription/price", middleware.Protected(), handlers.GetCustomerSubscription)
 
 	// Ping route used for testing that the service is up and running
 	app.Get("/ping", func(c *fiber.Ctx) error {
