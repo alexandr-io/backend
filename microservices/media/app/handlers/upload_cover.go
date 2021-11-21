@@ -78,7 +78,11 @@ func UploadBookCover(ctx *fiber.Ctx) error {
 
 	// Send URL to retrieve image to library book metadata
 	// http(s)://HOST/media/{bookData.CoverPath}
-	coverURL := string(ctx.Request().URI().Scheme()) + "://" + path.Join(string(ctx.Request().Host()), bookData.CoverPath)
+	scheme := "http"
+	if os.Getenv("DEV") == "" {
+		scheme = scheme + "s"
+	}
+	coverURL := scheme + "://" + path.Join(string(ctx.Request().Host()), bookData.CoverPath)
 	if err = grpcclient.CoverUploaded(ctx.Context(), bookData.ID, coverURL); err != nil {
 		return err
 	}
