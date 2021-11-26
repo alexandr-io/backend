@@ -9,10 +9,8 @@ import (
 	"go.mongodb.org/mongo-driver/x/bsonx"
 )
 
-// createAuthUniqueIndexes init the auth collection. It add a unique index to the invitation token field.
-func createAuthUniqueIndexes() {
-	userCollection := Instance.Db.Collection(CollectionInvitation)
-	_, err := userCollection.Indexes().CreateOne(
+func initInvitationCollection() {
+	_, err := InvitationCollection.Indexes().CreateOne(
 		context.Background(),
 		mongo.IndexModel{
 			Keys:    bsonx.Doc{{"token", bsonx.Int32(1)}},
@@ -20,6 +18,11 @@ func createAuthUniqueIndexes() {
 		},
 	)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Invitation indexes creation error: ", err)
 	}
+}
+
+// InitCollections call the functions that init the collections.
+func InitCollections() {
+	initInvitationCollection()
 }

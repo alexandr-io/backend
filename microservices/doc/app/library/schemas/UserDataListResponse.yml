@@ -1,0 +1,11 @@
+---
+components:
+  schemas:
+    UserDataListResponse:
+      description: A list of User Data objects
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/UserDataData"

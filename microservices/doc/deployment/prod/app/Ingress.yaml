@@ -1,0 +1,17 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ingressroutetls
+  namespace: doc
+spec:
+  entryPoints:
+    - websecure
+    - web
+  routes:
+    - match: Host(`doc.alexandrio.cloud`)
+      kind: Rule
+      services:
+        - name: api
+          port: 80
+  tls:
+    certResolver: myresolver

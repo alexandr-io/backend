@@ -1,0 +1,16 @@
+name: gitleaks
+
+on: [push, pull_request]
+
+jobs:
+  gitleaks:
+    runs-on: ubuntu-latest
+
+    # Improvable once https://github.com/zricethezav/gitleaks-action/pull/30 is merged.
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: '0'
+
+      - name: gitleaks-action
+        uses: zricethezav/gitleaks-action@master

@@ -1,0 +1,31 @@
+---
+components:
+  schemas:
+    ProgressUpdateOrInsertResponse:
+      description: A book progress object
+      content:
+        application/json:
+          schema:
+            properties:
+              user_id:
+                description: The user ID associated with the progression
+                example: 5fbfe5[...]7076844
+                type: string
+              book_id:
+                description: The book ID associated with the progression
+                example: 5fbfe5[...]7076844
+                type: string
+              library_id:
+                description: The library ID associated with the progression
+                example: 5fbfe5[...]7076844
+                type: string
+              progress:
+                description: String representation of user progress. (percentage, EPUB CFI, ...)
+                example: "some progress indicator"
+                type: string
+              last_read_date:
+                description: ISO 8601 string that represents the date and time of last progress update
+                example: 2021-02-12T11:30:34.452Z
+                type: string
+
+            type: object

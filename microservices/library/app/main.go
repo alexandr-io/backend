@@ -9,8 +9,8 @@ import (
 	"log"
 
 	"github.com/alexandr-io/backend/library/database"
-	"github.com/alexandr-io/backend/library/kafka/consumers"
-	"github.com/alexandr-io/backend/library/kafka/producers"
+	"github.com/alexandr-io/backend/library/grpc"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -23,16 +23,16 @@ func main() {
 	defer database.Instance.Client.Disconnect(context.Background())
 	database.InitCollections()
 
+	// gRPC
+	grpc.InitGRPC()
+	defer grpc.CloseGRPC()
+
 	// Create a new fiber instance with custom config
 	app := fiber.New(fiber.Config{
 		// Override default error handler
 		ErrorHandler: errorHandler,
 	})
 	createRoute(app)
-
-	consumers.StartConsumers()
-	for producers.CreateTopics() != nil {
-	}
 
 	log.Fatal(app.Listen(":3000"))
 }

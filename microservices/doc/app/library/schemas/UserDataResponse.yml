@@ -1,0 +1,9 @@
+---
+components:
+  schemas:
+    UserDataResponse:
+      description: An UserData object
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UserDataData"

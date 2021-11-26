@@ -1,0 +1,9 @@
+---
+components:
+  schemas:
+    GroupResponse:
+      description: A group object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GroupResponseData'

@@ -1,0 +1,51 @@
+name: Code checker CI
+# This workflow is triggered on pull requests when a go file is modified.
+on:
+  pull_request:
+    paths:
+      - '**.go'
+
+jobs:
+  fmt:
+    name: fmt
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Run go fmt
+      - name: Run gofmt
+        uses: grandcolline/golang-github-actions@v1.1.0 # https://github.com/grandcolline/golang-github-actions
+        with:
+          run: fmt
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  import:
+    name: go imports
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Check imports
+      # Using https://godoc.org/golang.org/x/tools/cmd/goimports
+      - name: Check imports
+        uses: grandcolline/golang-github-actions@v1.1.0 # https://github.com/grandcolline/golang-github-actions
+        with:
+          run: imports
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  lint:
+    name: linter
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Lint
+      # Using https://github.com/golang/lint
+      - name: Lint
+        uses: grandcolline/golang-github-actions@v1.1.0 # https://github.com/grandcolline/golang-github-actions
+        with:
+          run: lint
+          token: ${{ secrets.GITHUB_TOKEN }}

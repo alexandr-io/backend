@@ -1,0 +1,22 @@
+---
+paths:
+  /book/{book_id}/cover:
+    get:
+      description: Download a book cover from the server
+      summary: Download a book cover
+      responses:
+        "200":
+          $ref: '#/components/schemas/DownloadCoverResponse'
+        "401":
+          $ref: '#/components/schemas/UnauthorizedErrorResponse'
+        "400":
+          $ref: '#/components/schemas/BadRequestErrorResponse'
+      security:
+        - bearerAuth: []
+      servers:
+        - url: //media.alexandrio.cloud
+          description: Production server
+        - url: //media.preprod.alexandrio.cloud
+          description: Preprod server
+      tags:
+        - MEDIA

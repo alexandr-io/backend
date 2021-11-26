@@ -1,0 +1,32 @@
+---
+- hosts: all
+
+  tasks:
+    - name: Copy Cert folder to the server
+      copy:
+        src: ../../kubernetes/cert
+        dest: /kubernetes
+        owner: alexandrio
+        group: alexandrio
+
+    - name: Make kubectl-cert-generator.sh an executable
+      file: dest=/kubernetes/cert/kubectl-cert-generator.sh mode=a+x
+
+    - name: Copy kubeconfig.tpl
+      ansible.builtin.template:
+        src: ../../kubernetes/templates/kubeconfig.tpl
+        dest: /kubernetes/cert/
+        owner: alexandrio
+        group: alexandrio
+
+    - name: Create backend ClusterRole
+      shell: "kubectl apply -f /kubernetes/cert/backend_cluster_role.yaml"
+      become: yes
+      become_method: su
+      become_user: alexandrio
+
+    - name: Create backend ClusterRoleBinding
+      shell: "kubectl apply -f /kubernetes/cert/backend_cluster_role_binding.yaml"
+      become: yes
+      become_method: su
+      become_user: alexandrio

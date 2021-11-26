@@ -1,0 +1,11 @@
+---
+components:
+  schemas:
+    LibrariesNamesRetrieveResponse:
+      description: A list of the user libraries
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/LibrariesNamesData"

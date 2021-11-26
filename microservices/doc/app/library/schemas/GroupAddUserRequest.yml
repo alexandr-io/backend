@@ -1,0 +1,12 @@
+---
+components:
+  schemas:
+    GroupAddUserRequest:
+      properties:
+        user_id:
+          description: The ID of the user to add in the group
+          example: 5fbfe5[...]7076844
+          type: string
+      required:
+        - user_id
+      type: object

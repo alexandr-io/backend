@@ -1,0 +1,13 @@
+---
+components:
+  schemas:
+    ProgressUpdateOrInsertRequest:
+      properties:
+        progress:
+          description: String representation of user progress. (percentage, EPUB CFI, ...)
+          example: "some progress indicator"
+          type: string
+
+      required:
+        - progress
+      type: object

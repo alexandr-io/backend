@@ -1,90 +1,96 @@
 package handlers
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
+	"path/filepath"
 
 	"github.com/alexandr-io/backend/media/data"
-	"github.com/alexandr-io/backend/media/database"
+	"github.com/alexandr-io/backend/media/database/book"
+	grpcclient "github.com/alexandr-io/backend/media/grpc/client"
 	"github.com/alexandr-io/backend/media/internal"
-	"github.com/alexandr-io/backend/media/kafka/producers"
+	"github.com/alexandr-io/backend/media/middleware"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/h2non/filetype"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // UploadBook upload the book from the request to the media folder and create a database document
 func UploadBook(ctx *fiber.Ctx) error {
 
-	// Parse the book data from the body
-	book := data.Book{
-		ID:        ctx.FormValue("book_id", ""),
-		LibraryID: ctx.FormValue("library_id", ""),
+	// Parse the bookData data from the body
+	id, err := primitive.ObjectIDFromHex(ctx.FormValue("book_id", ""))
+	if err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, err.Error())
+	}
+	libraryID, err := primitive.ObjectIDFromHex(ctx.FormValue("library_id", ""))
+	if err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, err.Error())
+	}
+	bookData := data.Book{
+		ID:        id,
+		LibraryID: libraryID,
 	}
 
-	if isAllowed, err := producers.LibraryUploadAuthorizationRequestHandler(&book, string(ctx.Request().Header.Peek("ID"))); err != nil {
+	// check permission
+	if isAllowed, err := grpcclient.UploadAuthorization(ctx.Context(), middleware.RetrieveAuthInfos(ctx).ID, bookData.LibraryID); err != nil {
 		return err
 	} else if !isAllowed {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "Not authorized")
 	}
 
-	err := checkBookUploadBadInputs(book)
-	if err != nil {
-		return err
-	}
-
-	// Get the book in from the context
+	// Get the book from the context
 	file, err := ctx.FormFile("book")
 	if err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
-
 	}
 
-	book.Path = path.Join(os.Getenv("MEDIA_PATH"), book.LibraryID, book.ID+"_"+file.Filename)
+	bookData.Path = path.Join(os.Getenv("MEDIA_PATH"), bookData.LibraryID.Hex(), bookData.ID.Hex()+"_"+file.Filename)
 
-	// Save file to /media directory:
+	// open and read file
 	fd, err := file.Open()
 	if err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
-
 	fileContent, err := ioutil.ReadAll(fd)
 	if err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 
-	err = internal.UploadFile(ctx.Context(), fileContent, book.Path)
-	if err != nil {
-		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	// Get file type and check type
+	kind, _ := filetype.Match(fileContent)
+	fileType := ""
+	if kind.MIME.Value == "application/pdf" {
+		fileType = "pdf"
+	} else if (kind.MIME.Value == "application/epub+zip" || kind.MIME.Value == "application/zip") && filepath.Ext(file.Filename) == ".epub" {
+		fileType = "epub"
+	} else {
+		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, fmt.Sprintf("file type %s %s not supported", kind.Extension, kind.MIME.Value))
 	}
 
-	_, err = database.InsertBook(book)
-	if err != nil {
-		err2 := internal.DeleteFile(ctx.Context(), book.Path)
-		if err2 != nil {
-			return err2
+	// Save file to /media directory:
+	if err = internal.UploadFile(ctx.Context(), fileContent, bookData.Path); err != nil {
+		return err
+	}
+
+	// Insert in DB
+	if _, err = book.Insert(bookData); err != nil {
+		if err = internal.DeleteFile(ctx.Context(), bookData.Path); err != nil {
+			return err
 		}
 		return err
 	}
 
-	return nil
-}
-
-func checkBookUploadBadInputs(book data.Book) error {
-	errorList := make(map[string]string)
-
-	if book.ID == "" {
-		errorList["book_id"] = "The field is required"
+	// Send type to library MS
+	if err = grpcclient.BookUploaded(ctx.Context(), bookData.ID, fileType); err != nil {
+		return err
 	}
 
-	if book.LibraryID == "" {
-		errorList["library_id"] = "The field is required"
-	}
-
-	if len(errorList) != 0 {
-		errorInfo := data.NewErrorInfo(string(badInputsJSON(errorList)), 0)
-		errorInfo.ContentType = fiber.MIMEApplicationJSON
-		return fiber.NewError(fiber.StatusBadRequest, errorInfo.MarshalErrorInfo())
+	if err = ctx.SendStatus(fiber.StatusNoContent); err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return nil
 }

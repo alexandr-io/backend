@@ -4,35 +4,35 @@ import (
 	"path"
 
 	"github.com/alexandr-io/backend/media/data"
-	"github.com/alexandr-io/backend/media/database"
+	"github.com/alexandr-io/backend/media/database/book"
+	grpcclient "github.com/alexandr-io/backend/media/grpc/client"
 	"github.com/alexandr-io/backend/media/internal"
-	"github.com/alexandr-io/backend/media/kafka/producers"
+	"github.com/alexandr-io/backend/media/middleware"
 
 	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // DownloadBook download a book from a book ID
 func DownloadBook(ctx *fiber.Ctx) error {
-
-	book := new(data.Book)
-	if err := ParseBodyJSON(ctx, book); err != nil {
-		return err
+	id, err := primitive.ObjectIDFromHex(ctx.Params("book_id"))
+	if err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, err.Error())
 	}
-
-	book, err := database.GetBookByID(book)
+	bookData, err := book.GetFromID(id)
 	if err != nil {
 		return err
 	}
 
-	if isAllowed, err := producers.LibraryUploadAuthorizationRequestHandler(book, string(ctx.Request().Header.Peek("ID"))); err != nil {
+	if isAllowed, err := grpcclient.UploadAuthorization(ctx.Context(), middleware.RetrieveAuthInfos(ctx).ID, bookData.LibraryID); err != nil {
 		return err
 	} else if !isAllowed {
 		return data.NewHTTPErrorInfo(fiber.StatusUnauthorized, "Not authorized")
 	}
 
-	file, err := internal.DownloadFile(ctx.Context(), path.Join(book.Path))
+	file, err := internal.DownloadFile(ctx.Context(), path.Join(bookData.Path))
 	if err != nil {
-		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+		return err
 	}
 
 	err = ctx.Send(file.Data)

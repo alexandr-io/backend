@@ -1,0 +1,22 @@
+---
+components:
+  schemas:
+    UploadCoverRequest:
+      properties:
+        cover:
+          description: The book cover to upload (the format must be .png .jpg .jpeg)
+          type: binary
+        book_id:
+          description: The ID of the book on the Library MS
+          example: tsDFYEf[...]deyFEY
+          type: string
+        library_id:
+          description: The ID of the library where the metadata are located on the library MS
+          example: nvrFIyH[...]KLkgj
+          type: string
+      required:
+        - cover
+        - book_id
+        - library_id
+      title: UploadRequest is the body parameter given to upload a new book.
+      type: object

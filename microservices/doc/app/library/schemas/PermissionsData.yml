@@ -1,0 +1,54 @@
+---
+components:
+  schemas:
+    PermissionData:
+      properties:
+        owner:
+          description: Group users are owner (FALSE FOR GROUPS)
+          example: false
+          type: boolean
+        admin:
+          description: Group users are admin
+          example: false
+          type: boolean
+        book_delete:
+          description: Group users can delete books
+          example: false
+          type: boolean
+        book_upload:
+          description: Group users can upload books
+          example: false
+          type: boolean
+        book_update:
+          description: Group users can update books
+          example: false
+          type: boolean
+        book_display:
+          description: Group users can see library's books
+          example: false
+          type: boolean
+        book_read:
+          description: Group users can read library's books (do not override book_display)
+          example: false
+          type: boolean
+        library_update:
+          description: Group users update library's informations (title, description, ...)
+          example: false
+          type: boolean
+        library_delete:
+          description: Group users can delete the library
+          example: false
+          type: boolean
+        user_invite:
+          description: Group users can invite other users
+          example: false
+          type: boolean
+        user_remove:
+          description: Group users can remove users from the library
+          example: false
+          type: boolean
+        user_permissions_manage:
+          description: Group users can manage users permissions (only for groups with lower priority)
+          example: false
+          type: boolean
+      type: object

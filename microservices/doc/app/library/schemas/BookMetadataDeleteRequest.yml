@@ -1,0 +1,18 @@
+---
+components:
+  schemas:
+    BookMetadataDeleteRequest:
+      properties:
+        book_id:
+          description: The ID of the book
+          example: 5fbfe5[...]7076844
+          type: string
+        library_id:
+          description: The ID of the library of the book
+          example: 5fbfe5[...]7076844
+          type: string
+
+      required:
+        - book_id
+        - library_id
+      type: object

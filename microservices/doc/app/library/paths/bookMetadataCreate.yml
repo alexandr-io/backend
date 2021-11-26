@@ -1,0 +1,34 @@
+---
+paths:
+  /library/{library_id}/book:
+    post:
+      description: Create the metadata of a book
+      summary: Book Create (metadata)
+      parameters:
+        - in: path
+          name: library_id
+          required: true
+          schema:
+            type: string
+          description: The ID of the library in which the book will be uploaded
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookMetadataCreateRequest"
+      responses:
+        "200":
+          $ref: '#/components/schemas/BookMetadataCreateResponse'
+        "400":
+          $ref: '#/components/schemas/BadRequestErrorResponse'
+        "401":
+          $ref: '#/components/schemas/UnauthorizedErrorResponse'
+      security:
+        - bearerAuth: []
+      servers:
+        - url: //library.alexandrio.cloud
+          description: Production server
+        - url: //library.preprod.alexandrio.cloud
+          description: Preprod server
+      tags:
+        - BOOKS

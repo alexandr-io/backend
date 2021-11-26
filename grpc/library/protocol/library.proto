@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+option go_package = "github.com/alexandr-io/backend/grpc/grpclibrary";
+
+import "google/protobuf/empty.proto";
+
+package library;
+
+service Library {
+  // CreateLibrary is used to create the default library after a user creation
+  rpc CreateLibrary (CreateLibraryRequest) returns (google.protobuf.Empty) {}
+  // UploadAuthorization check if a user can upload a book to a library
+  rpc UploadAuthorization (UploadAuthorizationRequest) returns (UploadAuthorizationReply) {}
+  // BookUploaded set the file type of the uploaded book in the book metadata
+  rpc BookUploaded (BookUploadedRequest) returns (google.protobuf.Empty) {}
+  // CoverUploaded set the url of the uploaded cover in the book metadata
+  rpc CoverUploaded (CoverUploadedRequest) returns (google.protobuf.Empty) {}
+}
+
+message CreateLibraryRequest {
+  string UserID = 1;
+}
+
+message UploadAuthorizationRequest {
+  string UserID = 1;
+  string LibraryID = 2;
+}
+
+message UploadAuthorizationReply {
+  bool Authorized = 1;
+}
+
+message BookUploadedRequest {
+  string BookID = 1;
+  string Type = 2;
+}
+
+message CoverUploadedRequest {
+  string BookID = 1;
+  string CoverURL = 2;
+}

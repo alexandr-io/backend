@@ -17,158 +17,138 @@ services:
     ports:
       - "6379:6379"
 
-  zookeeper: # needed for kafka
-    image: confluentinc/cp-zookeeper:5.4.3
-    hostname: zookeeper
-    container_name: zookeeper
-    ports:
-      - "2181:2181"
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-
-  broker:
-    image: wurstmeister/kafka:2.13-2.6.0
-    hostname: broker
-    container_name: broker
-    ports:
-      - "9092:9092"
-    depends_on:
-      - zookeeper
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-      KAFKA_CONFLUENT_LICENSE_TOPIC_REPLICATION_FACTOR: 1
-      CONFLUENT_SUPPORT_CUSTOMER_ID: "anonymous"
-
-  control-center:
-    image: confluentinc/cp-enterprise-control-center:5.4.3
-    hostname: control-center
-    container_name: control-center
-    depends_on:
-      - zookeeper
-      - broker
-    ports:
-      - "9021:9021"
-    environment:
-      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'broker:29092'
-      CONTROL_CENTER_ZOOKEEPER_CONNECT: 'zookeeper:2181'
-      CONTROL_CENTER_REPLICATION_FACTOR: 1
-      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
-      CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
-      CONFLUENT_METRICS_TOPIC_REPLICATION: 1
-      PORT: 9021
-
   # User Service
   user:
     container_name: user
     build:
-      context: microservices/user/app
-      dockerfile: Dockerfile-dev
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile-dev
+      args:
+        microservice: user
     depends_on:
       - mongodb
-      - broker
     env_file: .env-dev
     environment:
       MONGO_URL: mongodb
       REDIS_URL: redis
-      KAFKA_URL: 'broker:29092'
+      AUTH_URL: auth
+      EMAIL_URL: email
     ports:
       - "3000:3000"
     volumes:
-      - "./microservices/user/app:/app"
+      - "./microservices/user/app:/microservices/user/app"
+      - "./grpc:/grpc"
+      - "./common:/common"
 
   # Auth service
   auth:
     container_name: auth
     build:
-      context: microservices/auth/app
-      dockerfile: Dockerfile-dev
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile-dev
+      args:
+        microservice: auth
     depends_on:
       - mongodb
       - redis
-      - broker
     env_file: .env-dev
     environment:
       MONGO_URL: mongodb
       REDIS_URL: redis
-      KAFKA_URL: 'broker:29092'
+      USER_URL: user
+      LIBRARY_URL: library
+      EMAIL_URL: email
     ports:
       - "3001:3000"
     volumes:
-      - "./microservices/auth/app:/app"
+      - "./microservices/auth/app:/microservices/auth/app"
+      - "./grpc:/grpc"
+      - "./common:/common"
 
   # Media service
   media:
     container_name: media
     build:
-      context: microservices/media/app
-      dockerfile: Dockerfile-dev
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile-dev
+      args:
+        microservice: media
     depends_on:
       - mongodb
-      - broker
     env_file: .env-dev
     environment:
-      KAFKA_URL: 'broker:29092'
       MEDIA_PATH: '/media/'
       MEDIA_URI: 'file'
       MONGO_URL: mongodb
+      AUTH_URL: auth
+      LIBRARY_URL: library
     ports:
       - "4001:3000"
     volumes:
-      - "./microservices/media/app:/app"
+      - "./microservices/media/app:/microservices/media/app"
       - "./microservices/media/.media:/media"
+      - "./grpc:/grpc"
 
-
-  # Documentation service
-  documentation:
-    container_name: documentation
+  # Metadata service
+  metadata:
+    container_name: metadata
     build:
-      context: microservices/documentation/app
-      dockerfile: Dockerfile-dev
+      context: .
+      dockerfile: dockerfiles/Dockerfile-dev-python
+      args:
+        microservice: metadata
+    env_file: .env-dev
+    volumes:
+      - "./grpc:/grpc"
+
+  # Doc service
+  doc:
+    container_name: doc
+    build:
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile-dev
+      args:
+        microservice: doc
     env_file: .env-dev
     ports:
       - "4000:3000"
     volumes:
-      - "./microservices/documentation/app:/app"
+      - "./microservices/doc/app:/microservices/doc/app"
 
   # Library service
   library:
     container_name: library
     build:
-      context: microservices/library/app
-      dockerfile: Dockerfile-dev
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile-dev
+      args:
+        microservice: library
     depends_on:
       - mongodb
-      - broker
     env_file: .env-dev
     environment:
       MONGO_URL: mongodb
-      KAFKA_URL: 'broker:29092'
+      AUTH_URL: auth
+      METADATA_URL: metadata
     ports:
       - "3002:3000"
     volumes:
-    - "./microservices/library/app:/app"
+    - "./microservices/library/app:/microservices/library/app"
+    - "./grpc:/grpc"
+    - "./common:/common"
 
   # Email service
   email:
     container_name: email
     build:
-      context: microservices/email/app
-      dockerfile: Dockerfile-dev
-    depends_on:
-      - broker
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile-dev
+      args:
+        microservice: email
     env_file: .env-dev
-    environment:
-      KAFKA_URL: 'broker:29092'
     volumes:
-      - "./microservices/email/app:/app"
+      - "./microservices/email/app:/microservices/email/app"
+      - "./grpc:/grpc"
 
 volumes:
   mongodb_data_container:

@@ -1,36 +1,33 @@
 package internal
 
 import (
-	"errors"
+	"context"
+	"strings"
 
 	"github.com/alexandr-io/backend/user/data"
-	"github.com/alexandr-io/backend/user/database"
-	"github.com/alexandr-io/backend/user/kafka/producers"
-
-	"github.com/gofiber/fiber/v2"
+	"github.com/alexandr-io/backend/user/database/user"
 )
 
 // Register is the internal logic function used to register a user.
-func Register(key string, message data.KafkaUserRegisterRequest) error {
+func Register(ctx context.Context, newUser data.User) (*data.User, error) {
+	verified := false
+	if strings.Contains(newUser.Email, "@test.test") {
+		verified = true
+	}
 	// Insert the new data to the collection
-	insertedResult, err := database.InsertUserRegister(data.User{
-		Username: message.Username,
-		Email:    message.Email,
-		Password: message.Password,
+	createdUser, err := user.Insert(data.User{
+		Username:      newUser.Username,
+		Email:         newUser.Email,
+		Password:      newUser.Password,
+		EmailVerified: verified,
 	})
 	if err != nil {
-		var badInput *data.BadInputError
-		if errors.As(err, &badInput) {
-			return producers.SendBadRequestRegisterMessage(key, badInput.JSONError)
-		}
-		return producers.SendInternalErrorRegisterMessage(key, err.Error())
+		return nil, err
 	}
 
-	// Get the newly created user
-	createdUser, err := database.GetUserByID(insertedResult.InsertedID)
-	if err != nil {
-		return producers.SendInternalErrorRegisterMessage(key, err.Error())
+	if err := VerifyEmailCreation(ctx, createdUser); err != nil {
+		return nil, err
 	}
 
-	return producers.SendSuccessRegisterMessage(key, fiber.StatusCreated, *createdUser)
+	return createdUser, nil
 }

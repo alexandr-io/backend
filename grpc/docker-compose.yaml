@@ -1,0 +1,11 @@
+version: "3.7"
+
+services:
+  # User Service
+  grpc:
+    container_name: grpc
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./:/app

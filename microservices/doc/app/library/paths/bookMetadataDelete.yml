@@ -1,0 +1,35 @@
+---
+paths:
+  /library/{library_id}/book/{book_id}:
+    delete:
+      description: Delete the metadata of a book
+      summary: Book Delete (metadata)
+      parameters:
+        - in: path
+          name: library_id
+          required: true
+          schema:
+            type: string
+          description: The ID of the library in which the book will be deleted
+        - in: path
+          name: book_id
+          required: true
+          schema:
+            type: string
+          description: The ID of the book to delete
+      responses:
+        "200":
+          $ref: '#/components/schemas/BookMetadataDeleteResponse'
+        "400":
+          $ref: '#/components/schemas/BadRequestErrorResponse'
+        "401":
+          $ref: '#/components/schemas/UnauthorizedErrorResponse'
+      security:
+        - bearerAuth: []
+      servers:
+        - url: //library.alexandrio.cloud
+          description: Production server
+        - url: //library.preprod.alexandrio.cloud
+          description: Preprod server
+      tags:
+        - BOOKS

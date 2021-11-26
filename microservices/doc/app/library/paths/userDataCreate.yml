@@ -1,0 +1,42 @@
+---
+paths:
+  /library/{library_id}/book/{book_id}/data:
+    post:
+      summary: Create user data
+      description: Creates a user data
+      parameters:
+        - in: path
+          name: library_id
+          required: true
+          schema:
+            type: string
+          description: The ID of the library in which the book is located
+        - in: path
+          name: book_id
+          required: true
+          schema:
+            type: string
+          description: The ID of the book
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserDataRequest"
+      responses:
+        "200":
+          $ref: '#/components/schemas/UserDataResponse'
+        "400":
+          $ref: '#/components/schemas/BadRequestErrorResponse'
+        "401":
+          $ref: '#/components/schemas/UnauthorizedErrorResponse'
+        "404":
+          $ref: '#/components/schemas/NotFoundErrorResponse'
+      security:
+        - bearerAuth: []
+      servers:
+        - url: //library.alexandrio.cloud
+          description: Production server
+        - url: //library.preprod.alexandrio.cloud
+          description: Preprod server
+      tags:
+        - BOOK USER DATA

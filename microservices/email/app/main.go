@@ -11,8 +11,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/alexandr-io/backend/mail/grpc"
 	"github.com/alexandr-io/backend/mail/internal"
-	"github.com/alexandr-io/backend/mail/kafka/consumers"
 
 	"github.com/matcornic/hermes/v2"
 	"github.com/sendgrid/rest"
@@ -32,11 +32,10 @@ func main() {
 		Product: hermes.Product{
 			// Appears in header & footer of e-mails
 			Name:      "Alexandrio",
-			Link:      "http://alexandrio.cloud",
+			Link:      "https://alexandrio.cloud",
 			Copyright: "Copyright © " + strconv.Itoa(time.Now().Year()) + " Alexandrio. All rights reserved.",
 		},
 	}
-	for consumers.CreateTopics() != nil {
-	}
-	consumers.ConsumeEmailRequestMessages()
+
+	grpc.InitGRPC()
 }

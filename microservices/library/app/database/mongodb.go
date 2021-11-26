@@ -24,31 +24,23 @@ var Instance InstanceData
 // Database settings
 const dbName = "library"
 
-var mongoURI = fmt.Sprintf(
-	"mongodb+srv://%s:%s@%s/%s?authSource=admin&readPreference=primary&appname=LibraryService&ssl=false",
-	os.Getenv("MONGO_INITDB_ROOT_USERNAME"),
-	os.Getenv("MONGO_INITDB_ROOT_PASSWORD"),
-	os.Getenv("MONGO_URL"),
-	dbName)
-
 // ConnectToMongo is connecting the service to mongodb using mongoURI.
 // After success, instanceMongo is filled with the db client and db handler.
 func ConnectToMongo() {
-	if _, ok := os.LookupEnv("DEV"); ok {
-		mongoURI = fmt.Sprintf(
-			"mongodb://%s:%s@%s:27017/%s?authSource=admin&readPreference=primary&appname=LibraryService&ssl=false",
-			os.Getenv("MONGO_INITDB_ROOT_USERNAME"),
-			os.Getenv("MONGO_INITDB_ROOT_PASSWORD"),
-			os.Getenv("MONGO_URL"),
-			dbName)
-	}
+	mongoURI := fmt.Sprintf(
+		"mongodb://%s:%s@%s:27017/%s?authSource=admin&readPreference=primary&appname=LibraryService&ssl=false",
+		os.Getenv("MONGO_INITDB_ROOT_USERNAME"),
+		os.Getenv("MONGO_INITDB_ROOT_PASSWORD"),
+		os.Getenv("MONGO_URL"),
+		dbName)
 
 	client, err := mongo.NewClient(options.Client().ApplyURI(mongoURI))
 	if err != nil {
 		log.Println(mongoURI)
 		log.Fatal(err)
 	}
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 	err = client.Connect(ctx)
 	if err != nil {
 		log.Fatal(err)
@@ -60,9 +52,12 @@ func ConnectToMongo() {
 		Client: client,
 		Db:     db,
 	}
-}
 
-// InitCollections call the functions that init the collections.
-func InitCollections() {
-	createLibrariesUniqueIndexes()
+	BookDB = NewBookCollection(db)
+	UserLibraryDB = NewUserLibraryCollection(db)
+	LibraryDB = NewLibraryCollection(db)
+	BookProgressDB = NewBookProgressCollection(db)
+	GroupDB = NewGroupCollection(db)
+	UserDataDB = NewUserDataCollection(db)
+	ProgressSpeedDB = NewProgressSpeedCollection(db)
 }

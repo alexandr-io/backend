@@ -1,0 +1,55 @@
+---
+components:
+  schemas:
+    UserDataData:
+      properties:
+        id:
+          description: The user data ID
+          example: 5fbfe5[...]7076844
+          type: string
+        user_id:
+          description: The user ID associated with the progression
+          example: 5fbfe5[...]7076844
+          type: string
+        library_id:
+          description: The library ID associated with the progression
+          example: 5fbfe5[...]7076844
+          type: string
+        book_id:
+          description: The book ID associated with the progression
+          example: 5fbfe5[...]7076844
+          type: string
+        type:
+          description: The type of user data, must be "highlight", "bookmark" or "note"
+          example: highlight
+          type: string
+        name:
+          description: Name or title of the user data
+          example: This is an important definition
+          type: string
+        description:
+          description: Description of the user data
+          example: This quote is important for the author
+          type: string
+        tags:
+          description: Tags associated with the user data
+          example: [ "quote", "definition", "important" ]
+          type: array
+        offset:
+          description: String representation of user progress (percentage, EPUB CFI, ...) where the data is located
+          example: "some progress indicator"
+          type: string
+        offset_end:
+          description: String representation of user progress (percentage, EPUB CFI, ...) where the data ends, for highlights
+          example: "some progress indicator"
+          type: string
+        creation_date:
+          description: ISO 8601 string that represents the date and time when the data was created
+          example: 2021-02-12T11:30:34.452Z
+          type: string
+        last_modified_date:
+          description: ISO 8601 string that represents the date and time when the data was last modified
+          example: 2021-02-12T11:30:34.452Z
+          type: string
+
+      type: object

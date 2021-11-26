@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+option go_package = "github.com/alexandr-io/backend/grpc/grpcuser";
+
+package user;
+
+service User {
+  // User is used to retrieve a user by it's ID or email.
+  rpc User (UserRequest) returns (UserReply) {}
+  // Login is used to retrieve a user by it's login(email or username) and password.
+  rpc Login (LoginRequest) returns (UserReply) {}
+  // Register is used to create a user.
+  rpc Register (RegisterRequest) returns (UserReply) {}
+  // UpdatePassword change a user's password in DB.
+  rpc UpdatePassword (UpdatePasswordRequest) returns (UserReply) {}
+  // UpdatePasswordLogged changed a logged user's password in DB.
+  rpc UpdatePasswordLogged (UpdatePasswordLoggedRequest) returns (UserReply) {}
+}
+
+// Only one field must be filled. If both are sent, the user will be retrieved by it's ID.
+message UserRequest {
+  string ID = 1;
+  string Email = 2;
+}
+
+message UserReply {
+  string ID = 1;
+  string Username = 2;
+  string Email = 3;
+}
+
+message LoginRequest {
+  string Login = 1; // Login is a username or an email
+  string Password = 2; // The password must be sent hashed
+}
+
+message RegisterRequest {
+  string Username = 1;
+  string Email = 2;
+  string Password = 3; // The password must be sent hashed
+}
+
+message UpdatePasswordRequest {
+  string ID = 1;
+  string Password = 2; // The password must be sent hashed
+}
+
+message UpdatePasswordLoggedRequest {
+  string ID = 1;
+  string CurrentPassword = 2;
+  string NewPassword = 3;
+}

@@ -1,0 +1,28 @@
+---
+paths:
+  /library/{library_id}:
+    delete:
+      description: Delete a library
+      parameters:
+        - in: path
+          name: library_id
+          required: true
+          schema:
+            type: string
+          description: The ID of the library to delete
+      responses:
+        "200":
+          $ref: '#/components/schemas/NoContentResponse'
+        "400":
+          $ref: '#/components/schemas/BadRequestErrorResponse'
+        "401":
+          $ref: '#/components/schemas/UnauthorizedErrorResponse'
+      security:
+        - bearerAuth: []
+      servers:
+        - url: //library.alexandrio.cloud
+          description: Production server
+        - url: //library.preprod.alexandrio.cloud
+          description: Preprod server
+      tags:
+        - LIBRARIES

@@ -1,0 +1,29 @@
+---
+components:
+  schemas:
+    BookMetadataCreateRequest:
+      properties:
+        title:
+          description: The title of the book
+          example: Harry Potter
+          type: string
+        author:
+          description: The author of the book
+          example: J.K. Rowling
+          type: string
+        publisher:
+          description: The publisher of the book
+          example: Bloomsbury
+          type: string
+        description:
+          description: The description of the book
+          example: A wizard to his new school.
+          type: string
+        tags:
+          description: The tags of the book
+          example: ["Fantasy", "Action"]
+          type: array
+
+      required:
+        - title
+      type: object
