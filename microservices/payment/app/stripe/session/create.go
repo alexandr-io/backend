@@ -2,6 +2,7 @@ package session
 
 import (
 	"github.com/alexandr-io/backend/payment/data"
+	"github.com/gofiber/fiber/v2"
 	"github.com/stripe/stripe-go/v72"
 	"github.com/stripe/stripe-go/v72/checkout/session"
 )
@@ -26,7 +27,7 @@ func Create(sessionData data.Session) (*stripe.CheckoutSession, error) {
 
 	result, err := session.New(params)
 	if err != nil {
-		return nil, err
+		return nil, data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
 	return result, nil
 }
