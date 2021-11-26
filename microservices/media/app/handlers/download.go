@@ -35,12 +35,10 @@ func DownloadBook(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	err = ctx.Send(file.Data)
-	ctx.Set(fiber.HeaderContentType, file.ContentType)
-	ctx.Set(fiber.HeaderContentDisposition, "attachment")
-
-	if err != nil {
+	if err = ctx.Status(fiber.StatusOK).Send(file.Data); err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
 	}
+	ctx.Set(fiber.HeaderContentType, file.ContentType)
+	ctx.Set(fiber.HeaderContentDisposition, "attachment")
 	return nil
 }

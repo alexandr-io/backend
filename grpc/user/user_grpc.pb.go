@@ -29,6 +29,8 @@ type UserClient interface {
 	UpdatePassword(ctx context.Context, in *UpdatePasswordRequest, opts ...grpc.CallOption) (*UserReply, error)
 	// UpdatePasswordLogged changed a logged user's password in DB.
 	UpdatePasswordLogged(ctx context.Context, in *UpdatePasswordLoggedRequest, opts ...grpc.CallOption) (*UserReply, error)
+	// UserFromLogin retrieve a user from a username or email.
+	UserFromLogin(ctx context.Context, in *UserFromLoginRequest, opts ...grpc.CallOption) (*UserReply, error)
 }
 
 type userClient struct {
@@ -84,6 +86,15 @@ func (c *userClient) UpdatePasswordLogged(ctx context.Context, in *UpdatePasswor
 	return out, nil
 }
 
+func (c *userClient) UserFromLogin(ctx context.Context, in *UserFromLoginRequest, opts ...grpc.CallOption) (*UserReply, error) {
+	out := new(UserReply)
+	err := c.cc.Invoke(ctx, "/user.User/UserFromLogin", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -98,6 +109,8 @@ type UserServer interface {
 	UpdatePassword(context.Context, *UpdatePasswordRequest) (*UserReply, error)
 	// UpdatePasswordLogged changed a logged user's password in DB.
 	UpdatePasswordLogged(context.Context, *UpdatePasswordLoggedRequest) (*UserReply, error)
+	// UserFromLogin retrieve a user from a username or email.
+	UserFromLogin(context.Context, *UserFromLoginRequest) (*UserReply, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -119,6 +132,9 @@ func (UnimplementedUserServer) UpdatePassword(context.Context, *UpdatePasswordRe
 }
 func (UnimplementedUserServer) UpdatePasswordLogged(context.Context, *UpdatePasswordLoggedRequest) (*UserReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdatePasswordLogged not implemented")
+}
+func (UnimplementedUserServer) UserFromLogin(context.Context, *UserFromLoginRequest) (*UserReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserFromLogin not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -223,6 +239,24 @@ func _User_UpdatePasswordLogged_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_UserFromLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserFromLoginRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserFromLogin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.User/UserFromLogin",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserFromLogin(ctx, req.(*UserFromLoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -249,6 +283,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdatePasswordLogged",
 			Handler:    _User_UpdatePasswordLogged_Handler,
+		},
+		{
+			MethodName: "UserFromLogin",
+			Handler:    _User_UserFromLogin_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

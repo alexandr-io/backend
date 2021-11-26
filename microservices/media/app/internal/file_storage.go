@@ -24,13 +24,6 @@ func UploadFile(ctx context.Context, file []byte, path string) error {
 	}
 	defer bucket.Close()
 
-	// Check if file exist
-	fileInBucket, err := bucket.NewReader(ctx, path, nil)
-	if err != nil {
-		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, "a file is already uploaded")
-	}
-	fileInBucket.Close()
-
 	w, err := bucket.NewWriter(ctx, path, nil)
 	if err != nil {
 		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())

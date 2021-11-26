@@ -50,7 +50,7 @@ func UploadBookCover(ctx *fiber.Ctx) error {
 		return data.NewHTTPErrorInfo(fiber.StatusBadRequest, "cover format should be jpg, jpeg or png")
 	}
 
-	// MEDIA_PATH/LibraryID/BookID_cover
+	// MEDIA_PATH/{libraryID}/{bookID}_cover_{filename}
 	bookData.CoverPath = path.Join(os.Getenv("MEDIA_PATH"), bookData.LibraryID.Hex(), bookData.ID.Hex()+"_cover_"+cover.Filename)
 
 	// open and read cover file
@@ -77,8 +77,12 @@ func UploadBookCover(ctx *fiber.Ctx) error {
 	}
 
 	// Send URL to retrieve image to library book metadata
-	// http(s)://HOST/book/{bookID}/cover
-	coverURL := string(ctx.Request().URI().Scheme()) + "://" + path.Join(string(ctx.Request().Host()), "book", bookData.ID.Hex(), "cover")
+	// http(s)://HOST/media/{bookData.CoverPath}
+	scheme := "http"
+	if os.Getenv("DEV") == "" {
+		scheme = scheme + "s"
+	}
+	coverURL := scheme + "://" + path.Join(string(ctx.Request().Host()), bookData.CoverPath)
 	if err = grpcclient.CoverUploaded(ctx.Context(), bookData.ID, coverURL); err != nil {
 		return err
 	}

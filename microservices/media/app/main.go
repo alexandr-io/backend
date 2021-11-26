@@ -31,6 +31,7 @@ func main() {
 	app := fiber.New(fiber.Config{
 		// Override default error handler
 		ErrorHandler: errorHandler,
+		BodyLimit:    20 * 1024 * 1024, // 20MB max upload
 	})
 	createRoute(app)
 
