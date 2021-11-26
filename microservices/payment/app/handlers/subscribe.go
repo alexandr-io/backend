@@ -1,11 +1,10 @@
 package handlers
 
 import (
-	"log"
-
 	"github.com/alexandr-io/backend/payment/data"
 	"github.com/alexandr-io/backend/payment/database/customer"
 	"github.com/alexandr-io/backend/payment/internal"
+	"github.com/alexandr-io/backend/payment/stripe/session"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -18,10 +17,16 @@ func Subscribe(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	var Customer data.Customer
-	err = ParseBodyJSON(ctx, &Customer)
+	var sessionData data.Session
+	err = ParseBodyJSON(ctx, &sessionData)
 	if err != nil {
 		return err
+	}
+
+	var customerData = data.Customer{
+		UserID:   userID,
+		Email:    user.Email,
+		Username: user.Username,
 	}
 
 	var localCustomer *data.Customer
@@ -31,7 +36,7 @@ func Subscribe(ctx *fiber.Ctx) error {
 			// Override status code if fiber.Error type
 			if e.Code == fiber.StatusNotFound {
 
-				localCustomer, err = internal.CreateStripeCustomerForUser(user, Customer)
+				localCustomer, err = internal.CreateStripeCustomerForUser(user, customerData)
 				if err != nil {
 					return err
 				}
@@ -43,9 +48,14 @@ func Subscribe(ctx *fiber.Ctx) error {
 		}
 	}
 
-	log.Println(localCustomer)
-	// TODO: CREATE LINK TO PAY ON STRIPE
-	//
-	// Should use localCustomer
+	sessionData.CustomerID = localCustomer.StripeID
+	newSession, err := session.Create(sessionData)
+	if err != nil {
+		return err
+	}
+
+	if err = ctx.Status(fiber.StatusOK).Send([]byte(newSession.URL)); err != nil {
+		return data.NewHTTPErrorInfo(fiber.StatusInternalServerError, err.Error())
+	}
 	return nil
 }
