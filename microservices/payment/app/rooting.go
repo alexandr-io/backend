@@ -1,11 +1,14 @@
 package main
 
 import (
+	"time"
+
 	"github.com/alexandr-io/backend/payment/handlers"
 	"github.com/alexandr-io/backend/payment/middleware"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 )
@@ -22,6 +25,13 @@ func createRoute(app *fiber.App) {
 				return true
 			}
 			return false
+		},
+	}))
+	app.Use(limiter.New(limiter.Config{
+		Max:				30,	
+		Expiration:			15 * time.Second,
+		LimitReached:		func(c *fiber.Ctx) error{
+			return c.SendString("Rate limited, your IP is sending too many requests")
 		},
 	}))
 

@@ -3,9 +3,11 @@ package main
 import (
 	"net/http"
 	"path"
+	"time"
 
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/valyala/fasthttp/fasthttpadaptor"
 )
@@ -14,6 +16,13 @@ import (
 func createRoute(app *fiber.App) {
 	// Recover middleware in case of panic
 	app.Use(recover.New())
+	app.Use(limiter.New(limiter.Config{
+		Max:				30,	
+		Expiration:			15 * time.Second,
+		LimitReached:		func(c *fiber.Ctx) error{
+			return c.SendString("Rate limited, your IP is sending too many requests")
+		},
+	}))
 
 	app.Get("/docs", mergeDocFiles, wrapDocHandler())
 	app.Get("/merged/docs.yml", wrapFileServer())
