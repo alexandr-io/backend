@@ -52,6 +52,11 @@ spec:
                 configMapKeyRef:
                   name: grpc-port
                   key: PORT
+            - name: STRIPE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: stripe-secret
+                  key: token
 
       imagePullSecrets:
         - name: regcred
