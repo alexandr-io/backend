@@ -1,6 +1,6 @@
 # This workflow is triggered on tag push not ending with '-*', like '-preprod'
 
-name: CD production
+name: CD production payment
 
 on:
   push:
@@ -42,7 +42,7 @@ jobs:
         with:
           builder: ${{ steps.builder.outputs.name }}
           context: .
-          file: ./dockerfiles/Dockerfile-dev
+          file: ./dockerfiles/Dockerfile-payment
           build-args: |
             microservice=${{ matrix.microservice }}
           tags: ${{ steps.docker_meta.outputs.tags }}
