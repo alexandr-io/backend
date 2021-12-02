@@ -1,0 +1,27 @@
+---
+paths:
+  /feedback:
+    post:
+      description: Send feedback to the devs
+      summary: Send feedback
+      responses:
+        "200":
+          $ref: "#/components/schemas/FeedbackResponse"
+        "400":
+          $ref: "#/components/schemas/BadRequestResponse"
+        "401":
+          $ref: "#/components/schemas/UnauthorizedErrorResponse"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Feedback"
+      security:
+        - bearerAuth: []
+      servers:
+        - url: //user.alexandrio.cloud
+          description: Production server
+        - url: //user.preprod.alexandrio.cloud
+          description: Preprod server
+      tags:
+        - FEEDBACK

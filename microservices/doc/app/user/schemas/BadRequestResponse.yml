@@ -1,7 +1,7 @@
 ---
 components:
   schemas:
-    BadRequestErrorResponse:
+    BadRequestResponse:
       description: Bad Request
       content:
         application/json:
