@@ -13,6 +13,7 @@ require (
 	github.com/alexandr-io/backend/grpc v0.0.0-00010101000000-000000000000
 	github.com/alexandr-io/backend/library/data v0.0.0-00010101000000-000000000000
 	github.com/fatih/structtag v1.2.0
+	github.com/getsentry/sentry-go v0.11.0
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/gofiber/fiber/v2 v2.5.0
 	github.com/golang/mock v1.5.0

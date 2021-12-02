@@ -13,6 +13,7 @@ require (
 	github.com/andybalholm/brotli v1.0.1 // indirect
 	github.com/aws/aws-sdk-go v1.35.35 // indirect
 	github.com/fatih/structtag v1.2.0
+	github.com/getsentry/sentry-go v0.11.0
 	github.com/go-redis/redis/v8 v8.8.0
 	github.com/go-redis/redismock/v8 v8.0.6
 	github.com/gofiber/fiber/v2 v2.5.0
