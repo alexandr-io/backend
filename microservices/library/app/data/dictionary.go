@@ -6,7 +6,7 @@ type Phonetics struct {
 	Audio string `json:"audio"`
 }
 
-// Definitions contain information regarding the definition, synonims and uses of the word
+// Definitions contain information regarding the definition, synonyms and uses of the word
 type Definitions struct {
 	Definition string   `json:"definition"`
 	Synonyms   []string `json:"synonyms"`
