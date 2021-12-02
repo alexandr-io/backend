@@ -14,7 +14,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// BookUploaded is a gRPC server method that take a book ID and the book type of an uploaded book. Used to store book file type url in metadata
+// BookUploaded is a gRPC server method that take a book ID and the book type of the uploaded book. Used to store book file type url in metadata
 func (s *server) BookUploaded(_ context.Context, in *grpclibrary.BookUploadedRequest) (*empty.Empty, error) {
 	fmt.Printf("[gRPC]: Book uploaded received: %+v\n", in.String())
 

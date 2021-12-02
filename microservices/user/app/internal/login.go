@@ -9,9 +9,9 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Login is the internal logic function used to login a user.
+// Login is the internal logic function used to log in a user.
 func Login(login string, password string) (*data.User, error) {
-	// Get the user from it's login
+	// Get the user from its login
 	userData, err := user.FromLogin(login)
 	if err != nil {
 		return nil, err

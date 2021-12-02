@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/x/bsonx"
 )
 
-// createUserUniqueIndexes init the user collection. It add a unique index to the email and username field.
+// createUserUniqueIndexes init the user collection. It adds a unique index to the email and username field.
 func createUserUniqueIndexes() {
 	userCollection := Instance.Db.Collection(CollectionUser)
 	_, err := userCollection.Indexes().CreateOne(

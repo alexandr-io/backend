@@ -23,7 +23,7 @@ func FromID(userID primitive.ObjectID) (*data.User, error) {
 	return &result, nil
 }
 
-// FromEmail get a user by it's given email.
+// FromEmail get a user by its given email.
 // In case of error, the proper error is set to the context and false is returned.
 func FromEmail(login string) (*data.User, error) {
 	var object data.User
@@ -40,7 +40,7 @@ func FromEmail(login string) (*data.User, error) {
 	return &object, nil
 }
 
-// FromUsername get a user by it's given username.
+// FromUsername get a user by its given username.
 // In case of error, the proper error is set to the context and false is returned.
 func FromUsername(username string) (*data.User, error) {
 	var object data.User
@@ -57,7 +57,7 @@ func FromUsername(username string) (*data.User, error) {
 	return &object, nil
 }
 
-// FromLogin get a user by it's given login (username or email).
+// FromLogin get a user by its given login (username or email).
 // In case of error, the proper error is set to the context and false is returned.
 func FromLogin(login string) (*data.User, error) {
 	if result, err := FromUsername(login); err == nil {

@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-// Delete delete an invitation corresponding to the given invitation token
+// Delete deletes an invitation corresponding to the given invitation token
 func Delete(token string) error {
 	result, err := database.InvitationCollection.DeleteOne(
 		context.Background(),

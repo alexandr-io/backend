@@ -9,7 +9,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// SendResetPasswordEmail take an email in the body to send an email to change password.
+// SendResetPasswordEmail takes an email in the body to send an email to change password.
 func SendResetPasswordEmail(ctx *fiber.Ctx) error {
 	// Set Content-Type: application/json
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)

@@ -27,7 +27,7 @@ func NewUserLibraryCollection(db *mongo.Database) *UserLibraryCollection {
 	return &UserLibraryCollection{collection: db.Collection(userLibraryCollectionName)}
 }
 
-// Create create a document in the user_library collection
+// Create creates a document in the user_library collection
 func (c *UserLibraryCollection) Create(userLibrary data.UserLibrary) (*data.UserLibrary, error) {
 	insertedResult, err := c.collection.InsertOne(context.Background(), userLibrary)
 	if err != nil {

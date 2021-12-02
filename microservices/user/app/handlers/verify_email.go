@@ -9,7 +9,7 @@ import (
 )
 
 // VerifyEmail verify an email pages. Link to this page is generated at user creation and sent by email to the user.
-// The user will be verified if this page succeed. The email is also update to the NewEmail stored in Redis.
+// The user will be verified if this page succeeds. The email is also update to the NewEmail stored in Redis.
 func VerifyEmail(ctx *fiber.Ctx) error {
 	if err := ctx.Render("load", fiber.Map{
 		"title": "Verifying email",
