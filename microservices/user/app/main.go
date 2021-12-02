@@ -11,6 +11,7 @@ import (
 	"github.com/alexandr-io/backend/user/database"
 	"github.com/alexandr-io/backend/user/grpc"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html"
 )
@@ -18,6 +19,13 @@ import (
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.Println("User Service started")
+
+	err := sentry.Init(sentry.ClientOptions{
+		Dsn: "http://a3a4b09e28514398a147c7ac0c43eedf@95.217.135.159:9000/2",
+	})
+	if err != nil {
+		log.Fatalf("sentry.Init: %s", err)
+	}
 
 	// MongoDB
 	database.ConnectToMongo()

@@ -11,6 +11,7 @@ require (
 	github.com/PuerkitoBio/goquery v1.6.0 // indirect
 	github.com/alexandr-io/backend/grpc v0.0.0-00010101000000-000000000000
 	github.com/andybalholm/cascadia v1.2.0 // indirect
+	github.com/getsentry/sentry-go v0.11.0
 	github.com/golang/protobuf v1.5.0
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/imdario/mergo v0.3.11 // indirect

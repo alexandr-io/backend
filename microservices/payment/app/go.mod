@@ -10,6 +10,7 @@ require (
 	github.com/alexandr-io/backend/common v0.0.0-20210913201527-0adcfe9625ce
 	github.com/alexandr-io/backend/grpc v0.0.0-00010101000000-000000000000
 	github.com/fatih/structtag v1.2.0
+	github.com/getsentry/sentry-go v0.11.0
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/gofiber/fiber/v2 v2.14.0
 	github.com/leodido/go-urn v1.2.1 // indirect

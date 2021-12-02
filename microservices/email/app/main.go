@@ -14,6 +14,7 @@ import (
 	"github.com/alexandr-io/backend/mail/grpc"
 	"github.com/alexandr-io/backend/mail/internal"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/matcornic/hermes/v2"
 	"github.com/sendgrid/rest"
 	"github.com/sendgrid/sendgrid-go"
@@ -22,6 +23,13 @@ import (
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.Println("Mail Service started")
+
+	err := sentry.Init(sentry.ClientOptions{
+		Dsn: "http://a3a4b09e28514398a147c7ac0c43eedf@95.217.135.159:9000/2",
+	})
+	if err != nil {
+		log.Fatalf("sentry.Init: %s", err)
+	}
 
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},

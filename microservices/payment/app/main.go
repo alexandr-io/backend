@@ -13,12 +13,20 @@ import (
 	"github.com/alexandr-io/backend/payment/grpc"
 	"github.com/alexandr-io/backend/payment/stripe"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/gofiber/fiber/v2"
 )
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.Println("Payment Service started")
+
+	err := sentry.Init(sentry.ClientOptions{
+		Dsn: "http://a3a4b09e28514398a147c7ac0c43eedf@95.217.135.159:9000/2",
+	})
+	if err != nil {
+		log.Fatalf("sentry.Init: %s", err)
+	}
 
 	// MongoDB
 	database.ConnectToMongo()

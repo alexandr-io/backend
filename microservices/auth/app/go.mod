@@ -15,6 +15,7 @@ require (
 	github.com/andybalholm/brotli v1.0.1 // indirect
 	github.com/fatih/structtag v1.2.0
 	github.com/form3tech-oss/jwt-go v3.2.2+incompatible
+	github.com/getsentry/sentry-go v0.11.0
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-redis/redis/v8 v8.8.0
 	github.com/go-redis/redismock/v8 v8.0.6
