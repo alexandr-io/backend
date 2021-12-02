@@ -1,6 +1,6 @@
 package permissions
 
-// PermissionLibrary is the struct containing all the permissions of an user in a library
+// PermissionLibrary is the struct containing all the permissions of a user in a library
 type PermissionLibrary struct {
 	Owner *bool `json:"owner,omitempty" bson:"owner"`
 	Admin *bool `json:"admin,omitempty" bson:"admin"`

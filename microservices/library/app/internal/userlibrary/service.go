@@ -30,7 +30,7 @@ func (s *Service) ReadUserLibraryFromUserID(userID string) (*[]data.Library, err
 	return s.repo.ReadFromUserID(userID)
 }
 
-// ReadUserLibraryFromUserIDAndLibraryID read an user library
+// ReadUserLibraryFromUserIDAndLibraryID read a user library
 func (s *Service) ReadUserLibraryFromUserIDAndLibraryID(userID primitive.ObjectID, libraryID primitive.ObjectID) (*data.UserLibrary, error) {
 	return s.repo.ReadFromUserIDAndLibraryID(userID, libraryID)
 }

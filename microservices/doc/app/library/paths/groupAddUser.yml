@@ -2,7 +2,7 @@
 paths:
   /library/{library_id}/group/{group_id}/join:
     post:
-      description: Add an user to a group
+      description: Add a user to a group
       summary: User join group
       parameters:
         - in: path
