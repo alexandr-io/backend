@@ -9,7 +9,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// retrieveUserLibraries retrieve the list of libraries names the connect user has access to
+// retrieveUserLibraries retrieve the list of libraries names the connected user has access to
 func retrieveUserLibraries(ctx *fiber.Ctx) error {
 	ctx.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 

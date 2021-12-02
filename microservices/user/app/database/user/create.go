@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// Insert insert a new user into the database.
+// Insert inserts a new user into the database.
 func Insert(user data.User) (*data.User, error) {
 	insertedResult, err := database.UserCollection.InsertOne(context.Background(), user)
 	if database.IsMongoDupKey(err) {

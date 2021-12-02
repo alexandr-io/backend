@@ -10,7 +10,7 @@ import (
 	stripeCustomer "github.com/alexandr-io/backend/payment/stripe/customer"
 )
 
-// GetCustomerSubscription get the current subscription price of an user
+// GetCustomerSubscription get the current subscription price of a user
 func GetCustomerSubscription(ctx *fiber.Ctx) error {
 	userID, err := userIDFromHeader(ctx)
 	if err != nil {

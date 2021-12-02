@@ -1,6 +1,6 @@
 package tests
 
-// PermissionLibrary is the struct containing all the permissions of an user in a library, Copy for test
+// PermissionLibrary is the struct containing all the permissions of a user in a library, Copy for test
 type PermissionLibrary struct {
 	Owner                bool
 	Admin                bool

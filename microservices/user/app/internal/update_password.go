@@ -6,7 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// UpdatePassword is the internal logic function used to update the password of an user.
+// UpdatePassword is the internal logic function used to update the password of a user.
 func UpdatePassword(id primitive.ObjectID, password string) (*data.User, error) {
 	userData, err := user.Update(id, data.User{
 		Password: password,

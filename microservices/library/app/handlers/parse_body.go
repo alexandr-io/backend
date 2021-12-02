@@ -87,7 +87,7 @@ func badInputJSON(name string, reason string) []byte {
 }
 
 // badInputsJSONFromType create a BadInput JSON from a key and a value corresponding to an ErrorType.
-// It replace the Value with the defined string corresponding to the ErrorType.
+// It replaces the Value with the defined string corresponding to the ErrorType.
 // It returns the JSON in []byte.
 func badInputsJSONFromType(fields map[string]string) []byte {
 	newFields := make(map[string]string)

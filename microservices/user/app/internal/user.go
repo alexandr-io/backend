@@ -7,7 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// User is the internal logic function used to get an user from an ID.
+// User is the internal logic function used to get a user from an ID.
 func User(ID primitive.ObjectID, email string) (*data.User, error) {
 
 	var userData *data.User

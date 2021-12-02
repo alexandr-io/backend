@@ -2,7 +2,7 @@ package database
 
 import "go.mongodb.org/mongo-driver/mongo"
 
-// CollectionSubscriptions is the name of the subscriptions collection in the database
+// CollectionSubscriptions is the name of the subscriptions' collection in the database
 const CollectionSubscriptions = "subscriptions"
 
 // CollectionCustomer is the name of the user's subscription collection in the database

@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// userLogin is the body parameter given to login a user for test purpose
+// userLogin is the body parameter given to log in a user for test purpose
 type userLogin struct {
 	Login    *string `json:"login" validate:"required"`
 	Password string  `json:"password" validate:"required"`

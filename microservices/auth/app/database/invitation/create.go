@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// Insert insert a new invitation into the database.
+// Insert inserts a new invitation into the database.
 func Insert(invitationData data.Invitation) (*data.Invitation, error) {
 	insertedResult, err := database.InvitationCollection.InsertOne(context.Background(), invitationData)
 	if err != nil {

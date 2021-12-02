@@ -11,5 +11,5 @@ func (e *BadInputError) Error() string {
 	return e.Err.Error()
 }
 
-// Unwrap unwrap the error type BadInput.
+// Unwrap unwraps the error type BadInput.
 func (e *BadInputError) Unwrap() error { return e.Err }

@@ -28,7 +28,7 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/UserData"
-        description: "The informations to update a user  \nOnly sent fields will be updated"
+        description: "The information to update a user  \nOnly sent fields will be updated"
       responses:
         "200":
           $ref: "#/components/schemas/UserDataResponse"

@@ -2,7 +2,7 @@
 components:
   schemas:
     UserDataResponse:
-      description: An UserData object
+      description: A UserData object
       content:
         application/json:
           schema:
